@@ -150,12 +150,12 @@ var WebglDemo = (function () {
         demo.gl.drawArrays(demo.gl.TRIANGLE_STRIP, 0, 4);
     };
     WebglDemo.prototype.setMatrixUniforms = function () {
-        var perspectiveMatrixData = [1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0];
-        var mvMatrixData = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1];
+        var perspectiveMatrix = new feng3d.Matrix3D([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
+        var mvMatrix = new feng3d.Matrix3D([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
         var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-        this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrixData));
+        this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
         var mvUniform = this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-        this.gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrixData));
+        this.gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.rawData));
     };
     return WebglDemo;
 }());
