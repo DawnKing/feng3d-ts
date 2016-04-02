@@ -1,4 +1,4 @@
-module feng3dBeat {
+module feng3d {
 
 	/**
 	 * 心跳基础类

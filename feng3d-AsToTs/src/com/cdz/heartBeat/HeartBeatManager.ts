@@ -1,4 +1,4 @@
-module feng3dBeat {
+module feng3d {
 
 	/**
 	 *
@@ -10,13 +10,11 @@ module feng3dBeat {
 		 */
         private _HeartBeatDic;
 
-        private _frameEventDriver: Shape = new Shape();
-
         constructor() {
             super();
             this.init()
 
-            this._frameEventDriver.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+            $ticker.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
         }
 
 		/**
@@ -33,17 +31,17 @@ module feng3dBeat {
 		 * 添加事件监听器
 		 */
         private addListeners() {
-            dispatcher.addEventListener(HeartBeatModuleEvent.REGISTER_BEAT_TYPE, this.registerBeat);
+            this.dispatcher.addEventListener(HeartBeatModuleEvent.REGISTER_BEAT_TYPE, this.registerBeat);
 
-            dispatcher.addEventListener(HeartBeatModuleEvent.UNREGISTER_BEAT_TYPE, this.unregisterBeat);
+            this.dispatcher.addEventListener(HeartBeatModuleEvent.UNREGISTER_BEAT_TYPE, this.unregisterBeat);
 
-            dispatcher.addEventListener(HeartBeatModuleEvent.SUSPEND_ONE_BEAT, this.suspendOne);
+            this.dispatcher.addEventListener(HeartBeatModuleEvent.SUSPEND_ONE_BEAT, this.suspendOne);
 
-            dispatcher.addEventListener(HeartBeatModuleEvent.RESUME_ONE_BEAT, this.resumeOne);
+            this.dispatcher.addEventListener(HeartBeatModuleEvent.RESUME_ONE_BEAT, this.resumeOne);
 
-            dispatcher.addEventListener(HeartBeatModuleEvent.SUSPEND_All_BEAT, this.suspendAll);
+            this.dispatcher.addEventListener(HeartBeatModuleEvent.SUSPEND_All_BEAT, this.suspendAll);
 
-            dispatcher.addEventListener(HeartBeatModuleEvent.RESUME_ALL_BEAT, this.resumeAll);
+            this.dispatcher.addEventListener(HeartBeatModuleEvent.RESUME_ALL_BEAT, this.resumeAll);
         }
 
 		/**
@@ -55,7 +53,7 @@ module feng3dBeat {
                 var beatType: string = registerData.BeatType;
                 var beatInterval: number = registerData.Interval;
                 if (this._HeartBeatDic == null) {
-                    this._HeartBeatDic = new Dictionary;
+                    this._HeartBeatDic = {};
                 }
 
                 if (this._HeartBeatDic[beatType] == null) {
@@ -123,12 +121,12 @@ module feng3dBeat {
 		 */
         public suspendAll(e: HeartBeatModuleEvent = null) {
             if (this._HeartBeatDic) {
-                for each (var pHeartBeat: BeatBase in this._HeartBeatDic)
-                {
+
+                this._HeartBeatDic.forEach(pHeartBeat => {
                     if (pHeartBeat) {
                         pHeartBeat.suspend();
                     }
-                }
+                });
             }
         }
 
@@ -137,24 +135,24 @@ module feng3dBeat {
 		 */
         public resumeAll(e: HeartBeatModuleEvent) {
             if (this._HeartBeatDic) {
-                for each (var pHeartBeat: BeatBase in this._HeartBeatDic)
-                {
+
+                this._HeartBeatDic.forEach(pHeartBeat => {
                     if (pHeartBeat) {
                         pHeartBeat.resume();
                     }
-                }
+                });
             }
         }
 
         private onEnterFrame(e: Event) {
             if (this._HeartBeatDic) {
                 var date: Date = new Date;
-                for each (var pHeartBeat: BeatBase in this._HeartBeatDic)
-                {
+                this._HeartBeatDic.forEach(pHeartBeat => {
+
                     if (pHeartBeat) {
                         pHeartBeat.beat(date);
                     }
-                }
+                });
             }
         }
 

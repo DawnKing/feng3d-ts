@@ -20,718 +20,278 @@ var feng3d;
     }());
     feng3d.Feng3D = Feng3D;
 })(feng3d || (feng3d = {}));
-/*
-Copyright (c) 2011, Adobe Systems Incorporated
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-* Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution.
-
-* Neither the name of Adobe Systems Incorporated nor the names of its
-contributors may be used to endorse or promote products derived from
-this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 var feng3d;
 (function (feng3d) {
-    // ===========================================================================
-    //	Imports
-    // ---------------------------------------------------------------------------
-        * ;
-        * ;
-    // ===========================================================================
-    //	Class
-    // ---------------------------------------------------------------------------
-    var AGALMiniAssembler = (function () {
-        // ======================================================================
-        //	Constructor
-        // ----------------------------------------------------------------------
-        function AGALMiniAssembler(debugging) {
-            if (debugging === void 0) { debugging = false; }
-            // ======================================================================
-            //	Properties
-            // ----------------------------------------------------------------------
-            // AGAL bytes and error buffer 
-            this._agalcode = null;
-            this._error = "";
-            this.debugEnabled = false;
-            this.verbose = false;
-            this.debugEnabled = debugging;
-            if (!initialized)
-                this.init();
+    /**
+     * 自定义事件
+     * @author warden_feng 2014-5-7
+     */
+    var Event = (function () {
+        /**
+         * 创建一个作为参数传递给事件侦听器的 Event 对象。
+         * @param type 事件的类型，可以作为 Event.type 访问。
+         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         * @param cancelable 确定是否可以取消 Event 对象。默认值为 false。
+         */
+        function Event(type, data, bubbles, cancelable) {
+            if (data === void 0) { data = null; }
+            if (bubbles === void 0) { bubbles = false; }
+            if (cancelable === void 0) { cancelable = false; }
+            this._type = type;
+            this._data = data;
+            this._bubbles = bubbles;
         }
-        Object.defineProperty(AGALMiniAssembler.prototype, "error", {
-            // ======================================================================
-            //	Getters
-            // ----------------------------------------------------------------------
-            get: function () { return _error; },
+        /**
+         * 防止对事件流中当前节点中和所有后续节点中的事件侦听器进行处理。此方法会立即生效，并且会影响当前节点中的事件侦听器。相比之下，在当前节点中的所有事件侦听器都完成处理之前，stopPropagation() 方法不会生效。
+         */
+        Event.prototype.stopImmediatePropagation = function () {
+            this._stopsPropagation = this._stopsImmediatePropagation = true;
+        };
+        /**
+         * 防止对事件流中当前节点的后续节点中的所有事件侦听器进行处理。此方法不会影响当前节点 (currentTarget) 中的任何事件侦听器。相比之下，stopImmediatePropagation() 方法可以防止对当前节点中和后续节点中的事件侦听器进行处理。对此方法的其他调用没有任何效果。可以在事件流的任何阶段中调用此方法。
+         */
+        Event.prototype.stopPropagation = function () {
+            this._stopsPropagation = true;
+        };
+        Event.prototype.tostring = function () {
+            return "[" + (typeof this) + " type=\"" + this._type + "\" bubbles=" + this._bubbles + "]";
+        };
+        Object.defineProperty(Event.prototype, "bubbles", {
+            /**
+             * 表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
+             */
+            get: function () {
+                return this._bubbles;
+            },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(AGALMiniAssembler.prototype, "agalcode", {
-            get: function () { return _agalcode; },
+        Object.defineProperty(Event.prototype, "type", {
+            /**
+             * 事件的类型。类型区分大小写。
+             */
+            get: function () {
+                return this._type;
+            },
             enumerable: true,
             configurable: true
         });
-        // ======================================================================
-        //	Methods
-        // ----------------------------------------------------------------------
-        AGALMiniAssembler.prototype.assemble2 = function (ctx3d, version, vertexsrc, fragmentsrc) {
-            var agalvertex = this.assemble(VERTEX, vertexsrc, version);
-            var agalfragment = this.assemble(FRAGMENT, fragmentsrc, version);
-            var prog = ctx3d.createProgram();
-            prog.upload(agalvertex, agalfragment);
-            return prog;
+        Object.defineProperty(Event.prototype, "data", {
+            /** 事件携带的自定义数据 */
+            get: function () {
+                return this._data;
+            },
+            /**
+             * @private
+             */
+            set: function (value) {
+                this._data = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "target", {
+            /**
+             * 事件目标。
+             */
+            get: function () {
+                return this._target;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "currentTarget", {
+            /**
+             * 当前正在使用某个事件侦听器处理 Event 对象的对象。
+             */
+            get: function () {
+                return this._currentTarget;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "stopsImmediatePropagation", {
+            get: function () {
+                return this._stopsImmediatePropagation;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "stopsPropagation", {
+            get: function () {
+                return this._stopsPropagation;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Event.prototype.setTarget = function (value) {
+            this._target = value;
         };
-        AGALMiniAssembler.prototype.assemble = function (mode, source, version, ignorelimits) {
-            if (version === void 0) { version = 2; }
-            if (ignorelimits === void 0) { ignorelimits = false; }
-            var start = getTimer();
-            this._agalcode = new ByteArray();
-            this._error = "";
-            var isFrag = false;
-            if (mode == FRAGMENT)
-                isFrag = true;
-            else if (mode != VERTEX)
-                this._error = 'ERROR: mode needs to be "' + FRAGMENT + '" or "' + VERTEX + '" but is "' + mode + '".';
-            this.agalcode.endian = Endian.LITTLE_ENDIAN;
-            this.agalcode.writeByte(0xa0); // tag version
-            this.agalcode.writeUnsignedInt(version); // AGAL version, big endian, bit pattern will be 0x01000000
-            this.agalcode.writeByte(0xa1); // tag program id
-            this.agalcode.writeByte(isFrag ? 1 : 0); // vertex or fragment
-            this.initregmap(version, ignorelimits);
-            var lines = source.replace(/[\f\n\r\v]+/g, "\n").split("\n");
-            //var nest:number = 0;
-            var nops = 0;
-            var i;
-            var lng = lines.length;
-            for (i = 0; i < lng && this._error == ""; i++) {
-                var line = new string(lines[i]);
-                line = line.replace(REGEXP_OUTER_SPACES, "");
-                // remove comments
-                var startcomment = line.search("//");
-                if (startcomment != -1)
-                    line = line.slice(0, startcomment);
-                // grab options
-                var optsi = line.search(/<.*>/g);
-                var opts;
-                if (optsi != -1) {
-                    opts = line.slice(optsi).match(/([\w\.\-\+]+)/gi);
-                    line = line.slice(0, optsi);
-                }
-                // find opcode
-                var opCode = line.match(/^\w{3}/ig);
-                if (!opCode) {
-                    if (line.length >= 3)
-                        trace("warning: bad line " + i + ": " + lines[i]);
-                    continue;
-                }
-                var opFound = OPMAP[opCode[0]];
-                // if debug is enabled, output the opcodes
-                if (this.debugEnabled)
-                    trace(opFound);
-                if (opFound == null) {
-                    if (line.length >= 3)
-                        trace("warning: bad line " + i + ": " + lines[i]);
-                    continue;
-                }
-                line = line.slice(line.search(opFound.name) + opFound.name.length);
-                if ((opFound.flags & OP_VERSION2) && version < 2) {
-                    this._error = "this.error: opcode requires version 2.";
-                    break;
-                }
-                if ((opFound.flags & OP_VERT_ONLY) && isFrag) {
-                    this._error = "this.error: opcode is only allowed in vertex programs.";
-                    break;
-                }
-                if ((opFound.flags & OP_FRAG_ONLY) && !isFrag) {
-                    this._error = "this.error: opcode is only allowed in fragment programs.";
-                    break;
-                }
-                if (this.verbose)
-                    trace("emit opcode=" + opFound);
-                this.agalcode.writeUnsignedInt(opFound.emitCode);
-                nops++;
-                if (nops > MAX_OPCODES) {
-                    this._error = "this.error: too many opcodes. maximum is " + MAX_OPCODES + ".";
-                    break;
-                }
-                // get operands, use regexp
-                var regs;
-                // will match both syntax
-                regs = line.match(/vc\[([vof][acostdip]?)(\d*)?(\.[xyzw](\+\d{1,3})?)?\](\.[xyzw]{1,4})?|([vof][acostdip]?)(\d*)?(\.[xyzw]{1,4})?/gi);
-                if (!regs || regs.length != opFound.numRegister) {
-                    this._error = "this.error: wrong number of operands. found " + regs.length + " but expected " + opFound.numRegister + ".";
-                    break;
-                }
-                var badreg = false;
-                var pad = 64 + 64 + 32;
-                var regLength = regs.length;
-                for (var j = 0; j < regLength; j++) {
-                    var isRelative = false;
-                    var relreg = regs[j].match(/\[.*\]/ig);
-                    if (relreg && relreg.length > 0) {
-                        regs[j] = regs[j].replace(relreg[0], "0");
-                        if (this.verbose)
-                            trace("IS REL");
-                        isRelative = true;
-                    }
-                    var res = regs[j].match(/^\b[A-Za-z]{1,2}/ig);
-                    if (!res) {
-                        this._error = "this.error: could not parse operand " + j + " (" + regs[j] + ").";
-                        badreg = true;
-                        break;
-                    }
-                    var regFound = REGMAP[res[0]];
-                    // if debug is enabled, output the registers
-                    if (this.debugEnabled)
-                        trace(regFound);
-                    if (regFound == null) {
-                        this._error = "this.error: could not find register this.name for operand " + j + " (" + regs[j] + ").";
-                        badreg = true;
-                        break;
-                    }
-                    if (isFrag) {
-                        if (!(regFound.flags & REG_FRAG)) {
-                            this._error = "this.error: register operand " + j + " (" + regs[j] + ") only allowed in vertex programs.";
-                            badreg = true;
-                            break;
-                        }
-                        if (isRelative) {
-                            this._error = "this.error: register operand " + j + " (" + regs[j] + ") relative adressing not allowed in fragment programs.";
-                            badreg = true;
-                            break;
-                        }
-                    }
-                    else {
-                        if (!(regFound.flags & REG_VERT)) {
-                            this._error = "this.error: register operand " + j + " (" + regs[j] + ") only allowed in fragment programs.";
-                            badreg = true;
-                            break;
-                        }
-                    }
-                    regs[j] = regs[j].slice(regs[j].search(regFound.name) + regFound.name.length);
-                    //trace( "REGNUM: " +regs[j] );
-                    var idxmatch = isRelative ? relreg[0].match(/\d+/) : regs[j].match(/\d+/);
-                    var regidx = 0;
-                    if (idxmatch)
-                        regidx = number(idxmatch[0]);
-                    if (regFound.range < regidx) {
-                        this._error = "this.error: register operand " + j + " (" + regs[j] + ") index exceeds limit of " + (regFound.range + 1) + ".";
-                        badreg = true;
-                        break;
-                    }
-                    var regmask = 0;
-                    var maskmatch = regs[j].match(/(\.[xyzw]{1,4})/);
-                    var isDest = (j == 0 && !(opFound.flags & OP_NO_DEST));
-                    var isSampler = (j == 2 && (opFound.flags & OP_SPECIAL_TEX));
-                    var reltype = 0;
-                    var relsel = 0;
-                    var reloffset = 0;
-                    if (isDest && isRelative) {
-                        this._error = "this.error: relative can not be destination";
-                        badreg = true;
-                        break;
-                    }
-                    if (maskmatch) {
-                        regmask = 0;
-                        var cv;
-                        var maskLength = maskmatch[0].length;
-                        for (var k = 1; k < maskLength; k++) {
-                            cv = maskmatch[0].charCodeAt(k) - "x".charCodeAt(0);
-                            if (cv > 2)
-                                cv = 3;
-                            if (isDest)
-                                regmask |= 1 << cv;
-                            else
-                                regmask |= cv << ((k - 1) << 1);
-                        }
-                        if (!isDest)
-                            for (; k <= 4; k++)
-                                regmask |= cv << ((k - 1) << 1); // repeat last								
-                    }
-                    else {
-                        regmask = isDest ? 0xf : 0xe4; // id swizzle or this.mask						
-                    }
-                    if (isRelative) {
-                        var relname = relreg[0].match(/[A-Za-z]{1,2}/ig);
-                        var regFoundRel = REGMAP[relname[0]];
-                        if (regFoundRel == null) {
-                            this._error = "this.error: bad index register";
-                            badreg = true;
-                            break;
-                        }
-                        reltype = regFoundRel.emitCode;
-                        var selmatch = relreg[0].match(/(\.[xyzw]{1,1})/);
-                        if (selmatch.length == 0) {
-                            this._error = "this.error: bad index register select";
-                            badreg = true;
-                            break;
-                        }
-                        relsel = selmatch[0].charCodeAt(1) - "x".charCodeAt(0);
-                        if (relsel > 2)
-                            relsel = 3;
-                        var relofs = relreg[0].match(/\+\d{1,3}/ig);
-                        if (relofs.length > 0)
-                            reloffset = relofs[0];
-                        if (reloffset < 0 || reloffset > 255) {
-                            this._error = "this.error: index offset " + reloffset + " out of bounds. [0..255]";
-                            badreg = true;
-                            break;
-                        }
-                        if (this.verbose)
-                            trace("RELATIVE: type=" + reltype + "==" + relname[0] + " sel=" + relsel + "==" + selmatch[0] + " idx=" + regidx + " offset=" + reloffset);
-                    }
-                    if (this.verbose)
-                        trace("  emit argcode=" + regFound + "[" + regidx + "][" + regmask + "]");
-                    if (isDest) {
-                        this.agalcode.writeShort(regidx);
-                        this.agalcode.writeByte(regmask);
-                        this.agalcode.writeByte(regFound.emitCode);
-                        pad -= 32;
-                    }
-                    else {
-                        if (isSampler) {
-                            if (this.verbose)
-                                trace("  emit sampler");
-                            var samplerbits = 5; // type 5 
-                            var optsLength = opts == null ? 0 : opts.length;
-                            var bias = 0;
-                            for (k = 0; k < optsLength; k++) {
-                                if (this.verbose)
-                                    trace("    opt: " + opts[k]);
-                                var optfound = SAMPLEMAP[opts[k]];
-                                if (optfound == null) {
-                                    // todo check that it's a number...
-                                    //trace( "Warning, unknown sampler option: "+opts[k] );
-                                    bias = number(opts[k]);
-                                    if (this.verbose)
-                                        trace("    bias: " + bias);
-                                }
-                                else {
-                                    if (optfound.flag != SAMPLER_SPECIAL_SHIFT)
-                                        samplerbits &= ~(0xf << optfound.flag);
-                                    samplerbits |= number(optfound.mask) << number(optfound.flag);
-                                }
-                            }
-                            this.agalcode.writeShort(regidx);
-                            this.agalcode.writeByte(number(bias * 8.0));
-                            this.agalcode.writeByte(0);
-                            this.agalcode.writeUnsignedInt(samplerbits);
-                            if (this.verbose)
-                                trace("    bits: " + (samplerbits - 5));
-                            pad -= 64;
-                        }
-                        else {
-                            if (j == 0) {
-                                this.agalcode.writeUnsignedInt(0);
-                                pad -= 32;
-                            }
-                            this.agalcode.writeShort(regidx);
-                            this.agalcode.writeByte(reloffset);
-                            this.agalcode.writeByte(regmask);
-                            this.agalcode.writeByte(regFound.emitCode);
-                            this.agalcode.writeByte(reltype);
-                            this.agalcode.writeShort(isRelative ? (relsel | (1 << 15)) : 0);
-                            pad -= 64;
-                        }
-                    }
-                }
-                // pad unused regs
-                for (j = 0; j < pad; j += 8)
-                    this.agalcode.writeByte(0);
-                if (badreg)
-                    break;
-            }
-            if (this._error != "") {
-                this._error += "\n  at line " + i + " " + lines[i];
-                this.agalcode.length = 0;
-                trace(this._error);
-            }
-            // trace the bytecode bytes if debugging is enabled
-            if (this.debugEnabled) {
-                var dbgLine = "generated bytecode:";
-                var agalLength = this.agalcode.length;
-                for (var index = 0; index < agalLength; index++) {
-                    if (!(index % 16))
-                        dbgLine += "\n";
-                    if (!(index % 4))
-                        dbgLine += " ";
-                    var byteStr = this.agalcode[index].toString(16);
-                    if (byteStr.length < 2)
-                        byteStr = "0" + byteStr;
-                    dbgLine += byteStr;
-                }
-                trace(dbgLine);
-            }
-            if (this.verbose)
-                trace("AGALMiniAssembler.assemble time: " + ((getTimer() - start) / 1000) + "s");
-            return this.agalcode;
+        Event.prototype.setCurrentTarget = function (value) {
+            this._currentTarget = value;
         };
-        AGALMiniAssembler.prototype.initregmap = function (version, ignorelimits) {
-            // version changes limits				
-            REGMAP[VA] = new Register(VA, "vertex attribute", 0x0, ignorelimits ? 1024 : 7, REG_VERT | REG_READ);
-            REGMAP[VC] = new Register(VC, "vertex constant", 0x1, ignorelimits ? 1024 : (version == 1 ? 127 : 250), REG_VERT | REG_READ);
-            REGMAP[VT] = new Register(VT, "vertex temporary", 0x2, ignorelimits ? 1024 : (version == 1 ? 7 : 27), REG_VERT | REG_WRITE | REG_READ);
-            REGMAP[VO] = new Register(VO, "vertex output", 0x3, ignorelimits ? 1024 : 0, REG_VERT | REG_WRITE);
-            REGMAP[VI] = new Register(VI, "varying", 0x4, ignorelimits ? 1024 : (version == 1 ? 7 : 11), REG_VERT | REG_FRAG | REG_READ | REG_WRITE);
-            REGMAP[FC] = new Register(FC, "fragment constant", 0x1, ignorelimits ? 1024 : (version == 1 ? 27 : 63), REG_FRAG | REG_READ);
-            REGMAP[FT] = new Register(FT, "fragment temporary", 0x2, ignorelimits ? 1024 : (version == 1 ? 7 : 27), REG_FRAG | REG_WRITE | REG_READ);
-            REGMAP[FS] = new Register(FS, "texture sampler", 0x5, ignorelimits ? 1024 : 7, REG_FRAG | REG_READ);
-            REGMAP[FO] = new Register(FO, "fragment output", 0x3, ignorelimits ? 1024 : (version == 1 ? 0 : 3), REG_FRAG | REG_WRITE);
-            REGMAP[FD] = new Register(FD, "fragment depth output", 0x6, ignorelimits ? 1024 : (version == 1 ? -1 : 0), REG_FRAG | REG_WRITE);
-            // aliases
-            REGMAP["op"] = REGMAP[VO];
-            REGMAP["i"] = REGMAP[VI];
-            REGMAP["v"] = REGMAP[VI];
-            REGMAP["oc"] = REGMAP[FO];
-            REGMAP["od"] = REGMAP[FD];
-            REGMAP["fi"] = REGMAP[VI];
-        };
-        AGALMiniAssembler.init = function () {
-            initialized = true;
-            // Fill the dictionaries with opcodes and registers
-            OPMAP[MOV] = new OpCode(MOV, 2, 0x00, 0);
-            OPMAP[ADD] = new OpCode(ADD, 3, 0x01, 0);
-            OPMAP[SUB] = new OpCode(SUB, 3, 0x02, 0);
-            OPMAP[MUL] = new OpCode(MUL, 3, 0x03, 0);
-            OPMAP[DIV] = new OpCode(DIV, 3, 0x04, 0);
-            OPMAP[RCP] = new OpCode(RCP, 2, 0x05, 0);
-            OPMAP[MIN] = new OpCode(MIN, 3, 0x06, 0);
-            OPMAP[MAX] = new OpCode(MAX, 3, 0x07, 0);
-            OPMAP[FRC] = new OpCode(FRC, 2, 0x08, 0);
-            OPMAP[SQT] = new OpCode(SQT, 2, 0x09, 0);
-            OPMAP[RSQ] = new OpCode(RSQ, 2, 0x0a, 0);
-            OPMAP[POW] = new OpCode(POW, 3, 0x0b, 0);
-            OPMAP[LOG] = new OpCode(LOG, 2, 0x0c, 0);
-            OPMAP[EXP] = new OpCode(EXP, 2, 0x0d, 0);
-            OPMAP[NRM] = new OpCode(NRM, 2, 0x0e, 0);
-            OPMAP[SIN] = new OpCode(SIN, 2, 0x0f, 0);
-            OPMAP[COS] = new OpCode(COS, 2, 0x10, 0);
-            OPMAP[CRS] = new OpCode(CRS, 3, 0x11, 0);
-            OPMAP[DP3] = new OpCode(DP3, 3, 0x12, 0);
-            OPMAP[DP4] = new OpCode(DP4, 3, 0x13, 0);
-            OPMAP[ABS] = new OpCode(ABS, 2, 0x14, 0);
-            OPMAP[NEG] = new OpCode(NEG, 2, 0x15, 0);
-            OPMAP[SAT] = new OpCode(SAT, 2, 0x16, 0);
-            OPMAP[M33] = new OpCode(M33, 3, 0x17, OP_SPECIAL_MATRIX);
-            OPMAP[M44] = new OpCode(M44, 3, 0x18, OP_SPECIAL_MATRIX);
-            OPMAP[M34] = new OpCode(M34, 3, 0x19, OP_SPECIAL_MATRIX);
-            OPMAP[DDX] = new OpCode(DDX, 2, 0x1a, OP_VERSION2 | OP_FRAG_ONLY);
-            OPMAP[DDY] = new OpCode(DDY, 2, 0x1b, OP_VERSION2 | OP_FRAG_ONLY);
-            OPMAP[IFE] = new OpCode(IFE, 2, 0x1c, OP_NO_DEST | OP_VERSION2 | OP_INCNEST | OP_SCALAR);
-            OPMAP[INE] = new OpCode(INE, 2, 0x1d, OP_NO_DEST | OP_VERSION2 | OP_INCNEST | OP_SCALAR);
-            OPMAP[IFG] = new OpCode(IFG, 2, 0x1e, OP_NO_DEST | OP_VERSION2 | OP_INCNEST | OP_SCALAR);
-            OPMAP[IFL] = new OpCode(IFL, 2, 0x1f, OP_NO_DEST | OP_VERSION2 | OP_INCNEST | OP_SCALAR);
-            OPMAP[ELS] = new OpCode(ELS, 0, 0x20, OP_NO_DEST | OP_VERSION2 | OP_INCNEST | OP_DECNEST | OP_SCALAR);
-            OPMAP[EIF] = new OpCode(EIF, 0, 0x21, OP_NO_DEST | OP_VERSION2 | OP_DECNEST | OP_SCALAR);
-            // space			
-            OPMAP[TED] = new OpCode(TED, 3, 0x26, OP_FRAG_ONLY | OP_SPECIAL_TEX | OP_VERSION2);
-            OPMAP[KIL] = new OpCode(KIL, 1, 0x27, OP_NO_DEST | OP_FRAG_ONLY);
-            OPMAP[TEX] = new OpCode(TEX, 3, 0x28, OP_FRAG_ONLY | OP_SPECIAL_TEX);
-            OPMAP[SGE] = new OpCode(SGE, 3, 0x29, 0);
-            OPMAP[SLT] = new OpCode(SLT, 3, 0x2a, 0);
-            OPMAP[SGN] = new OpCode(SGN, 2, 0x2b, 0);
-            OPMAP[SEQ] = new OpCode(SEQ, 3, 0x2c, 0);
-            OPMAP[SNE] = new OpCode(SNE, 3, 0x2d, 0);
-            SAMPLEMAP[RGBA] = new Sampler(RGBA, SAMPLER_TYPE_SHIFT, 0);
-            SAMPLEMAP[DXT1] = new Sampler(DXT1, SAMPLER_TYPE_SHIFT, 1);
-            SAMPLEMAP[DXT5] = new Sampler(DXT5, SAMPLER_TYPE_SHIFT, 2);
-            SAMPLEMAP[VIDEO] = new Sampler(VIDEO, SAMPLER_TYPE_SHIFT, 3);
-            SAMPLEMAP[D2] = new Sampler(D2, SAMPLER_DIM_SHIFT, 0);
-            SAMPLEMAP[D3] = new Sampler(D3, SAMPLER_DIM_SHIFT, 2);
-            SAMPLEMAP[CUBE] = new Sampler(CUBE, SAMPLER_DIM_SHIFT, 1);
-            SAMPLEMAP[MIPNEAREST] = new Sampler(MIPNEAREST, SAMPLER_MIPMAP_SHIFT, 1);
-            SAMPLEMAP[MIPLINEAR] = new Sampler(MIPLINEAR, SAMPLER_MIPMAP_SHIFT, 2);
-            SAMPLEMAP[MIPNONE] = new Sampler(MIPNONE, SAMPLER_MIPMAP_SHIFT, 0);
-            SAMPLEMAP[NOMIP] = new Sampler(NOMIP, SAMPLER_MIPMAP_SHIFT, 0);
-            SAMPLEMAP[NEAREST] = new Sampler(NEAREST, SAMPLER_FILTER_SHIFT, 0);
-            SAMPLEMAP[LINEAR] = new Sampler(LINEAR, SAMPLER_FILTER_SHIFT, 1);
-            SAMPLEMAP[CENTROID] = new Sampler(CENTROID, SAMPLER_SPECIAL_SHIFT, 1 << 0);
-            SAMPLEMAP[SINGLE] = new Sampler(SINGLE, SAMPLER_SPECIAL_SHIFT, 1 << 1);
-            SAMPLEMAP[IGNORESAMPLER] = new Sampler(IGNORESAMPLER, SAMPLER_SPECIAL_SHIFT, 1 << 2);
-            SAMPLEMAP[REPEAT] = new Sampler(REPEAT, SAMPLER_REPEAT_SHIFT, 1);
-            SAMPLEMAP[WRAP] = new Sampler(WRAP, SAMPLER_REPEAT_SHIFT, 1);
-            SAMPLEMAP[CLAMP] = new Sampler(CLAMP, SAMPLER_REPEAT_SHIFT, 0);
-        };
-        //	Constants
-        // ----------------------------------------------------------------------				
-        AGALMiniAssembler.REGEXP_OUTER_SPACES = /^\s+|\s+$/g;
-        AGALMiniAssembler.initialized = false;
-        // ======================================================================
-        //	Constants
-        // ----------------------------------------------------------------------
-        AGALMiniAssembler.OPMAP = {};
-        AGALMiniAssembler.REGMAP = {};
-        AGALMiniAssembler.SAMPLEMAP = {};
-        AGALMiniAssembler.MAX_NESTING = 4;
-        AGALMiniAssembler.MAX_OPCODES = 2048;
-        AGALMiniAssembler.FRAGMENT = "fragment";
-        AGALMiniAssembler.VERTEX = "vertex";
-        // masks and shifts
-        AGALMiniAssembler.SAMPLER_TYPE_SHIFT = 8;
-        AGALMiniAssembler.SAMPLER_DIM_SHIFT = 12;
-        AGALMiniAssembler.SAMPLER_SPECIAL_SHIFT = 16;
-        AGALMiniAssembler.SAMPLER_REPEAT_SHIFT = 20;
-        AGALMiniAssembler.SAMPLER_MIPMAP_SHIFT = 24;
-        AGALMiniAssembler.SAMPLER_FILTER_SHIFT = 28;
-        // regmap flags
-        AGALMiniAssembler.REG_WRITE = 0x1;
-        AGALMiniAssembler.REG_READ = 0x2;
-        AGALMiniAssembler.REG_FRAG = 0x20;
-        AGALMiniAssembler.REG_VERT = 0x40;
-        // opmap flags
-        AGALMiniAssembler.OP_SCALAR = 0x1;
-        AGALMiniAssembler.OP_SPECIAL_TEX = 0x8;
-        AGALMiniAssembler.OP_SPECIAL_MATRIX = 0x10;
-        AGALMiniAssembler.OP_FRAG_ONLY = 0x20;
-        AGALMiniAssembler.OP_VERT_ONLY = 0x40;
-        AGALMiniAssembler.OP_NO_DEST = 0x80;
-        AGALMiniAssembler.OP_VERSION2 = 0x100;
-        AGALMiniAssembler.OP_INCNEST = 0x200;
-        AGALMiniAssembler.OP_DECNEST = 0x400;
-        // opcodes
-        AGALMiniAssembler.MOV = "mov";
-        AGALMiniAssembler.ADD = "add";
-        AGALMiniAssembler.SUB = "sub";
-        AGALMiniAssembler.MUL = "mul";
-        AGALMiniAssembler.DIV = "div";
-        AGALMiniAssembler.RCP = "rcp";
-        AGALMiniAssembler.MIN = "min";
-        AGALMiniAssembler.MAX = "max";
-        AGALMiniAssembler.FRC = "frc";
-        AGALMiniAssembler.SQT = "sqt";
-        AGALMiniAssembler.RSQ = "rsq";
-        AGALMiniAssembler.POW = "pow";
-        AGALMiniAssembler.LOG = "log";
-        AGALMiniAssembler.EXP = "exp";
-        AGALMiniAssembler.NRM = "nrm";
-        AGALMiniAssembler.SIN = "sin";
-        AGALMiniAssembler.COS = "cos";
-        AGALMiniAssembler.CRS = "crs";
-        AGALMiniAssembler.DP3 = "dp3";
-        AGALMiniAssembler.DP4 = "dp4";
-        AGALMiniAssembler.ABS = "abs";
-        AGALMiniAssembler.NEG = "neg";
-        AGALMiniAssembler.SAT = "sat";
-        AGALMiniAssembler.M33 = "m33";
-        AGALMiniAssembler.M44 = "m44";
-        AGALMiniAssembler.M34 = "m34";
-        AGALMiniAssembler.DDX = "ddx";
-        AGALMiniAssembler.DDY = "ddy";
-        AGALMiniAssembler.IFE = "ife";
-        AGALMiniAssembler.INE = "ine";
-        AGALMiniAssembler.IFG = "ifg";
-        AGALMiniAssembler.IFL = "ifl";
-        AGALMiniAssembler.ELS = "els";
-        AGALMiniAssembler.EIF = "eif";
-        AGALMiniAssembler.TED = "ted";
-        AGALMiniAssembler.KIL = "kil";
-        AGALMiniAssembler.TEX = "tex";
-        AGALMiniAssembler.SGE = "sge";
-        AGALMiniAssembler.SLT = "slt";
-        AGALMiniAssembler.SGN = "sgn";
-        AGALMiniAssembler.SEQ = "seq";
-        AGALMiniAssembler.SNE = "sne";
-        // registers
-        AGALMiniAssembler.VA = "va";
-        AGALMiniAssembler.VC = "vc";
-        AGALMiniAssembler.VT = "vt";
-        AGALMiniAssembler.VO = "vo";
-        AGALMiniAssembler.VI = "vi";
-        AGALMiniAssembler.FC = "fc";
-        AGALMiniAssembler.FT = "ft";
-        AGALMiniAssembler.FS = "fs";
-        AGALMiniAssembler.FO = "fo";
-        AGALMiniAssembler.FD = "fd";
-        // samplers
-        AGALMiniAssembler.D2 = "2d";
-        AGALMiniAssembler.D3 = "3d";
-        AGALMiniAssembler.CUBE = "cube";
-        AGALMiniAssembler.MIPNEAREST = "mipnearest";
-        AGALMiniAssembler.MIPLINEAR = "miplinear";
-        AGALMiniAssembler.MIPNONE = "mipnone";
-        AGALMiniAssembler.NOMIP = "nomip";
-        AGALMiniAssembler.NEAREST = "nearest";
-        AGALMiniAssembler.LINEAR = "linear";
-        AGALMiniAssembler.CENTROID = "centroid";
-        AGALMiniAssembler.SINGLE = "single";
-        AGALMiniAssembler.IGNORESAMPLER = "ignoresampler";
-        AGALMiniAssembler.REPEAT = "repeat";
-        AGALMiniAssembler.WRAP = "wrap";
-        AGALMiniAssembler.CLAMP = "clamp";
-        AGALMiniAssembler.RGBA = "rgba";
-        AGALMiniAssembler.DXT1 = "dxt1";
-        AGALMiniAssembler.DXT5 = "dxt5";
-        AGALMiniAssembler.VIDEO = "video";
-        return AGALMiniAssembler;
+        /**
+         * [广播事件] 进入新的一帧,监听此事件将会在下一帧开始时触发一次回调。这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
+         */
+        Event.ENTER_FRAME = "enterFrame";
+        return Event;
     }());
-    feng3d.AGALMiniAssembler = AGALMiniAssembler;
+    feng3d.Event = Event;
 })(feng3d || (feng3d = {}));
-// ================================================================================
-//	Helper Classes
-// --------------------------------------------------------------------------------
-{
-    // ===========================================================================
-    //	Class
-    // ---------------------------------------------------------------------------
-    var OpCode = (function () {
-        function OpCode() {
+var feng3d;
+(function (feng3d) {
+    /**
+     * 为了实现非flash原生显示列表的冒泡事件，自定义事件适配器
+     * @author feng 2016-3-22
+     */
+    var EventDispatcher = (function () {
+        /**
+         * 构建事件适配器
+         * @param target		事件适配主体
+         */
+        function EventDispatcher(target) {
+            if (target === void 0) { target = null; }
+            this._target = target;
+            if (this._target == null)
+                this._target = this;
+            this._eventListeners = {};
         }
-        Object.defineProperty(OpCode.prototype, "emitCode", {
-            // ======================================================================
-            //	Getters
-            // ----------------------------------------------------------------------
-            get: function () { return _emitCode; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OpCode.prototype, "flags", {
-            get: function () { return _flags; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OpCode.prototype, "name", {
-            get: function () { return _name; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OpCode.prototype, "numRegister", {
-            get: function () { return _numRegister; },
-            enumerable: true,
-            configurable: true
-        });
-        // ======================================================================
-        //	Constructor
-        // ----------------------------------------------------------------------
-        OpCode.prototype.OpCode = function (name, numRegister, emitCode, flags) {
-            this._name = name;
-            this._numRegister = numRegister;
-            this._emitCode = emitCode;
-            this._flags = flags;
+        EventDispatcher.prototype.addEventListener = function (type, listener, priority, useWeakReference) {
+            if (priority === void 0) { priority = 0; }
+            if (useWeakReference === void 0) { useWeakReference = false; }
+            if (listener == null)
+                return;
+            var listeners = this._eventListeners[type];
+            if (listeners == null)
+                listeners = this._eventListeners[type] = [];
+            var index = listeners.indexOf(listener);
+            if (index == -1) {
+                listeners.push(listener);
+            }
         };
-        // ======================================================================
-        //	Methods
-        // ----------------------------------------------------------------------
-        OpCode.prototype.toString = function () {
-            return "[OpCode this.name=\"" + this._name + "\", this.numRegister=" + this._numRegister + ", this.emitCode=" + this._emitCode + ", this.flags=" + this._flags + "]";
+        EventDispatcher.prototype.removeEventListener = function (type, listener) {
+            if (this._eventListeners) {
+                var listeners = this._eventListeners[type];
+                var index = listeners.indexOf(listener);
+                listeners.splice(index, 1);
+            }
         };
-        return OpCode;
+        EventDispatcher.prototype.removeEventListeners = function (type) {
+            if (type === void 0) { type = null; }
+            if (type && this._eventListeners)
+                delete this._eventListeners[type];
+            else
+                this._eventListeners = {};
+        };
+        /**
+         * @inheritDoc
+         */
+        EventDispatcher.prototype.dispatchEvent = function (event) {
+            var _this = this;
+            //停止事件流
+            if (!event || event.stopsPropagation)
+                return false;
+            //设置目标
+            if (!event.target)
+                event.setTarget(this._target);
+            //处理当前事件(目标阶段)
+            var listeners = this._eventListeners[event.type];
+            if (!event.stopsImmediatePropagation) {
+                listeners.forEach(function (listener) {
+                    //设置当前目标
+                    event.setCurrentTarget(_this._target);
+                    listener(event);
+                });
+            }
+            //事件冒泡(冒泡阶段)
+            if (event.bubbles && this.parentDispatcher) {
+                this.parentDispatcher.dispatchEvent(event);
+            }
+            return event.stopsPropagation;
+        };
+        EventDispatcher.prototype.hasEventListener = function (type) {
+            var listeners = this._eventListeners ? this._eventListeners[type] : null;
+            for (var key in listeners) {
+                return true;
+            }
+            return false;
+        };
+        /**
+         * 该功能暂未实现
+         * @param type
+         * @return
+         */
+        EventDispatcher.prototype.willTrigger = function (type) {
+            // TODO Auto Generated method stub
+            return false;
+        };
+        Object.defineProperty(EventDispatcher.prototype, "parentDispatcher", {
+            /**
+             * 父事件适配器
+             */
+            get: function () {
+                return this._target[EventDispatcher.BUBBLE_PROPERTY];
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /** 冒泡属性名称为“parent” */
+        EventDispatcher.BUBBLE_PROPERTY = "parent";
+        return EventDispatcher;
     }());
-    // ===========================================================================
-    //	Class
-    // ---------------------------------------------------------------------------
-    var Register = (function () {
-        function Register() {
+    feng3d.EventDispatcher = EventDispatcher;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 心跳计时器
+     */
+    var SystemTicker = (function (_super) {
+        __extends(SystemTicker, _super);
+        /**
+         * @private
+         */
+        function SystemTicker() {
+            _super.call(this);
+            if (feng3d.$ticker) {
+                throw "心跳计时器为单例";
+            }
+            this.init();
         }
-        Object.defineProperty(Register.prototype, "emitCode", {
-            // ======================================================================
-            //	Getters
-            // ----------------------------------------------------------------------
-            get: function () { return _emitCode; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Register.prototype, "longName", {
-            get: function () { return _longName; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Register.prototype, "name", {
-            get: function () { return _name; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Register.prototype, "flags", {
-            get: function () { return _flags; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Register.prototype, "range", {
-            get: function () { return _range; },
-            enumerable: true,
-            configurable: true
-        });
-        // ======================================================================
-        //	Constructor
-        // ----------------------------------------------------------------------
-        Register.prototype.Register = function (name, longName, emitCode, range, flags) {
-            this._name = name;
-            this._longName = longName;
-            this._emitCode = emitCode;
-            this._range = range;
-            this._flags = flags;
+        SystemTicker.prototype.init = function () {
+            var requestAnimationFrame = window["requestAnimationFrame"] ||
+                window["webkitRequestAnimationFrame"] ||
+                window["mozRequestAnimationFrame"] ||
+                window["oRequestAnimationFrame"] ||
+                window["msRequestAnimationFrame"];
+            if (!requestAnimationFrame) {
+                requestAnimationFrame = function (callback) {
+                    return window.setTimeout(callback, 1000 / 60);
+                };
+            }
+            requestAnimationFrame.call(window, onTick);
+            function onTick() {
+                this.update();
+                requestAnimationFrame.call(window, onTick);
+            }
         };
-        // ======================================================================
-        //	Methods
-        // ----------------------------------------------------------------------
-        Register.prototype.toString = function () {
-            return "[Register this.name=\"" + this._name + "\", this.longName=\"" + this._longName + "\", this.emitCode=" + this._emitCode + ", this.range=" + this._range + ", this.flags=" + this._flags + "]";
+        /**
+         * @private
+         * 执行一次刷新
+         */
+        SystemTicker.prototype.update = function () {
+            this.dispatchEvent(new feng3d.Event(feng3d.Event.ENTER_FRAME));
         };
-        return Register;
-    }());
-    // ===========================================================================
-    //	Class
-    // ---------------------------------------------------------------------------
-    var Sampler = (function () {
-        function Sampler() {
-        }
-        Object.defineProperty(Sampler.prototype, "flag", {
-            // ======================================================================
-            //	Getters
-            // ----------------------------------------------------------------------
-            get: function () { return _flag; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Sampler.prototype, "mask", {
-            get: function () { return _mask; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Sampler.prototype, "name", {
-            get: function () { return _name; },
-            enumerable: true,
-            configurable: true
-        });
-        // ======================================================================
-        //	Constructor
-        // ----------------------------------------------------------------------
-        Sampler.prototype.Sampler = function (name, flag, mask) {
-            this._name = name;
-            this._flag = flag;
-            this._mask = mask;
-        };
-        // ======================================================================
-        //	Methods
-        // ----------------------------------------------------------------------
-        Sampler.prototype.toString = function () {
-            return "[Sampler this.name=\"" + this._name + "\", this.flag=\"" + this._flag + "\", this.mask=" + this.mask + "]";
-        };
-        return Sampler;
-    }());
-}
-var feng3dBeat;
-(function (feng3dBeat) {
+        return SystemTicker;
+    }(feng3d.EventDispatcher));
+    feng3d.SystemTicker = SystemTicker;
+    /**
+     * 心跳计时器单例
+     */
+    feng3d.$ticker = new SystemTicker();
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 心跳基础类
      * @author cdz 2015-10-27
@@ -768,7 +328,7 @@ var feng3dBeat;
             var deltaTime = nowDate.getTime() - this._lastBeatTime.getTime();
             if (deltaTime >= this._beatInterval) {
                 this._lastBeatTime = nowDate;
-                GlobalDispatcher.instance.dispatchEvent(new feng3dBeat.HeartBeatEvent(this.BeatType));
+                feng3d.GlobalDispatcher.instance.dispatchEvent(new feng3d.HeartBeatEvent(this.BeatType));
             }
         };
         /**
@@ -791,10 +351,10 @@ var feng3dBeat;
         };
         return BeatBase;
     }());
-    feng3dBeat.BeatBase = BeatBase;
-})(feng3dBeat || (feng3dBeat = {}));
-var feng3dBeat;
-(function (feng3dBeat) {
+    feng3d.BeatBase = BeatBase;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      ** 心跳模块类
      * @includeExample HeatBeatModuleTest.as
@@ -807,12 +367,12 @@ var feng3dBeat;
          * 初始化模块
          */
         HeartBeat.init = function () {
-            HeartBeat.heartBeatManager || (HeartBeat.heartBeatManager = new feng3dBeat.HeartBeatManager());
+            HeartBeat.heartBeatManager || (HeartBeat.heartBeatManager = new feng3d.HeartBeatManager());
         };
         return HeartBeat;
     }());
-    feng3dBeat.HeartBeat = HeartBeat;
-})(feng3dBeat || (feng3dBeat = {}));
+    feng3d.HeartBeat = HeartBeat;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -882,6 +442,10 @@ var feng3d;
          * 创建一个模块
          */
         function FModuleManager() {
+            /**
+             * 全局事件
+             */
+            this.dispatcher = feng3d.GlobalDispatcher.instance;
         }
         /**
          * 初始化模块
@@ -924,16 +488,12 @@ var feng3d;
             if (useWeakReference === void 0) { useWeakReference = false; }
             feng3d.GlobalDispatcher.instance.addEventListener(type, listener, useCapture, priority, useWeakReference);
         };
-        /**
-         * 全局事件
-         */
-        FModuleManager.dispatcher = feng3d.GlobalDispatcher.instance;
         return FModuleManager;
     }());
     feng3d.FModuleManager = FModuleManager;
 })(feng3d || (feng3d = {}));
-var feng3dBeat;
-(function (feng3dBeat) {
+var feng3d;
+(function (feng3d) {
     /**
      *
      * @author cdz 2015-10-28
@@ -942,9 +502,8 @@ var feng3dBeat;
         __extends(HeartBeatManager, _super);
         function HeartBeatManager() {
             _super.call(this);
-            this._frameEventDriver = new Shape();
             this.init();
-            this._frameEventDriver.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+            feng3d.$ticker.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame);
         }
         /**
          * @inheritDoc
@@ -958,12 +517,12 @@ var feng3dBeat;
          * 添加事件监听器
          */
         HeartBeatManager.prototype.addListeners = function () {
-            dispatcher.addEventListener(feng3dBeat.HeartBeatModuleEvent.REGISTER_BEAT_TYPE, this.registerBeat);
-            dispatcher.addEventListener(feng3dBeat.HeartBeatModuleEvent.UNREGISTER_BEAT_TYPE, this.unregisterBeat);
-            dispatcher.addEventListener(feng3dBeat.HeartBeatModuleEvent.SUSPEND_ONE_BEAT, this.suspendOne);
-            dispatcher.addEventListener(feng3dBeat.HeartBeatModuleEvent.RESUME_ONE_BEAT, this.resumeOne);
-            dispatcher.addEventListener(feng3dBeat.HeartBeatModuleEvent.SUSPEND_All_BEAT, this.suspendAll);
-            dispatcher.addEventListener(feng3dBeat.HeartBeatModuleEvent.RESUME_ALL_BEAT, this.resumeAll);
+            this.dispatcher.addEventListener(feng3d.HeartBeatModuleEvent.REGISTER_BEAT_TYPE, this.registerBeat);
+            this.dispatcher.addEventListener(feng3d.HeartBeatModuleEvent.UNREGISTER_BEAT_TYPE, this.unregisterBeat);
+            this.dispatcher.addEventListener(feng3d.HeartBeatModuleEvent.SUSPEND_ONE_BEAT, this.suspendOne);
+            this.dispatcher.addEventListener(feng3d.HeartBeatModuleEvent.RESUME_ONE_BEAT, this.resumeOne);
+            this.dispatcher.addEventListener(feng3d.HeartBeatModuleEvent.SUSPEND_All_BEAT, this.suspendAll);
+            this.dispatcher.addEventListener(feng3d.HeartBeatModuleEvent.RESUME_ALL_BEAT, this.resumeAll);
         };
         /**
          * 注册心跳
@@ -974,10 +533,10 @@ var feng3dBeat;
                 var beatType = registerData.BeatType;
                 var beatInterval = registerData.Interval;
                 if (this._HeartBeatDic == null) {
-                    this._HeartBeatDic = new Dictionary;
+                    this._HeartBeatDic = {};
                 }
                 if (this._HeartBeatDic[beatType] == null) {
-                    var beat = new feng3dBeat.BeatBase();
+                    var beat = new feng3d.BeatBase();
                     beat.BeatType = beatType;
                     beat.setInterval(beatInterval);
                     beat.beginBeat();
@@ -1035,14 +594,11 @@ var feng3dBeat;
         HeartBeatManager.prototype.suspendAll = function (e) {
             if (e === void 0) { e = null; }
             if (this._HeartBeatDic) {
-                for (each(); ; )
-                    var pHeartBeat;
-                 in this._HeartBeatDic;
-                {
+                this._HeartBeatDic.forEach(function (pHeartBeat) {
                     if (pHeartBeat) {
                         pHeartBeat.suspend();
                     }
-                }
+                });
             }
         };
         /**
@@ -1050,33 +606,27 @@ var feng3dBeat;
          */
         HeartBeatManager.prototype.resumeAll = function (e) {
             if (this._HeartBeatDic) {
-                for (each(); ; )
-                    var pHeartBeat;
-                 in this._HeartBeatDic;
-                {
+                this._HeartBeatDic.forEach(function (pHeartBeat) {
                     if (pHeartBeat) {
                         pHeartBeat.resume();
                     }
-                }
+                });
             }
         };
         HeartBeatManager.prototype.onEnterFrame = function (e) {
             if (this._HeartBeatDic) {
                 var date = new Date;
-                for (each(); ; )
-                    var pHeartBeat;
-                 in this._HeartBeatDic;
-                {
+                this._HeartBeatDic.forEach(function (pHeartBeat) {
                     if (pHeartBeat) {
                         pHeartBeat.beat(date);
                     }
-                }
+                });
             }
         };
         return HeartBeatManager;
-    }(FModuleManager));
-    feng3dBeat.HeartBeatManager = HeartBeatManager;
-})(feng3dBeat || (feng3dBeat = {}));
+    }(feng3d.FModuleManager));
+    feng3d.HeartBeatManager = HeartBeatManager;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -1429,8 +979,8 @@ var feng3d;
     }(Error));
     feng3d.AbstractMethodError = AbstractMethodError;
 })(feng3d || (feng3d = {}));
-var feng3dBeat;
-(function (feng3dBeat) {
+var feng3d;
+(function (feng3d) {
     /**
      *
      * @author cdz 2015-10-31
@@ -1447,8 +997,8 @@ var feng3dBeat;
         }
         return HeartBeatModuleData;
     }());
-    feng3dBeat.HeartBeatModuleData = HeartBeatModuleData;
-})(feng3dBeat || (feng3dBeat = {}));
+    feng3d.HeartBeatModuleData = HeartBeatModuleData;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -1472,223 +1022,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 自定义事件
-     * @author warden_feng 2014-5-7
-     */
-    var Event = (function () {
-        /**
-         * 创建一个作为参数传递给事件侦听器的 Event 对象。
-         * @param type 事件的类型，可以作为 Event.type 访问。
-         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 确定是否可以取消 Event 对象。默认值为 false。
-         */
-        function Event(type, data, bubbles, cancelable) {
-            if (data === void 0) { data = null; }
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
-            this._type = type;
-            this._data = data;
-            this._bubbles = bubbles;
-        }
-        /**
-         * 防止对事件流中当前节点中和所有后续节点中的事件侦听器进行处理。此方法会立即生效，并且会影响当前节点中的事件侦听器。相比之下，在当前节点中的所有事件侦听器都完成处理之前，stopPropagation() 方法不会生效。
-         */
-        Event.prototype.stopImmediatePropagation = function () {
-            this._stopsPropagation = this._stopsImmediatePropagation = true;
-        };
-        /**
-         * 防止对事件流中当前节点的后续节点中的所有事件侦听器进行处理。此方法不会影响当前节点 (currentTarget) 中的任何事件侦听器。相比之下，stopImmediatePropagation() 方法可以防止对当前节点中和后续节点中的事件侦听器进行处理。对此方法的其他调用没有任何效果。可以在事件流的任何阶段中调用此方法。
-         */
-        Event.prototype.stopPropagation = function () {
-            this._stopsPropagation = true;
-        };
-        Event.prototype.tostring = function () {
-            return "[" + (typeof this) + " type=\"" + this._type + "\" bubbles=" + this._bubbles + "]";
-        };
-        Object.defineProperty(Event.prototype, "bubbles", {
-            /**
-             * 表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
-             */
-            get: function () {
-                return this._bubbles;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Event.prototype, "type", {
-            /**
-             * 事件的类型。类型区分大小写。
-             */
-            get: function () {
-                return this._type;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Event.prototype, "data", {
-            /** 事件携带的自定义数据 */
-            get: function () {
-                return this._data;
-            },
-            /**
-             * @private
-             */
-            set: function (value) {
-                this._data = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Event.prototype, "target", {
-            /**
-             * 事件目标。
-             */
-            get: function () {
-                return this._target;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Event.prototype, "currentTarget", {
-            /**
-             * 当前正在使用某个事件侦听器处理 Event 对象的对象。
-             */
-            get: function () {
-                return this._currentTarget;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Event.prototype, "stopsImmediatePropagation", {
-            get: function () {
-                return this._stopsImmediatePropagation;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Event.prototype, "stopsPropagation", {
-            get: function () {
-                return this._stopsPropagation;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Event.prototype.setTarget = function (value) {
-            this._target = value;
-        };
-        Event.prototype.setCurrentTarget = function (value) {
-            this._currentTarget = value;
-        };
-        return Event;
-    }());
-    feng3d.Event = Event;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 为了实现非flash原生显示列表的冒泡事件，自定义事件适配器
-     * @author feng 2016-3-22
-     */
-    var EventDispatcher = (function () {
-        /**
-         * 构建事件适配器
-         * @param target		事件适配主体
-         */
-        function EventDispatcher(target) {
-            if (target === void 0) { target = null; }
-            this._target = target;
-            if (this._target == null)
-                this._target = this;
-            this._eventListeners = {};
-        }
-        EventDispatcher.prototype.addEventListener = function (type, listener, priority, useWeakReference) {
-            if (priority === void 0) { priority = 0; }
-            if (useWeakReference === void 0) { useWeakReference = false; }
-            if (listener == null)
-                return;
-            var listeners = this._eventListeners[type];
-            if (listeners == null)
-                listeners = this._eventListeners[type] = [];
-            var index = listeners.indexOf(listener);
-            if (index == -1) {
-                listeners.push(listener);
-            }
-        };
-        EventDispatcher.prototype.removeEventListener = function (type, listener) {
-            if (this._eventListeners) {
-                var listeners = this._eventListeners[type];
-                var index = listeners.indexOf(listener);
-                listeners.splice(index, 1);
-            }
-        };
-        EventDispatcher.prototype.removeEventListeners = function (type) {
-            if (type === void 0) { type = null; }
-            if (type && this._eventListeners)
-                delete this._eventListeners[type];
-            else
-                this._eventListeners = {};
-        };
-        /**
-         * @inheritDoc
-         */
-        EventDispatcher.prototype.dispatchEvent = function (event) {
-            var _this = this;
-            //停止事件流
-            if (!event || event.stopsPropagation)
-                return false;
-            //设置目标
-            if (!event.target)
-                event.setTarget(this._target);
-            //处理当前事件(目标阶段)
-            var listeners = this._eventListeners[event.type];
-            if (!event.stopsImmediatePropagation) {
-                listeners.forEach(function (listener) {
-                    //设置当前目标
-                    event.setCurrentTarget(_this._target);
-                    listener(event);
-                });
-            }
-            //事件冒泡(冒泡阶段)
-            if (event.bubbles && this.parentDispatcher) {
-                this.parentDispatcher.dispatchEvent(event);
-            }
-            return event.stopsPropagation;
-        };
-        EventDispatcher.prototype.hasEventListener = function (type) {
-            var listeners = this._eventListeners ? this._eventListeners[type] : null;
-            for (var key in listeners) {
-                return true;
-            }
-            return false;
-        };
-        /**
-         * 该功能暂未实现
-         * @param type
-         * @return
-         */
-        EventDispatcher.prototype.willTrigger = function (type) {
-            // TODO Auto Generated method stub
-            return false;
-        };
-        Object.defineProperty(EventDispatcher.prototype, "parentDispatcher", {
-            /**
-             * 父事件适配器
-             */
-            get: function () {
-                return this._target[EventDispatcher.BUBBLE_PROPERTY];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /** 冒泡属性名称为“parent” */
-        EventDispatcher.BUBBLE_PROPERTY = "parent";
-        return EventDispatcher;
-    }());
-    feng3d.EventDispatcher = EventDispatcher;
-})(feng3d || (feng3d = {}));
-var feng3dBeat;
-(function (feng3dBeat) {
-    /**
      *
      * @author cdz 2015-10-31
      */
@@ -1711,9 +1044,9 @@ var feng3dBeat;
         /** 鼠标检测心跳 */
         HeartBeatEvent.MOUSE_CHECK_BEAT = "MouseCheckBeat";
         return HeartBeatEvent;
-    }(Event));
-    feng3dBeat.HeartBeatEvent = HeartBeatEvent;
-})(feng3dBeat || (feng3dBeat = {}));
+    }(feng3d.Event));
+    feng3d.HeartBeatEvent = HeartBeatEvent;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -1777,8 +1110,8 @@ var feng3d;
         _super.call(this, type, data, bubbles, cancelable);
     }
 })(feng3d || (feng3d = {}));
-var feng3dBeat;
-(function (feng3dBeat) {
+var feng3d;
+(function (feng3d) {
     /**
      *
      * @author cdz 2015-10-31
@@ -1801,15 +1134,15 @@ var feng3dBeat;
         /** 停止所有心跳 */
         HeartBeatModuleEvent.RESUME_ALL_BEAT = "resumeAllBeat";
         return HeartBeatModuleEvent;
-    }(Event));
-    feng3dBeat.HeartBeatModuleEvent = HeartBeatModuleEvent;
+    }(feng3d.Event));
+    feng3d.HeartBeatModuleEvent = HeartBeatModuleEvent;
     null, bubbles;
     boolean = false, cancelable;
     boolean = false;
     {
         _super.call(this, type, data, bubbles, cancelable);
     }
-})(feng3dBeat || (feng3dBeat = {}));
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -26819,7 +26152,7 @@ var feng3d;
         AGALProgram3DCache.prototype.getFragmentByteCode = function (fragmentCode) {
             var noCommentCode = this.filterComment(fragmentCode);
             return shaderByteCodeDic[fragmentCode] || ;
-            new feng3d.AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
+            new AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
         };
         /**
          * 获取顶点渲染二进制
@@ -26829,7 +26162,7 @@ var feng3d;
         AGALProgram3DCache.prototype.getVertexByteCode = function (vertexCode) {
             var noCommentCode = this.filterComment(vertexCode);
             return shaderByteCodeDic[vertexCode] || ;
-            new feng3d.AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
+            new AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
         };
         /**
          * 过滤代码中的注释

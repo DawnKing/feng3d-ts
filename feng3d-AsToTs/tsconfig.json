@@ -21,7 +21,13 @@
     },
     "files": [ //注：如果有继承关系的，父类必须排在子类前面
         "src/me/feng3d/Feng3D.ts",
-        "src/com/adobe/utils/AGALMiniAssembler.ts",
+        //
+        "src/me/feng/events/base/Event.ts",
+        "src/me/feng/events/base/EventDispatcher.ts",
+        "src/me/feng/events/base/IEventDispatcher.ts",
+        //
+        "src/me/feng/sys/SystemTicker.ts",
+        //
         "src/com/cdz/heartBeat/BeatBase.ts",
         "src/com/cdz/heartBeat/HeartBeat.ts",
         "src/logger.ts",
@@ -40,9 +46,6 @@
         "src/me/feng/error/AbstractMethodError.ts",
         "src/me/feng/events/heartBeat/HeartBeatModuleData.ts",
         "src/me/feng/events/task/TaskModuleEventRegisterData.ts",
-        "src/me/feng/events/base/Event.ts",
-        "src/me/feng/events/base/EventDispatcher.ts",
-        "src/me/feng/events/base/IEventDispatcher.ts",
         "src/com/cdz/heartBeat/HeartBeatEvent.ts",
         "src/me/feng/component/event/ComponentEvent.ts",
         "src/me/feng/events/FErrorEvent.ts",

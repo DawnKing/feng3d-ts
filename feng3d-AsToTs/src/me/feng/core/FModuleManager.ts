@@ -12,7 +12,7 @@ module feng3d
 		/**
 		 * 全局事件
 		 */
-		protected static dispatcher:GlobalDispatcher = GlobalDispatcher.instance;
+		protected dispatcher:GlobalDispatcher = GlobalDispatcher.instance;
 
 		/**
 		 * 创建一个模块
