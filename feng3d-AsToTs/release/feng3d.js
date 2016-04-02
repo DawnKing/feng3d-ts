@@ -74,7 +74,6 @@ var feng3d;
             this._agalcode = null;
             this._error = "";
             this.debugEnabled = false;
-            this.boolean = false;
             this.verbose = false;
             this.debugEnabled = debugging;
             if (!initialized)
@@ -477,7 +476,7 @@ var feng3d;
         //	Constants
         // ----------------------------------------------------------------------				
         AGALMiniAssembler.REGEXP_OUTER_SPACES = /^\s+|\s+$/g;
-        AGALMiniAssembler.var = initialized;
+        AGALMiniAssembler.initialized = false;
         // ======================================================================
         //	Constants
         // ----------------------------------------------------------------------
@@ -804,17 +803,15 @@ var feng3dBeat;
     var HeartBeat = (function () {
         function HeartBeat() {
         }
-        HeartBeat.var = heartBeatManager;
         /**
          * 初始化模块
          */
-        HeartBeat.function = init();
+        HeartBeat.init = function () {
+            HeartBeat.heartBeatManager || (HeartBeat.heartBeatManager = new feng3dBeat.HeartBeatManager());
+        };
         return HeartBeat;
     }());
     feng3dBeat.HeartBeat = HeartBeat;
-    {
-        heartBeatManager || (heartBeatManager = new feng3dBeat.HeartBeatManager());
-    }
 })(feng3dBeat || (feng3dBeat = {}));
 var feng3d;
 (function (feng3d) {
@@ -1316,7 +1313,6 @@ var feng3d;
          * 无法直接实例化
          */
         function Enum() {
-            this.Dictionary = new Dictionary();
             this.className = getQualifiedClassName(this);
             this.type = this.className.split("::").pop();
             //获取枚举的值
@@ -1339,7 +1335,7 @@ var feng3d;
         /**
          * 枚举计数字典
          */
-        Enum.var = autoIndexDic;
+        Enum.autoIndexDic = new Dictionary();
         return Enum;
     }());
     feng3d.Enum = Enum;
@@ -1393,23 +1389,22 @@ var feng3d;
          * 核查可能存在的创建抽象类错误
          * @param obj			用来检测的对象
          */
-        AbstractClassError.function = check(obj, Object);
+        AbstractClassError.check = function (obj) {
+            var className = getQualifiedClassName(obj);
+            //通过抽象类获取 完全限定类名
+            var error = new AbstractClassError("无法直接实例化抽象类" + className);
+            var stackTrace = error.getStackTrace();
+            var classLine = stackTrace.split("\n")[2];
+            var className0 = classLine.substring(classLine.indexOf("at") + 2, classLine.indexOf("("));
+            className0 = className0.replace(/\s/g, "");
+            //判断是否实例化抽象类
+            if (className == className0) {
+                throw error;
+            }
+        };
         return AbstractClassError;
     }(Error));
     feng3d.AbstractClassError = AbstractClassError;
-    {
-        var className = getQualifiedClassName(obj);
-        //通过抽象类获取 完全限定类名
-        var error = new AbstractClassError("无法直接实例化抽象类" + className);
-        var stackTrace = error.getStackTrace();
-        var classLine = stackTrace.split("\n")[2];
-        var className0 = classLine.substring(classLine.indexOf("at") + 2, classLine.indexOf("("));
-        className0 = className0.replace(/\s/g, "");
-        //判断是否实例化抽象类
-        if (className == className0) {
-            throw error;
-        }
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -1527,8 +1522,11 @@ var feng3dBeat;
      */
     var HeartBeatEvent = (function (_super) {
         __extends(HeartBeatEvent, _super);
-        function HeartBeatEvent() {
-            _super.apply(this, arguments);
+        function HeartBeatEvent(type, data, bubbles, cancelable) {
+            if (data === void 0) { data = null; }
+            if (bubbles === void 0) { bubbles = false; }
+            if (cancelable === void 0) { cancelable = false; }
+            _super.call(this, type, data, bubbles, cancelable);
         }
         /** 渲染心跳 */
         HeartBeatEvent.RENDER_BEAT = "renderBeat";
@@ -1543,12 +1541,6 @@ var feng3dBeat;
         return HeartBeatEvent;
     }(FEvent));
     feng3dBeat.HeartBeatEvent = HeartBeatEvent;
-    null, bubbles;
-    boolean = false, cancelable;
-    boolean = false;
-    {
-        _super.call(this, type, data, bubbles, cancelable);
-    }
 })(feng3dBeat || (feng3dBeat = {}));
 var feng3d;
 (function (feng3d) {
@@ -2166,12 +2158,11 @@ var feng3d;
         __extends(MaterialEvent, _super);
         function MaterialEvent() {
             _super.apply(this, arguments);
-            this.string = "passRemoved";
         }
         /** 添加pass */
         MaterialEvent.PASS_ADDED = "passAdded";
         /** 移除pass */
-        MaterialEvent.var = PASS_REMOVED;
+        MaterialEvent.PASS_REMOVED = "passRemoved";
         return MaterialEvent;
     }(feng3d.FEvent));
     feng3d.MaterialEvent = MaterialEvent;
@@ -3327,14 +3318,6 @@ var feng3d;
          */
         function ParticleNodeBase(animationName, mode, dataLength, priority) {
             if (priority === void 0) { priority = 1; }
-            this.Object = {
-                0: GLOBAL,
-                1: LOCAL_STATIC,
-                2: LOCAL_DYNAMIC //
-            };
-            this.string = 'Global';
-            this.string = 'LocalStatic';
-            this.string = 'LocalDynamic';
             this._dataLength = 3;
             this.name = animationName + MODES[mode];
             this._mode = mode;
@@ -3425,11 +3408,15 @@ var feng3d;
         ParticleNodeBase.prototype.setRenderState = function (renderable, camera) {
         };
         /** 模式列表 */
-        ParticleNodeBase.var = MODES;
+        ParticleNodeBase.MODES = {
+            0: GLOBAL,
+            1: LOCAL_STATIC,
+            2: LOCAL_DYNAMIC //
+        };
         //模式名称
-        ParticleNodeBase.var = GLOBAL;
-        ParticleNodeBase.var = LOCAL_STATIC;
-        ParticleNodeBase.var = LOCAL_DYNAMIC;
+        ParticleNodeBase.GLOBAL = 'Global';
+        ParticleNodeBase.LOCAL_STATIC = 'LocalStatic';
+        ParticleNodeBase.LOCAL_DYNAMIC = 'LocalDynamic';
         return ParticleNodeBase;
     }(feng3d.AnimationNodeBase));
     feng3d.ParticleNodeBase = ParticleNodeBase;
@@ -12040,8 +12027,6 @@ var feng3d;
             this._spriteMatrix.recompose(comps);
             return this._spriteMatrix;
         };
-        // TODO: Replace with CompactSubGeometry
-        Sprite3D.var = _sprite3DGeometry;
         return Sprite3D;
     }(feng3d.Mesh));
     feng3d.Sprite3D = Sprite3D;
@@ -17400,7 +17385,6 @@ var feng3d;
              * 阴影颜色
              */
             this.shadowColorCommonsData = new number[](4);
-            this.number = 50;
             /**
              * @inheritDoc
              */
@@ -17468,7 +17452,7 @@ var feng3d;
             //上传程序
             programBuffer.update(result.vertexCode, result.fragmentCode);
         };
-        PlanarShadowPass.var = groundY;
+        PlanarShadowPass.groundY = 50;
         return PlanarShadowPass;
     }(feng3d.MaterialPassBase));
     feng3d.PlanarShadowPass = PlanarShadowPass;
@@ -19739,79 +19723,80 @@ var feng3d;
          */
         function ImageParser() {
             _super.call(this, feng3d.ParserDataFormat.BINARY);
+            /**
+             * @inheritDoc
+             */
+            this.override = function proceedParsing() {
+                var asset =  * ;
+                if (_data)
+                    is;
+                Bitmap;
+                {
+                    asset = new feng3d.BitmapTexture(Bitmap(_data).bitmapData);
+                    finalizeAsset(asset, this._fileName);
+                    return PARSING_DONE;
+                }
+                if (_data)
+                    is;
+                BitmapData;
+                {
+                    asset = new feng3d.BitmapTexture(_data);
+                    finalizeAsset(asset, this._fileName);
+                    return PARSING_DONE;
+                }
+                return this._doneParsing;
+            };
         }
         /**
          * Indicates whether or not a given file extension is supported by the parser.
          * @param extension The file extension of a potential file to be parsed.
          * @return Whether or not the given file type is supported.
          */
-        ImageParser.function = supportsType(extension, string);
+        ImageParser.supportsType = function (extension) {
+            extension = extension.toLowerCase();
+            return extension == "jpg" || extension == "jpeg" || extension == "png" || extension == "gif" || extension == "bmp" || extension == "atf";
+        };
+        /**
+         * Tests whether a data block can be parsed by the parser.
+         * @param data The data block to potentially be parsed.
+         * @return Whether or not the given data is supported.
+         */
+        ImageParser.supportsData = function (data) {
+            if (data === void 0) { data =  * ; }
+            //shortcut if asset is IFlexAsset
+            if (data)
+                is;
+            Bitmap;
+            return true;
+            if (data)
+                is;
+            BitmapData;
+            return true;
+            if (!(data))
+                is;
+            ByteArray;
+            return false;
+            var ba = data;
+            ba.position = 0;
+            if (ba.readUnsignedShort() == 0xffd8)
+                return true; // JPEG, maybe check for "JFIF" as well?
+            ba.position = 0;
+            if (ba.readShort() == 0x424D)
+                return true; // BMP
+            ba.position = 1;
+            if (ba.readUTFBytes(3) == 'PNG')
+                return true;
+            ba.position = 0;
+            if (ba.readUTFBytes(3) == 'GIF' && ba.readShort() == 0x3839 && ba.readByte() == 0x61)
+                return true;
+            ba.position = 0;
+            if (ba.readUTFBytes(3) == 'ATF')
+                return true;
+            return false;
+        };
         return ImageParser;
     }(feng3d.ParserBase));
     feng3d.ImageParser = ImageParser;
-    {
-        extension = extension.toLowerCase();
-        return extension == "jpg" || extension == "jpeg" || extension == "png" || extension == "gif" || extension == "bmp" || extension == "atf";
-    }
-    /**
-     * Tests whether a data block can be parsed by the parser.
-     * @param data The data block to potentially be parsed.
-     * @return Whether or not the given data is supported.
-     */
-    function supportsData(data) {
-        if (data === void 0) { data =  * ; }
-        //shortcut if asset is IFlexAsset
-        if (data)
-            is;
-        Bitmap;
-        return true;
-        if (data)
-            is;
-        BitmapData;
-        return true;
-        if (!(data))
-            is;
-        ByteArray;
-        return false;
-        var ba = data;
-        ba.position = 0;
-        if (ba.readUnsignedShort() == 0xffd8)
-            return true; // JPEG, maybe check for "JFIF" as well?
-        ba.position = 0;
-        if (ba.readShort() == 0x424D)
-            return true; // BMP
-        ba.position = 1;
-        if (ba.readUTFBytes(3) == 'PNG')
-            return true;
-        ba.position = 0;
-        if (ba.readUTFBytes(3) == 'GIF' && ba.readShort() == 0x3839 && ba.readByte() == 0x61)
-            return true;
-        ba.position = 0;
-        if (ba.readUTFBytes(3) == 'ATF')
-            return true;
-        return false;
-    }
-    override;
-    function proceedParsing() {
-        var asset =  * ;
-        if (_data)
-            is;
-        Bitmap;
-        {
-            asset = new feng3d.BitmapTexture(Bitmap(_data).bitmapData);
-            finalizeAsset(asset, this._fileName);
-            return PARSING_DONE;
-        }
-        if (_data)
-            is;
-        BitmapData;
-        {
-            asset = new feng3d.BitmapTexture(_data);
-            finalizeAsset(asset, this._fileName);
-            return PARSING_DONE;
-        }
-        return this._doneParsing;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -19829,6 +19814,71 @@ var feng3d;
             if (additionalRotationAxis === void 0) { additionalRotationAxis = null; }
             if (additionalRotationRadians === void 0) { additionalRotationRadians = 0; }
             _super.call(this, feng3d.ParserDataFormat.PLAIN_TEXT);
+            this.override = function proceedParsing() {
+                var token;
+                if (!this._startedParsing) {
+                    this._textData = getTextData();
+                    this._startedParsing = true;
+                }
+                while (hasTime()) {
+                    token = this.getNextToken();
+                    switch (token) {
+                        case COMMENT_TOKEN:
+                            this.ignoreLine();
+                            break;
+                        case "":
+                            // can occur at the end of a file
+                            break;
+                        case VERSION_TOKEN:
+                            this._version = this.getNextInt();
+                            if (this._version != 10)
+                                throw new Error("Unknown version number encountered!");
+                            break;
+                        case COMMAND_LINE_TOKEN:
+                            this.parseCMD();
+                            break;
+                        case NUM_FRAMES_TOKEN:
+                            this._numFrames = this.getNextInt();
+                            this._bounds = new BoundsData[]();
+                            this._frameData = new FrameData[]();
+                            break;
+                        case NUM_JOINTS_TOKEN:
+                            this._numJoints = this.getNextInt();
+                            this._hierarchy = new HierarchyData[](this._numJoints, true);
+                            this._baseFrameData = new BaseFrameData[](this._numJoints, true);
+                            break;
+                        case FRAME_RATE_TOKEN:
+                            this._frameRate = this.getNextInt();
+                            break;
+                        case NUM_ANIMATED_COMPONENTS_TOKEN:
+                            this._numAnimatedComponents = this.getNextInt();
+                            break;
+                        case HIERARCHY_TOKEN:
+                            this.parseHierarchy();
+                            break;
+                        case BOUNDS_TOKEN:
+                            this.parseBounds();
+                            break;
+                        case BASE_FRAME_TOKEN:
+                            this.parseBaseFrame();
+                            break;
+                        case FRAME_TOKEN:
+                            this.parseFrame();
+                            break;
+                        default:
+                            if (!this._reachedEOF)
+                                this.sendUnknownKeywordError();
+                    }
+                    //解析出 骨骼动画数据
+                    if (this._reachedEOF) {
+                        this._clip = new feng3d.SkeletonClipNode();
+                        this.translateClip();
+                        finalizeAsset(this._clip);
+                        return feng3d.ParserBase.PARSING_DONE;
+                    }
+                }
+                return feng3d.ParserBase.MORE_TO_PARSE;
+            };
             //初始化旋转四元素
             this._rotationQuat = new Quaternion();
             var t1 = new Quaternion();
@@ -19842,6 +19892,380 @@ var feng3d;
                 this._rotationQuat.multiply(t1, this._rotationQuat);
             }
         }
+        /**
+         * 判断是否支持解析
+         * @param extension 文件类型
+         * @return
+         */
+        MD5AnimParser.supportsType = function (extension) {
+            extension = extension.toLowerCase();
+            return extension == "md5anim";
+        };
+        /**
+         * 判断是否支持该数据的解析
+         * @param data 需要解析的数据
+         * @return
+         */
+        MD5AnimParser.supportsData = function (data) {
+            if (data === void 0) { data =  * ; }
+            data = data;
+            return false;
+        };
+        /**
+         * 收集所有的关键帧数据
+         */
+        MD5AnimParser.prototype.translateClip = function () {
+            for (var i = 0; i < this._numFrames; ++i)
+                this._clip.addFrame(this.translatePose(this._frameData[i]), 1000 / this._frameRate);
+        };
+        /**
+         * 将一个关键帧数据转换为SkeletonPose
+         * @param frameData 帧数据
+         * @return 包含帧数据的SkeletonPose对象
+         */
+        MD5AnimParser.prototype.translatePose = function (frameData) {
+            var hierarchy;
+            var pose;
+            var base;
+            var flags;
+            var j;
+            //偏移量
+            var translate = new Vector3D();
+            //旋转四元素
+            var orientation = new Quaternion();
+            var components = frameData.components;
+            //骨骼pose数据
+            var skelPose = new feng3d.SkeletonPose();
+            //骨骼pose列表
+            var jointPoses = skelPose.jointPoses;
+            for (var i = 0; i < this._numJoints; ++i) {
+                //通过原始帧数据与层级数据计算出当前骨骼pose数据
+                j = 0;
+                //层级数据
+                hierarchy = this._hierarchy[i];
+                //基础帧数据
+                base = this._baseFrameData[i];
+                //层级标记
+                flags = hierarchy.flags;
+                translate.x = base.position.x;
+                translate.y = base.position.y;
+                translate.z = base.position.z;
+                orientation.x = base.orientation.x;
+                orientation.y = base.orientation.y;
+                orientation.z = base.orientation.z;
+                //调整位移与角度数据
+                if (flags & 1)
+                    translate.x = components[hierarchy.startIndex + (j++)];
+                if (flags & 2)
+                    translate.y = components[hierarchy.startIndex + (j++)];
+                if (flags & 4)
+                    translate.z = components[hierarchy.startIndex + (j++)];
+                if (flags & 8)
+                    orientation.x = components[hierarchy.startIndex + (j++)];
+                if (flags & 16)
+                    orientation.y = components[hierarchy.startIndex + (j++)];
+                if (flags & 32)
+                    orientation.z = components[hierarchy.startIndex + (j++)];
+                //计算四元素w值
+                var w = 1 - orientation.x * orientation.x - orientation.y * orientation.y - orientation.z * orientation.z;
+                orientation.w = w < 0 ? 0 : -Math.sqrt(w);
+                //创建关节pose数据
+                pose = new feng3d.JointPose();
+                if (hierarchy.parentIndex < 0) {
+                    pose.orientation.multiply(this._rotationQuat, orientation);
+                    pose.translation = this._rotationQuat.rotatePoint(translate);
+                }
+                else {
+                    pose.orientation.copyFrom(orientation);
+                    pose.translation.x = translate.x;
+                    pose.translation.y = translate.y;
+                    pose.translation.z = translate.z;
+                }
+                pose.orientation.y = -pose.orientation.y;
+                pose.orientation.z = -pose.orientation.z;
+                pose.translation.x = -pose.translation.x;
+                jointPoses[i] = pose;
+            }
+            return skelPose;
+        };
+        /**
+         * 解析骨骼的层级数据
+         */
+        MD5AnimParser.prototype.parseHierarchy = function () {
+            var ch;
+            var data;
+            var token = this.getNextToken();
+            var i = 0;
+            if (token != "{")
+                this.sendUnknownKeywordError();
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                data = new HierarchyData();
+                data.name = this.parseLiteralString();
+                data.parentIndex = this.getNextInt();
+                data.flags = this.getNextInt();
+                data.startIndex = this.getNextInt();
+                this._hierarchy[i++] = data;
+                ch = this.getNextChar();
+                if (ch == "/") {
+                    this.putBack();
+                    ch = this.getNextToken();
+                    if (ch == COMMENT_TOKEN)
+                        this.ignoreLine();
+                    ch = this.getNextChar();
+                }
+                if (ch != "}")
+                    this.putBack();
+            } while (ch != "}");
+        };
+        /**
+         * 解析帧边界
+         */
+        MD5AnimParser.prototype.parseBounds = function () {
+            var ch;
+            var data;
+            var token = this.getNextToken();
+            var i = 0;
+            if (token != "{")
+                this.sendUnknownKeywordError();
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                data = new BoundsData();
+                data.min = this.parseVector3D();
+                data.max = this.parseVector3D();
+                this._bounds[i++] = data;
+                ch = this.getNextChar();
+                if (ch == "/") {
+                    this.putBack();
+                    ch = this.getNextToken();
+                    if (ch == COMMENT_TOKEN)
+                        this.ignoreLine();
+                    ch = this.getNextChar();
+                }
+                if (ch != "}")
+                    this.putBack();
+            } while (ch != "}");
+        };
+        /**
+         * 解析基础帧
+         */
+        MD5AnimParser.prototype.parseBaseFrame = function () {
+            var ch;
+            var data;
+            var token = this.getNextToken();
+            var i = 0;
+            if (token != "{")
+                this.sendUnknownKeywordError();
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                data = new BaseFrameData();
+                data.position = this.parseVector3D();
+                data.orientation = this.parseQuaternion();
+                this._baseFrameData[i++] = data;
+                ch = this.getNextChar();
+                if (ch == "/") {
+                    this.putBack();
+                    ch = this.getNextToken();
+                    if (ch == COMMENT_TOKEN)
+                        this.ignoreLine();
+                    ch = this.getNextChar();
+                }
+                if (ch != "}")
+                    this.putBack();
+            } while (ch != "}");
+        };
+        /**
+         * 解析帧
+         */
+        MD5AnimParser.prototype.parseFrame = function () {
+            var ch;
+            var data;
+            var token;
+            var frameIndex;
+            frameIndex = this.getNextInt();
+            token = this.getNextToken();
+            if (token != "{")
+                this.sendUnknownKeywordError();
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                data = new FrameData();
+                data.components = new number[](this._numAnimatedComponents, true);
+                for (var i = 0; i < this._numAnimatedComponents; ++i)
+                    data.components[i] = this.getNextNumber();
+                this._frameData[frameIndex] = data;
+                ch = this.getNextChar();
+                if (ch == "/") {
+                    this.putBack();
+                    ch = this.getNextToken();
+                    if (ch == COMMENT_TOKEN)
+                        this.ignoreLine();
+                    ch = this.getNextChar();
+                }
+                if (ch != "}")
+                    this.putBack();
+            } while (ch != "}");
+        };
+        /**
+         * 返回到上个字符位置
+         */
+        MD5AnimParser.prototype.putBack = function () {
+            this._parseIndex--;
+            this._charLineIndex--;
+            this._reachedEOF = this._parseIndex >= this._textData.length;
+        };
+        /**
+         * 获取下个关键字
+         */
+        MD5AnimParser.prototype.getNextToken = function () {
+            var ch;
+            var token = "";
+            while (!this._reachedEOF) {
+                ch = this.getNextChar();
+                if (ch == " " || ch == "\r" || ch == "\n" || ch == "\t") {
+                    if (token != COMMENT_TOKEN)
+                        this.skipWhiteSpace();
+                    if (token != "")
+                        return token;
+                }
+                else
+                    token += ch;
+                if (token == COMMENT_TOKEN)
+                    return token;
+            }
+            return token;
+        };
+        /**
+         * 跳过空白
+         */
+        MD5AnimParser.prototype.skipWhiteSpace = function () {
+            var ch;
+            do
+                ch = this.getNextChar();
+            while (ch == "\n" || ch == " " || ch == "\r" || ch == "\t");
+            this.putBack();
+        };
+        /**
+         * 忽略该行
+         */
+        MD5AnimParser.prototype.ignoreLine = function () {
+            var ch;
+            while (!this._reachedEOF && ch != "\n")
+                ch = this.getNextChar();
+        };
+        /**
+         * 读取下个字符
+         */
+        MD5AnimParser.prototype.getNextChar = function () {
+            var ch = this._textData.charAt(this._parseIndex++);
+            if (ch == "\n") {
+                ++this._line;
+                this._charLineIndex = 0;
+            }
+            else if (ch != "\r")
+                ++this._charLineIndex;
+            if (this._parseIndex == this._textData.length)
+                this._reachedEOF = true;
+            return ch;
+        };
+        /**
+         * 读取下个number
+         */
+        MD5AnimParser.prototype.getNextInt = function () {
+            var i = parseInt(this.getNextToken());
+            if (isNaN(i))
+                this.sendParseError("number type");
+            return i;
+        };
+        /**
+         * 读取下个number
+         */
+        MD5AnimParser.prototype.getNextNumber = function () {
+            var f = parseFloat(this.getNextToken());
+            if (isNaN(f))
+                this.sendParseError("float type");
+            return f;
+        };
+        /**
+         * 解析3d向量
+         */
+        MD5AnimParser.prototype.parseVector3D = function () {
+            var vec = new Vector3D();
+            var ch = this.getNextToken();
+            if (ch != "(")
+                this.sendParseError("(");
+            vec.x = this.getNextNumber();
+            vec.y = this.getNextNumber();
+            vec.z = this.getNextNumber();
+            if (this.getNextToken() != ")")
+                this.sendParseError(")");
+            return vec;
+        };
+        /**
+         * 解析四元素
+         */
+        MD5AnimParser.prototype.parseQuaternion = function () {
+            var quat = new Quaternion();
+            var ch = this.getNextToken();
+            if (ch != "(")
+                this.sendParseError("(");
+            quat.x = this.getNextNumber();
+            quat.y = this.getNextNumber();
+            quat.z = this.getNextNumber();
+            // quat supposed to be unit length
+            var t = 1 - (quat.x * quat.x) - (quat.y * quat.y) - (quat.z * quat.z);
+            quat.w = t < 0 ? 0 : -Math.sqrt(t);
+            if (this.getNextToken() != ")")
+                this.sendParseError(")");
+            return quat;
+        };
+        /**
+         * 解析命令行数据
+         */
+        MD5AnimParser.prototype.parseCMD = function () {
+            // just ignore the command line property
+            this.parseLiteralString();
+        };
+        /**
+         * 解析带双引号的字符串
+         */
+        MD5AnimParser.prototype.parseLiteralString = function () {
+            this.skipWhiteSpace();
+            var ch = this.getNextChar();
+            var str = "";
+            if (ch != "\"")
+                this.sendParseError("\"");
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                ch = this.getNextChar();
+                if (ch != "\"")
+                    str += ch;
+            } while (ch != "\"");
+            return str;
+        };
+        /**
+         * 抛出一个文件尾过早结束文件时遇到错误
+         */
+        MD5AnimParser.prototype.sendEOFError = function () {
+            throw new Error("Unexpected end of file");
+        };
+        /**
+         * 遇到了一个意想不到的令牌时将抛出一个错误。
+         * @param expected 发生错误的标记
+         */
+        MD5AnimParser.prototype.sendParseError = function (expected) {
+            throw new Error("Unexpected token at line " + (this._line + 1) + ", character " + this._charLineIndex + ". " + expected + " expected, but " + this._textData.charAt(this._parseIndex - 1) + " encountered");
+        };
+        /**
+         * 发生未知关键字错误
+         */
+        MD5AnimParser.prototype.sendUnknownKeywordError = function () {
+            throw new Error("Unknown keyword at line " + (this._line + 1) + ", character " + this._charLineIndex + ". ");
+        };
         //md5anim文件关键字
         MD5AnimParser.VERSION_TOKEN = "MD5Version";
         MD5AnimParser.COMMAND_LINE_TOKEN = "commandline";
@@ -19854,415 +20278,9 @@ var feng3d;
         MD5AnimParser.BASE_FRAME_TOKEN = "baseframe";
         MD5AnimParser.FRAME_TOKEN = "frame";
         MD5AnimParser.COMMENT_TOKEN = "//";
-        /**
-         * 判断是否支持解析
-         * @param extension 文件类型
-         * @return
-         */
-        MD5AnimParser.function = supportsType(extension, string);
         return MD5AnimParser;
     }(feng3d.ParserBase));
     feng3d.MD5AnimParser = MD5AnimParser;
-    {
-        extension = extension.toLowerCase();
-        return extension == "md5anim";
-    }
-    /**
-     * 判断是否支持该数据的解析
-     * @param data 需要解析的数据
-     * @return
-     */
-    function supportsData(data) {
-        if (data === void 0) { data =  * ; }
-        data = data;
-        return false;
-    }
-    override;
-    function proceedParsing() {
-        var token;
-        if (!this._startedParsing) {
-            this._textData = getTextData();
-            this._startedParsing = true;
-        }
-        while (hasTime()) {
-            token = this.getNextToken();
-            switch (token) {
-                case COMMENT_TOKEN:
-                    this.ignoreLine();
-                    break;
-                case "":
-                    // can occur at the end of a file
-                    break;
-                case VERSION_TOKEN:
-                    this._version = this.getNextInt();
-                    if (this._version != 10)
-                        throw new Error("Unknown version number encountered!");
-                    break;
-                case COMMAND_LINE_TOKEN:
-                    this.parseCMD();
-                    break;
-                case NUM_FRAMES_TOKEN:
-                    this._numFrames = this.getNextInt();
-                    this._bounds = new BoundsData[]();
-                    this._frameData = new FrameData[]();
-                    break;
-                case NUM_JOINTS_TOKEN:
-                    this._numJoints = this.getNextInt();
-                    this._hierarchy = new HierarchyData[](this._numJoints, true);
-                    this._baseFrameData = new BaseFrameData[](this._numJoints, true);
-                    break;
-                case FRAME_RATE_TOKEN:
-                    this._frameRate = this.getNextInt();
-                    break;
-                case NUM_ANIMATED_COMPONENTS_TOKEN:
-                    this._numAnimatedComponents = this.getNextInt();
-                    break;
-                case HIERARCHY_TOKEN:
-                    this.parseHierarchy();
-                    break;
-                case BOUNDS_TOKEN:
-                    this.parseBounds();
-                    break;
-                case BASE_FRAME_TOKEN:
-                    this.parseBaseFrame();
-                    break;
-                case FRAME_TOKEN:
-                    this.parseFrame();
-                    break;
-                default:
-                    if (!this._reachedEOF)
-                        this.sendUnknownKeywordError();
-            }
-            //解析出 骨骼动画数据
-            if (this._reachedEOF) {
-                this._clip = new feng3d.SkeletonClipNode();
-                this.translateClip();
-                finalizeAsset(this._clip);
-                return feng3d.ParserBase.PARSING_DONE;
-            }
-        }
-        return feng3d.ParserBase.MORE_TO_PARSE;
-    }
-    translateClip();
-    {
-        for (var i = 0; i < this._numFrames; ++i)
-            this._clip.addFrame(this.translatePose(this._frameData[i]), 1000 / this._frameRate);
-    }
-    translatePose(frameData, FrameData);
-    feng3d.SkeletonPose;
-    {
-        var hierarchy;
-        var pose;
-        var base;
-        var flags;
-        var j;
-        //偏移量
-        var translate = new Vector3D();
-        //旋转四元素
-        var orientation = new Quaternion();
-        var components = frameData.components;
-        //骨骼pose数据
-        var skelPose = new feng3d.SkeletonPose();
-        //骨骼pose列表
-        var jointPoses = skelPose.jointPoses;
-        for (var i = 0; i < this._numJoints; ++i) {
-            //通过原始帧数据与层级数据计算出当前骨骼pose数据
-            j = 0;
-            //层级数据
-            hierarchy = this._hierarchy[i];
-            //基础帧数据
-            base = this._baseFrameData[i];
-            //层级标记
-            flags = hierarchy.flags;
-            translate.x = base.position.x;
-            translate.y = base.position.y;
-            translate.z = base.position.z;
-            orientation.x = base.orientation.x;
-            orientation.y = base.orientation.y;
-            orientation.z = base.orientation.z;
-            //调整位移与角度数据
-            if (flags & 1)
-                translate.x = components[hierarchy.startIndex + (j++)];
-            if (flags & 2)
-                translate.y = components[hierarchy.startIndex + (j++)];
-            if (flags & 4)
-                translate.z = components[hierarchy.startIndex + (j++)];
-            if (flags & 8)
-                orientation.x = components[hierarchy.startIndex + (j++)];
-            if (flags & 16)
-                orientation.y = components[hierarchy.startIndex + (j++)];
-            if (flags & 32)
-                orientation.z = components[hierarchy.startIndex + (j++)];
-            //计算四元素w值
-            var w = 1 - orientation.x * orientation.x - orientation.y * orientation.y - orientation.z * orientation.z;
-            orientation.w = w < 0 ? 0 : -Math.sqrt(w);
-            //创建关节pose数据
-            pose = new feng3d.JointPose();
-            if (hierarchy.parentIndex < 0) {
-                pose.orientation.multiply(this._rotationQuat, orientation);
-                pose.translation = this._rotationQuat.rotatePoint(translate);
-            }
-            else {
-                pose.orientation.copyFrom(orientation);
-                pose.translation.x = translate.x;
-                pose.translation.y = translate.y;
-                pose.translation.z = translate.z;
-            }
-            pose.orientation.y = -pose.orientation.y;
-            pose.orientation.z = -pose.orientation.z;
-            pose.translation.x = -pose.translation.x;
-            jointPoses[i] = pose;
-        }
-        return skelPose;
-    }
-    parseHierarchy();
-    {
-        var ch;
-        var data;
-        var token = this.getNextToken();
-        var i = 0;
-        if (token != "{")
-            this.sendUnknownKeywordError();
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            data = new HierarchyData();
-            data.name = this.parseLiteralString();
-            data.parentIndex = this.getNextInt();
-            data.flags = this.getNextInt();
-            data.startIndex = this.getNextInt();
-            this._hierarchy[i++] = data;
-            ch = this.getNextChar();
-            if (ch == "/") {
-                this.putBack();
-                ch = this.getNextToken();
-                if (ch == COMMENT_TOKEN)
-                    this.ignoreLine();
-                ch = this.getNextChar();
-            }
-            if (ch != "}")
-                this.putBack();
-        } while (ch != "}");
-    }
-    parseBounds();
-    {
-        var ch;
-        var data;
-        var token = this.getNextToken();
-        var i = 0;
-        if (token != "{")
-            this.sendUnknownKeywordError();
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            data = new BoundsData();
-            data.min = this.parseVector3D();
-            data.max = this.parseVector3D();
-            this._bounds[i++] = data;
-            ch = this.getNextChar();
-            if (ch == "/") {
-                this.putBack();
-                ch = this.getNextToken();
-                if (ch == COMMENT_TOKEN)
-                    this.ignoreLine();
-                ch = this.getNextChar();
-            }
-            if (ch != "}")
-                this.putBack();
-        } while (ch != "}");
-    }
-    parseBaseFrame();
-    {
-        var ch;
-        var data;
-        var token = this.getNextToken();
-        var i = 0;
-        if (token != "{")
-            this.sendUnknownKeywordError();
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            data = new BaseFrameData();
-            data.position = this.parseVector3D();
-            data.orientation = this.parseQuaternion();
-            this._baseFrameData[i++] = data;
-            ch = this.getNextChar();
-            if (ch == "/") {
-                this.putBack();
-                ch = this.getNextToken();
-                if (ch == COMMENT_TOKEN)
-                    this.ignoreLine();
-                ch = this.getNextChar();
-            }
-            if (ch != "}")
-                this.putBack();
-        } while (ch != "}");
-    }
-    parseFrame();
-    {
-        var ch;
-        var data;
-        var token;
-        var frameIndex;
-        frameIndex = this.getNextInt();
-        token = this.getNextToken();
-        if (token != "{")
-            this.sendUnknownKeywordError();
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            data = new FrameData();
-            data.components = new number[](this._numAnimatedComponents, true);
-            for (var i = 0; i < this._numAnimatedComponents; ++i)
-                data.components[i] = this.getNextNumber();
-            this._frameData[frameIndex] = data;
-            ch = this.getNextChar();
-            if (ch == "/") {
-                this.putBack();
-                ch = this.getNextToken();
-                if (ch == COMMENT_TOKEN)
-                    this.ignoreLine();
-                ch = this.getNextChar();
-            }
-            if (ch != "}")
-                this.putBack();
-        } while (ch != "}");
-    }
-    putBack();
-    {
-        this._parseIndex--;
-        this._charLineIndex--;
-        this._reachedEOF = this._parseIndex >= this._textData.length;
-    }
-    getNextToken();
-    string;
-    {
-        var ch;
-        var token = "";
-        while (!this._reachedEOF) {
-            ch = this.getNextChar();
-            if (ch == " " || ch == "\r" || ch == "\n" || ch == "\t") {
-                if (token != COMMENT_TOKEN)
-                    this.skipWhiteSpace();
-                if (token != "")
-                    return token;
-            }
-            else
-                token += ch;
-            if (token == COMMENT_TOKEN)
-                return token;
-        }
-        return token;
-    }
-    skipWhiteSpace();
-    {
-        var ch;
-        do
-            ch = this.getNextChar();
-        while (ch == "\n" || ch == " " || ch == "\r" || ch == "\t");
-        this.putBack();
-    }
-    ignoreLine();
-    {
-        var ch;
-        while (!this._reachedEOF && ch != "\n")
-            ch = this.getNextChar();
-    }
-    getNextChar();
-    string;
-    {
-        var ch = this._textData.charAt(this._parseIndex++);
-        if (ch == "\n") {
-            ++this._line;
-            this._charLineIndex = 0;
-        }
-        else if (ch != "\r")
-            ++this._charLineIndex;
-        if (this._parseIndex == this._textData.length)
-            this._reachedEOF = true;
-        return ch;
-    }
-    getNextInt();
-    number;
-    {
-        var i = parseInt(this.getNextToken());
-        if (isNaN(i))
-            this.sendParseError("number type");
-        return i;
-    }
-    getNextNumber();
-    number;
-    {
-        var f = parseFloat(this.getNextToken());
-        if (isNaN(f))
-            this.sendParseError("float type");
-        return f;
-    }
-    parseVector3D();
-    Vector3D;
-    {
-        var vec = new Vector3D();
-        var ch = this.getNextToken();
-        if (ch != "(")
-            this.sendParseError("(");
-        vec.x = this.getNextNumber();
-        vec.y = this.getNextNumber();
-        vec.z = this.getNextNumber();
-        if (this.getNextToken() != ")")
-            this.sendParseError(")");
-        return vec;
-    }
-    parseQuaternion();
-    Quaternion;
-    {
-        var quat = new Quaternion();
-        var ch = this.getNextToken();
-        if (ch != "(")
-            this.sendParseError("(");
-        quat.x = this.getNextNumber();
-        quat.y = this.getNextNumber();
-        quat.z = this.getNextNumber();
-        // quat supposed to be unit length
-        var t = 1 - (quat.x * quat.x) - (quat.y * quat.y) - (quat.z * quat.z);
-        quat.w = t < 0 ? 0 : -Math.sqrt(t);
-        if (this.getNextToken() != ")")
-            this.sendParseError(")");
-        return quat;
-    }
-    parseCMD();
-    {
-        // just ignore the command line property
-        this.parseLiteralString();
-    }
-    parseLiteralString();
-    string;
-    {
-        this.skipWhiteSpace();
-        var ch = this.getNextChar();
-        var str = "";
-        if (ch != "\"")
-            this.sendParseError("\"");
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            ch = this.getNextChar();
-            if (ch != "\"")
-                str += ch;
-        } while (ch != "\"");
-        return str;
-    }
-    sendEOFError();
-    {
-        throw new Error("Unexpected end of file");
-    }
-    sendParseError(expected, string);
-    {
-        throw new Error("Unexpected token at line " + (this._line + 1) + ", character " + this._charLineIndex + ". " + expected + " expected, but " + this._textData.charAt(this._parseIndex - 1) + " encountered");
-    }
-    sendUnknownKeywordError();
-    {
-        throw new Error("Unknown keyword at line " + (this._line + 1) + ", character " + this._charLineIndex + ". ");
-    }
 })(feng3d || (feng3d = {}));
 /**
  * 层级数据
@@ -20318,6 +20336,63 @@ var feng3d;
             if (additionalRotationAxis === void 0) { additionalRotationAxis = null; }
             if (additionalRotationRadians === void 0) { additionalRotationRadians = 0; }
             _super.call(this, feng3d.ParserDataFormat.PLAIN_TEXT);
+            this.override = function proceedParsing() {
+                var token;
+                //标记开始解析
+                if (!this._startedParsing) {
+                    this._textData = getTextData();
+                    this._startedParsing = true;
+                }
+                while (hasTime()) {
+                    //获取关键字
+                    token = this.getNextToken();
+                    switch (token) {
+                        case COMMENT_TOKEN:
+                            this.ignoreLine();
+                            break;
+                        case VERSION_TOKEN:
+                            this._version = this.getNextInt();
+                            if (this._version != 10)
+                                throw new Error("Unknown version number encountered!");
+                            break;
+                        case COMMAND_LINE_TOKEN:
+                            this.parseCMD();
+                            break;
+                        case NUM_JOINTS_TOKEN:
+                            this._numJoints = this.getNextInt();
+                            this._bindPoses = new Matrix3D[](this._numJoints, true);
+                            break;
+                        case NUM_MESHES_TOKEN:
+                            this._numMeshes = this.getNextInt();
+                            break;
+                        case JOINTS_TOKEN:
+                            this.parseJoints();
+                            break;
+                        case MESH_TOKEN:
+                            this.parseMesh();
+                            break;
+                        default:
+                            if (!this._reachedEOF)
+                                this.sendUnknownKeywordError();
+                    }
+                    //解析结束后 生成引擎相关对象
+                    if (this._reachedEOF) {
+                        this.calculateMaxJointCount();
+                        this._animationSet = new feng3d.SkeletonAnimationSet(this._maxJointCount);
+                        //生成引擎所需网格对象
+                        var _mesh = new feng3d.Mesh(new feng3d.Geometry(), null);
+                        var _geometry = _mesh.geometry;
+                        for (var i = 0; i < this._meshData.length; ++i)
+                            _geometry.addSubGeometry(this.translateGeom(this._meshData[i].vertexData, this._meshData[i].weightData, this._meshData[i].indices));
+                        finalizeAsset(_geometry);
+                        finalizeAsset(_mesh);
+                        finalizeAsset(this._skeleton);
+                        finalizeAsset(this._animationSet);
+                        return feng3d.ParserBase.PARSING_DONE;
+                    }
+                }
+                return feng3d.ParserBase.MORE_TO_PARSE;
+            };
             //初始化 旋转四元素
             this._rotationQuat = new Quaternion();
             this._rotationQuat.fromAxisAngle(Vector3D.X_AXIS, -Math.PI * .5);
@@ -20327,6 +20402,450 @@ var feng3d;
                 this._rotationQuat.multiply(this._rotationQuat, quat);
             }
         }
+        /**
+         * 判断是否支持解析
+         * @param extension 文件类型
+         * @return
+         */
+        MD5MeshParser.supportsType = function (extension) {
+            extension = extension.toLowerCase();
+            return extension == "md5mesh";
+        };
+        /**
+         * 判断是否支持该数据的解析
+         * @param data 需要解析的数据
+         * @return
+         */
+        MD5MeshParser.supportsData = function (data) {
+            if (data === void 0) { data =  * ; }
+            data = data;
+            return false;
+        };
+        /**
+         * 计算最大关节数量
+         */
+        MD5MeshParser.prototype.calculateMaxJointCount = function () {
+            this._maxJointCount = 0;
+            //遍历所有的网格数据
+            var numMeshData = this._meshData.length;
+            for (var i = 0; i < numMeshData; ++i) {
+                var meshData = this._meshData[i];
+                var vertexData = meshData.vertexData;
+                var numVerts = vertexData.length;
+                //遍历每个顶点 寻找关节关联最大数量
+                for (var j = 0; j < numVerts; ++j) {
+                    var zeroWeights = this.countZeroWeightJoints(vertexData[j], meshData.weightData);
+                    var totalJoints = vertexData[j].countWeight - zeroWeights;
+                    if (totalJoints > this._maxJointCount)
+                        this._maxJointCount = totalJoints;
+                }
+            }
+        };
+        /**
+         * 计算0权重关节数量
+         * @param vertex 顶点数据
+         * @param weights 关节权重数组
+         * @return
+         */
+        MD5MeshParser.prototype.countZeroWeightJoints = function (vertex, weights) {
+            var start = vertex.startWeight;
+            var end = vertex.startWeight + vertex.countWeight;
+            var count = 0;
+            var weight;
+            for (var i = start; i < end; ++i) {
+                weight = weights[i].bias;
+                if (weight == 0)
+                    ++count;
+            }
+            return count;
+        };
+        /**
+         * 解析关节
+         */
+        MD5MeshParser.prototype.parseJoints = function () {
+            var ch;
+            var joint;
+            var pos;
+            var quat;
+            var i = 0;
+            var token = this.getNextToken();
+            if (token != "{")
+                this.sendUnknownKeywordError();
+            //解析骨骼数据
+            this._skeleton = new feng3d.Skeleton();
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                //解析骨骼关节数据
+                joint = new feng3d.SkeletonJoint();
+                joint.name = this.parseLiteralString();
+                joint.parentIndex = this.getNextInt();
+                //关节坐标
+                pos = this.parseVector3D();
+                pos = this._rotationQuat.rotatePoint(pos);
+                quat = this.parseQuaternion();
+                // 计算bindpose下该节点(关节)的真正变换矩阵
+                this._bindPoses[i] = quat.toMatrix3D();
+                this._bindPoses[i].appendTranslation(pos.x, pos.y, pos.z);
+                var inv = this._bindPoses[i].clone();
+                inv.invert();
+                joint.inverseBindPose = inv.rawData;
+                //收集关节数据
+                this._skeleton.joints[i++] = joint;
+                ch = this.getNextChar();
+                if (ch == "/") {
+                    this.putBack();
+                    ch = this.getNextToken();
+                    if (ch == COMMENT_TOKEN)
+                        this.ignoreLine();
+                    ch = this.getNextChar();
+                }
+                if (ch != "}")
+                    this.putBack();
+            } while (ch != "}");
+        };
+        /**
+         * 返回到上个字符位置
+         */
+        MD5MeshParser.prototype.putBack = function () {
+            this._parseIndex--;
+            this._charLineIndex--;
+            this._reachedEOF = this._parseIndex >= this._textData.length;
+        };
+        /**
+         * 解析网格几何体
+         */
+        MD5MeshParser.prototype.parseMesh = function () {
+            var token = this.getNextToken();
+            var ch;
+            var vertexData;
+            var weights;
+            var indices;
+            if (token != "{")
+                this.sendUnknownKeywordError();
+            this._shaders || ;
+            new string[]();
+            while (ch != "}") {
+                ch = this.getNextToken();
+                switch (ch) {
+                    case COMMENT_TOKEN:
+                        this.ignoreLine();
+                        break;
+                    case MESH_SHADER_TOKEN:
+                        //材质数据
+                        this._shaders.push(this.parseLiteralString());
+                        break;
+                    case MESH_NUM_VERTS_TOKEN:
+                        //顶点数据
+                        vertexData = new VertexData[](this.getNextInt(), true);
+                        break;
+                    case MESH_NUM_TRIS_TOKEN:
+                        //根据三角形个数 创建顶点数组
+                        indices = new number[](this.getNextInt() * 3, true);
+                        break;
+                    case MESH_NUM_WEIGHTS_TOKEN:
+                        //创建关节数据
+                        weights = new WeightData[](this.getNextInt(), true);
+                        break;
+                    case MESH_VERT_TOKEN:
+                        //解析一个顶点数据
+                        this.parseVertex(vertexData);
+                        break;
+                    case MESH_TRI_TOKEN:
+                        this.parseTri(indices);
+                        break;
+                    case MESH_WEIGHT_TOKEN:
+                        this.parseJoint(weights);
+                        break;
+                }
+            }
+            //保存网格数据
+            this._meshData || ;
+            new MeshData[]();
+            var i = this._meshData.length;
+            this._meshData[i] = new MeshData();
+            this._meshData[i].vertexData = vertexData;
+            this._meshData[i].weightData = weights;
+            this._meshData[i].indices = indices;
+        };
+        /**
+         * 转换网格数据为SkinnedSubGeometry实例
+         * @param vertexData 网格顶点数据
+         * @param weights 每个顶点的关节权重数据
+         * @param indices 顶点索引数据
+         * @return 包含所有几何体数据的SkinnedSubGeometry实例
+         */
+        MD5MeshParser.prototype.translateGeom = function (vertexData, weights, indices) {
+            var len = vertexData.length;
+            var v1, v2, v3;
+            var vertex;
+            var weight;
+            var bindPose;
+            var pos;
+            var subGeom = new feng3d.SubGeometry();
+            var skinnedsubGeom = new feng3d.SkinnedSubGeometry(this._maxJointCount);
+            subGeom.addComponent(skinnedsubGeom);
+            //uv数据
+            var uvs = new number[](len * 2, true);
+            //顶点位置数据
+            var vertices = new number[](len * 3, true);
+            //关节索引数据
+            var jointIndices = new number[](len * this._maxJointCount, true);
+            //关节权重数据
+            var jointWeights = new number[](len * this._maxJointCount, true);
+            var l;
+            //0权重个数
+            var nonZeroWeights;
+            for (var i = 0; i < len; ++i) {
+                vertex = vertexData[i];
+                v1 = vertex.index * 3;
+                v2 = v1 + 1;
+                v3 = v1 + 2;
+                vertices[v1] = vertices[v2] = vertices[v3] = 0;
+                /**
+                 * 参考 http://blog.csdn.net/summerhust/article/details/17421213
+                 * VertexPos = (MJ-0 * weight[index0].pos * weight[index0].bias) + ... + (MJ-N * weight[indexN].pos * weight[indexN].bias)
+                 * 变量对应 :
+                 * MJ-N -> bindPose; 第J个关节的变换矩阵
+                 * weight[indexN].pos -> weight.pos;
+                 * weight[indexN].bias -> weight.bias;
+                 */
+                nonZeroWeights = 0;
+                for (var j = 0; j < vertex.countWeight; ++j) {
+                    weight = weights[vertex.startWeight + j];
+                    if (weight.bias > 0) {
+                        bindPose = this._bindPoses[weight.joint];
+                        pos = bindPose.transformVector(weight.pos);
+                        vertices[v1] += pos.x * weight.bias;
+                        vertices[v2] += pos.y * weight.bias;
+                        vertices[v3] += pos.z * weight.bias;
+                        // indices need to be multiplied by 3 (amount of matrix registers)
+                        jointIndices[l] = weight.joint * 3;
+                        jointWeights[l++] = weight.bias;
+                        ++nonZeroWeights;
+                    }
+                }
+                for (j = nonZeroWeights; j < this._maxJointCount; ++j) {
+                    jointIndices[l] = 0;
+                    jointWeights[l++] = 0;
+                }
+                v1 = vertex.index << 1;
+                uvs[v1++] = vertex.u;
+                uvs[v1] = vertex.v;
+            }
+            //更新索引数据
+            subGeom.updateIndexData(indices);
+            subGeom.numVertices = vertices.length / 3;
+            //更新顶点坐标与uv数据
+            subGeom.fromVectors(vertices, uvs);
+            // cause explicit updates
+            subGeom.addComponent(new feng3d.AutoDeriveVertexNormals());
+            subGeom.addComponent(new feng3d.AutoDeriveVertexTangents());
+            subGeom.vertexNormalData;
+            subGeom.vertexTangentData;
+            //更新关节索引与权重索引
+            skinnedsubGeom.updateJointIndexData(jointIndices);
+            skinnedsubGeom.updateJointWeightsData(jointWeights);
+            return subGeom;
+        };
+        /**
+         * 解析三角形数据
+         * @param indices 索引数据
+         */
+        MD5MeshParser.prototype.parseTri = function (indices) {
+            var index = this.getNextInt() * 3;
+            indices[index] = this.getNextInt();
+            indices[index + 1] = this.getNextInt();
+            indices[index + 2] = this.getNextInt();
+        };
+        /**
+         * 解析关节数据
+         * @param weights 权重数据列表
+         */
+        MD5MeshParser.prototype.parseJoint = function (weights) {
+            var weight = new WeightData();
+            weight.index = this.getNextInt();
+            weight.joint = this.getNextInt();
+            weight.bias = this.getNextNumber();
+            weight.pos = this.parseVector3D();
+            weights[weight.index] = weight;
+        };
+        /**
+         * 解析一个顶点
+         * @param vertexData 顶点数据列表
+         */
+        MD5MeshParser.prototype.parseVertex = function (vertexData) {
+            var vertex = new VertexData();
+            vertex.index = this.getNextInt();
+            this.parseUV(vertex);
+            vertex.startWeight = this.getNextInt();
+            vertex.countWeight = this.getNextInt();
+            vertexData[vertex.index] = vertex;
+        };
+        /**
+         * 解析uv坐标
+         * @param vertexData 包含uv坐标的顶点数据
+         */
+        MD5MeshParser.prototype.parseUV = function (vertexData) {
+            var ch = this.getNextToken();
+            if (ch != "(")
+                this.sendParseError("(");
+            vertexData.u = this.getNextNumber();
+            vertexData.v = this.getNextNumber();
+            if (this.getNextToken() != ")")
+                this.sendParseError(")");
+        };
+        /**
+         * 获取下个关键字
+         */
+        MD5MeshParser.prototype.getNextToken = function () {
+            var ch;
+            var token = "";
+            while (!this._reachedEOF) {
+                ch = this.getNextChar();
+                if (ch == " " || ch == "\r" || ch == "\n" || ch == "\t") {
+                    if (token != COMMENT_TOKEN)
+                        this.skipWhiteSpace();
+                    if (token != "")
+                        return token;
+                }
+                else
+                    token += ch;
+                if (token == COMMENT_TOKEN)
+                    return token;
+            }
+            return token;
+        };
+        /**
+         * 跳过空白
+         */
+        MD5MeshParser.prototype.skipWhiteSpace = function () {
+            var ch;
+            do
+                ch = this.getNextChar();
+            while (ch == "\n" || ch == " " || ch == "\r" || ch == "\t");
+            this.putBack();
+        };
+        /**
+         * 忽略该行
+         */
+        MD5MeshParser.prototype.ignoreLine = function () {
+            var ch;
+            while (!this._reachedEOF && ch != "\n")
+                ch = this.getNextChar();
+        };
+        /**
+         * 读取下个字符
+         */
+        MD5MeshParser.prototype.getNextChar = function () {
+            var ch = this._textData.charAt(this._parseIndex++);
+            if (ch == "\n") {
+                ++this._line;
+                this._charLineIndex = 0;
+            }
+            else if (ch != "\r")
+                ++this._charLineIndex;
+            if (this._parseIndex >= this._textData.length)
+                this._reachedEOF = true;
+            return ch;
+        };
+        /**
+         * 读取下个number
+         */
+        MD5MeshParser.prototype.getNextInt = function () {
+            var i = parseInt(this.getNextToken());
+            if (isNaN(i))
+                this.sendParseError("number type");
+            return i;
+        };
+        /**
+         * 读取下个number
+         */
+        MD5MeshParser.prototype.getNextNumber = function () {
+            var f = parseFloat(this.getNextToken());
+            if (isNaN(f))
+                this.sendParseError("float type");
+            return f;
+        };
+        /**
+         * 解析3d向量
+         */
+        MD5MeshParser.prototype.parseVector3D = function () {
+            var vec = new Vector3D();
+            var ch = this.getNextToken();
+            if (ch != "(")
+                this.sendParseError("(");
+            vec.x = -this.getNextNumber();
+            vec.y = this.getNextNumber();
+            vec.z = this.getNextNumber();
+            if (this.getNextToken() != ")")
+                this.sendParseError(")");
+            return vec;
+        };
+        /**
+         * 解析四元素
+         */
+        MD5MeshParser.prototype.parseQuaternion = function () {
+            var quat = new Quaternion();
+            var ch = this.getNextToken();
+            if (ch != "(")
+                this.sendParseError("(");
+            quat.x = this.getNextNumber();
+            quat.y = -this.getNextNumber();
+            quat.z = -this.getNextNumber();
+            // quat supposed to be unit length
+            var t = 1 - quat.x * quat.x - quat.y * quat.y - quat.z * quat.z;
+            quat.w = t < 0 ? 0 : -Math.sqrt(t);
+            if (this.getNextToken() != ")")
+                this.sendParseError(")");
+            var rotQuat = new Quaternion();
+            rotQuat.multiply(this._rotationQuat, quat);
+            return rotQuat;
+        };
+        /**
+         * 解析命令行数据
+         */
+        MD5MeshParser.prototype.parseCMD = function () {
+            //忽略命令行数据
+            this.parseLiteralString();
+        };
+        /**
+         * 解析带双引号的字符串
+         */
+        MD5MeshParser.prototype.parseLiteralString = function () {
+            this.skipWhiteSpace();
+            var ch = this.getNextChar();
+            var str = "";
+            if (ch != "\"")
+                this.sendParseError("\"");
+            do {
+                if (this._reachedEOF)
+                    this.sendEOFError();
+                ch = this.getNextChar();
+                if (ch != "\"")
+                    str += ch;
+            } while (ch != "\"");
+            return str;
+        };
+        /**
+         * 抛出一个文件尾过早结束文件时遇到错误
+         */
+        MD5MeshParser.prototype.sendEOFError = function () {
+            throw new Error("Unexpected end of file");
+        };
+        /**
+         * 遇到了一个意想不到的令牌时将抛出一个错误。
+         * @param expected 发生错误的标记
+         */
+        MD5MeshParser.prototype.sendParseError = function (expected) {
+            throw new Error("Unexpected token at line " + (this._line + 1) + ", character " + this._charLineIndex + ". " + expected + " expected, but " + this._textData.charAt(this._parseIndex - 1) + " encountered");
+        };
+        /**
+         * 发生未知关键字错误
+         */
+        MD5MeshParser.prototype.sendUnknownKeywordError = function () {
+            throw new Error("Unknown keyword at line " + (this._line + 1) + ", character " + this._charLineIndex + ". ");
+        };
         MD5MeshParser.VERSION_TOKEN = "MD5Version";
         MD5MeshParser.COMMAND_LINE_TOKEN = "commandline";
         MD5MeshParser.NUM_JOINTS_TOKEN = "numJoints";
@@ -20341,463 +20860,9 @@ var feng3d;
         MD5MeshParser.MESH_TRI_TOKEN = "tri";
         MD5MeshParser.MESH_NUM_WEIGHTS_TOKEN = "numweights";
         MD5MeshParser.MESH_WEIGHT_TOKEN = "weight";
-        /**
-         * 判断是否支持解析
-         * @param extension 文件类型
-         * @return
-         */
-        MD5MeshParser.function = supportsType(extension, string);
         return MD5MeshParser;
     }(feng3d.ParserBase));
     feng3d.MD5MeshParser = MD5MeshParser;
-    {
-        extension = extension.toLowerCase();
-        return extension == "md5mesh";
-    }
-    /**
-     * 判断是否支持该数据的解析
-     * @param data 需要解析的数据
-     * @return
-     */
-    function supportsData(data) {
-        if (data === void 0) { data =  * ; }
-        data = data;
-        return false;
-    }
-    override;
-    function proceedParsing() {
-        var token;
-        //标记开始解析
-        if (!this._startedParsing) {
-            this._textData = getTextData();
-            this._startedParsing = true;
-        }
-        while (hasTime()) {
-            //获取关键字
-            token = this.getNextToken();
-            switch (token) {
-                case COMMENT_TOKEN:
-                    this.ignoreLine();
-                    break;
-                case VERSION_TOKEN:
-                    this._version = this.getNextInt();
-                    if (this._version != 10)
-                        throw new Error("Unknown version number encountered!");
-                    break;
-                case COMMAND_LINE_TOKEN:
-                    this.parseCMD();
-                    break;
-                case NUM_JOINTS_TOKEN:
-                    this._numJoints = this.getNextInt();
-                    this._bindPoses = new Matrix3D[](this._numJoints, true);
-                    break;
-                case NUM_MESHES_TOKEN:
-                    this._numMeshes = this.getNextInt();
-                    break;
-                case JOINTS_TOKEN:
-                    this.parseJoints();
-                    break;
-                case MESH_TOKEN:
-                    this.parseMesh();
-                    break;
-                default:
-                    if (!this._reachedEOF)
-                        this.sendUnknownKeywordError();
-            }
-            //解析结束后 生成引擎相关对象
-            if (this._reachedEOF) {
-                this.calculateMaxJointCount();
-                this._animationSet = new feng3d.SkeletonAnimationSet(this._maxJointCount);
-                //生成引擎所需网格对象
-                var _mesh = new feng3d.Mesh(new feng3d.Geometry(), null);
-                var _geometry = _mesh.geometry;
-                for (var i = 0; i < this._meshData.length; ++i)
-                    _geometry.addSubGeometry(this.translateGeom(this._meshData[i].vertexData, this._meshData[i].weightData, this._meshData[i].indices));
-                finalizeAsset(_geometry);
-                finalizeAsset(_mesh);
-                finalizeAsset(this._skeleton);
-                finalizeAsset(this._animationSet);
-                return feng3d.ParserBase.PARSING_DONE;
-            }
-        }
-        return feng3d.ParserBase.MORE_TO_PARSE;
-    }
-    calculateMaxJointCount();
-    {
-        this._maxJointCount = 0;
-        //遍历所有的网格数据
-        var numMeshData = this._meshData.length;
-        for (var i = 0; i < numMeshData; ++i) {
-            var meshData = this._meshData[i];
-            var vertexData = meshData.vertexData;
-            var numVerts = vertexData.length;
-            //遍历每个顶点 寻找关节关联最大数量
-            for (var j = 0; j < numVerts; ++j) {
-                var zeroWeights = this.countZeroWeightJoints(vertexData[j], meshData.weightData);
-                var totalJoints = vertexData[j].countWeight - zeroWeights;
-                if (totalJoints > this._maxJointCount)
-                    this._maxJointCount = totalJoints;
-            }
-        }
-    }
-    countZeroWeightJoints(vertex, VertexData, weights, WeightData[]);
-    number;
-    {
-        var start = vertex.startWeight;
-        var end = vertex.startWeight + vertex.countWeight;
-        var count = 0;
-        var weight;
-        for (var i = start; i < end; ++i) {
-            weight = weights[i].bias;
-            if (weight == 0)
-                ++count;
-        }
-        return count;
-    }
-    parseJoints();
-    {
-        var ch;
-        var joint;
-        var pos;
-        var quat;
-        var i = 0;
-        var token = this.getNextToken();
-        if (token != "{")
-            this.sendUnknownKeywordError();
-        //解析骨骼数据
-        this._skeleton = new feng3d.Skeleton();
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            //解析骨骼关节数据
-            joint = new feng3d.SkeletonJoint();
-            joint.name = this.parseLiteralString();
-            joint.parentIndex = this.getNextInt();
-            //关节坐标
-            pos = this.parseVector3D();
-            pos = this._rotationQuat.rotatePoint(pos);
-            quat = this.parseQuaternion();
-            // 计算bindpose下该节点(关节)的真正变换矩阵
-            this._bindPoses[i] = quat.toMatrix3D();
-            this._bindPoses[i].appendTranslation(pos.x, pos.y, pos.z);
-            var inv = this._bindPoses[i].clone();
-            inv.invert();
-            joint.inverseBindPose = inv.rawData;
-            //收集关节数据
-            this._skeleton.joints[i++] = joint;
-            ch = this.getNextChar();
-            if (ch == "/") {
-                this.putBack();
-                ch = this.getNextToken();
-                if (ch == COMMENT_TOKEN)
-                    this.ignoreLine();
-                ch = this.getNextChar();
-            }
-            if (ch != "}")
-                this.putBack();
-        } while (ch != "}");
-    }
-    putBack();
-    {
-        this._parseIndex--;
-        this._charLineIndex--;
-        this._reachedEOF = this._parseIndex >= this._textData.length;
-    }
-    parseMesh();
-    {
-        var token = this.getNextToken();
-        var ch;
-        var vertexData;
-        var weights;
-        var indices;
-        if (token != "{")
-            this.sendUnknownKeywordError();
-        this._shaders || ;
-        new string[]();
-        while (ch != "}") {
-            ch = this.getNextToken();
-            switch (ch) {
-                case COMMENT_TOKEN:
-                    this.ignoreLine();
-                    break;
-                case MESH_SHADER_TOKEN:
-                    //材质数据
-                    this._shaders.push(this.parseLiteralString());
-                    break;
-                case MESH_NUM_VERTS_TOKEN:
-                    //顶点数据
-                    vertexData = new VertexData[](this.getNextInt(), true);
-                    break;
-                case MESH_NUM_TRIS_TOKEN:
-                    //根据三角形个数 创建顶点数组
-                    indices = new number[](this.getNextInt() * 3, true);
-                    break;
-                case MESH_NUM_WEIGHTS_TOKEN:
-                    //创建关节数据
-                    weights = new WeightData[](this.getNextInt(), true);
-                    break;
-                case MESH_VERT_TOKEN:
-                    //解析一个顶点数据
-                    this.parseVertex(vertexData);
-                    break;
-                case MESH_TRI_TOKEN:
-                    this.parseTri(indices);
-                    break;
-                case MESH_WEIGHT_TOKEN:
-                    this.parseJoint(weights);
-                    break;
-            }
-        }
-        //保存网格数据
-        this._meshData || ;
-        new MeshData[]();
-        var i = this._meshData.length;
-        this._meshData[i] = new MeshData();
-        this._meshData[i].vertexData = vertexData;
-        this._meshData[i].weightData = weights;
-        this._meshData[i].indices = indices;
-    }
-    translateGeom(vertexData, VertexData[], weights, WeightData[], indices, number[]);
-    feng3d.SubGeometry;
-    {
-        var len = vertexData.length;
-        var v1, v2, v3;
-        var vertex;
-        var weight;
-        var bindPose;
-        var pos;
-        var subGeom = new feng3d.SubGeometry();
-        var skinnedsubGeom = new feng3d.SkinnedSubGeometry(this._maxJointCount);
-        subGeom.addComponent(skinnedsubGeom);
-        //uv数据
-        var uvs = new number[](len * 2, true);
-        //顶点位置数据
-        var vertices = new number[](len * 3, true);
-        //关节索引数据
-        var jointIndices = new number[](len * this._maxJointCount, true);
-        //关节权重数据
-        var jointWeights = new number[](len * this._maxJointCount, true);
-        var l;
-        //0权重个数
-        var nonZeroWeights;
-        for (var i = 0; i < len; ++i) {
-            vertex = vertexData[i];
-            v1 = vertex.index * 3;
-            v2 = v1 + 1;
-            v3 = v1 + 2;
-            vertices[v1] = vertices[v2] = vertices[v3] = 0;
-            /**
-             * 参考 http://blog.csdn.net/summerhust/article/details/17421213
-             * VertexPos = (MJ-0 * weight[index0].pos * weight[index0].bias) + ... + (MJ-N * weight[indexN].pos * weight[indexN].bias)
-             * 变量对应 :
-             * MJ-N -> bindPose; 第J个关节的变换矩阵
-             * weight[indexN].pos -> weight.pos;
-             * weight[indexN].bias -> weight.bias;
-             */
-            nonZeroWeights = 0;
-            for (var j = 0; j < vertex.countWeight; ++j) {
-                weight = weights[vertex.startWeight + j];
-                if (weight.bias > 0) {
-                    bindPose = this._bindPoses[weight.joint];
-                    pos = bindPose.transformVector(weight.pos);
-                    vertices[v1] += pos.x * weight.bias;
-                    vertices[v2] += pos.y * weight.bias;
-                    vertices[v3] += pos.z * weight.bias;
-                    // indices need to be multiplied by 3 (amount of matrix registers)
-                    jointIndices[l] = weight.joint * 3;
-                    jointWeights[l++] = weight.bias;
-                    ++nonZeroWeights;
-                }
-            }
-            for (j = nonZeroWeights; j < this._maxJointCount; ++j) {
-                jointIndices[l] = 0;
-                jointWeights[l++] = 0;
-            }
-            v1 = vertex.index << 1;
-            uvs[v1++] = vertex.u;
-            uvs[v1] = vertex.v;
-        }
-        //更新索引数据
-        subGeom.updateIndexData(indices);
-        subGeom.numVertices = vertices.length / 3;
-        //更新顶点坐标与uv数据
-        subGeom.fromVectors(vertices, uvs);
-        // cause explicit updates
-        subGeom.addComponent(new feng3d.AutoDeriveVertexNormals());
-        subGeom.addComponent(new feng3d.AutoDeriveVertexTangents());
-        subGeom.vertexNormalData;
-        subGeom.vertexTangentData;
-        //更新关节索引与权重索引
-        skinnedsubGeom.updateJointIndexData(jointIndices);
-        skinnedsubGeom.updateJointWeightsData(jointWeights);
-        return subGeom;
-    }
-    parseTri(indices, number[]);
-    {
-        var index = this.getNextInt() * 3;
-        indices[index] = this.getNextInt();
-        indices[index + 1] = this.getNextInt();
-        indices[index + 2] = this.getNextInt();
-    }
-    parseJoint(weights, WeightData[]);
-    {
-        var weight = new WeightData();
-        weight.index = this.getNextInt();
-        weight.joint = this.getNextInt();
-        weight.bias = this.getNextNumber();
-        weight.pos = this.parseVector3D();
-        weights[weight.index] = weight;
-    }
-    parseVertex(vertexData, VertexData[]);
-    {
-        var vertex = new VertexData();
-        vertex.index = this.getNextInt();
-        this.parseUV(vertex);
-        vertex.startWeight = this.getNextInt();
-        vertex.countWeight = this.getNextInt();
-        vertexData[vertex.index] = vertex;
-    }
-    parseUV(vertexData, VertexData);
-    {
-        var ch = this.getNextToken();
-        if (ch != "(")
-            this.sendParseError("(");
-        vertexData.u = this.getNextNumber();
-        vertexData.v = this.getNextNumber();
-        if (this.getNextToken() != ")")
-            this.sendParseError(")");
-    }
-    getNextToken();
-    string;
-    {
-        var ch;
-        var token = "";
-        while (!this._reachedEOF) {
-            ch = this.getNextChar();
-            if (ch == " " || ch == "\r" || ch == "\n" || ch == "\t") {
-                if (token != COMMENT_TOKEN)
-                    this.skipWhiteSpace();
-                if (token != "")
-                    return token;
-            }
-            else
-                token += ch;
-            if (token == COMMENT_TOKEN)
-                return token;
-        }
-        return token;
-    }
-    skipWhiteSpace();
-    {
-        var ch;
-        do
-            ch = this.getNextChar();
-        while (ch == "\n" || ch == " " || ch == "\r" || ch == "\t");
-        this.putBack();
-    }
-    ignoreLine();
-    {
-        var ch;
-        while (!this._reachedEOF && ch != "\n")
-            ch = this.getNextChar();
-    }
-    getNextChar();
-    string;
-    {
-        var ch = this._textData.charAt(this._parseIndex++);
-        if (ch == "\n") {
-            ++this._line;
-            this._charLineIndex = 0;
-        }
-        else if (ch != "\r")
-            ++this._charLineIndex;
-        if (this._parseIndex >= this._textData.length)
-            this._reachedEOF = true;
-        return ch;
-    }
-    getNextInt();
-    number;
-    {
-        var i = parseInt(this.getNextToken());
-        if (isNaN(i))
-            this.sendParseError("number type");
-        return i;
-    }
-    getNextNumber();
-    number;
-    {
-        var f = parseFloat(this.getNextToken());
-        if (isNaN(f))
-            this.sendParseError("float type");
-        return f;
-    }
-    parseVector3D();
-    Vector3D;
-    {
-        var vec = new Vector3D();
-        var ch = this.getNextToken();
-        if (ch != "(")
-            this.sendParseError("(");
-        vec.x = -this.getNextNumber();
-        vec.y = this.getNextNumber();
-        vec.z = this.getNextNumber();
-        if (this.getNextToken() != ")")
-            this.sendParseError(")");
-        return vec;
-    }
-    parseQuaternion();
-    Quaternion;
-    {
-        var quat = new Quaternion();
-        var ch = this.getNextToken();
-        if (ch != "(")
-            this.sendParseError("(");
-        quat.x = this.getNextNumber();
-        quat.y = -this.getNextNumber();
-        quat.z = -this.getNextNumber();
-        // quat supposed to be unit length
-        var t = 1 - quat.x * quat.x - quat.y * quat.y - quat.z * quat.z;
-        quat.w = t < 0 ? 0 : -Math.sqrt(t);
-        if (this.getNextToken() != ")")
-            this.sendParseError(")");
-        var rotQuat = new Quaternion();
-        rotQuat.multiply(this._rotationQuat, quat);
-        return rotQuat;
-    }
-    parseCMD();
-    {
-        //忽略命令行数据
-        this.parseLiteralString();
-    }
-    parseLiteralString();
-    string;
-    {
-        this.skipWhiteSpace();
-        var ch = this.getNextChar();
-        var str = "";
-        if (ch != "\"")
-            this.sendParseError("\"");
-        do {
-            if (this._reachedEOF)
-                this.sendEOFError();
-            ch = this.getNextChar();
-            if (ch != "\"")
-                str += ch;
-        } while (ch != "\"");
-        return str;
-    }
-    sendEOFError();
-    {
-        throw new Error("Unexpected end of file");
-    }
-    sendParseError(expected, string);
-    {
-        throw new Error("Unexpected token at line " + (this._line + 1) + ", character " + this._charLineIndex + ". " + expected + " expected, but " + this._textData.charAt(this._parseIndex - 1) + " encountered");
-    }
-    sendUnknownKeywordError();
-    {
-        throw new Error("Unknown keyword at line " + (this._line + 1) + ", character " + this._charLineIndex + ". ");
-    }
 })(feng3d || (feng3d = {}));
 /**
  * 顶点数据
@@ -20844,6 +20909,136 @@ var feng3d;
         function Max3DSParser(useSmoothingGroups) {
             if (useSmoothingGroups === void 0) { useSmoothingGroups = true; }
             _super.call(this, feng3d.ParserDataFormat.BINARY);
+            /**
+             * @inheritDoc
+             */
+            this.override = function resolveDependency(resourceDependency) {
+                if (resourceDependency.assets.length == 1) {
+                    var asset;
+                    asset = resourceDependency.assets[0];
+                    if (asset.namedAsset.assetType == feng3d.AssetType.TEXTURE) {
+                        var tex;
+                        tex = this._textures[resourceDependency.id];
+                        tex.texture = asset;
+                    }
+                }
+            };
+            /**
+             * @inheritDoc
+             */
+            this.override = function resolveDependencyFailure(resourceDependency) {
+                // TODO: Implement
+            };
+            /**
+             * @inheritDoc
+             */
+            this.override = function startParsing(frameLimit) {
+                _super.startParsing.call(this, frameLimit);
+                this._byteData = feng3d.ParserUtil.toByteArray(_data);
+                this._byteData.position = 0;
+                this._byteData.endian = Endian.LITTLE_ENDIAN;
+                this._textures = {};
+                this._materials = {};
+                this._unfinalized_objects = {};
+            };
+            /**
+             * @inheritDoc
+             */
+            this.override = function proceedParsing() {
+                // TODO: With this construct, the loop will run no-op for as long
+                // as there is time once file has finished reading. Consider this.a nice
+                // way to stop loop when byte array is empty, without putting it in
+                // the while-conditional, which will prevent finalizations from
+                // happening after the last chunk.
+                while (hasTime()) {
+                    // If we are currently working on an object, and the most recent chunk was
+                    // the last one in that object, finalize the current object.
+                    if (this._cur_mat && this._byteData.position >= this._cur_mat_end)
+                        this.finalizeCurrentMaterial();
+                    else if (this._cur_obj && this._byteData.position >= this._cur_obj_end) {
+                        // Can't finalize at this point, because we have to wait until the full
+                        // animation section has been parsed for any potential pivot definitions
+                        this._unfinalized_objects[this._cur_obj.name] = this._cur_obj;
+                        this._cur_obj_end = number.MAX_VALUE;
+                        this._cur_obj = null;
+                    }
+                    if (this._byteData.bytesAvailable) {
+                        var cid;
+                        var len;
+                        var end;
+                        cid = this._byteData.readUnsignedShort();
+                        len = this._byteData.readUnsignedInt();
+                        end = this._byteData.position + (len - 6);
+                        switch (cid) {
+                            case 0x4D4D: // MAIN3DS
+                            case 0x3D3D: // EDIT3DS
+                            case 0xB000:
+                                // This types are "container chunks" and contain only
+                                // sub-chunks (no data on their own.) This means that
+                                // there is nothing more to parse at this point, and 
+                                // instead we should progress to the next chunk, which
+                                // will be the first sub-chunk of this one.
+                                continue;
+                                break;
+                            case 0xAFFF:
+                                this._cur_mat_end = end;
+                                this._cur_mat = this.parseMaterial();
+                                break;
+                            case 0x4000:
+                                this._cur_obj_end = end;
+                                this._cur_obj = new ObjectVO();
+                                this._cur_obj.name = this.readNulTermString();
+                                this._cur_obj.materials = new string[]();
+                                this._cur_obj.materialFaces = {};
+                                break;
+                            case 0x4100:
+                                this._cur_obj.type = feng3d.AssetType.MESH;
+                                break;
+                            case 0x4110:
+                                this.parseVertexList();
+                                break;
+                            case 0x4120:
+                                this.parseFaceList();
+                                break;
+                            case 0x4140:
+                                this.parseUVList();
+                                break;
+                            case 0x4130:
+                                this.parseFaceMaterialList();
+                                break;
+                            case 0x4160:
+                                this._cur_obj.transform = this.readTransform();
+                                break;
+                            case 0xB002:
+                                this.parseObjectAnimation(end);
+                                break;
+                            case 0x4150:
+                                this.parseSmoothingGroups();
+                                break;
+                            default:
+                                // Skip this (unknown) chunk
+                                this._byteData.position += (len - 6);
+                                break;
+                        }
+                    }
+                }
+                // More parsing is required if the entire byte array has not yet
+                // been read, or if there is this.a currently non-finalized object in
+                // the pipeline.
+                if (this._byteData.bytesAvailable || this._cur_obj || this._cur_mat)
+                    return MORE_TO_PARSE;
+                else {
+                    var name;
+                    // Finalize any remaining objects before ending.
+                    for (name in this._unfinalized_objects) {
+                        var obj;
+                        obj = this.constructObject(this._unfinalized_objects[name]);
+                        if (obj)
+                            finalizeAsset(obj, name);
+                    }
+                    return PARSING_DONE;
+                }
+            };
             this._useSmoothingGroups = useSmoothingGroups;
         }
         /**
@@ -20851,76 +21046,30 @@ var feng3d;
          * @param extension The file extension of a potential file to be parsed.
          * @return Whether or not the given file type is supported.
          */
-        Max3DSParser.function = supportsType(extension, string);
-        return Max3DSParser;
-    }(feng3d.ParserBase));
-    feng3d.Max3DSParser = Max3DSParser;
-    {
-        extension = extension.toLowerCase();
-        return extension == "3ds";
-    }
-    /**
-     * Tests whether a data block can be parsed by the parser.
-     * @param data The data block to potentially be parsed.
-     * @return Whether or not the given data is supported.
-     */
-    function supportsData(data) {
-        if (data === void 0) { data =  * ; }
-        var ba;
-        ba = feng3d.ParserUtil.toByteArray(data);
-        if (ba) {
-            ba.position = 0;
-            if (ba.readShort() == 0x4d4d)
-                return true;
-        }
-        return false;
-    }
-    override;
-    function resolveDependency(resourceDependency) {
-        if (resourceDependency.assets.length == 1) {
-            var asset;
-            asset = resourceDependency.assets[0];
-            if (asset.namedAsset.assetType == feng3d.AssetType.TEXTURE) {
-                var tex;
-                tex = this._textures[resourceDependency.id];
-                tex.texture = asset;
+        Max3DSParser.supportsType = function (extension) {
+            extension = extension.toLowerCase();
+            return extension == "3ds";
+        };
+        /**
+         * Tests whether a data block can be parsed by the parser.
+         * @param data The data block to potentially be parsed.
+         * @return Whether or not the given data is supported.
+         */
+        Max3DSParser.supportsData = function (data) {
+            if (data === void 0) { data =  * ; }
+            var ba;
+            ba = feng3d.ParserUtil.toByteArray(data);
+            if (ba) {
+                ba.position = 0;
+                if (ba.readShort() == 0x4d4d)
+                    return true;
             }
-        }
-    }
-    override;
-    function resolveDependencyFailure(resourceDependency) {
-        // TODO: Implement
-    }
-    override;
-    function startParsing(frameLimit) {
-        _super.startParsing.call(this, frameLimit);
-        this._byteData = feng3d.ParserUtil.toByteArray(_data);
-        this._byteData.position = 0;
-        this._byteData.endian = Endian.LITTLE_ENDIAN;
-        this._textures = {};
-        this._materials = {};
-        this._unfinalized_objects = {};
-    }
-    override;
-    function proceedParsing() {
-        // TODO: With this construct, the loop will run no-op for as long
-        // as there is time once file has finished reading. Consider this.a nice
-        // way to stop loop when byte array is empty, without putting it in
-        // the while-conditional, which will prevent finalizations from
-        // happening after the last chunk.
-        while (hasTime()) {
-            // If we are currently working on an object, and the most recent chunk was
-            // the last one in that object, finalize the current object.
-            if (this._cur_mat && this._byteData.position >= this._cur_mat_end)
-                this.finalizeCurrentMaterial();
-            else if (this._cur_obj && this._byteData.position >= this._cur_obj_end) {
-                // Can't finalize at this point, because we have to wait until the full
-                // animation section has been parsed for any potential pivot definitions
-                this._unfinalized_objects[this._cur_obj.name] = this._cur_obj;
-                this._cur_obj_end = number.MAX_VALUE;
-                this._cur_obj = null;
-            }
-            if (this._byteData.bytesAvailable) {
+            return false;
+        };
+        Max3DSParser.prototype.parseMaterial = function () {
+            var mat;
+            mat = new MaterialVO();
+            while (this._byteData.position < this._cur_mat_end) {
                 var cid;
                 var len;
                 var end;
@@ -20928,548 +21077,451 @@ var feng3d;
                 len = this._byteData.readUnsignedInt();
                 end = this._byteData.position + (len - 6);
                 switch (cid) {
-                    case 0x4D4D: // MAIN3DS
-                    case 0x3D3D: // EDIT3DS
-                    case 0xB000:
-                        // This types are "container chunks" and contain only
-                        // sub-chunks (no data on their own.) This means that
-                        // there is nothing more to parse at this point, and 
-                        // instead we should progress to the next chunk, which
-                        // will be the first sub-chunk of this one.
-                        continue;
+                    case 0xA000:
+                        mat.name = this.readNulTermString();
                         break;
-                    case 0xAFFF:
-                        this._cur_mat_end = end;
-                        this._cur_mat = this.parseMaterial();
+                    case 0xA010:
+                        mat.ambientColor = this.readColor();
                         break;
-                    case 0x4000:
-                        this._cur_obj_end = end;
-                        this._cur_obj = new ObjectVO();
-                        this._cur_obj.name = this.readNulTermString();
-                        this._cur_obj.materials = new string[]();
-                        this._cur_obj.materialFaces = {};
+                    case 0xA020:
+                        mat.diffuseColor = this.readColor();
                         break;
-                    case 0x4100:
-                        this._cur_obj.type = feng3d.AssetType.MESH;
+                    case 0xA030:
+                        mat.specularColor = this.readColor();
                         break;
-                    case 0x4110:
-                        this.parseVertexList();
+                    case 0xA081:
+                        mat.twoSided = true;
                         break;
-                    case 0x4120:
-                        this.parseFaceList();
+                    case 0xA200:
+                        mat.colorMap = this.parseTexture(end);
                         break;
-                    case 0x4140:
-                        this.parseUVList();
-                        break;
-                    case 0x4130:
-                        this.parseFaceMaterialList();
-                        break;
-                    case 0x4160:
-                        this._cur_obj.transform = this.readTransform();
-                        break;
-                    case 0xB002:
-                        this.parseObjectAnimation(end);
-                        break;
-                    case 0x4150:
-                        this.parseSmoothingGroups();
+                    case 0xA204:
+                        mat.specularMap = this.parseTexture(end);
                         break;
                     default:
-                        // Skip this (unknown) chunk
+                        this._byteData.position = end;
+                        break;
+                }
+            }
+            return mat;
+        };
+        Max3DSParser.prototype.parseTexture = function (end) {
+            var tex;
+            tex = new TextureVO();
+            while (this._byteData.position < end) {
+                var cid;
+                var len;
+                cid = this._byteData.readUnsignedShort();
+                len = this._byteData.readUnsignedInt();
+                switch (cid) {
+                    case 0xA300:
+                        tex.url = this.readNulTermString();
+                        break;
+                    default:
+                        // Skip this unknown this.texture sub-chunk
                         this._byteData.position += (len - 6);
                         break;
                 }
             }
-        }
-        // More parsing is required if the entire byte array has not yet
-        // been read, or if there is this.a currently non-finalized object in
-        // the pipeline.
-        if (this._byteData.bytesAvailable || this._cur_obj || this._cur_mat)
-            return MORE_TO_PARSE;
-        else {
-            var name;
-            // Finalize any remaining objects before ending.
-            for (name in this._unfinalized_objects) {
-                var obj;
-                obj = this.constructObject(this._unfinalized_objects[name]);
-                if (obj)
-                    finalizeAsset(obj, name);
-            }
-            return PARSING_DONE;
-        }
-    }
-    parseMaterial();
-    MaterialVO;
-    {
-        var mat;
-        mat = new MaterialVO();
-        while (this._byteData.position < this._cur_mat_end) {
-            var cid;
-            var len;
-            var end;
-            cid = this._byteData.readUnsignedShort();
-            len = this._byteData.readUnsignedInt();
-            end = this._byteData.position + (len - 6);
-            switch (cid) {
-                case 0xA000:
-                    mat.name = this.readNulTermString();
-                    break;
-                case 0xA010:
-                    mat.ambientColor = this.readColor();
-                    break;
-                case 0xA020:
-                    mat.diffuseColor = this.readColor();
-                    break;
-                case 0xA030:
-                    mat.specularColor = this.readColor();
-                    break;
-                case 0xA081:
-                    mat.twoSided = true;
-                    break;
-                case 0xA200:
-                    mat.colorMap = this.parseTexture(end);
-                    break;
-                case 0xA204:
-                    mat.specularMap = this.parseTexture(end);
-                    break;
-                default:
-                    this._byteData.position = end;
-                    break;
-            }
-        }
-        return mat;
-    }
-    parseTexture(end, number);
-    TextureVO;
-    {
-        var tex;
-        tex = new TextureVO();
-        while (this._byteData.position < end) {
-            var cid;
-            var len;
-            cid = this._byteData.readUnsignedShort();
-            len = this._byteData.readUnsignedInt();
-            switch (cid) {
-                case 0xA300:
-                    tex.url = this.readNulTermString();
-                    break;
-                default:
-                    // Skip this unknown this.texture sub-chunk
-                    this._byteData.position += (len - 6);
-                    break;
-            }
-        }
-        this._textures[tex.url] = tex;
-        addDependency(tex.url, new URLRequest(tex.url));
-        return tex;
-    }
-    parseVertexList();
-    {
-        var i;
-        var len;
-        var count;
-        count = this._byteData.readUnsignedShort();
-        this._cur_obj.verts = new number[](count * 3, true);
-        i = 0;
-        len = this._cur_obj.verts.length;
-        while (i < len) {
-            var x;
-            this.y;
-            number, this.z;
-            number;
-            x = this._byteData.readFloat();
-            this.y = this._byteData.readFloat();
-            this.z = this._byteData.readFloat();
-            this._cur_obj.verts[i++] = x;
-            this._cur_obj.verts[i++] = this.z;
-            this._cur_obj.verts[i++] = this.y;
-        }
-    }
-    parseFaceList();
-    {
-        var i;
-        var len;
-        var count;
-        count = this._byteData.readUnsignedShort();
-        this._cur_obj.indices = new number[](count * 3, true);
-        i = 0;
-        len = this._cur_obj.indices.length;
-        while (i < len) {
-            var i0, i1, i2;
-            i0 = this._byteData.readUnsignedShort();
-            i1 = this._byteData.readUnsignedShort();
-            i2 = this._byteData.readUnsignedShort();
-            this._cur_obj.indices[i++] = i0;
-            this._cur_obj.indices[i++] = i2;
-            this._cur_obj.indices[i++] = i1;
-            // Skip "face info", irrelevant in Away3D
-            this._byteData.position += 2;
-        }
-        this._cur_obj.smoothingGroups = new number[](count, true);
-    }
-    parseSmoothingGroups();
-    {
-        var len = this._cur_obj.indices.length / 3;
-        var i = 0;
-        while (i < len) {
-            this._cur_obj.smoothingGroups[i] = this._byteData.readUnsignedInt();
-            i++;
-        }
-    }
-    parseUVList();
-    {
-        var i;
-        var len;
-        var count;
-        count = this._byteData.readUnsignedShort();
-        this._cur_obj.uvs = new number[](count * 2, true);
-        i = 0;
-        len = this._cur_obj.uvs.length;
-        while (i < len) {
-            this._cur_obj.uvs[i++] = this._byteData.readFloat();
-            this._cur_obj.uvs[i++] = 1.0 - this._byteData.readFloat();
-        }
-    }
-    parseFaceMaterialList();
-    {
-        var mat;
-        var count;
-        var i;
-        var faces;
-        mat = this.readNulTermString();
-        count = this._byteData.readUnsignedShort();
-        faces = new number[](count, true);
-        i = 0;
-        while (i < faces.length)
-            faces[i++] = this._byteData.readUnsignedShort();
-        this._cur_obj.materials.push(mat);
-        this._cur_obj.materialFaces[mat] = faces;
-    }
-    parseObjectAnimation(end, number);
-    {
-        var vo;
-        var obj;
-        var pivot;
-        var name;
-        var hier;
-        // Pivot defaults to origin
-        pivot = new Vector3D;
-        while (this._byteData.position < end) {
-            var cid;
-            var len;
-            cid = this._byteData.readUnsignedShort();
-            len = this._byteData.readUnsignedInt();
-            switch (cid) {
-                case 0xb010:
-                    name = this.readNulTermString();
-                    this._byteData.position += 4;
-                    hier = this._byteData.readShort();
-                    break;
-                case 0xb013:
-                    pivot.x = this._byteData.readFloat();
-                    pivot.z = this._byteData.readFloat();
-                    pivot.y = this._byteData.readFloat();
-                    break;
-                default:
-                    this._byteData.position += (len - 6);
-                    break;
-            }
-        }
-        // If name is "$$$DUMMY" this is an empty object (e.g. this.a container)
-        // and will be ignored in this version of the parser
-        // TODO: Implement containers in 3DS parser.
-        if (name != '$$$DUMMY' && this._unfinalized_objects.hasOwnProperty(name)) {
-            vo = this._unfinalized_objects[name];
-            obj = this.constructObject(vo, pivot);
-            if (obj)
-                finalizeAsset(obj, vo.name);
-            delete this._unfinalized_objects[name];
-        }
-    }
-    constructObject(obj, ObjectVO, pivot, Vector3D = null);
-    feng3d.Container3D;
-    {
-        if (obj.type == feng3d.AssetType.MESH) {
+            this._textures[tex.url] = tex;
+            addDependency(tex.url, new URLRequest(tex.url));
+            return tex;
+        };
+        Max3DSParser.prototype.parseVertexList = function () {
             var i;
-            var subs;
-            var geom;
+            var len;
+            var count;
+            count = this._byteData.readUnsignedShort();
+            this._cur_obj.verts = new number[](count * 3, true);
+            i = 0;
+            len = this._cur_obj.verts.length;
+            while (i < len) {
+                var x;
+                this.y;
+                number, this.z;
+                number;
+                x = this._byteData.readFloat();
+                this.y = this._byteData.readFloat();
+                this.z = this._byteData.readFloat();
+                this._cur_obj.verts[i++] = x;
+                this._cur_obj.verts[i++] = this.z;
+                this._cur_obj.verts[i++] = this.y;
+            }
+        };
+        Max3DSParser.prototype.parseFaceList = function () {
+            var i;
+            var len;
+            var count;
+            count = this._byteData.readUnsignedShort();
+            this._cur_obj.indices = new number[](count * 3, true);
+            i = 0;
+            len = this._cur_obj.indices.length;
+            while (i < len) {
+                var i0, i1, i2;
+                i0 = this._byteData.readUnsignedShort();
+                i1 = this._byteData.readUnsignedShort();
+                i2 = this._byteData.readUnsignedShort();
+                this._cur_obj.indices[i++] = i0;
+                this._cur_obj.indices[i++] = i2;
+                this._cur_obj.indices[i++] = i1;
+                // Skip "face info", irrelevant in Away3D
+                this._byteData.position += 2;
+            }
+            this._cur_obj.smoothingGroups = new number[](count, true);
+        };
+        Max3DSParser.prototype.parseSmoothingGroups = function () {
+            var len = this._cur_obj.indices.length / 3;
+            var i = 0;
+            while (i < len) {
+                this._cur_obj.smoothingGroups[i] = this._byteData.readUnsignedInt();
+                i++;
+            }
+        };
+        Max3DSParser.prototype.parseUVList = function () {
+            var i;
+            var len;
+            var count;
+            count = this._byteData.readUnsignedShort();
+            this._cur_obj.uvs = new number[](count * 2, true);
+            i = 0;
+            len = this._cur_obj.uvs.length;
+            while (i < len) {
+                this._cur_obj.uvs[i++] = this._byteData.readFloat();
+                this._cur_obj.uvs[i++] = 1.0 - this._byteData.readFloat();
+            }
+        };
+        Max3DSParser.prototype.parseFaceMaterialList = function () {
             var mat;
-            var mesh;
-            var mtx;
-            var vertices;
+            var count;
+            var i;
             var faces;
-            if (obj.materials.length > 1)
-                trace('The Away3D 3DS parser does not support multiple this.materials per mesh at this point.');
-            // Ignore empty objects
-            if (!obj.indices || obj.indices.length == 0)
-                return null;
-            vertices = new VertexVO[](obj.verts.length / 3, false);
-            faces = new FaceVO[](obj.indices.length / 3, true);
-            this.prepareData(vertices, faces, obj);
-            if (this._useSmoothingGroups)
-                this.applySmoothGroups(vertices, faces);
-            obj.verts = new number[](vertices.length * 3, true);
-            for (i = 0; i < vertices.length; i++) {
-                obj.verts[i * 3] = vertices[i].x;
-                obj.verts[i * 3 + 1] = vertices[i].y;
-                obj.verts[i * 3 + 2] = vertices[i].z;
+            mat = this.readNulTermString();
+            count = this._byteData.readUnsignedShort();
+            faces = new number[](count, true);
+            i = 0;
+            while (i < faces.length)
+                faces[i++] = this._byteData.readUnsignedShort();
+            this._cur_obj.materials.push(mat);
+            this._cur_obj.materialFaces[mat] = faces;
+        };
+        Max3DSParser.prototype.parseObjectAnimation = function (end) {
+            var vo;
+            var obj;
+            var pivot;
+            var name;
+            var hier;
+            // Pivot defaults to origin
+            pivot = new Vector3D;
+            while (this._byteData.position < end) {
+                var cid;
+                var len;
+                cid = this._byteData.readUnsignedShort();
+                len = this._byteData.readUnsignedInt();
+                switch (cid) {
+                    case 0xb010:
+                        name = this.readNulTermString();
+                        this._byteData.position += 4;
+                        hier = this._byteData.readShort();
+                        break;
+                    case 0xb013:
+                        pivot.x = this._byteData.readFloat();
+                        pivot.z = this._byteData.readFloat();
+                        pivot.y = this._byteData.readFloat();
+                        break;
+                    default:
+                        this._byteData.position += (len - 6);
+                        break;
+                }
             }
-            obj.indices = new number[](faces.length * 3, true);
-            for (i = 0; i < faces.length; i++) {
-                obj.indices[i * 3] = faces[i].a;
-                obj.indices[i * 3 + 1] = faces[i].b;
-                obj.indices[i * 3 + 2] = faces[i].c;
+            // If name is "$$$DUMMY" this is an empty object (e.g. this.a container)
+            // and will be ignored in this version of the parser
+            // TODO: Implement containers in 3DS parser.
+            if (name != '$$$DUMMY' && this._unfinalized_objects.hasOwnProperty(name)) {
+                vo = this._unfinalized_objects[name];
+                obj = this.constructObject(vo, pivot);
+                if (obj)
+                    finalizeAsset(obj, vo.name);
+                delete this._unfinalized_objects[name];
             }
-            if (obj.uvs) {
-                // If the object had UVs to start with, use UVs generated by
-                // smoothing group splitting algorithm. Otherwise those UVs
-                // will be nonsense and should be skipped.
-                obj.uvs = new number[](vertices.length * 2, true);
+        };
+        Max3DSParser.prototype.constructObject = function (obj, pivot) {
+            if (pivot === void 0) { pivot = null; }
+            if (obj.type == feng3d.AssetType.MESH) {
+                var i;
+                var subs;
+                var geom;
+                var mat;
+                var mesh;
+                var mtx;
+                var vertices;
+                var faces;
+                if (obj.materials.length > 1)
+                    trace('The Away3D 3DS parser does not support multiple this.materials per mesh at this point.');
+                // Ignore empty objects
+                if (!obj.indices || obj.indices.length == 0)
+                    return null;
+                vertices = new VertexVO[](obj.verts.length / 3, false);
+                faces = new FaceVO[](obj.indices.length / 3, true);
+                this.prepareData(vertices, faces, obj);
+                if (this._useSmoothingGroups)
+                    this.applySmoothGroups(vertices, faces);
+                obj.verts = new number[](vertices.length * 3, true);
                 for (i = 0; i < vertices.length; i++) {
-                    obj.uvs[i * 2] = vertices[i].u;
-                    obj.uvs[i * 2 + 1] = vertices[i].v;
+                    obj.verts[i * 3] = vertices[i].x;
+                    obj.verts[i * 3 + 1] = vertices[i].y;
+                    obj.verts[i * 3 + 2] = vertices[i].z;
                 }
-            }
-            geom = new feng3d.Geometry();
-            // Construct sub-geometries (potentially splitting buffers)
-            // and add them to geometry.
-            subs = feng3d.GeomUtil.fromVectors(obj.verts, obj.indices, obj.uvs, null, null);
-            for (i = 0; i < subs.length; i++)
-                geom.subGeometries.push(subs[i]);
-            if (obj.materials.length > 0) {
-                var mname;
-                mname = obj.materials[0];
-                mat = this._materials[mname].material;
-            }
-            // Apply pivot translation to geometry if this.a pivot was
-            // found while parsing the keyframe chunk earlier.
-            if (pivot) {
+                obj.indices = new number[](faces.length * 3, true);
+                for (i = 0; i < faces.length; i++) {
+                    obj.indices[i * 3] = faces[i].a;
+                    obj.indices[i * 3 + 1] = faces[i].b;
+                    obj.indices[i * 3 + 2] = faces[i].c;
+                }
+                if (obj.uvs) {
+                    // If the object had UVs to start with, use UVs generated by
+                    // smoothing group splitting algorithm. Otherwise those UVs
+                    // will be nonsense and should be skipped.
+                    obj.uvs = new number[](vertices.length * 2, true);
+                    for (i = 0; i < vertices.length; i++) {
+                        obj.uvs[i * 2] = vertices[i].u;
+                        obj.uvs[i * 2 + 1] = vertices[i].v;
+                    }
+                }
+                geom = new feng3d.Geometry();
+                // Construct sub-geometries (potentially splitting buffers)
+                // and add them to geometry.
+                subs = feng3d.GeomUtil.fromVectors(obj.verts, obj.indices, obj.uvs, null, null);
+                for (i = 0; i < subs.length; i++)
+                    geom.subGeometries.push(subs[i]);
+                if (obj.materials.length > 0) {
+                    var mname;
+                    mname = obj.materials[0];
+                    mat = this._materials[mname].material;
+                }
+                // Apply pivot translation to geometry if this.a pivot was
+                // found while parsing the keyframe chunk earlier.
+                if (pivot) {
+                    if (obj.transform) {
+                        // If this.a this.transform was found while parsing the
+                        // object chunk, use it to find the local pivot vector
+                        var dat = obj.transform.concat();
+                        dat[12] = 0;
+                        dat[13] = 0;
+                        dat[14] = 0;
+                        mtx = new Matrix3D(dat);
+                        pivot = mtx.transformVector(pivot);
+                    }
+                    pivot.scaleBy(-1);
+                    mtx = new Matrix3D();
+                    mtx.appendTranslation(pivot.x, pivot.y, pivot.z);
+                    geom.applyTransformation(mtx);
+                }
+                // Apply transformation to geometry if this.a transformation
+                // was found while parsing the object chunk earlier.
                 if (obj.transform) {
-                    // If this.a this.transform was found while parsing the
-                    // object chunk, use it to find the local pivot vector
-                    var dat = obj.transform.concat();
-                    dat[12] = 0;
-                    dat[13] = 0;
-                    dat[14] = 0;
-                    mtx = new Matrix3D(dat);
-                    pivot = mtx.transformVector(pivot);
+                    mtx = new Matrix3D(obj.transform);
+                    mtx.invert();
+                    geom.applyTransformation(mtx);
                 }
-                pivot.scaleBy(-1);
-                mtx = new Matrix3D();
-                mtx.appendTranslation(pivot.x, pivot.y, pivot.z);
-                geom.applyTransformation(mtx);
+                // Final this.transform applied to geometry. Finalize the geometry,
+                // which will no longer be modified after this point.
+                finalizeAsset(geom, obj.name.concat('_geom'));
+                // Build mesh and return it
+                mesh = new feng3d.Mesh(geom, mat);
+                mesh.transform3D.transform = new Matrix3D(obj.transform);
+                return mesh;
             }
-            // Apply transformation to geometry if this.a transformation
-            // was found while parsing the object chunk earlier.
-            if (obj.transform) {
-                mtx = new Matrix3D(obj.transform);
-                mtx.invert();
-                geom.applyTransformation(mtx);
-            }
-            // Final this.transform applied to geometry. Finalize the geometry,
-            // which will no longer be modified after this point.
-            finalizeAsset(geom, obj.name.concat('_geom'));
-            // Build mesh and return it
-            mesh = new feng3d.Mesh(geom, mat);
-            mesh.transform3D.transform = new Matrix3D(obj.transform);
-            return mesh;
-        }
-        // If reached, unknown
-        return null;
-    }
-    prepareData(vertices, VertexVO[], faces, FaceVO[], obj, ObjectVO);
-    {
-        // convert raw ObjectVO's data to structured VertexVO and FaceVO
-        var i;
-        var j;
-        var k;
-        var len = obj.verts.length;
-        for (i = 0, j = 0, k = 0; i < len;) {
-            var v = new VertexVO;
-            v.x = obj.verts[i++];
-            v.y = obj.verts[i++];
-            v.z = obj.verts[i++];
-            if (obj.uvs) {
-                v.u = obj.uvs[j++];
-                v.v = obj.uvs[j++];
-            }
-            vertices[k++] = v;
-        }
-        len = obj.indices.length;
-        for (i = 0, k = 0; i < len;) {
-            var f = new FaceVO();
-            f.a = obj.indices[i++];
-            f.b = obj.indices[i++];
-            f.c = obj.indices[i++];
-            f.smoothGroup = obj.smoothingGroups[k];
-            faces[k++] = f;
-        }
-    }
-    applySmoothGroups(vertices, VertexVO[], faces, FaceVO[]);
-    {
-        // clone vertices according to following rule:
-        // clone if vertex's in faces from groups 1+2 and 3
-        // don't clone if vertex's in faces from groups 1+2, 3 and 1+3
-        var i;
-        var j;
-        var k;
-        var l;
-        var len;
-        var numVerts = vertices.length;
-        var numFaces = faces.length;
-        // extract groups data for vertices
-        var vGroups = new Vector.(numVerts, true);
-        for (i = 0; i < numVerts; i++)
-            vGroups[i] = new number[];
-        for (i = 0; i < numFaces; i++) {
-            var face = FaceVO(faces[i]);
-            for (j = 0; j < 3; j++) {
-                var groups = vGroups[(j == 0) ? face.a : ((j == 1) ? face.b : face.c)];
-                var group = face.smoothGroup;
-                for (k = groups.length - 1; k >= 0; k--) {
-                    if ((group & groups[k]) > 0) {
-                        group |= groups[k];
-                        groups.splice(k, 1);
-                        k = groups.length - 1;
-                    }
+            // If reached, unknown
+            return null;
+        };
+        Max3DSParser.prototype.prepareData = function (vertices, faces, obj) {
+            // convert raw ObjectVO's data to structured VertexVO and FaceVO
+            var i;
+            var j;
+            var k;
+            var len = obj.verts.length;
+            for (i = 0, j = 0, k = 0; i < len;) {
+                var v = new VertexVO;
+                v.x = obj.verts[i++];
+                v.y = obj.verts[i++];
+                v.z = obj.verts[i++];
+                if (obj.uvs) {
+                    v.u = obj.uvs[j++];
+                    v.v = obj.uvs[j++];
                 }
-                groups.push(group);
+                vertices[k++] = v;
             }
-        }
-        // clone vertices
-        var vClones = new Vector.(numVerts, true);
-        for (i = 0; i < numVerts; i++) {
-            if ((len = vGroups[i].length) < 1)
-                continue;
-            var clones = new number[](len, true);
-            vClones[i] = clones;
-            clones[0] = i;
-            var v0 = vertices[i];
-            for (j = 1; j < len; j++) {
-                var v1 = new VertexVO;
-                v1.x = v0.x;
-                v1.y = v0.y;
-                v1.z = v0.z;
-                v1.u = v0.u;
-                v1.v = v0.v;
-                clones[j] = vertices.length;
-                vertices.push(v1);
+            len = obj.indices.length;
+            for (i = 0, k = 0; i < len;) {
+                var f = new FaceVO();
+                f.a = obj.indices[i++];
+                f.b = obj.indices[i++];
+                f.c = obj.indices[i++];
+                f.smoothGroup = obj.smoothingGroups[k];
+                faces[k++] = f;
             }
-        }
-        numVerts = vertices.length;
-        for (i = 0; i < numFaces; i++) {
-            face = FaceVO(faces[i]);
-            group = face.smoothGroup;
-            for (j = 0; j < 3; j++) {
-                k = (j == 0) ? face.a : ((j == 1) ? face.b : face.c);
-                groups = vGroups[k];
-                len = groups.length;
-                clones = vClones[k];
-                for (l = 0; l < len; l++) {
-                    if (((group == 0) && (groups[l] == 0)) || ((group & groups[l]) > 0)) {
-                        var index = clones[l];
-                        if (group == 0) {
-                            // vertex is unique if no this.smoothGroup found
-                            groups.splice(l, 1);
-                            clones.splice(l, 1);
+        };
+        Max3DSParser.prototype.applySmoothGroups = function (vertices, faces) {
+            // clone vertices according to following rule:
+            // clone if vertex's in faces from groups 1+2 and 3
+            // don't clone if vertex's in faces from groups 1+2, 3 and 1+3
+            var i;
+            var j;
+            var k;
+            var l;
+            var len;
+            var numVerts = vertices.length;
+            var numFaces = faces.length;
+            // extract groups data for vertices
+            var vGroups = new Vector.(numVerts, true);
+            for (i = 0; i < numVerts; i++)
+                vGroups[i] = new number[];
+            for (i = 0; i < numFaces; i++) {
+                var face = FaceVO(faces[i]);
+                for (j = 0; j < 3; j++) {
+                    var groups = vGroups[(j == 0) ? face.a : ((j == 1) ? face.b : face.c)];
+                    var group = face.smoothGroup;
+                    for (k = groups.length - 1; k >= 0; k--) {
+                        if ((group & groups[k]) > 0) {
+                            group |= groups[k];
+                            groups.splice(k, 1);
+                            k = groups.length - 1;
                         }
-                        if (j == 0)
-                            face.a = index;
-                        else if (j == 1)
-                            face.b = index;
-                        else
-                            face.c = index;
-                        l = len;
+                    }
+                    groups.push(group);
+                }
+            }
+            // clone vertices
+            var vClones = new Vector.(numVerts, true);
+            for (i = 0; i < numVerts; i++) {
+                if ((len = vGroups[i].length) < 1)
+                    continue;
+                var clones = new number[](len, true);
+                vClones[i] = clones;
+                clones[0] = i;
+                var v0 = vertices[i];
+                for (j = 1; j < len; j++) {
+                    var v1 = new VertexVO;
+                    v1.x = v0.x;
+                    v1.y = v0.y;
+                    v1.z = v0.z;
+                    v1.u = v0.u;
+                    v1.v = v0.v;
+                    clones[j] = vertices.length;
+                    vertices.push(v1);
+                }
+            }
+            numVerts = vertices.length;
+            for (i = 0; i < numFaces; i++) {
+                face = FaceVO(faces[i]);
+                group = face.smoothGroup;
+                for (j = 0; j < 3; j++) {
+                    k = (j == 0) ? face.a : ((j == 1) ? face.b : face.c);
+                    groups = vGroups[k];
+                    len = groups.length;
+                    clones = vClones[k];
+                    for (l = 0; l < len; l++) {
+                        if (((group == 0) && (groups[l] == 0)) || ((group & groups[l]) > 0)) {
+                            var index = clones[l];
+                            if (group == 0) {
+                                // vertex is unique if no this.smoothGroup found
+                                groups.splice(l, 1);
+                                clones.splice(l, 1);
+                            }
+                            if (j == 0)
+                                face.a = index;
+                            else if (j == 1)
+                                face.b = index;
+                            else
+                                face.c = index;
+                            l = len;
+                        }
                     }
                 }
             }
-        }
-    }
-    finalizeCurrentMaterial();
-    {
-        var mat;
-        if (this.materialMode < 2) {
-            if (this._cur_mat.colorMap)
-                mat = new feng3d.TextureMaterial(this._cur_mat.colorMap.texture || feng3d.DefaultMaterialManager.getDefaultTexture());
-            else
-                mat = new feng3d.ColorMaterial(this._cur_mat.diffuseColor);
-            feng3d.SinglePassMaterialBase(mat).ambientColor = this._cur_mat.ambientColor;
-            feng3d.SinglePassMaterialBase(mat).specularColor = this._cur_mat.specularColor;
-        }
-        else {
-            if (this._cur_mat.colorMap)
-                mat = new feng3d.TextureMultiPassMaterial(this._cur_mat.colorMap.texture || feng3d.DefaultMaterialManager.getDefaultTexture());
-            else
-                mat = new feng3d.ColorMultiPassMaterial(this._cur_mat.diffuseColor);
-        }
-        mat.bothSides = this._cur_mat.twoSided;
-        finalizeAsset(mat, this._cur_mat.name);
-        this._materials[this._cur_mat.name] = this._cur_mat;
-        this._cur_mat.material = mat;
-        this._cur_mat = null;
-    }
-    readNulTermString();
-    string;
-    {
-        var chr;
-        var str = new string();
-        while ((chr = this._byteData.readUnsignedByte()) > 0)
-            str += string.fromCharCode(chr);
-        return str;
-    }
-    readTransform();
-    number[];
-    {
-        var data;
-        data = new number[](16, true);
-        // X axis
-        data[0] = this._byteData.readFloat(); // X
-        data[2] = this._byteData.readFloat(); // Z
-        data[1] = this._byteData.readFloat(); // Y
-        data[3] = 0;
-        // Z axis
-        data[8] = this._byteData.readFloat(); // X
-        data[10] = this._byteData.readFloat(); // Z
-        data[9] = this._byteData.readFloat(); // Y
-        data[11] = 0;
-        // Y Axis
-        data[4] = this._byteData.readFloat(); // X 
-        data[6] = this._byteData.readFloat(); // Z
-        data[5] = this._byteData.readFloat(); // Y
-        data[7] = 0;
-        // Translation
-        data[12] = this._byteData.readFloat(); // X
-        data[14] = this._byteData.readFloat(); // Z
-        data[13] = this._byteData.readFloat(); // Y
-        data[15] = 1;
-        return data;
-    }
-    readColor();
-    number;
-    {
-        var cid;
-        var len;
-        var r, g;
-        this.b;
-        number;
-        cid = this._byteData.readUnsignedShort();
-        len = this._byteData.readUnsignedInt();
-        switch (cid) {
-            case 0x0010:
-                r = this._byteData.readFloat() * 255;
-                g = this._byteData.readFloat() * 255;
-                this.b = this._byteData.readFloat() * 255;
-                break;
-            case 0x0011:
-                r = this._byteData.readUnsignedByte();
-                g = this._byteData.readUnsignedByte();
-                this.b = this._byteData.readUnsignedByte();
-                break;
-            default:
-                this._byteData.position += (len - 6);
-                break;
-        }
-        return (r << 16) | (g << 8) | this.b;
-    }
+        };
+        Max3DSParser.prototype.finalizeCurrentMaterial = function () {
+            var mat;
+            if (this.materialMode < 2) {
+                if (this._cur_mat.colorMap)
+                    mat = new feng3d.TextureMaterial(this._cur_mat.colorMap.texture || feng3d.DefaultMaterialManager.getDefaultTexture());
+                else
+                    mat = new feng3d.ColorMaterial(this._cur_mat.diffuseColor);
+                feng3d.SinglePassMaterialBase(mat).ambientColor = this._cur_mat.ambientColor;
+                feng3d.SinglePassMaterialBase(mat).specularColor = this._cur_mat.specularColor;
+            }
+            else {
+                if (this._cur_mat.colorMap)
+                    mat = new feng3d.TextureMultiPassMaterial(this._cur_mat.colorMap.texture || feng3d.DefaultMaterialManager.getDefaultTexture());
+                else
+                    mat = new feng3d.ColorMultiPassMaterial(this._cur_mat.diffuseColor);
+            }
+            mat.bothSides = this._cur_mat.twoSided;
+            finalizeAsset(mat, this._cur_mat.name);
+            this._materials[this._cur_mat.name] = this._cur_mat;
+            this._cur_mat.material = mat;
+            this._cur_mat = null;
+        };
+        Max3DSParser.prototype.readNulTermString = function () {
+            var chr;
+            var str = new string();
+            while ((chr = this._byteData.readUnsignedByte()) > 0)
+                str += string.fromCharCode(chr);
+            return str;
+        };
+        Max3DSParser.prototype.readTransform = function () {
+            var data;
+            data = new number[](16, true);
+            // X axis
+            data[0] = this._byteData.readFloat(); // X
+            data[2] = this._byteData.readFloat(); // Z
+            data[1] = this._byteData.readFloat(); // Y
+            data[3] = 0;
+            // Z axis
+            data[8] = this._byteData.readFloat(); // X
+            data[10] = this._byteData.readFloat(); // Z
+            data[9] = this._byteData.readFloat(); // Y
+            data[11] = 0;
+            // Y Axis
+            data[4] = this._byteData.readFloat(); // X 
+            data[6] = this._byteData.readFloat(); // Z
+            data[5] = this._byteData.readFloat(); // Y
+            data[7] = 0;
+            // Translation
+            data[12] = this._byteData.readFloat(); // X
+            data[14] = this._byteData.readFloat(); // Z
+            data[13] = this._byteData.readFloat(); // Y
+            data[15] = 1;
+            return data;
+        };
+        Max3DSParser.prototype.readColor = function () {
+            var cid;
+            var len;
+            var r, g;
+            this.b;
+            number;
+            cid = this._byteData.readUnsignedShort();
+            len = this._byteData.readUnsignedInt();
+            switch (cid) {
+                case 0x0010:
+                    r = this._byteData.readFloat() * 255;
+                    g = this._byteData.readFloat() * 255;
+                    this.b = this._byteData.readFloat() * 255;
+                    break;
+                case 0x0011:
+                    r = this._byteData.readUnsignedByte();
+                    g = this._byteData.readUnsignedByte();
+                    this.b = this._byteData.readUnsignedByte();
+                    break;
+                default:
+                    this._byteData.position += (len - 6);
+                    break;
+            }
+            return (r << 16) | (g << 8) | this.b;
+        };
+        return Max3DSParser;
+    }(feng3d.ParserBase));
+    feng3d.Max3DSParser = Max3DSParser;
 })(feng3d || (feng3d = {}));
 internal;
 var TextureVO = (function () {
@@ -21536,639 +21588,681 @@ var feng3d;
          * @param extension 文件类型
          * @return
          */
-        OBJParser.function = supportsType(extension, string);
+        OBJParser.supportsType = function (extension) {
+            extension = extension.toLowerCase();
+            return extension == "obj";
+        };
+        /**
+         * 判断是否支持该数据的解析
+         * @param data 需要解析的数据
+         * @return
+         */
+        OBJParser.supportsData = function (data) {
+            if (data === void 0) { data =  * ; }
+            var content = feng3d.ParserUtil.toString(data);
+            var hasV;
+            var hasF;
+            if (content) {
+                hasV = content.indexOf("\nv ") != -1;
+                hasF = content.indexOf("\nf ") != -1;
+            }
+            return hasV && hasF;
+        };
+        OBJParser.prototype.resolveDependency = function (resourceDependency) {
+            if (resourceDependency.id == 'mtl') {
+                var str = feng3d.ParserUtil.toString(resourceDependency.data);
+                this.parseMtl(str);
+            }
+            else {
+                var asset;
+                if (resourceDependency.assets.length != 1)
+                    return;
+                asset = resourceDependency.assets[0];
+                if (asset.namedAsset.assetType == feng3d.AssetType.TEXTURE) {
+                    var lm = new LoadedMaterial();
+                    lm.materialID = resourceDependency.id;
+                    lm.texture = asset;
+                    this._materialLoaded.push(lm);
+                    if (this._meshes.length > 0)
+                        this.applyMaterial(lm);
+                }
+            }
+        };
+        OBJParser.prototype.resolveDependencyFailure = function (resourceDependency) {
+            if (resourceDependency.id == "mtl") {
+                this._mtlLib = false;
+                this._mtlLibLoaded = false;
+            }
+            else {
+                var lm = new LoadedMaterial();
+                lm.materialID = resourceDependency.id;
+                this._materialLoaded.push(lm);
+            }
+            if (this._meshes.length > 0)
+                this.applyMaterial(lm);
+        };
+        OBJParser.prototype.proceedParsing = function () {
+            //单行数据
+            var line;
+            //换行符
+            var creturn = string.fromCharCode(10);
+            var trunk;
+            if (!this._startedParsing) {
+                this._textData = getTextData();
+                // Merge linebreaks that are immediately preceeded by
+                // the "escape" backward slash into single lines.
+                this._textData = this._textData.replace(/\\[\r\n]+\s*/gm, ' ');
+            }
+            if (this._textData.indexOf(creturn) == -1)
+                creturn = string.fromCharCode(13);
+            //初始化数据
+            if (!this._startedParsing) {
+                this._startedParsing = true;
+                this._vertices = new feng3d.Vertex[]();
+                this._vertexNormals = new feng3d.Vertex[]();
+                this._materialIDs = new string[]();
+                this._materialLoaded = new LoadedMaterial[]();
+                this._meshes = new feng3d.Mesh[]();
+                this._uvs = new feng3d.UV[]();
+                this._stringLength = this._textData.length;
+                this._charIndex = this._textData.indexOf(creturn, 0);
+                this._oldIndex = 0;
+                this._objects = new ObjectGroup[]();
+                this._objectIndex = 0;
+            }
+            //判断是否解析完毕与是否还有时间
+            while (this._charIndex < this._stringLength && hasTime()) {
+                this._charIndex = this._textData.indexOf(creturn, this._oldIndex);
+                if (this._charIndex == -1)
+                    this._charIndex = this._stringLength;
+                //获取单行数据 整理数据格式
+                line = this._textData.substring(this._oldIndex, this._charIndex);
+                line = line.split('\r').join("");
+                line = line.replace("  ", " ");
+                trunk = line.split(" ");
+                this._oldIndex = this._charIndex + 1;
+                //解析该行数据
+                this.parseLine(trunk);
+                //处理暂停
+                if (this.parsingPaused)
+                    return MORE_TO_PARSE;
+            }
+            //数据解析到文件未
+            if (this._charIndex >= this._stringLength) {
+                //判断是否还需要等待材质解析
+                if (this._mtlLib && !this._mtlLibLoaded)
+                    return MORE_TO_PARSE;
+                this.translate();
+                this.applyMaterials();
+                return PARSING_DONE;
+            }
+            return MORE_TO_PARSE;
+        };
+        /**
+         * 解析行
+         */
+        OBJParser.prototype.parseLine = function (trunk) {
+            switch (trunk[0]) {
+                case "mtllib":
+                    this._mtlLib = true;
+                    this._mtlLibLoaded = false;
+                    this.loadMtl(trunk[1]);
+                    break;
+                case "g":
+                    this.createGroup(trunk);
+                    break;
+                case "o":
+                    this.createObject(trunk);
+                    break;
+                case "usemtl":
+                    if (this._mtlLib) {
+                        if (!trunk[1])
+                            trunk[1] = "def000";
+                        this._materialIDs.push(trunk[1]);
+                        this._activeMaterialID = trunk[1];
+                        if (this._currentGroup)
+                            this._currentGroup.materialID = this._activeMaterialID;
+                    }
+                    break;
+                case "v":
+                    this.parseVertex(trunk);
+                    break;
+                case "vt":
+                    this.parseUV(trunk);
+                    break;
+                case "vn":
+                    this.parseVertexNormal(trunk);
+                    break;
+                case "f":
+                    this.parseFace(trunk);
+            }
+        };
+        /**
+         * 把解析出来的数据转换成引擎使用的数据结构
+         */
+        OBJParser.prototype.translate = function () {
+            for (var objIndex = 0; objIndex < this._objects.length; ++objIndex) {
+                var groups = this._objects[objIndex].groups;
+                var numGroups = groups.length;
+                var materialGroups;
+                var numMaterialGroups;
+                var geometry;
+                var mesh;
+                var m;
+                var sm;
+                var bmMaterial;
+                for (var g = 0; g < numGroups; ++g) {
+                    geometry = new feng3d.Geometry();
+                    materialGroups = groups[g].materialGroups;
+                    numMaterialGroups = materialGroups.length;
+                    //添加子网格
+                    for (m = 0; m < numMaterialGroups; ++m)
+                        this.translateMaterialGroup(materialGroups[m], geometry);
+                    if (geometry.subGeometries.length == 0)
+                        continue;
+                    //完成几何体资源解析
+                    finalizeAsset(geometry, "");
+                    if (this.materialMode < 2)
+                        bmMaterial = new feng3d.TextureMaterial(feng3d.DefaultMaterialManager.getDefaultTexture());
+                    else
+                        bmMaterial = new feng3d.TextureMultiPassMaterial(feng3d.DefaultMaterialManager.getDefaultTexture());
+                    //创建网格
+                    mesh = new feng3d.Mesh(geometry, bmMaterial);
+                    //网格命名
+                    if (this._objects[objIndex].name) {
+                        //使用'o'标签给网格命名
+                        mesh.name = this._objects[objIndex].name;
+                    }
+                    else if (groups[g].name) {
+                        //使用'g'标签给网格命名
+                        mesh.name = groups[g].name;
+                    }
+                    else {
+                        mesh.name = "";
+                    }
+                    this._meshes.push(mesh);
+                    //给材质命名
+                    if (groups[g].materialID != "")
+                        bmMaterial.name = groups[g].materialID + "~" + mesh.name;
+                    else
+                        bmMaterial.name = this._lastMtlID + "~" + mesh.name;
+                    //子网使用材质
+                    if (mesh.subMeshes.length > 1) {
+                        for (sm = 1; sm < mesh.subMeshes.length; ++sm)
+                            mesh.subMeshes[sm].material = bmMaterial;
+                    }
+                    finalizeAsset(mesh);
+                }
+            }
+        };
+        /**
+         * 转换材质组为子网格
+         * @param materialGroup 材质组网格数据
+         * @param geometry 解析出子网格的父网格
+         */
+        OBJParser.prototype.translateMaterialGroup = function (materialGroup, geometry) {
+            var faces = materialGroup.faces;
+            var face;
+            var numFaces = faces.length;
+            var numVerts;
+            var subs;
+            var vertices = new number[]();
+            var uvs = new number[]();
+            var normals = new number[]();
+            var indices = new number[]();
+            this._realIndices = [];
+            this._vertexIndex = 0;
+            //解析面数据
+            var j;
+            for (var i = 0; i < numFaces; ++i) {
+                face = faces[i];
+                numVerts = face.indexIds.length - 1;
+                //兼容多边形(拆分成N-1个三角形)
+                for (j = 1; j < numVerts; ++j) {
+                    this.translateVertexData(face, j, vertices, uvs, indices, normals);
+                    this.translateVertexData(face, 0, vertices, uvs, indices, normals);
+                    this.translateVertexData(face, j + 1, vertices, uvs, indices, normals);
+                }
+            }
+            //创建 子网格
+            if (vertices.length > 0) {
+                subs = feng3d.GeomUtil.fromVectors(vertices, indices, uvs, null, null);
+                for (i = 0; i < subs.length; i++)
+                    geometry.addSubGeometry(subs[i]);
+            }
+        };
+        /**
+         * 把面数据转换为顶点等数据
+         * @param face
+         * @param vertexIndex
+         * @param vertices
+         * @param uvs
+         * @param indices
+         * @param normals
+         */
+        OBJParser.prototype.translateVertexData = function (face, vertexIndex, vertices, uvs, indices, normals) {
+            var index;
+            var vertex;
+            var vertexNormal;
+            var uv;
+            if (!this._realIndices[face.indexIds[vertexIndex]]) {
+                index = this._vertexIndex;
+                this._realIndices[face.indexIds[vertexIndex]] = ++this._vertexIndex;
+                vertex = this._vertices[face.vertexIndices[vertexIndex] - 1];
+                vertices.push(vertex.x * this._scale, vertex.y * this._scale, vertex.z * this._scale);
+                if (face.normalIndices.length > 0) {
+                    vertexNormal = this._vertexNormals[face.normalIndices[vertexIndex] - 1];
+                    normals.push(vertexNormal.x, vertexNormal.y, vertexNormal.z);
+                }
+                if (face.uvIndices.length > 0) {
+                    try {
+                        uv = this._uvs[face.uvIndices[vertexIndex] - 1];
+                        uvs.push(uv.u, uv.v);
+                    }
+                    catch (e) {
+                        switch (vertexIndex) {
+                            case 0:
+                                uvs.push(0, 1);
+                                break;
+                            case 1:
+                                uvs.push(.5, 0);
+                                break;
+                            case 2:
+                                uvs.push(1, 1);
+                        }
+                    }
+                }
+            }
+            else
+                index = this._realIndices[face.indexIds[vertexIndex]] - 1;
+            indices.push(index);
+        };
+        /**
+         * 创建对象组
+         * @param trunk 包含材料标记的数据块和它的参数
+         */
+        OBJParser.prototype.createObject = function (trunk) {
+            this._currentGroup = null;
+            this._currentMaterialGroup = null;
+            this._objects.push(this._currentObject = new ObjectGroup());
+            if (trunk)
+                this._currentObject.name = trunk[1];
+        };
+        /**
+         * 创建一个组
+         * @param trunk 包含材料标记的数据块和它的参数
+         */
+        OBJParser.prototype.createGroup = function (trunk) {
+            if (!this._currentObject)
+                this.createObject(null);
+            this._currentGroup = new Group();
+            this._currentGroup.materialID = this._activeMaterialID;
+            if (trunk)
+                this._currentGroup.name = trunk[1];
+            this._currentObject.groups.push(this._currentGroup);
+            this.createMaterialGroup(null);
+        };
+        /**
+         * 创建材质组
+         * @param trunk 包含材料标记的数据块和它的参数
+         */
+        OBJParser.prototype.createMaterialGroup = function (trunk) {
+            this._currentMaterialGroup = new MaterialGroup();
+            if (trunk)
+                this._currentMaterialGroup.url = trunk[1];
+            this._currentGroup.materialGroups.push(this._currentMaterialGroup);
+        };
+        /**
+         * 解析顶点坐标数据
+         * @param trunk 坐标数据
+         */
+        OBJParser.prototype.parseVertex = function (trunk) {
+            if (trunk.length > 4) {
+                var nTrunk = [];
+                var val;
+                for (var i = 1; i < trunk.length; ++i) {
+                    val = parseFloat(trunk[i]);
+                    if (!isNaN(val))
+                        nTrunk.push(val);
+                }
+                this._vertices.push(new feng3d.Vertex(nTrunk[0], nTrunk[1], -nTrunk[2]));
+            }
+            else
+                this._vertices.push(new feng3d.Vertex(parseFloat(trunk[1]), parseFloat(trunk[2]), -parseFloat(trunk[3])));
+        };
+        /**
+         * 解析uv
+         * @param trunk uv数据
+         */
+        OBJParser.prototype.parseUV = function (trunk) {
+            if (trunk.length > 3) {
+                var nTrunk = [];
+                var val;
+                //获取有效数字
+                for (var i = 1; i < trunk.length; ++i) {
+                    val = parseFloat(trunk[i]);
+                    if (!isNaN(val))
+                        nTrunk.push(val);
+                }
+                this._uvs.push(new feng3d.UV(nTrunk[0], 1 - nTrunk[1]));
+            }
+            else
+                this._uvs.push(new feng3d.UV(parseFloat(trunk[1]), 1 - parseFloat(trunk[2])));
+        };
+        /**
+         * 解析顶点法线
+         * @param trunk 法线数据
+         */
+        OBJParser.prototype.parseVertexNormal = function (trunk) {
+            if (trunk.length > 4) {
+                var nTrunk = [];
+                var val;
+                //获取有效数字
+                for (var i = 1; i < trunk.length; ++i) {
+                    val = parseFloat(trunk[i]);
+                    if (!isNaN(val))
+                        nTrunk.push(val);
+                }
+                this._vertexNormals.push(new feng3d.Vertex(nTrunk[0], nTrunk[1], -nTrunk[2]));
+            }
+            else
+                this._vertexNormals.push(new feng3d.Vertex(parseFloat(trunk[1]), parseFloat(trunk[2]), -parseFloat(trunk[3])));
+        };
+        /**
+         * 解析面
+         * @param trunk 面数据
+         */
+        OBJParser.prototype.parseFace = function (trunk) {
+            var len = trunk.length;
+            var face = new FaceData();
+            if (!this._currentGroup)
+                this.createGroup(null);
+            var indices;
+            for (var i = 1; i < len; ++i) {
+                if (trunk[i] == "")
+                    continue;
+                //解析单个面数据，分离出顶点坐标左右、uv索引、法线索引
+                indices = trunk[i].split("/");
+                face.vertexIndices.push(this.parseIndex(parseInt(indices[0]), this._vertices.length));
+                if (indices[1] && string(indices[1]).length > 0)
+                    face.uvIndices.push(this.parseIndex(parseInt(indices[1]), this._uvs.length));
+                if (indices[2] && string(indices[2]).length > 0)
+                    face.normalIndices.push(this.parseIndex(parseInt(indices[2]), this._vertexNormals.length));
+                face.indexIds.push(trunk[i]);
+            }
+            this._currentMaterialGroup.faces.push(face);
+        };
+        /**
+         * This is a hack around negative face coords
+         */
+        OBJParser.prototype.parseIndex = function (index, length) {
+            if (index < 0)
+                return index + length + 1;
+            else
+                return index;
+        };
+        /**
+         * 解析材质数据
+         * @param data 材质数据
+         */
+        OBJParser.prototype.parseMtl = function (data) {
+            var materialDefinitions = data.split('newmtl');
+            var lines;
+            var trunk;
+            var j;
+            var basicSpecularMethod;
+            var useSpecular;
+            var useColor;
+            var diffuseColor;
+            var ambientColor;
+            var specularColor;
+            var specular;
+            var alpha;
+            var mapkd;
+            for (var i = 0; i < materialDefinitions.length; ++i) {
+                lines = materialDefinitions[i].split('\r').join("").split('\n');
+                if (lines.length == 1)
+                    lines = materialDefinitions[i].split(string.fromCharCode(13));
+                diffuseColor = ambientColor = specularColor = 0xFFFFFF;
+                specular = 0;
+                useSpecular = false;
+                useColor = false;
+                alpha = 1;
+                mapkd = "";
+                for (j = 0; j < lines.length; ++j) {
+                    lines[j] = lines[j].replace(/\s+$/, "");
+                    if (lines[j].substring(0, 1) != "#" && (j == 0 || lines[j] != "")) {
+                        trunk = lines[j].split(" ");
+                        if (string(trunk[0]).charCodeAt(0) == 9 || string(trunk[0]).charCodeAt(0) == 32)
+                            trunk[0] = trunk[0].substring(1, trunk[0].length);
+                        if (j == 0) {
+                            this._lastMtlID = trunk.join("");
+                            this._lastMtlID = (this._lastMtlID == "") ? "def000" : this._lastMtlID;
+                        }
+                        else {
+                            switch (trunk[0]) {
+                                case "Ka":
+                                    if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3])))
+                                        ambientColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
+                                    break;
+                                case "Ks":
+                                    if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3]))) {
+                                        specularColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
+                                        useSpecular = true;
+                                    }
+                                    break;
+                                case "Ns":
+                                    if (trunk[1] && !isNaN(number(trunk[1])))
+                                        specular = number(trunk[1]) * 0.001;
+                                    if (specular == 0)
+                                        useSpecular = false;
+                                    break;
+                                case "Kd":
+                                    if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3]))) {
+                                        diffuseColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
+                                        useColor = true;
+                                    }
+                                    break;
+                                case "tr":
+                                case "d":
+                                    if (trunk[1] && !isNaN(number(trunk[1])))
+                                        alpha = number(trunk[1]);
+                                    break;
+                                case "map_Kd":
+                                    mapkd = this.parseMapKdString(trunk);
+                                    mapkd = mapkd.replace(/\\/g, "/");
+                            }
+                        }
+                    }
+                }
+                if (mapkd != "") {
+                    if (useSpecular) {
+                        basicSpecularMethod = new feng3d.BasicSpecularMethod();
+                        basicSpecularMethod.specularColor = specularColor;
+                        basicSpecularMethod.specular = specular;
+                        var specularData = new SpecularData();
+                        specularData.alpha = alpha;
+                        specularData.basicSpecularMethod = basicSpecularMethod;
+                        specularData.materialID = this._lastMtlID;
+                        if (!this._materialSpecularData)
+                            this._materialSpecularData = new SpecularData[]();
+                        this._materialSpecularData.push(specularData);
+                    }
+                    //添加材质依赖性
+                    addDependency(this._lastMtlID, new URLRequest(mapkd));
+                }
+                else if (useColor && !isNaN(diffuseColor)) {
+                    var lm = new LoadedMaterial();
+                    lm.materialID = this._lastMtlID;
+                    if (alpha == 0)
+                        trace("Warning: an alpha value of 0 was found in mtl color tag (Tr or d) ref:" + this._lastMtlID + ", mesh(es) using it will be invisible!");
+                    var cm;
+                    if (this.materialMode < 2) {
+                        cm = new feng3d.ColorMaterial(diffuseColor);
+                        feng3d.ColorMaterial(cm).alpha = alpha;
+                        feng3d.ColorMaterial(cm).ambientColor = ambientColor;
+                        feng3d.ColorMaterial(cm).repeat = true;
+                        if (useSpecular) {
+                            feng3d.ColorMaterial(cm).specularColor = specularColor;
+                            feng3d.ColorMaterial(cm).specular = specular;
+                        }
+                    }
+                    else {
+                        cm = new feng3d.ColorMultiPassMaterial(diffuseColor);
+                        feng3d.ColorMultiPassMaterial(cm).ambientColor = ambientColor;
+                        feng3d.ColorMultiPassMaterial(cm).repeat = true;
+                        if (useSpecular) {
+                            feng3d.ColorMultiPassMaterial(cm).specularColor = specularColor;
+                            feng3d.ColorMultiPassMaterial(cm).specular = specular;
+                        }
+                    }
+                    lm.cm = cm;
+                    this._materialLoaded.push(lm);
+                    if (this._meshes.length > 0)
+                        this.applyMaterial(lm);
+                }
+            }
+            this._mtlLibLoaded = true;
+        };
+        OBJParser.prototype.parseMapKdString = function (trunk) {
+            var url = "";
+            var i;
+            var breakflag;
+            for (i = 1; i < trunk.length;) {
+                switch (trunk[i]) {
+                    case "-blendu":
+                    case "-blendv":
+                    case "-cc":
+                    case "-clamp":
+                    case "-texres":
+                        i += 2; //Skip ahead 1 attribute
+                        break;
+                    case "-mm":
+                        i += 3; //Skip ahead 2 attributes
+                        break;
+                    case "-o":
+                    case "-s":
+                    case "-t":
+                        i += 4; //Skip ahead 3 attributes
+                        continue;
+                    default:
+                        breakflag = true;
+                        break;
+                }
+                if (breakflag)
+                    break;
+            }
+            //Reconstruct URL/filename
+            for (i; i < trunk.length; i++) {
+                url += trunk[i];
+                url += " ";
+            }
+            //Remove the extraneous space and/or newline from the right side
+            url = url.replace(/\s+$/, "");
+            return url;
+        };
+        /**
+         * 加载材质
+         * @param mtlurl 材质地址
+         */
+        OBJParser.prototype.loadMtl = function (mtlurl) {
+            //添加 材质 资源依赖，暂停解析
+            addDependency('mtl', new URLRequest(mtlurl), true);
+            pauseAndRetrieveDependencies();
+        };
+        /**
+         * 应用材质
+         * @param lm 加载到的材质
+         */
+        OBJParser.prototype.applyMaterial = function (lm) {
+            var decomposeID;
+            var mesh;
+            var mat;
+            var j;
+            var specularData;
+            for (var i = 0; i < this._meshes.length; ++i) {
+                mesh = this._meshes[i];
+                decomposeID = mesh.material.name.split("~");
+                if (decomposeID[0] == lm.materialID) {
+                    if (lm.cm) {
+                        if (mesh.material)
+                            mesh.material = null;
+                        mesh.material = lm.cm;
+                    }
+                    else if (lm.texture) {
+                        if (this.materialMode < 2) {
+                            mat = feng3d.TextureMaterial(mesh.material);
+                            feng3d.TextureMaterial(mat).texture = lm.texture;
+                            feng3d.TextureMaterial(mat).ambientColor = lm.ambientColor;
+                            feng3d.TextureMaterial(mat).alpha = lm.alpha;
+                            feng3d.TextureMaterial(mat).repeat = true;
+                            if (lm.specularMethod) {
+                                // By setting the this.specularMethod property to null before assigning
+                                // the actual method instance, we avoid having the properties of
+                                // the new method being overridden with the settings from the old
+                                // one, which is default behavior of the setter.
+                                feng3d.TextureMaterial(mat).specularMethod = null;
+                                feng3d.TextureMaterial(mat).specularMethod = lm.specularMethod;
+                            }
+                            else if (this._materialSpecularData) {
+                                for (j = 0; j < this._materialSpecularData.length; ++j) {
+                                    specularData = this._materialSpecularData[j];
+                                    if (specularData.materialID == lm.materialID) {
+                                        feng3d.TextureMaterial(mat).specularMethod = null; // Prevent property overwrite (see above)
+                                        feng3d.TextureMaterial(mat).specularMethod = specularData.basicSpecularMethod;
+                                        feng3d.TextureMaterial(mat).ambientColor = specularData.ambientColor;
+                                        feng3d.TextureMaterial(mat).alpha = specularData.alpha;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            mat = feng3d.TextureMultiPassMaterial(mesh.material);
+                            feng3d.TextureMultiPassMaterial(mat).texture = lm.texture;
+                            feng3d.TextureMultiPassMaterial(mat).ambientColor = lm.ambientColor;
+                            feng3d.TextureMultiPassMaterial(mat).repeat = true;
+                            if (lm.specularMethod) {
+                                // By setting the this.specularMethod property to null before assigning
+                                // the actual method instance, we avoid having the properties of
+                                // the new method being overridden with the settings from the old
+                                // one, which is default behavior of the setter.
+                                feng3d.TextureMultiPassMaterial(mat).specularMethod = null;
+                                feng3d.TextureMultiPassMaterial(mat).specularMethod = lm.specularMethod;
+                            }
+                            else if (this._materialSpecularData) {
+                                for (j = 0; j < this._materialSpecularData.length; ++j) {
+                                    specularData = this._materialSpecularData[j];
+                                    if (specularData.materialID == lm.materialID) {
+                                        feng3d.TextureMultiPassMaterial(mat).specularMethod = null; // Prevent property overwrite (see above)
+                                        feng3d.TextureMultiPassMaterial(mat).specularMethod = specularData.basicSpecularMethod;
+                                        feng3d.TextureMultiPassMaterial(mat).ambientColor = specularData.ambientColor;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    mesh.material.name = decomposeID[1] ? decomposeID[1] : decomposeID[0];
+                    this._meshes.splice(i, 1);
+                    --i;
+                }
+            }
+            if (lm.cm || mat)
+                finalizeAsset(lm.cm || mat);
+        };
+        /**
+         * 应用材质
+         */
+        OBJParser.prototype.applyMaterials = function () {
+            if (this._materialLoaded.length == 0)
+                return;
+            for (var i = 0; i < this._materialLoaded.length; ++i)
+                this.applyMaterial(this._materialLoaded[i]);
+        };
         return OBJParser;
     }(feng3d.ParserBase));
     feng3d.OBJParser = OBJParser;
-    {
-        extension = extension.toLowerCase();
-        return extension == "obj";
-    }
-    /**
-     * 判断是否支持该数据的解析
-     * @param data 需要解析的数据
-     * @return
-     */
-    function supportsData(data) {
-        if (data === void 0) { data =  * ; }
-        var content = feng3d.ParserUtil.toString(data);
-        var hasV;
-        var hasF;
-        if (content) {
-            hasV = content.indexOf("\nv ") != -1;
-            hasF = content.indexOf("\nf ") != -1;
-        }
-        return hasV && hasF;
-    }
-    resolveDependency(resourceDependency, feng3d.ResourceDependency);
-    {
-        if (resourceDependency.id == 'mtl') {
-            var str = feng3d.ParserUtil.toString(resourceDependency.data);
-            this.parseMtl(str);
-        }
-        else {
-            var asset;
-            if (resourceDependency.assets.length != 1)
-                return;
-            asset = resourceDependency.assets[0];
-            if (asset.namedAsset.assetType == feng3d.AssetType.TEXTURE) {
-                var lm = new LoadedMaterial();
-                lm.materialID = resourceDependency.id;
-                lm.texture = asset;
-                this._materialLoaded.push(lm);
-                if (this._meshes.length > 0)
-                    this.applyMaterial(lm);
-            }
-        }
-    }
-    resolveDependencyFailure(resourceDependency, feng3d.ResourceDependency);
-    {
-        if (resourceDependency.id == "mtl") {
-            this._mtlLib = false;
-            this._mtlLibLoaded = false;
-        }
-        else {
-            var lm = new LoadedMaterial();
-            lm.materialID = resourceDependency.id;
-            this._materialLoaded.push(lm);
-        }
-        if (this._meshes.length > 0)
-            this.applyMaterial(lm);
-    }
-    proceedParsing();
-    boolean;
-    {
-        //单行数据
-        var line;
-        //换行符
-        var creturn = string.fromCharCode(10);
-        var trunk;
-        if (!this._startedParsing) {
-            this._textData = getTextData();
-            // Merge linebreaks that are immediately preceeded by
-            // the "escape" backward slash into single lines.
-            this._textData = this._textData.replace(/\\[\r\n]+\s*/gm, ' ');
-        }
-        if (this._textData.indexOf(creturn) == -1)
-            creturn = string.fromCharCode(13);
-        //初始化数据
-        if (!this._startedParsing) {
-            this._startedParsing = true;
-            this._vertices = new feng3d.Vertex[]();
-            this._vertexNormals = new feng3d.Vertex[]();
-            this._materialIDs = new string[]();
-            this._materialLoaded = new LoadedMaterial[]();
-            this._meshes = new feng3d.Mesh[]();
-            this._uvs = new feng3d.UV[]();
-            this._stringLength = this._textData.length;
-            this._charIndex = this._textData.indexOf(creturn, 0);
-            this._oldIndex = 0;
-            this._objects = new ObjectGroup[]();
-            this._objectIndex = 0;
-        }
-        //判断是否解析完毕与是否还有时间
-        while (this._charIndex < this._stringLength && hasTime()) {
-            this._charIndex = this._textData.indexOf(creturn, this._oldIndex);
-            if (this._charIndex == -1)
-                this._charIndex = this._stringLength;
-            //获取单行数据 整理数据格式
-            line = this._textData.substring(this._oldIndex, this._charIndex);
-            line = line.split('\r').join("");
-            line = line.replace("  ", " ");
-            trunk = line.split(" ");
-            this._oldIndex = this._charIndex + 1;
-            //解析该行数据
-            this.parseLine(trunk);
-            //处理暂停
-            if (this.parsingPaused)
-                return MORE_TO_PARSE;
-        }
-        //数据解析到文件未
-        if (this._charIndex >= this._stringLength) {
-            //判断是否还需要等待材质解析
-            if (this._mtlLib && !this._mtlLibLoaded)
-                return MORE_TO_PARSE;
-            this.translate();
-            this.applyMaterials();
-            return PARSING_DONE;
-        }
-        return MORE_TO_PARSE;
-    }
-    parseLine(trunk, Array);
-    {
-        switch (trunk[0]) {
-            case "mtllib":
-                this._mtlLib = true;
-                this._mtlLibLoaded = false;
-                this.loadMtl(trunk[1]);
-                break;
-            case "g":
-                this.createGroup(trunk);
-                break;
-            case "o":
-                this.createObject(trunk);
-                break;
-            case "usemtl":
-                if (this._mtlLib) {
-                    if (!trunk[1])
-                        trunk[1] = "def000";
-                    this._materialIDs.push(trunk[1]);
-                    this._activeMaterialID = trunk[1];
-                    if (this._currentGroup)
-                        this._currentGroup.materialID = this._activeMaterialID;
-                }
-                break;
-            case "v":
-                this.parseVertex(trunk);
-                break;
-            case "vt":
-                this.parseUV(trunk);
-                break;
-            case "vn":
-                this.parseVertexNormal(trunk);
-                break;
-            case "f":
-                this.parseFace(trunk);
-        }
-    }
-    translate();
-    {
-        for (var objIndex = 0; objIndex < this._objects.length; ++objIndex) {
-            var groups = this._objects[objIndex].groups;
-            var numGroups = groups.length;
-            var materialGroups;
-            var numMaterialGroups;
-            var geometry;
-            var mesh;
-            var m;
-            var sm;
-            var bmMaterial;
-            for (var g = 0; g < numGroups; ++g) {
-                geometry = new feng3d.Geometry();
-                materialGroups = groups[g].materialGroups;
-                numMaterialGroups = materialGroups.length;
-                //添加子网格
-                for (m = 0; m < numMaterialGroups; ++m)
-                    this.translateMaterialGroup(materialGroups[m], geometry);
-                if (geometry.subGeometries.length == 0)
-                    continue;
-                //完成几何体资源解析
-                finalizeAsset(geometry, "");
-                if (this.materialMode < 2)
-                    bmMaterial = new feng3d.TextureMaterial(feng3d.DefaultMaterialManager.getDefaultTexture());
-                else
-                    bmMaterial = new feng3d.TextureMultiPassMaterial(feng3d.DefaultMaterialManager.getDefaultTexture());
-                //创建网格
-                mesh = new feng3d.Mesh(geometry, bmMaterial);
-                //网格命名
-                if (this._objects[objIndex].name) {
-                    //使用'o'标签给网格命名
-                    mesh.name = this._objects[objIndex].name;
-                }
-                else if (groups[g].name) {
-                    //使用'g'标签给网格命名
-                    mesh.name = groups[g].name;
-                }
-                else {
-                    mesh.name = "";
-                }
-                this._meshes.push(mesh);
-                //给材质命名
-                if (groups[g].materialID != "")
-                    bmMaterial.name = groups[g].materialID + "~" + mesh.name;
-                else
-                    bmMaterial.name = this._lastMtlID + "~" + mesh.name;
-                //子网使用材质
-                if (mesh.subMeshes.length > 1) {
-                    for (sm = 1; sm < mesh.subMeshes.length; ++sm)
-                        mesh.subMeshes[sm].material = bmMaterial;
-                }
-                finalizeAsset(mesh);
-            }
-        }
-    }
-    translateMaterialGroup(materialGroup, MaterialGroup, geometry, feng3d.Geometry);
-    {
-        var faces = materialGroup.faces;
-        var face;
-        var numFaces = faces.length;
-        var numVerts;
-        var subs;
-        var vertices = new number[]();
-        var uvs = new number[]();
-        var normals = new number[]();
-        var indices = new number[]();
-        this._realIndices = [];
-        this._vertexIndex = 0;
-        //解析面数据
-        var j;
-        for (var i = 0; i < numFaces; ++i) {
-            face = faces[i];
-            numVerts = face.indexIds.length - 1;
-            //兼容多边形(拆分成N-1个三角形)
-            for (j = 1; j < numVerts; ++j) {
-                this.translateVertexData(face, j, vertices, uvs, indices, normals);
-                this.translateVertexData(face, 0, vertices, uvs, indices, normals);
-                this.translateVertexData(face, j + 1, vertices, uvs, indices, normals);
-            }
-        }
-        //创建 子网格
-        if (vertices.length > 0) {
-            subs = feng3d.GeomUtil.fromVectors(vertices, indices, uvs, null, null);
-            for (i = 0; i < subs.length; i++)
-                geometry.addSubGeometry(subs[i]);
-        }
-    }
-    translateVertexData(face, FaceData, vertexIndex, number, vertices, number[], uvs, number[], indices, number[], normals, number[]);
-    {
-        var index;
-        var vertex;
-        var vertexNormal;
-        var uv;
-        if (!this._realIndices[face.indexIds[vertexIndex]]) {
-            index = this._vertexIndex;
-            this._realIndices[face.indexIds[vertexIndex]] = ++this._vertexIndex;
-            vertex = this._vertices[face.vertexIndices[vertexIndex] - 1];
-            vertices.push(vertex.x * this._scale, vertex.y * this._scale, vertex.z * this._scale);
-            if (face.normalIndices.length > 0) {
-                vertexNormal = this._vertexNormals[face.normalIndices[vertexIndex] - 1];
-                normals.push(vertexNormal.x, vertexNormal.y, vertexNormal.z);
-            }
-            if (face.uvIndices.length > 0) {
-                try {
-                    uv = this._uvs[face.uvIndices[vertexIndex] - 1];
-                    uvs.push(uv.u, uv.v);
-                }
-                catch (e) {
-                    switch (vertexIndex) {
-                        case 0:
-                            uvs.push(0, 1);
-                            break;
-                        case 1:
-                            uvs.push(.5, 0);
-                            break;
-                        case 2:
-                            uvs.push(1, 1);
-                    }
-                }
-            }
-        }
-        else
-            index = this._realIndices[face.indexIds[vertexIndex]] - 1;
-        indices.push(index);
-    }
-    createObject(trunk, Array);
-    {
-        this._currentGroup = null;
-        this._currentMaterialGroup = null;
-        this._objects.push(this._currentObject = new ObjectGroup());
-        if (trunk)
-            this._currentObject.name = trunk[1];
-    }
-    createGroup(trunk, Array);
-    {
-        if (!this._currentObject)
-            this.createObject(null);
-        this._currentGroup = new Group();
-        this._currentGroup.materialID = this._activeMaterialID;
-        if (trunk)
-            this._currentGroup.name = trunk[1];
-        this._currentObject.groups.push(this._currentGroup);
-        this.createMaterialGroup(null);
-    }
-    createMaterialGroup(trunk, Array);
-    {
-        this._currentMaterialGroup = new MaterialGroup();
-        if (trunk)
-            this._currentMaterialGroup.url = trunk[1];
-        this._currentGroup.materialGroups.push(this._currentMaterialGroup);
-    }
-    parseVertex(trunk, Array);
-    {
-        if (trunk.length > 4) {
-            var nTrunk = [];
-            var val;
-            for (var i = 1; i < trunk.length; ++i) {
-                val = parseFloat(trunk[i]);
-                if (!isNaN(val))
-                    nTrunk.push(val);
-            }
-            this._vertices.push(new feng3d.Vertex(nTrunk[0], nTrunk[1], -nTrunk[2]));
-        }
-        else
-            this._vertices.push(new feng3d.Vertex(parseFloat(trunk[1]), parseFloat(trunk[2]), -parseFloat(trunk[3])));
-    }
-    parseUV(trunk, Array);
-    {
-        if (trunk.length > 3) {
-            var nTrunk = [];
-            var val;
-            //获取有效数字
-            for (var i = 1; i < trunk.length; ++i) {
-                val = parseFloat(trunk[i]);
-                if (!isNaN(val))
-                    nTrunk.push(val);
-            }
-            this._uvs.push(new feng3d.UV(nTrunk[0], 1 - nTrunk[1]));
-        }
-        else
-            this._uvs.push(new feng3d.UV(parseFloat(trunk[1]), 1 - parseFloat(trunk[2])));
-    }
-    parseVertexNormal(trunk, Array);
-    {
-        if (trunk.length > 4) {
-            var nTrunk = [];
-            var val;
-            //获取有效数字
-            for (var i = 1; i < trunk.length; ++i) {
-                val = parseFloat(trunk[i]);
-                if (!isNaN(val))
-                    nTrunk.push(val);
-            }
-            this._vertexNormals.push(new feng3d.Vertex(nTrunk[0], nTrunk[1], -nTrunk[2]));
-        }
-        else
-            this._vertexNormals.push(new feng3d.Vertex(parseFloat(trunk[1]), parseFloat(trunk[2]), -parseFloat(trunk[3])));
-    }
-    parseFace(trunk, Array);
-    {
-        var len = trunk.length;
-        var face = new FaceData();
-        if (!this._currentGroup)
-            this.createGroup(null);
-        var indices;
-        for (var i = 1; i < len; ++i) {
-            if (trunk[i] == "")
-                continue;
-            //解析单个面数据，分离出顶点坐标左右、uv索引、法线索引
-            indices = trunk[i].split("/");
-            face.vertexIndices.push(this.parseIndex(parseInt(indices[0]), this._vertices.length));
-            if (indices[1] && string(indices[1]).length > 0)
-                face.uvIndices.push(this.parseIndex(parseInt(indices[1]), this._uvs.length));
-            if (indices[2] && string(indices[2]).length > 0)
-                face.normalIndices.push(this.parseIndex(parseInt(indices[2]), this._vertexNormals.length));
-            face.indexIds.push(trunk[i]);
-        }
-        this._currentMaterialGroup.faces.push(face);
-    }
-    parseIndex(index, number, length, number);
-    number;
-    {
-        if (index < 0)
-            return index + length + 1;
-        else
-            return index;
-    }
-    parseMtl(data, string);
-    {
-        var materialDefinitions = data.split('newmtl');
-        var lines;
-        var trunk;
-        var j;
-        var basicSpecularMethod;
-        var useSpecular;
-        var useColor;
-        var diffuseColor;
-        var ambientColor;
-        var specularColor;
-        var specular;
-        var alpha;
-        var mapkd;
-        for (var i = 0; i < materialDefinitions.length; ++i) {
-            lines = materialDefinitions[i].split('\r').join("").split('\n');
-            if (lines.length == 1)
-                lines = materialDefinitions[i].split(string.fromCharCode(13));
-            diffuseColor = ambientColor = specularColor = 0xFFFFFF;
-            specular = 0;
-            useSpecular = false;
-            useColor = false;
-            alpha = 1;
-            mapkd = "";
-            for (j = 0; j < lines.length; ++j) {
-                lines[j] = lines[j].replace(/\s+$/, "");
-                if (lines[j].substring(0, 1) != "#" && (j == 0 || lines[j] != "")) {
-                    trunk = lines[j].split(" ");
-                    if (string(trunk[0]).charCodeAt(0) == 9 || string(trunk[0]).charCodeAt(0) == 32)
-                        trunk[0] = trunk[0].substring(1, trunk[0].length);
-                    if (j == 0) {
-                        this._lastMtlID = trunk.join("");
-                        this._lastMtlID = (this._lastMtlID == "") ? "def000" : this._lastMtlID;
-                    }
-                    else {
-                        switch (trunk[0]) {
-                            case "Ka":
-                                if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3])))
-                                    ambientColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
-                                break;
-                            case "Ks":
-                                if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3]))) {
-                                    specularColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
-                                    useSpecular = true;
-                                }
-                                break;
-                            case "Ns":
-                                if (trunk[1] && !isNaN(number(trunk[1])))
-                                    specular = number(trunk[1]) * 0.001;
-                                if (specular == 0)
-                                    useSpecular = false;
-                                break;
-                            case "Kd":
-                                if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3]))) {
-                                    diffuseColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
-                                    useColor = true;
-                                }
-                                break;
-                            case "tr":
-                            case "d":
-                                if (trunk[1] && !isNaN(number(trunk[1])))
-                                    alpha = number(trunk[1]);
-                                break;
-                            case "map_Kd":
-                                mapkd = this.parseMapKdString(trunk);
-                                mapkd = mapkd.replace(/\\/g, "/");
-                        }
-                    }
-                }
-            }
-            if (mapkd != "") {
-                if (useSpecular) {
-                    basicSpecularMethod = new feng3d.BasicSpecularMethod();
-                    basicSpecularMethod.specularColor = specularColor;
-                    basicSpecularMethod.specular = specular;
-                    var specularData = new SpecularData();
-                    specularData.alpha = alpha;
-                    specularData.basicSpecularMethod = basicSpecularMethod;
-                    specularData.materialID = this._lastMtlID;
-                    if (!this._materialSpecularData)
-                        this._materialSpecularData = new SpecularData[]();
-                    this._materialSpecularData.push(specularData);
-                }
-                //添加材质依赖性
-                addDependency(this._lastMtlID, new URLRequest(mapkd));
-            }
-            else if (useColor && !isNaN(diffuseColor)) {
-                var lm = new LoadedMaterial();
-                lm.materialID = this._lastMtlID;
-                if (alpha == 0)
-                    trace("Warning: an alpha value of 0 was found in mtl color tag (Tr or d) ref:" + this._lastMtlID + ", mesh(es) using it will be invisible!");
-                var cm;
-                if (this.materialMode < 2) {
-                    cm = new feng3d.ColorMaterial(diffuseColor);
-                    feng3d.ColorMaterial(cm).alpha = alpha;
-                    feng3d.ColorMaterial(cm).ambientColor = ambientColor;
-                    feng3d.ColorMaterial(cm).repeat = true;
-                    if (useSpecular) {
-                        feng3d.ColorMaterial(cm).specularColor = specularColor;
-                        feng3d.ColorMaterial(cm).specular = specular;
-                    }
-                }
-                else {
-                    cm = new feng3d.ColorMultiPassMaterial(diffuseColor);
-                    feng3d.ColorMultiPassMaterial(cm).ambientColor = ambientColor;
-                    feng3d.ColorMultiPassMaterial(cm).repeat = true;
-                    if (useSpecular) {
-                        feng3d.ColorMultiPassMaterial(cm).specularColor = specularColor;
-                        feng3d.ColorMultiPassMaterial(cm).specular = specular;
-                    }
-                }
-                lm.cm = cm;
-                this._materialLoaded.push(lm);
-                if (this._meshes.length > 0)
-                    this.applyMaterial(lm);
-            }
-        }
-        this._mtlLibLoaded = true;
-    }
-    parseMapKdString(trunk, Array);
-    string;
-    {
-        var url = "";
-        var i;
-        var breakflag;
-        for (i = 1; i < trunk.length;) {
-            switch (trunk[i]) {
-                case "-blendu":
-                case "-blendv":
-                case "-cc":
-                case "-clamp":
-                case "-texres":
-                    i += 2; //Skip ahead 1 attribute
-                    break;
-                case "-mm":
-                    i += 3; //Skip ahead 2 attributes
-                    break;
-                case "-o":
-                case "-s":
-                case "-t":
-                    i += 4; //Skip ahead 3 attributes
-                    continue;
-                default:
-                    breakflag = true;
-                    break;
-            }
-            if (breakflag)
-                break;
-        }
-        //Reconstruct URL/filename
-        for (i; i < trunk.length; i++) {
-            url += trunk[i];
-            url += " ";
-        }
-        //Remove the extraneous space and/or newline from the right side
-        url = url.replace(/\s+$/, "");
-        return url;
-    }
-    loadMtl(mtlurl, string);
-    {
-        //添加 材质 资源依赖，暂停解析
-        addDependency('mtl', new URLRequest(mtlurl), true);
-        pauseAndRetrieveDependencies();
-    }
-    applyMaterial(lm, LoadedMaterial);
-    {
-        var decomposeID;
-        var mesh;
-        var mat;
-        var j;
-        var specularData;
-        for (var i = 0; i < this._meshes.length; ++i) {
-            mesh = this._meshes[i];
-            decomposeID = mesh.material.name.split("~");
-            if (decomposeID[0] == lm.materialID) {
-                if (lm.cm) {
-                    if (mesh.material)
-                        mesh.material = null;
-                    mesh.material = lm.cm;
-                }
-                else if (lm.texture) {
-                    if (this.materialMode < 2) {
-                        mat = feng3d.TextureMaterial(mesh.material);
-                        feng3d.TextureMaterial(mat).texture = lm.texture;
-                        feng3d.TextureMaterial(mat).ambientColor = lm.ambientColor;
-                        feng3d.TextureMaterial(mat).alpha = lm.alpha;
-                        feng3d.TextureMaterial(mat).repeat = true;
-                        if (lm.specularMethod) {
-                            // By setting the this.specularMethod property to null before assigning
-                            // the actual method instance, we avoid having the properties of
-                            // the new method being overridden with the settings from the old
-                            // one, which is default behavior of the setter.
-                            feng3d.TextureMaterial(mat).specularMethod = null;
-                            feng3d.TextureMaterial(mat).specularMethod = lm.specularMethod;
-                        }
-                        else if (this._materialSpecularData) {
-                            for (j = 0; j < this._materialSpecularData.length; ++j) {
-                                specularData = this._materialSpecularData[j];
-                                if (specularData.materialID == lm.materialID) {
-                                    feng3d.TextureMaterial(mat).specularMethod = null; // Prevent property overwrite (see above)
-                                    feng3d.TextureMaterial(mat).specularMethod = specularData.basicSpecularMethod;
-                                    feng3d.TextureMaterial(mat).ambientColor = specularData.ambientColor;
-                                    feng3d.TextureMaterial(mat).alpha = specularData.alpha;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        mat = feng3d.TextureMultiPassMaterial(mesh.material);
-                        feng3d.TextureMultiPassMaterial(mat).texture = lm.texture;
-                        feng3d.TextureMultiPassMaterial(mat).ambientColor = lm.ambientColor;
-                        feng3d.TextureMultiPassMaterial(mat).repeat = true;
-                        if (lm.specularMethod) {
-                            // By setting the this.specularMethod property to null before assigning
-                            // the actual method instance, we avoid having the properties of
-                            // the new method being overridden with the settings from the old
-                            // one, which is default behavior of the setter.
-                            feng3d.TextureMultiPassMaterial(mat).specularMethod = null;
-                            feng3d.TextureMultiPassMaterial(mat).specularMethod = lm.specularMethod;
-                        }
-                        else if (this._materialSpecularData) {
-                            for (j = 0; j < this._materialSpecularData.length; ++j) {
-                                specularData = this._materialSpecularData[j];
-                                if (specularData.materialID == lm.materialID) {
-                                    feng3d.TextureMultiPassMaterial(mat).specularMethod = null; // Prevent property overwrite (see above)
-                                    feng3d.TextureMultiPassMaterial(mat).specularMethod = specularData.basicSpecularMethod;
-                                    feng3d.TextureMultiPassMaterial(mat).ambientColor = specularData.ambientColor;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                mesh.material.name = decomposeID[1] ? decomposeID[1] : decomposeID[0];
-                this._meshes.splice(i, 1);
-                --i;
-            }
-        }
-        if (lm.cm || mat)
-            finalizeAsset(lm.cm || mat);
-    }
-    applyMaterials();
-    {
-        if (this._materialLoaded.length == 0)
-            return;
-        for (var i = 0; i < this._materialLoaded.length; ++i)
-            this.applyMaterial(this._materialLoaded[i]);
-    }
 })(feng3d || (feng3d = {}));
 var ObjectGroup = (function () {
     function ObjectGroup() {
@@ -22246,48 +22340,56 @@ var feng3d;
     var Load = (function () {
         function Load() {
         }
-        Load.var = loadManager;
         /**
          * 初始化加载模块
          */
-        Load.function = init();
+        Load.init = function () {
+            loadManager || (loadManager = new feng3d.LoadManager());
+            feng3d.assert(feng3d.Task.isInit, "加载模块依赖任务模块，请先初始化任务模块");
+        };
+        Object.defineProperty(Load, "loader", {
+            /**
+             * 加载器
+             */
+            get: function () {
+                return loadManager.loader;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 根据类名获取类定义
+         * @param className			类名
+         * @return					类定义
+         */
+        Load.getDefinitionByName = function (className) {
+            for (each(); ; )
+                var loadingItem;
+             in loader.items;
+            {
+                var imageItem = loadingItem;
+                if (imageItem && imageItem.content) {
+                    if (imageItem.getDefinitionByName(className))
+                        return imageItem.getDefinitionByName(className);
+                }
+            }
+            return null;
+        };
+        /**
+         * 根据类名获取实例
+         * @param className		类名
+         * @return 				实例
+         */
+        Load.getInstance = ;
+        Load.prototype. = function () {
+            var cls = getDefinitionByName(className);
+            if (cls)
+                return new cls();
+            return null;
+        };
         return Load;
     }());
     feng3d.Load = Load;
-    {
-        loadManager || (loadManager = new feng3d.LoadManager());
-        feng3d.assert(feng3d.Task.isInit, "加载模块依赖任务模块，请先初始化任务模块");
-    }
-    loader();
-    BulkLoader;
-    {
-        return loadManager.loader;
-    }
-    /**
-     * 根据类名获取类定义
-     * @param className			类名
-     * @return					类定义
-     */
-    function getDefinitionByName(className) {
-        for (each(); ; )
-            var loadingItem;
-         in loader.items;
-        {
-            var imageItem = loadingItem;
-            if (imageItem && imageItem.content) {
-                if (imageItem.getDefinitionByName(className))
-                    return imageItem.getDefinitionByName(className);
-            }
-        }
-        return null;
-    }
-     *
-        {
-            var: cls, Class: Class,
-            if: function (cls) { },
-            return: new cls(),
-            return: null
-        };
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -22322,28 +22424,28 @@ var feng3d;
      */
     var Task = (function () {
         function Task() {
-            this.boolean = false;
         }
-        Task.prototype.isInit = function () {
-            return _isInit;
-        };
-        Task.var = _isInit;
-        Task.var = taskManager;
-        /**
-         * 模块是否初始化
-         */
-        Task.function = get;
+        Object.defineProperty(Task, "isInit", {
+            /**
+             * 模块是否初始化
+             */
+            get: function () {
+                return _isInit;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * 初始化模块
          */
-        Task.function = init();
+        Task.init = function () {
+            taskManager || (taskManager = new feng3d.TaskManager());
+            _isInit = true;
+        };
+        Task._isInit = false;
         return Task;
     }());
     feng3d.Task = Task;
-    {
-        taskManager || (taskManager = new feng3d.TaskManager());
-        _isInit = true;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -22373,13 +22475,28 @@ var feng3d;
     var ArrayUtils = (function () {
         function ArrayUtils() {
         }
-        ArrayUtils.prototype. = function () {
-            if (target == null) {
+        /**
+         * Array <-> Vector
+         * @param source			源数据(Array || Vector);in
+         * @param target			目标数据(Array || Vector);in-out
+         * @param targetType		目标类型(Array || Vector);default:Array
+         */
+        ArrayUtils.toArray = ;
+        return ArrayUtils;
+    }());
+    feng3d.ArrayUtils = ArrayUtils;
+    null, targetType;
+    Class = null;
+     *
+        {
+            if: function (target) {
+                if (target === void 0) { target =  == null; }
                 targetType || ;
                 Array;
                 target = new targetType();
-            }
-            if (target.length != source.length) {
+            },
+            if: function (target, length) {
+                if (length === void 0) { length =  != source.length; }
                 var hasFixed = ("fixed" in target);
                 var fixedValue;
                 if (hasFixed) {
@@ -22390,22 +22507,12 @@ var feng3d;
                 if (hasFixed) {
                     target.fixed = fixedValue;
                 }
-            }
-            for (var i = 0; i < source.length; i++) {
-                target[i] = source[i];
-            }
-            return target;
-        };
-        /**
-         * Array <-> Vector
-         * @param source			源数据(Array || Vector);in
-         * @param target			目标数据(Array || Vector);in-out
-         * @param targetType		目标类型(Array || Vector);default:Array
-         */
-        ArrayUtils.function = toArray(source,  * , target,  * , null, targetType, Class = null);
-        return ArrayUtils;
-    }());
-    feng3d.ArrayUtils = ArrayUtils;
+            },
+            for: function () { }, var: i, number: number, i: function () { } }++;
+    {
+        target[i] = source[i];
+    }
+    return target;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -22417,191 +22524,213 @@ var feng3d;
         function ClassUtils() {
         }
         /**
-         * 基础类型列表
-         */
-        ClassUtils.BASETYPES = ["number", "boolean", "number", "number", "string", "null"];
-        /**
          * 获取类定义
          * @param obj
          * @return
          */
-        ClassUtils.function = getClass(obj,  * );
+        ClassUtils.getClass = function (obj) {
+            if (obj === void 0) { obj =  * ; }
+            if (obj)
+                is;
+            string;
+            {
+                try {
+                    return getDefinitionByName(obj);
+                }
+                catch (error) {
+                    return null;
+                }
+            }
+            var cla = obj;
+            var className = getQualifiedClassName(obj);
+            if (className == "null" || className == "void") {
+                return null;
+            }
+            if (cla == null) {
+                cla = getDefinitionByName(className);
+            }
+            return cla;
+        };
+        /**
+         * 获取类实例
+         * @param obj
+         * @return
+         */
+        ClassUtils.getInstance = ;
+        ClassUtils.prototype. = function () {
+            if (obj)
+                is;
+            Class;
+            {
+                return new obj();
+            }
+            if (obj)
+                is;
+            string;
+            {
+                var cla = getClass(obj);
+                return new cla;
+            }
+            return obj;
+        };
+        /**
+         * 构造实例
+         * @param cla						类定义
+         * @param params					构造参数
+         * @return							构造出的实例
+         */
+        ClassUtils.structureInstance = ;
+        ClassUtils.prototype. = function () {
+            if (params == null) {
+                return new cla();
+            }
+            var paramNum = params.length;
+            switch (paramNum) {
+                case 0:
+                    return new cla();
+                    break;
+                case 1:
+                    return new cla(params[0]);
+                    break;
+                case 2:
+                    return new cla(params[0], params[1]);
+                    break;
+                case 3:
+                    return new cla(params[0], params[1], params[2]);
+                    break;
+                case 4:
+                    return new cla(params[0], params[1], params[2], params[3]);
+                    break;
+                case 5:
+                    return new cla(params[0], params[1], params[2], params[3], params[4]);
+                    break;
+                case 6:
+                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5]);
+                    break;
+                case 7:
+                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
+                    break;
+                case 8:
+                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]);
+                    break;
+                case 9:
+                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8]);
+                    break;
+                case 10:
+                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]);
+                    break;
+                default:
+                    throw new Error("不支持" + paramNum + "个参数的类构造");
+                    break;
+            }
+            return null;
+        };
+        /**
+         * 构造实例
+         * @param space						运行空间
+         * @param funcName					函数名称
+         * @param params					函数参数
+         * @return							函数返回值
+         */
+        ClassUtils.call = ;
+        ClassUtils.prototype. = function () {
+            var func = space[funcName];
+            var result =  * , func, apply = (null, params);
+            return result;
+        };
+        /**
+         * 编码参数
+         * @param params		参数数组
+         */
+        ClassUtils.encodeParams = function (params) {
+            for (var i = 0; i < params.length; i++) {
+                var item = params[i];
+                var paramType = getQualifiedClassName(item);
+                params[i] = { paramType: paramType, paramValue: item };
+            }
+        };
+        /**
+         * 解码参数
+         * @param params		参数数组
+         */
+        ClassUtils.decodeParams = function (params) {
+            for (var i = 0; i < params.length; i++) {
+                var item = params[i];
+                if (item.hasOwnProperty("paramType") && item.hasOwnProperty("paramValue")) {
+                    var obj;
+                    if (item.paramType == "flash.geom::Matrix3D") {
+                        obj = new Matrix3D(number[](item.paramValue.rawData));
+                    }
+                    else {
+                        obj = ClassUtils.getInstance(item.paramType);
+                        if (isBaseType(item.paramValue)) {
+                            obj = item.paramValue;
+                        }
+                        else {
+                            copyValue(obj, item.paramValue);
+                        }
+                    }
+                    params[i] = obj;
+                }
+            }
+        };
+        /**
+         * 拷贝数据
+         * @param obj			需要赋值的对象
+         * @param value			拥有数据的对象
+         */
+        ClassUtils.copyValue = function (obj, value) {
+            for (var key in value) {
+                var attrValue =  * , value = [key];
+                var attrType = getQualifiedClassName(attrValue);
+                var baseType = isBaseType(value[key]);
+                if (baseType) {
+                    obj[key] = value[key];
+                }
+                else {
+                    copyValue(obj[key], value[key]);
+                }
+            }
+        };
+        /**
+         * 判断对象是否为基础类型
+         * @param obj			对象
+         * @return				true为基础类型，false为复杂类型
+         */
+        ClassUtils.isBaseType = function (obj) {
+            var type = getQualifiedClassName(obj);
+            var index = BASETYPES.indexOf(type);
+            return index != -1;
+        };
+        /**
+         * 获取对象默认名称
+         * @param obj				对象
+         * @return					对象默认名称
+         */
+        ClassUtils.getDefaultName = function (obj) {
+            return getQualifiedClassName(obj).split("::").pop();
+        };
+        /**
+         * 判断两个对象的完全限定类名是否相同
+         * @param obj1			对象1
+         * @param obj2			对象2
+         * @return
+         */
+        ClassUtils.isSameClass = function (obj1, obj2) {
+            if (obj1 === void 0) { obj1 =  * ; }
+            if (obj2 === void 0) { obj2 =  * ; }
+            var className1 = getQualifiedClassName(obj1);
+            var className2 = getQualifiedClassName(obj2);
+            return className1 == className2;
+        };
+        /**
+         * 基础类型列表
+         */
+        ClassUtils.BASETYPES = ["number", "boolean", "number", "number", "string", "null"];
         return ClassUtils;
     }());
     feng3d.ClassUtils = ClassUtils;
-    {
-        if (obj)
-            is;
-        string;
-        {
-            try {
-                return getDefinitionByName(obj);
-            }
-            catch (error) {
-                return null;
-            }
-        }
-        var cla = obj;
-        var className = getQualifiedClassName(obj);
-        if (className == "null" || className == "void") {
-            return null;
-        }
-        if (cla == null) {
-            cla = getDefinitionByName(className);
-        }
-        return cla;
-    }
-     *
-        {
-            if: function (obj, Class) {
-                if (obj === void 0) { obj = is; }
-                return new obj();
-            },
-            if: function (obj, string) {
-                if (obj === void 0) { obj = is; }
-                var cla = getClass(obj);
-                return new cla;
-            },
-            return: obj
-        };
-     *
-        {
-            if: function (params) {
-                if (params === void 0) { params =  == null; }
-                return new cla();
-            },
-            var: paramNum, number: number,
-            switch: function (paramNum) { },
-            case: 0,
-            return: new cla(),
-            break: ,
-            case: 1,
-            return: new cla(params[0]),
-            break: ,
-            case: 2,
-            return: new cla(params[0], params[1]),
-            break: ,
-            case: 3,
-            return: new cla(params[0], params[1], params[2]),
-            break: ,
-            case: 4,
-            return: new cla(params[0], params[1], params[2], params[3]),
-            break: ,
-            case: 5,
-            return: new cla(params[0], params[1], params[2], params[3], params[4]),
-            break: ,
-            case: 6,
-            return: new cla(params[0], params[1], params[2], params[3], params[4], params[5]),
-            break: ,
-            case: 7,
-            return: new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6]),
-            break: ,
-            case: 8,
-            return: new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]),
-            break: ,
-            case: 9,
-            return: new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8]),
-            break: ,
-            case: 10,
-            return: new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]),
-            break: ,
-            default: ,
-            throw: new Error("不支持" + paramNum + "个参数的类构造"),
-            break: 
-        };
-    return null;
 })(feng3d || (feng3d = {}));
- *
-    {
-        var: func, Function: Function,
-        var: result, : function () { }, func: .apply(null, params),
-        return: result
-    };
-/**
- * 编码参数
- * @param params		参数数组
- */
-function encodeParams(params) {
-    for (var i = 0; i < params.length; i++) {
-        var item = params[i];
-        var paramType = getQualifiedClassName(item);
-        params[i] = { paramType: paramType, paramValue: item };
-    }
-}
-/**
- * 解码参数
- * @param params		参数数组
- */
-function decodeParams(params) {
-    for (var i = 0; i < params.length; i++) {
-        var item = params[i];
-        if (item.hasOwnProperty("paramType") && item.hasOwnProperty("paramValue")) {
-            var obj;
-            if (item.paramType == "flash.geom::Matrix3D") {
-                obj = new Matrix3D(number[](item.paramValue.rawData));
-            }
-            else {
-                obj = ClassUtils.getInstance(item.paramType);
-                if (isBaseType(item.paramValue)) {
-                    obj = item.paramValue;
-                }
-                else {
-                    copyValue(obj, item.paramValue);
-                }
-            }
-            params[i] = obj;
-        }
-    }
-}
-/**
- * 拷贝数据
- * @param obj			需要赋值的对象
- * @param value			拥有数据的对象
- */
-function copyValue(obj, value) {
-    for (var key in value) {
-        var attrValue =  * , value = [key];
-        var attrType = getQualifiedClassName(attrValue);
-        var baseType = isBaseType(value[key]);
-        if (baseType) {
-            obj[key] = value[key];
-        }
-        else {
-            copyValue(obj[key], value[key]);
-        }
-    }
-}
-/**
- * 判断对象是否为基础类型
- * @param obj			对象
- * @return				true为基础类型，false为复杂类型
- */
-function isBaseType(obj) {
-    var type = getQualifiedClassName(obj);
-    var index = BASETYPES.indexOf(type);
-    return index != -1;
-}
-/**
- * 获取对象默认名称
- * @param obj				对象
- * @return					对象默认名称
- */
-function getDefaultName(obj) {
-    return getQualifiedClassName(obj).split("::").pop();
-}
-/**
- * 判断两个对象的完全限定类名是否相同
- * @param obj1			对象1
- * @param obj2			对象2
- * @return
- */
-function isSameClass(obj1, obj2) {
-    if (obj1 === void 0) { obj1 =  * ; }
-    if (obj2 === void 0) { obj2 =  * ; }
-    var className1 = getQualifiedClassName(obj1);
-    var className2 = getQualifiedClassName(obj2);
-    return className1 == className2;
-}
 var feng3d;
 (function (feng3d) {
     /**
@@ -25171,7 +25300,6 @@ var feng3d;
     var Face = (function () {
         function Face() {
         }
-        Face.var = _calcPoint;
         return Face;
     }());
     feng3d.Face = Face;
@@ -25662,12 +25790,14 @@ var feng3d;
          */
         function Context3DBufferID() {
         }
-        Context3DBufferID.prototype.instance = function () {
-            return _instance || ;
-            new Context3DBufferID();
-        };
-        Context3DBufferID.var = _instance;
-        Context3DBufferID.function = get;
+        Object.defineProperty(Context3DBufferID, "instance", {
+            get: function () {
+                return _instance || ;
+                new Context3DBufferID();
+            },
+            enumerable: true,
+            configurable: true
+        });
         return Context3DBufferID;
     }());
 })(feng3d || (feng3d = {}));
@@ -26605,8 +26735,6 @@ var feng3d;
          * @param context3D			3D环境
          */
         function AGALProgram3DCache(context3D) {
-            this.Dictionary = new Dictionary();
-            this.Dictionary = new Dictionary();
             if (_instanceDic[context3D])
                 throw new Error("已经存在对应的实例，请使用GetInstance方法获取。");
             _instanceDic[context3D] = this;
@@ -26616,103 +26744,128 @@ var feng3d;
             this._keys = new Dictionary();
         }
         /**
-         * 实例字典
-         */
-        AGALProgram3DCache.var = _instanceDic;
-        /**
-         * 字符串与二进制字典
-         */
-        AGALProgram3DCache.var = shaderByteCodeDic;
-        /**
          * 获取AGAL程序缓冲实例
          * @param context3D			3D环境
          * @return					AGAL程序缓冲实例
          */
-        AGALProgram3DCache.function = getInstance(context3D, Context3D);
+        AGALProgram3DCache.getInstance = function (context3D) {
+            return _instanceDic[context3D] || ;
+            new AGALProgram3DCache(context3D);
+        };
+        /**
+         * 销毁
+         */
+        AGALProgram3DCache.prototype.dispose = function () {
+            for (var key in this._program3Ds)
+                this.destroyProgram(key);
+            this._keys = null;
+            this._program3Ds = null;
+            this._usages = null;
+        };
+        /**
+         * 获取渲染程序
+         * @param oldProgram3D			原来的渲染程序
+         * @param vertexCode			顶点渲染代码
+         * @param fragmentCode			片段渲染代码
+         * @return						渲染程序
+         */
+        AGALProgram3DCache.prototype.getProgram3D = function (oldProgram3D, vertexCode, fragmentCode) {
+            var key = this.getKey(vertexCode, fragmentCode);
+            var program = this._program3Ds[key];
+            if (program == null) {
+                program = this._context3D.createProgram();
+                var vertexByteCode = this.getVertexByteCode(vertexCode);
+                var fragmentByteCode = this.getFragmentByteCode(fragmentCode);
+                program.upload(vertexByteCode, fragmentByteCode);
+                this._program3Ds[key] = program;
+                this._keys[program] = key;
+                this._usages[program] = 0;
+            }
+            if (oldProgram3D != program) {
+                if (oldProgram3D)
+                    this.freeProgram3D(oldProgram3D);
+                this._usages[program]++;
+            }
+            return program;
+        };
+        /**
+         * 获取片段渲染二进制
+         * @param fragmentCode		片段渲染代码
+         * @return					片段渲染二进制
+         */
+        AGALProgram3DCache.prototype.getFragmentByteCode = function (fragmentCode) {
+            var noCommentCode = this.filterComment(fragmentCode);
+            return shaderByteCodeDic[fragmentCode] || ;
+            new feng3d.AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
+        };
+        /**
+         * 获取顶点渲染二进制
+         * @param vertexCode		顶点渲染代码
+         * @return 					顶点渲染二进制
+         */
+        AGALProgram3DCache.prototype.getVertexByteCode = function (vertexCode) {
+            var noCommentCode = this.filterComment(vertexCode);
+            return shaderByteCodeDic[vertexCode] || ;
+            new feng3d.AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
+        };
+        /**
+         * 过滤代码中的注释
+         * @param code			渲染代码
+         * @return				没有注释的渲染代码
+         */
+        AGALProgram3DCache.prototype.filterComment = function (code) {
+            //			return code;
+            var codes = code.split(feng3d.FagalToken.BREAK);
+            var line;
+            var newCode = "";
+            for (var i = 0; i < codes.length; i++) {
+                line = codes[i];
+                if (line.length > 0 && line.substr(0, feng3d.FagalToken.COMMENT.length) != feng3d.FagalToken.COMMENT) {
+                    if (newCode.length > 0 && newCode.substr(-feng3d.FagalToken.BREAK.length) != feng3d.FagalToken.BREAK)
+                        newCode += feng3d.FagalToken.BREAK;
+                    newCode += line;
+                }
+            }
+            return newCode;
+        };
+        /**
+         * 释放渲染程序
+         * @param program3D		被释放的渲染程序
+         */
+        AGALProgram3DCache.prototype.freeProgram3D = function (program3D) {
+            this._usages[program3D]--;
+            if (this._usages[program3D] == 0)
+                this.destroyProgram(this._keys[program3D]);
+        };
+        /**
+         * 销毁渲染程序
+         * @param key		渲染代码
+         */
+        AGALProgram3DCache.prototype.destroyProgram = function (key) {
+            this._program3Ds[key].dispose();
+            this._program3Ds[key] = null;
+            delete this._program3Ds[key];
+        };
+        /**
+         * 获取渲染代码键值
+         * @param vertexCode			顶点渲染代码
+         * @param fragmentCode			片段渲染代码
+         * @return						渲染代码键值
+         */
+        AGALProgram3DCache.prototype.getKey = function (vertexCode, fragmentCode) {
+            return vertexCode + "---" + fragmentCode;
+        };
+        /**
+         * 实例字典
+         */
+        AGALProgram3DCache._instanceDic = new Dictionary();
+        /**
+         * 字符串与二进制字典
+         */
+        AGALProgram3DCache.shaderByteCodeDic = new Dictionary();
         return AGALProgram3DCache;
     }());
     feng3d.AGALProgram3DCache = AGALProgram3DCache;
-    {
-        return _instanceDic[context3D] || ;
-        new AGALProgram3DCache(context3D);
-    }
-    dispose();
-    {
-        for (var key in this._program3Ds)
-            this.destroyProgram(key);
-        this._keys = null;
-        this._program3Ds = null;
-        this._usages = null;
-    }
-    getProgram3D(oldProgram3D, Program3D, vertexCode, string, fragmentCode, string);
-    Program3D;
-    {
-        var key = this.getKey(vertexCode, fragmentCode);
-        var program = this._program3Ds[key];
-        if (program == null) {
-            program = this._context3D.createProgram();
-            var vertexByteCode = this.getVertexByteCode(vertexCode);
-            var fragmentByteCode = this.getFragmentByteCode(fragmentCode);
-            program.upload(vertexByteCode, fragmentByteCode);
-            this._program3Ds[key] = program;
-            this._keys[program] = key;
-            this._usages[program] = 0;
-        }
-        if (oldProgram3D != program) {
-            if (oldProgram3D)
-                this.freeProgram3D(oldProgram3D);
-            this._usages[program]++;
-        }
-        return program;
-    }
-    getFragmentByteCode(fragmentCode, string);
-    ByteArray;
-    {
-        var noCommentCode = this.filterComment(fragmentCode);
-        return shaderByteCodeDic[fragmentCode] || ;
-        new feng3d.AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
-    }
-    getVertexByteCode(vertexCode, string);
-    ByteArray;
-    {
-        var noCommentCode = this.filterComment(vertexCode);
-        return shaderByteCodeDic[vertexCode] || ;
-        new feng3d.AGALMiniAssembler(feng3d.Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
-    }
-    filterComment(code, string);
-    string;
-    {
-        //			return code;
-        var codes = code.split(feng3d.FagalToken.BREAK);
-        var line;
-        var newCode = "";
-        for (var i = 0; i < codes.length; i++) {
-            line = codes[i];
-            if (line.length > 0 && line.substr(0, feng3d.FagalToken.COMMENT.length) != feng3d.FagalToken.COMMENT) {
-                if (newCode.length > 0 && newCode.substr(-feng3d.FagalToken.BREAK.length) != feng3d.FagalToken.BREAK)
-                    newCode += feng3d.FagalToken.BREAK;
-                newCode += line;
-            }
-        }
-        return newCode;
-    }
-    freeProgram3D(program3D, Program3D);
-    {
-        this._usages[program3D]--;
-        if (this._usages[program3D] == 0)
-            this.destroyProgram(this._keys[program3D]);
-    }
-    destroyProgram(key, string);
-    {
-        this._program3Ds[key].dispose();
-        this._program3Ds[key] = null;
-        delete this._program3Ds[key];
-    }
-    getKey(vertexCode, string, fragmentCode, string);
-    string;
-    {
-        return vertexCode + "---" + fragmentCode;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -27009,9 +27162,55 @@ var feng3d;
         Context3DBufferTypeManager.prototype.instance = function () {
             return _instance || new Context3DBufferTypeManager();
         };
+        /**
+         * 获取或创建3d缓存类型
+         * @param typeId 		3d缓存类型编号
+         * @return				3d缓存类型实例
+         */
+        Context3DBufferTypeManager.getBufferType = function (typeId) {
+            return instance.getBufferType(typeId);
+        };
+        /**
+         * 获取3d缓存类定义
+         * @param typeId 		3d缓存类型编号
+         * @return				3d缓存类定义
+         */
+        Context3DBufferTypeManager.getBufferClass = function (typeId) {
+            return instance.getBufferClass(typeId);
+        };
+        /**
+         * 获取或创建3d缓存类型
+         * @param typeId 		3d缓存类型编号
+         * @return				3d缓存类型实例
+         */
+        Context3DBufferTypeManager.prototype.getBufferType = function (typeId) {
+            var bufferType = this.bufferTypeDic[typeId];
+            if (bufferType)
+                return bufferType;
+            this.bufferTypeDic[typeId] = bufferType = new feng3d.Context3DBufferType();
+            var types = typeId.split("_");
+            bufferType.registerType = types[1];
+            bufferType.dataType = types[2];
+            return bufferType;
+        };
+        /**
+         * 获取3d缓存类定义
+         * @param typeId 		3d缓存类型编号
+         * @return				3d缓存类定义
+         */
+        Context3DBufferTypeManager.prototype.getBufferClass = function (typeId) {
+            var cls = this.typeClassDic[typeId];
+            if (cls == null) {
+                for (var i = 0; i < config.length; i++) {
+                    var result = typeId.match(config[i][0]);
+                    if (result != null && result.input == result[0]) {
+                        return config[i][1];
+                    }
+                }
+            }
+            throw new Error("无法为" + typeId + "匹配到3d缓存类");
+        };
         Context3DBufferTypeManager.NAME_REGEXP = "[a-zA-Z0-9$]";
-        /** 实例 */
-        Context3DBufferTypeManager.var = _instance;
         Context3DBufferTypeManager.config = [
             ["blendFactors", feng3d.BlendFactorsBuffer],
             ["culling", feng3d.CullingBuffer],
@@ -27033,52 +27232,9 @@ var feng3d;
          * 3d环境缓存类型管理者实例
          */
         Context3DBufferTypeManager.function = get;
-        /**
-         * 获取或创建3d缓存类型
-         * @param typeId 		3d缓存类型编号
-         * @return				3d缓存类型实例
-         */
-        Context3DBufferTypeManager.function = getBufferType(typeId, string);
         return Context3DBufferTypeManager;
     }());
     feng3d.Context3DBufferTypeManager = Context3DBufferTypeManager;
-    {
-        return instance.getBufferType(typeId);
-    }
-    /**
-     * 获取3d缓存类定义
-     * @param typeId 		3d缓存类型编号
-     * @return				3d缓存类定义
-     */
-    function getBufferClass(typeId) {
-        return instance.getBufferClass(typeId);
-    }
-    getBufferType(typeId, string);
-    feng3d.Context3DBufferType;
-    {
-        var bufferType = this.bufferTypeDic[typeId];
-        if (bufferType)
-            return bufferType;
-        this.bufferTypeDic[typeId] = bufferType = new feng3d.Context3DBufferType();
-        var types = typeId.split("_");
-        bufferType.registerType = types[1];
-        bufferType.dataType = types[2];
-        return bufferType;
-    }
-    getBufferClass(typeId, string);
-    Class;
-    {
-        var cls = this.typeClassDic[typeId];
-        if (cls == null) {
-            for (var i = 0; i < config.length; i++) {
-                var result = typeId.match(config[i][0]);
-                if (result != null && result.input == result[0]) {
-                    return config[i][1];
-                }
-            }
-        }
-        throw new Error("无法为" + typeId + "匹配到3d缓存类");
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -27114,45 +27270,44 @@ var feng3d;
          * 创建一个纹理缓存中心
          */
         function TextureCenter() {
-            this.Dictionary = new Dictionary();
         }
-        /** 纹理字典 */
-        TextureCenter.var = textureDic;
         /**
          * 获取纹理
          * @param context3D		3D环境
          * @param texture		纹理代理
          * @return				纹理
          */
-        TextureCenter.function = getTexture(context3D, Context3D, texture, feng3d.TextureProxyBase);
+        TextureCenter.getTexture = function (context3D, texture) {
+            //冲缓存中取纹理
+            var textureBase = $getTexture(context3D, texture);
+            if (textureBase)
+                return textureBase;
+            //创建位图纹理
+            var bitmapTexture = texture;
+            if (bitmapTexture)
+                return createTexture(context3D, bitmapTexture);
+            //创建立方体纹理
+            var bitmapCubeTexture = texture;
+            if (bitmapCubeTexture)
+                return createCubeTexture(context3D, bitmapCubeTexture);
+            var renderTexture = texture;
+            if (renderTexture)
+                return createRenderTexture(context3D, renderTexture);
+            return null;
+        };
+        /** 纹理字典 */
+        TextureCenter.textureDic = new Dictionary();
+        /**
+         * 获取纹理
+         * @param context3D		3D环境
+         * @param texture		纹理代理
+         * @return				纹理
+         */
+        TextureCenter.function = $getTexture(context3D, Context3D, texture, feng3d.TextureProxyBase);
         return TextureCenter;
     }());
     feng3d.TextureCenter = TextureCenter;
     {
-        //冲缓存中取纹理
-        var textureBase = $getTexture(context3D, texture);
-        if (textureBase)
-            return textureBase;
-        //创建位图纹理
-        var bitmapTexture = texture;
-        if (bitmapTexture)
-            return createTexture(context3D, bitmapTexture);
-        //创建立方体纹理
-        var bitmapCubeTexture = texture;
-        if (bitmapCubeTexture)
-            return createCubeTexture(context3D, bitmapCubeTexture);
-        var renderTexture = texture;
-        if (renderTexture)
-            return createRenderTexture(context3D, renderTexture);
-        return null;
-    }
-    /**
-     * 获取纹理
-     * @param context3D		3D环境
-     * @param texture		纹理代理
-     * @return				纹理
-     */
-    function $getTexture(context3D, texture) {
         if (textureDic[texture] == null || textureDic[texture][context3D] == null) {
             return null;
         }
@@ -27411,8 +27566,6 @@ var feng3d;
             mouseEvent3D.collider = collider;
             return mouseEvent3D;
         };
-        /** 普通鼠标事件与3d鼠标事件对应关系 */
-        Mouse3DManager.var = eventMap;
         return Mouse3DManager;
     }());
     feng3d.Mouse3DManager = Mouse3DManager;
@@ -27432,86 +27585,118 @@ var feng3d;
          * @private
          */
         function Stage3DManager(stage, Stage3DManagerSingletonEnforcer) {
-            this.Stage3DProxy = [];
-            this.number = 0;
             if (!Stage3DManagerSingletonEnforcer)
                 throw new Error("This class is a multiton and cannot be instantiated manually. Use Stage3DManager.getInstance instead.");
             this._stage = stage;
             if (!_stageProxies)
                 _stageProxies = new feng3d.Stage3DProxy[](this._stage.stage3Ds.length, true);
         }
-        Stage3DManager.var = _instances;
-        Stage3DManager.var = _stageProxies;
-        Stage3DManager.var = _numStageProxies;
         /**
          * Gets a Stage3DManager instance for the given Stage object.
          * @param stage The Stage object that contains the Stage3D objects to be managed.
          * @return The Stage3DManager instance for the given Stage object.
          */
-        Stage3DManager.function = getInstance(stage, Stage);
+        Stage3DManager.getInstance = function (stage) {
+            return (_instances || ) = new Dictionary();
+            [stage] || ;
+            new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
+        };
+        /**
+         * Requests the Stage3DProxy for the given index.
+         * @param index The index of the requested Stage3D.
+         * @param forceSoftware Whether to force software mode even if hardware acceleration is available.
+         * @param profile The compatibility profile, an enumeration of Context3DProfile
+         * @return The Stage3DProxy for the given index.
+         */
+        Stage3DManager.prototype.getStage3DProxy = function (index, forceSoftware, profile) {
+            if (forceSoftware === void 0) { forceSoftware = false; }
+            if (profile === void 0) { profile = "baseline"; }
+            if (!_stageProxies[index]) {
+                _numStageProxies++;
+                _stageProxies[index] = new feng3d.Stage3DProxy(index, this._stage.stage3Ds[index], this, forceSoftware, profile);
+            }
+            return _stageProxies[index];
+        };
+        /**
+         * Removes a Stage3DProxy from the manager.
+         * @param stage3DProxy
+         * @private
+         */
+        Stage3DManager.prototype.removeStage3DProxy = function (stage3DProxy) {
+            _numStageProxies--;
+            _stageProxies[stage3DProxy.stage3DIndex] = null;
+        };
+        /**
+         * Get the next available stage3DProxy. An error is thrown if there are no Stage3DProxies available
+         * @param forceSoftware Whether to force software mode even if hardware acceleration is available.
+         * @param profile The compatibility profile, an enumeration of Context3DProfile
+         * @return The allocated stage3DProxy
+         */
+        Stage3DManager.prototype.getFreeStage3DProxy = function (forceSoftware, profile) {
+            if (forceSoftware === void 0) { forceSoftware = false; }
+            if (profile === void 0) { profile = Context3DProfile.STANDARD; }
+            var i;
+            var len = _stageProxies.length;
+            while (i < len) {
+                if (!_stageProxies[i]) {
+                    this.getStage3DProxy(i, forceSoftware, profile);
+                    _stageProxies[i].width = this._stage.stageWidth;
+                    _stageProxies[i].height = this._stage.stageHeight;
+                    return _stageProxies[i];
+                }
+                ++i;
+            }
+            throw new Error("Too many Stage3D instances used!");
+            return null;
+        };
+        Object.defineProperty(Stage3DManager.prototype, "hasFreeStage3DProxy", {
+            /**
+             * Checks if a new stage3DProxy can be created and managed by the class.
+             * @return true if there is one slot free for a new stage3DProxy
+             */
+            get: function () {
+                return _numStageProxies < _stageProxies.length ? true : false;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Stage3DManager.prototype, "numProxySlotsFree", {
+            /**
+             * Returns the amount of stage3DProxy objects that can be created and managed by the class
+             * @return the amount of free slots
+             */
+            get: function () {
+                return _stageProxies.length - _numStageProxies;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Stage3DManager.prototype, "numProxySlotsUsed", {
+            /**
+             * Returns the amount of Stage3DProxy objects currently managed by the class.
+             * @return the amount of slots used
+             */
+            get: function () {
+                return _numStageProxies;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Stage3DManager.prototype, "numProxySlotsTotal", {
+            /**
+             * Returns the maximum amount of Stage3DProxy objects that can be managed by the class
+             * @return the maximum amount of Stage3DProxy objects that can be managed by the class
+             */
+            get: function () {
+                return _stageProxies.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Stage3DManager._numStageProxies = 0;
         return Stage3DManager;
     }());
     feng3d.Stage3DManager = Stage3DManager;
-    {
-        return (_instances || ) = new Dictionary();
-        [stage] || ;
-        new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
-    }
-    getStage3DProxy(index, number, forceSoftware, boolean = false, profile, string = "baseline");
-    feng3d.Stage3DProxy;
-    {
-        if (!_stageProxies[index]) {
-            _numStageProxies++;
-            _stageProxies[index] = new feng3d.Stage3DProxy(index, this._stage.stage3Ds[index], this, forceSoftware, profile);
-        }
-        return _stageProxies[index];
-    }
-    removeStage3DProxy(stage3DProxy, feng3d.Stage3DProxy);
-    {
-        _numStageProxies--;
-        _stageProxies[stage3DProxy.stage3DIndex] = null;
-    }
-    getFreeStage3DProxy(forceSoftware, boolean = false, profile, string = Context3DProfile.STANDARD);
-    feng3d.Stage3DProxy;
-    {
-        var i;
-        var len = _stageProxies.length;
-        while (i < len) {
-            if (!_stageProxies[i]) {
-                this.getStage3DProxy(i, forceSoftware, profile);
-                _stageProxies[i].width = this._stage.stageWidth;
-                _stageProxies[i].height = this._stage.stageHeight;
-                return _stageProxies[i];
-            }
-            ++i;
-        }
-        throw new Error("Too many Stage3D instances used!");
-        return null;
-    }
-    get;
-    hasFreeStage3DProxy();
-    boolean;
-    {
-        return _numStageProxies < _stageProxies.length ? true : false;
-    }
-    get;
-    numProxySlotsFree();
-    number;
-    {
-        return _stageProxies.length - _numStageProxies;
-    }
-    get;
-    numProxySlotsUsed();
-    number;
-    {
-        return _numStageProxies;
-    }
-    get;
-    numProxySlotsTotal();
-    number;
-    {
-        return _stageProxies.length;
-    }
 })(feng3d || (feng3d = {}));
 var Stage3DManagerSingletonEnforcer = (function () {
     function Stage3DManagerSingletonEnforcer() {
@@ -28925,7 +29110,6 @@ var feng3d;
          * @param regId			寄存器id
          */
         function Register(regId) {
-            this.string = NAME;
             this._index = -1;
             /**
              * 获取寄存器分量
@@ -29015,7 +29199,7 @@ var feng3d;
         /**
          * 寄存器输出方式
          */
-        Register.var = TO_STRING;
+        Register.TO_STRING = NAME;
         /**
          * 寄存器中元素数组
          */
@@ -29383,6 +29567,132 @@ var feng3d;
     var RegisterType = (function () {
         function RegisterType() {
         }
+        /**
+         * 是否常量
+         * @param regType		寄存器类型
+         */
+        RegisterType.isConst = function (regType) {
+            return regType == VC || regType == FC;
+        };
+        /**
+         * 是否临时变量
+         * @param regType		寄存器类型
+         */
+        RegisterType.isTemp = function (regType) {
+            return regType == VT || regType == FT;
+        };
+        /**
+         * 是否只读
+         * @param regType		寄存器类型
+         * @return
+         */
+        RegisterType.isReadOnly = function (regType) {
+            switch (regType) {
+                case VA:
+                    return true;
+                case VC:
+                    return true;
+                case VT:
+                    return false;
+                case OP:
+                    return false;
+                case V:
+                    return false;
+                case FS:
+                    return true;
+                case FC:
+                    return true;
+                case FT:
+                    return false;
+                case OC:
+                    return false;
+            }
+            throw new Error("错误寄存器类型");
+        };
+        /**
+         * 是否可以在顶点寄存器中出现
+         * @param regType		寄存器类型
+         * @return
+         */
+        RegisterType.inVertex = function (regType) {
+            switch (regType) {
+                case VA:
+                    return true;
+                case VC:
+                    return true;
+                case VT:
+                    return true;
+                case OP:
+                    return true;
+                case V:
+                    return true;
+                case FS:
+                    return false;
+                case FC:
+                    return false;
+                case FT:
+                    return false;
+                case OC:
+                    return false;
+            }
+            throw new Error("错误寄存器类型");
+        };
+        /**
+         * 是否可以在片段寄存器中出现
+         * @param regType		寄存器类型
+         * @return
+         */
+        RegisterType.inFragment = function (regType) {
+            switch (regType) {
+                case VA:
+                    return false;
+                case VC:
+                    return false;
+                case VT:
+                    return false;
+                case OP:
+                    return false;
+                case V:
+                    return true;
+                case FS:
+                    return true;
+                case FC:
+                    return true;
+                case FT:
+                    return true;
+                case OC:
+                    return true;
+            }
+            throw new Error("错误寄存器类型");
+        };
+        /**
+         * 是否为输入数据寄存器
+         * @param regType		寄存器类型
+         * @return
+         */
+        RegisterType.isInputDataRegister = function (regType) {
+            switch (regType) {
+                case VA:
+                    return true;
+                case VC:
+                    return true;
+                case VT:
+                    return false;
+                case OP:
+                    return false;
+                case V:
+                    return false;
+                case FS:
+                    return true;
+                case FC:
+                    return true;
+                case FT:
+                    return false;
+                case OC:
+                    return false;
+            }
+            throw new Error("错误寄存器类型");
+        };
         /** 顶点属性寄存器 */
         RegisterType.VA = "va";
         /** 顶点程序常量寄存器 */
@@ -29401,136 +29711,9 @@ var feng3d;
         RegisterType.FT = "ft";
         /** 片段程序输出寄存器 */
         RegisterType.OC = "oc";
-        /**
-         * 是否常量
-         * @param regType		寄存器类型
-         */
-        RegisterType.function = isConst(regType, string);
         return RegisterType;
     }());
     feng3d.RegisterType = RegisterType;
-    {
-        return regType == VC || regType == FC;
-    }
-    /**
-     * 是否临时变量
-     * @param regType		寄存器类型
-     */
-    function isTemp(regType) {
-        return regType == VT || regType == FT;
-    }
-    /**
-     * 是否只读
-     * @param regType		寄存器类型
-     * @return
-     */
-    function isReadOnly(regType) {
-        switch (regType) {
-            case VA:
-                return true;
-            case VC:
-                return true;
-            case VT:
-                return false;
-            case OP:
-                return false;
-            case V:
-                return false;
-            case FS:
-                return true;
-            case FC:
-                return true;
-            case FT:
-                return false;
-            case OC:
-                return false;
-        }
-        throw new Error("错误寄存器类型");
-    }
-    /**
-     * 是否可以在顶点寄存器中出现
-     * @param regType		寄存器类型
-     * @return
-     */
-    function inVertex(regType) {
-        switch (regType) {
-            case VA:
-                return true;
-            case VC:
-                return true;
-            case VT:
-                return true;
-            case OP:
-                return true;
-            case V:
-                return true;
-            case FS:
-                return false;
-            case FC:
-                return false;
-            case FT:
-                return false;
-            case OC:
-                return false;
-        }
-        throw new Error("错误寄存器类型");
-    }
-    /**
-     * 是否可以在片段寄存器中出现
-     * @param regType		寄存器类型
-     * @return
-     */
-    function inFragment(regType) {
-        switch (regType) {
-            case VA:
-                return false;
-            case VC:
-                return false;
-            case VT:
-                return false;
-            case OP:
-                return false;
-            case V:
-                return true;
-            case FS:
-                return true;
-            case FC:
-                return true;
-            case FT:
-                return true;
-            case OC:
-                return true;
-        }
-        throw new Error("错误寄存器类型");
-    }
-    /**
-     * 是否为输入数据寄存器
-     * @param regType		寄存器类型
-     * @return
-     */
-    function isInputDataRegister(regType) {
-        switch (regType) {
-            case VA:
-                return true;
-            case VC:
-                return true;
-            case VT:
-                return false;
-            case OP:
-                return false;
-            case V:
-                return false;
-            case FS:
-                return true;
-            case FC:
-                return true;
-            case FT:
-                return false;
-            case OC:
-                return false;
-        }
-        throw new Error("错误寄存器类型");
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -29568,7 +29751,6 @@ var feng3d;
          * 创建渲染寄存器缓存
          */
         function ShaderRegisterCache() {
-            this.boolean = true;
             if (_instance)
                 throw new Error("ShaderRegisterCache 单例");
             _instance = this;
@@ -29649,16 +29831,37 @@ var feng3d;
             this._dataRegisterDic = null;
             this.registerPoolDic = null;
         };
-        ShaderRegisterCache.prototype.instance = function () {
-            _instance || new ShaderRegisterCache();
-            if (_dirty)
-                _instance.reset();
-            return _instance;
+        Object.defineProperty(ShaderRegisterCache, "instance", {
+            /**
+             * 实例
+             */
+            get: function () {
+                _instance || new ShaderRegisterCache();
+                if (_dirty)
+                    _instance.reset();
+                return _instance;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 使缓存失效
+         */
+        ShaderRegisterCache.invalid = function () {
+            _dirty = true;
         };
-        /* 实例 */
-        ShaderRegisterCache.var = _instance;
+        Object.defineProperty(ShaderRegisterCache.prototype, "dataRegisterDic", {
+            /**
+             * 数据寄存器缓存
+             */
+            get: function () {
+                return _dataRegisterDic;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /** 脏标记 */
-        ShaderRegisterCache.var = _dirty;
+        ShaderRegisterCache._dirty = true;
         //		/** 寄存器配置 */
         //		private registerConfig:Array = //
         //			[[RegisterType.VA, 8], //
@@ -29684,26 +29887,9 @@ var feng3d;
             [feng3d.RegisterType.OP, 1],
             [feng3d.RegisterType.OC, 1],
         ];
-        /**
-         * 实例
-         */
-        ShaderRegisterCache.function = get;
-        /**
-         * 使缓存失效
-         */
-        ShaderRegisterCache.function = invalid();
         return ShaderRegisterCache;
     }());
     feng3d.ShaderRegisterCache = ShaderRegisterCache;
-    {
-        _dirty = true;
-    }
-    get;
-    dataRegisterDic();
-    Dictionary;
-    {
-        return _dataRegisterDic;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -29875,8 +30061,6 @@ var feng3d;
          */
         function DefaultRenderer() {
             _super.call(this);
-            this.number = 2;
-            this.number = 3;
             /**
              * @inheritDoc
              */
@@ -29986,12 +30170,8 @@ var feng3d;
                     shadowMapper.renderDepthMap(stage3DProxy, entityCollector, this._depthRenderer);
             }
         };
-        DefaultRenderer.var = SCREEN_PASSES;
-        DefaultRenderer.var = ALL_PASSES;
-        /**
-         * 是否使用平面阴影
-         */
-        DefaultRenderer.var = usePlanarShadow;
+        DefaultRenderer.SCREEN_PASSES = 2;
+        DefaultRenderer.ALL_PASSES = 3;
         return DefaultRenderer;
     }(feng3d.RendererBase));
     feng3d.DefaultRenderer = DefaultRenderer;
@@ -30334,10 +30514,6 @@ var feng3d;
         PartitionTraverser.prototype.applyPointLight = function (light) {
             throw new feng3d.AbstractMethodError();
         };
-        /**
-         * 碰撞标记，避免多次检测
-         */
-        PartitionTraverser.var = _collectionMark;
         return PartitionTraverser;
     }());
     feng3d.PartitionTraverser = PartitionTraverser;
@@ -30722,9 +30898,18 @@ var feng3d;
             this.addEventListener(Event.ADDED_TO_STAGE, this._onAddedToStage);
             this.addEventListener(Event.REMOVED_FROM_STAGE, this._onRemovedFromStage);
         };
-        AwayStats.prototype.instance = function () {
-            return _INSTANCE ? _INSTANCE : _INSTANCE = new AwayStats();
-        };
+        Object.defineProperty(AwayStats, "instance", {
+            /**
+             * Holds a reference to the stats widget (or if several have been created
+             * during session, the one that was last instantiated.) Allows you to set
+             * properties and register views from anywhere in your code.
+             */
+            get: function () {
+                return _INSTANCE ? _INSTANCE : _INSTANCE = new AwayStats();
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * Add a view to the list of those that are taken into account when
          * calculating on-screen and total poly counts. Use this method when the
@@ -31241,14 +31426,6 @@ var feng3d;
         AwayStats._BOTTOM_BAR_HEIGHT = 31;
         AwayStats._POLY_COL = 0xffcc00;
         AwayStats._MEM_COL = 0xff00cc;
-        // Singleton instance reference
-        AwayStats.var = _INSTANCE;
-        /**
-         * Holds a reference to the stats widget (or if several have been created
-         * during session, the one that was last instantiated.) Allows you to set
-         * properties and register views from anywhere in your code.
-         */
-        AwayStats.function = get;
         return AwayStats;
     }(Sprite));
     feng3d.AwayStats = AwayStats;
@@ -31270,40 +31447,40 @@ var feng3d;
          * @param context3DCache			3D环境缓冲
          * @return							调试信息
          */
-        Context3DBufferDebug.function = debug(context3DCache, feng3d.Context3DCache);
+        Context3DBufferDebug.debug = function (context3DCache) {
+            var debugInfos = [];
+            var debugInfoItem;
+            debugInfoItem = debugInfo(context3DCache.programBuffer);
+            debugInfos.push(debugInfoItem);
+            for (each(); ; )
+                var context3DDataBuffer;
+             in context3DCache.otherBufferDic;
+            {
+                debugInfoItem = debugInfo(context3DDataBuffer);
+                debugInfos.push(debugInfoItem);
+            }
+            for (each(); ; )
+                var registerBuffer;
+             in context3DCache.runRegBufferList;
+            {
+                debugInfoItem = debugInfo(registerBuffer);
+                debugInfoItem.shaderRegister = registerBuffer.firstRegister.toString();
+                debugInfos.push(debugInfoItem);
+            }
+            debugInfoItem = debugInfo(context3DCache.indexBuffer);
+            debugInfos.push(debugInfoItem);
+            return debugInfos;
+        };
+        /**
+         * 调试Context3DCache
+         * @param context3DBuffer			3D环境缓冲
+         * @return							调试信息
+         */
+        Context3DBufferDebug.function = debugInfo(context3DBuffer, feng3d.Context3DBuffer);
         return Context3DBufferDebug;
     }());
     feng3d.Context3DBufferDebug = Context3DBufferDebug;
     {
-        var debugInfos = [];
-        var debugInfoItem;
-        debugInfoItem = debugInfo(context3DCache.programBuffer);
-        debugInfos.push(debugInfoItem);
-        for (each(); ; )
-            var context3DDataBuffer;
-         in context3DCache.otherBufferDic;
-        {
-            debugInfoItem = debugInfo(context3DDataBuffer);
-            debugInfos.push(debugInfoItem);
-        }
-        for (each(); ; )
-            var registerBuffer;
-         in context3DCache.runRegBufferList;
-        {
-            debugInfoItem = debugInfo(registerBuffer);
-            debugInfoItem.shaderRegister = registerBuffer.firstRegister.toString();
-            debugInfos.push(debugInfoItem);
-        }
-        debugInfoItem = debugInfo(context3DCache.indexBuffer);
-        debugInfos.push(debugInfoItem);
-        return debugInfos;
-    }
-    /**
-     * 调试Context3DCache
-     * @param context3DBuffer			3D环境缓冲
-     * @return							调试信息
-     */
-    function debugInfo(context3DBuffer) {
         var debugInfoItem = { className: getQualifiedClassName(context3DBuffer), constructorParams: [context3DBuffer.dataTypeId, null] };
         var cla = feng3d.ClassUtils.getClass(context3DBuffer);
         switch (cla) {
@@ -31359,12 +31536,9 @@ var feng3d;
         feng3d.ClassUtils.encodeParams(debugInfoItem.updateParams);
         return debugInfoItem;
     }
-    /**
-     * 获取Context3DCache
-     * @param obj				3D环境数据
-     * @return					3D环境实例
-     */
-    function getContext3DCache(obj) {
+    getContext3DCache(obj, Object);
+    feng3d.Context3DCache;
+    {
         var context3DCache = new feng3d.Context3DCache();
         var arr = obj;
         for (var i = 0; i < arr.length; i++) {
@@ -31401,12 +31575,11 @@ var feng3d;
      */
     var Debug = (function () {
         function Debug() {
-            this.boolean = true;
         }
         /**
          * 是否开启AGAL调试
          */
-        Debug.var = agalDebug;
+        Debug.agalDebug = true;
         return Debug;
     }());
     feng3d.Debug = Debug;
@@ -31421,99 +31594,100 @@ var feng3d;
         function SegmentUtils() {
             this.LIMIT = 3 * 0xFFFF;
         }
-        SegmentUtils.function = getSegmentSubGeometrys(_segments, feng3d.Segment[]);
+        SegmentUtils.getSegmentSubGeometrys = function (_segments) {
+            var segmentUtils = new SegmentUtils();
+            var _segmentSubGeometry = segmentUtils.getSegmentSubGeometry(_segments);
+            return _segmentSubGeometry;
+        };
+        SegmentUtils.prototype.getSegmentSubGeometry = function (_segments) {
+            this._segmentSubGeometry = new feng3d.SegmentSubGeometry();
+            this._indices = new number[]();
+            this._pointData0 = new number[]();
+            this._pointData1 = new number[]();
+            this._thicknessData = new number[]();
+            this._colorData = new number[]();
+            for (var i = 0; i < _segments.length; i++) {
+                this.computeSegment(_segments[i], i);
+            }
+            //一条线段由4个顶点组成
+            this._segmentSubGeometry.numVertices = _segments.length * 4;
+            this._segmentSubGeometry.updateIndexData(this._indices);
+            this._segmentSubGeometry.updatePointData0(this._pointData0);
+            this._segmentSubGeometry.updatePointData1(this._pointData1);
+            this._segmentSubGeometry.updateThicknessData(this._thicknessData);
+            this._segmentSubGeometry.updateColorData(this._colorData);
+            return this._segmentSubGeometry;
+        };
+        /**
+         * 计算线段数据
+         * @param segment 			线段数据
+         * @param segmentIndex 		线段编号
+         */
+        SegmentUtils.prototype.computeSegment = function (segment, segmentIndex) {
+            //to do: add support for curve segment
+            var start = segment.start;
+            var end = segment.end;
+            var startX = start.x, startY = start.y, startZ = start.z;
+            var endX = end.x, endY = end.y, endZ = end.z;
+            var startR = segment.startR, startG = segment.startG, startB = segment.startB;
+            var endR = segment.endR, endG = segment.endG, endB = segment.endB;
+            var point0Index = segmentIndex * 4 * this._segmentSubGeometry.pointData0Stride;
+            var point1Index = segmentIndex * 4 * this._segmentSubGeometry.pointData1Stride;
+            var thicknessIndex = segmentIndex * 4 * this._segmentSubGeometry.thicknessDataStride;
+            var colorIndex = segmentIndex * 4 * this._segmentSubGeometry.colorDataStride;
+            var t = segment.thickness;
+            //生成线段顶点数据
+            this._pointData0[point0Index++] = startX;
+            this._pointData0[point0Index++] = startY;
+            this._pointData0[point0Index++] = startZ;
+            this._pointData1[point1Index++] = endX;
+            this._pointData1[point1Index++] = endY;
+            this._pointData1[point1Index++] = endZ;
+            this._thicknessData[thicknessIndex++] = t;
+            this._colorData[colorIndex++] = startR;
+            this._colorData[colorIndex++] = startG;
+            this._colorData[colorIndex++] = startB;
+            this._colorData[colorIndex++] = 1;
+            this._pointData0[point0Index++] = endX;
+            this._pointData0[point0Index++] = endY;
+            this._pointData0[point0Index++] = endZ;
+            this._pointData1[point1Index++] = startX;
+            this._pointData1[point1Index++] = startY;
+            this._pointData1[point1Index++] = startZ;
+            this._thicknessData[thicknessIndex++] = -t;
+            this._colorData[colorIndex++] = endR;
+            this._colorData[colorIndex++] = endG;
+            this._colorData[colorIndex++] = endB;
+            this._colorData[colorIndex++] = 1;
+            this._pointData0[point0Index++] = startX;
+            this._pointData0[point0Index++] = startY;
+            this._pointData0[point0Index++] = startZ;
+            this._pointData1[point1Index++] = endX;
+            this._pointData1[point1Index++] = endY;
+            this._pointData1[point1Index++] = endZ;
+            this._thicknessData[thicknessIndex++] = -t;
+            this._colorData[colorIndex++] = startR;
+            this._colorData[colorIndex++] = startG;
+            this._colorData[colorIndex++] = startB;
+            this._colorData[colorIndex++] = 1;
+            this._pointData0[point0Index++] = endX;
+            this._pointData0[point0Index++] = endY;
+            this._pointData0[point0Index++] = endZ;
+            this._pointData1[point1Index++] = startX;
+            this._pointData1[point1Index++] = startY;
+            this._pointData1[point1Index++] = startZ;
+            this._thicknessData[thicknessIndex++] = t;
+            this._colorData[colorIndex++] = endR;
+            this._colorData[colorIndex++] = endG;
+            this._colorData[colorIndex++] = endB;
+            this._colorData[colorIndex++] = 1;
+            //生成顶点索引数据
+            var indexIndex = segmentIndex * 4;
+            this._indices.push(indexIndex, indexIndex + 1, indexIndex + 2, indexIndex + 3, indexIndex + 2, indexIndex + 1);
+        };
         return SegmentUtils;
     }());
     feng3d.SegmentUtils = SegmentUtils;
-    {
-        var segmentUtils = new SegmentUtils();
-        var _segmentSubGeometry = segmentUtils.getSegmentSubGeometry(_segments);
-        return _segmentSubGeometry;
-    }
-    getSegmentSubGeometry(_segments, feng3d.Segment[]);
-    feng3d.SegmentSubGeometry;
-    {
-        this._segmentSubGeometry = new feng3d.SegmentSubGeometry();
-        this._indices = new number[]();
-        this._pointData0 = new number[]();
-        this._pointData1 = new number[]();
-        this._thicknessData = new number[]();
-        this._colorData = new number[]();
-        for (var i = 0; i < _segments.length; i++) {
-            this.computeSegment(_segments[i], i);
-        }
-        //一条线段由4个顶点组成
-        this._segmentSubGeometry.numVertices = _segments.length * 4;
-        this._segmentSubGeometry.updateIndexData(this._indices);
-        this._segmentSubGeometry.updatePointData0(this._pointData0);
-        this._segmentSubGeometry.updatePointData1(this._pointData1);
-        this._segmentSubGeometry.updateThicknessData(this._thicknessData);
-        this._segmentSubGeometry.updateColorData(this._colorData);
-        return this._segmentSubGeometry;
-    }
-    computeSegment(segment, feng3d.Segment, segmentIndex, number);
-    {
-        //to do: add support for curve segment
-        var start = segment.start;
-        var end = segment.end;
-        var startX = start.x, startY = start.y, startZ = start.z;
-        var endX = end.x, endY = end.y, endZ = end.z;
-        var startR = segment.startR, startG = segment.startG, startB = segment.startB;
-        var endR = segment.endR, endG = segment.endG, endB = segment.endB;
-        var point0Index = segmentIndex * 4 * this._segmentSubGeometry.pointData0Stride;
-        var point1Index = segmentIndex * 4 * this._segmentSubGeometry.pointData1Stride;
-        var thicknessIndex = segmentIndex * 4 * this._segmentSubGeometry.thicknessDataStride;
-        var colorIndex = segmentIndex * 4 * this._segmentSubGeometry.colorDataStride;
-        var t = segment.thickness;
-        //生成线段顶点数据
-        this._pointData0[point0Index++] = startX;
-        this._pointData0[point0Index++] = startY;
-        this._pointData0[point0Index++] = startZ;
-        this._pointData1[point1Index++] = endX;
-        this._pointData1[point1Index++] = endY;
-        this._pointData1[point1Index++] = endZ;
-        this._thicknessData[thicknessIndex++] = t;
-        this._colorData[colorIndex++] = startR;
-        this._colorData[colorIndex++] = startG;
-        this._colorData[colorIndex++] = startB;
-        this._colorData[colorIndex++] = 1;
-        this._pointData0[point0Index++] = endX;
-        this._pointData0[point0Index++] = endY;
-        this._pointData0[point0Index++] = endZ;
-        this._pointData1[point1Index++] = startX;
-        this._pointData1[point1Index++] = startY;
-        this._pointData1[point1Index++] = startZ;
-        this._thicknessData[thicknessIndex++] = -t;
-        this._colorData[colorIndex++] = endR;
-        this._colorData[colorIndex++] = endG;
-        this._colorData[colorIndex++] = endB;
-        this._colorData[colorIndex++] = 1;
-        this._pointData0[point0Index++] = startX;
-        this._pointData0[point0Index++] = startY;
-        this._pointData0[point0Index++] = startZ;
-        this._pointData1[point1Index++] = endX;
-        this._pointData1[point1Index++] = endY;
-        this._pointData1[point1Index++] = endZ;
-        this._thicknessData[thicknessIndex++] = -t;
-        this._colorData[colorIndex++] = startR;
-        this._colorData[colorIndex++] = startG;
-        this._colorData[colorIndex++] = startB;
-        this._colorData[colorIndex++] = 1;
-        this._pointData0[point0Index++] = endX;
-        this._pointData0[point0Index++] = endY;
-        this._pointData0[point0Index++] = endZ;
-        this._pointData1[point1Index++] = startX;
-        this._pointData1[point1Index++] = startY;
-        this._pointData1[point1Index++] = startZ;
-        this._thicknessData[thicknessIndex++] = t;
-        this._colorData[colorIndex++] = endR;
-        this._colorData[colorIndex++] = endG;
-        this._colorData[colorIndex++] = endB;
-        this._colorData[colorIndex++] = 1;
-        //生成顶点索引数据
-        var indexIndex = segmentIndex * 4;
-        this._indices.push(indexIndex, indexIndex + 1, indexIndex + 2, indexIndex + 3, indexIndex + 2, indexIndex + 1);
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -33500,30 +33674,33 @@ var feng3d;
          * @param prop
          * @return			true：有效，false：无效
          */
-        RegisterComponent.function = valid(prop, string);
+        RegisterComponent.valid = function (prop) {
+            switch (prop) {
+                case "x":
+                case "y":
+                case "z":
+                case "w":
+                case "r":
+                case "g":
+                case "b":
+                case "a":
+                    return true;
+            }
+            return false;
+        };
+        Object.defineProperty(RegisterComponent.prototype, "desc", {
+            /**
+             * @inheritDoc
+             */
+            get: function () {
+                return toString();
+            },
+            enumerable: true,
+            configurable: true
+        });
         return RegisterComponent;
     }());
     feng3d.RegisterComponent = RegisterComponent;
-    {
-        switch (prop) {
-            case "x":
-            case "y":
-            case "z":
-            case "w":
-            case "r":
-            case "g":
-            case "b":
-            case "a":
-                return true;
-        }
-        return false;
-    }
-    get;
-    desc();
-    string;
-    {
-        return toString();
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -33631,7 +33808,6 @@ var feng3dRE;
                 throw new Error("该类为单例");
             _instance = this;
         }
-        FagalIdCenter.var = _instance;
         return FagalIdCenter;
     }(Proxy));
     null;
@@ -33650,6 +33826,7 @@ var feng3dRE;
             var: attr, string: string,
             return: attr
         };
+    get;
     instance();
     FagalIdCenter;
     {
@@ -33734,16 +33911,12 @@ var feng3dRE;
              */
             this.internal = static;
         }
-        FagalRE.var = _instance;
         return FagalRE;
     }());
     feng3dRE.FagalRE = FagalRE;
     var idDic = new Dictionary();
-    /**
-     * 添加3d缓冲编号配置
-     * @param configs
-     */
-    function addBufferID(configs) {
+    addBufferID(configs, Array);
+    {
         for (var i = 0; i < configs.length; i++) {
             idDic[configs[i][0]] = configs[i];
         }
@@ -33775,13 +33948,9 @@ var feng3dRE;
     {
         _context3DCache = value;
     }
-    /**
-     * 运行Fagal函数
-     * @param agalMethod Fagal函数
-     */
-    function runShader(vertexShader, fragmentShader) {
-        if (vertexShader === void 0) { vertexShader =  * ; }
-        if (fragmentShader === void 0) { fragmentShader =  * ; }
+    runShader(vertexShader,  * , fragmentShader,  * );
+    feng3dRE.FagalShaderResult;
+    {
         return instance.runShader(vertexShader, fragmentShader);
     }
     get;
@@ -33821,6 +33990,7 @@ var feng3dRE;
     {
         return _shaderType;
     }
+    get;
     instance();
     FagalRE;
     {
@@ -33933,20 +34103,17 @@ var feng3dRE;
                 throw new Error("该类为单例");
             _instance = this;
         }
-        FagalRegisterCenter.prototype.dataRegisterDic = function () {
-            return _dataRegisterDic || ;
-            new Dictionary();
-        };
-        FagalRegisterCenter.var = _instance;
-        FagalRegisterCenter.var = _dataRegisterDic;
-        /**
-         * 临时寄存器递增索引（目的是为了获取唯一的临时寄存器名称，顶点与片段临时寄存器公用一个递增索引）
-         */
-        FagalRegisterCenter.var = tempIndex;
-        /**
-         * 数据寄存器缓存
-         */
-        FagalRegisterCenter.function = get;
+        Object.defineProperty(FagalRegisterCenter, "dataRegisterDic", {
+            /**
+             * 数据寄存器缓存
+             */
+            get: function () {
+                return _dataRegisterDic || ;
+                new Dictionary();
+            },
+            enumerable: true,
+            configurable: true
+        });
         return FagalRegisterCenter;
     }(Proxy));
     null;
@@ -33969,13 +34136,9 @@ var feng3dRE;
             register: .description = idData[1],
             return: register
         };
-    /**
-     * 创建寄存器
-     * @param dataTypeId
-     * @param numRegister
-     * @return
-     */
-    function createRegister(dataTypeId) {
+    createRegister(dataTypeId, string);
+    Register;
+    {
         if (dataRegisterDic[dataTypeId])
             return dataRegisterDic[dataTypeId];
         var bufferType = Context3DBufferTypeManager.getBufferType(dataTypeId);
@@ -33997,14 +34160,9 @@ var feng3dRE;
         dataRegisterDic[dataTypeId] = register;
         return register;
     }
-    /**
-     * 获取临时寄存器
-     * @param description 寄存器描述
-     * @return
-     * @author feng 2015-4-24
-     */
-    function getFreeTemp(description) {
-        if (description === void 0) { description = ""; }
+    getFreeTemp(description, string = "");
+    Register;
+    {
         var tempTypeId;
         if (feng3dRE.FagalRE.instance.shaderType == Context3DProgramType.VERTEX) {
             tempTypeId = "temp" + (tempIndex++) + "_vt_4";
@@ -34016,15 +34174,9 @@ var feng3dRE;
         register.description = description;
         return register;
     }
-    /**
-     * 获取临时寄存器
-     * @param description 寄存器描述
-     * @return
-     * @author feng 2015-4-24
-     */
-    function getFreeTemps(description, num) {
-        if (description === void 0) { description = ""; }
-        if (num === void 0) { num = 1; }
+    getFreeTemps(description, string = "", num, number = 1);
+    Register;
+    {
         var tempTypeId;
         if (feng3dRE.FagalRE.instance.shaderType == Context3DProgramType.VERTEX) {
             if (num > 1) {
@@ -34046,10 +34198,8 @@ var feng3dRE;
         register.description = description;
         return register;
     }
-    /**
-     * 清理寄存器值
-     */
-    function clear() {
+    clear();
+    {
         for (each(); ; )
             var register;
          in dataRegisterDic;
@@ -34057,6 +34207,7 @@ var feng3dRE;
             register.clear();
         }
     }
+    get;
     instance();
     FagalRegisterCenter;
     {
@@ -34724,359 +34875,359 @@ var feng3d;
         function Matrix3DUtils() {
         }
         /**
+         * Fills the 3d matrix object with values representing the transformation made by the given quaternion.
+         *
+         * @param    quarternion    The quarterion object to convert.
+         */
+        Matrix3DUtils.quaternion2matrix = function (quarternion, m) {
+            if (m === void 0) { m = null; }
+            var x = quarternion.x;
+            var y = quarternion.y;
+            var z = quarternion.z;
+            var w = quarternion.w;
+            var xx = x * x;
+            var xy = x * y;
+            var xz = x * z;
+            var xw = x * w;
+            var yy = y * y;
+            var yz = y * z;
+            var yw = y * w;
+            var zz = z * z;
+            var zw = z * w;
+            var raw = RAW_DATA_CONTAINER;
+            raw[0] = 1 - 2 * (yy + zz);
+            raw[1] = 2 * (xy + zw);
+            raw[2] = 2 * (xz - yw);
+            raw[4] = 2 * (xy - zw);
+            raw[5] = 1 - 2 * (xx + zz);
+            raw[6] = 2 * (yz + xw);
+            raw[8] = 2 * (xz + yw);
+            raw[9] = 2 * (yz - xw);
+            raw[10] = 1 - 2 * (xx + yy);
+            raw[3] = raw[7] = raw[11] = raw[12] = raw[13] = raw[14] = 0;
+            raw[15] = 1;
+            if (m) {
+                m.copyRawDataFrom(raw);
+                return m;
+            }
+            else
+                return new Matrix3D(raw);
+        };
+        /**
+         *
+         * Returns a normalised <code>Vector3D</code> object representing the forward vector of the given matrix.
+         * @param    m        The Matrix3D object to use to get the forward vector
+         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
+         * @return            The forward vector
+         */
+        Matrix3DUtils.getForward = function (m, v) {
+            if (v === void 0) { v = null; }
+            if (!v)
+                v = new Vector3D();
+            m.copyColumnTo(2, v);
+            v.normalize();
+            return v;
+        };
+        /**
+         * Returns a normalised <code>Vector3D</code> object representing the up vector of the given matrix.
+         * @param    m        The Matrix3D object to use to get the up vector
+         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
+         * @return            The up vector
+         */
+        Matrix3DUtils.getUp = function (m, v) {
+            if (v === void 0) { v = null; }
+            if (!v)
+                v = new Vector3D();
+            m.copyColumnTo(1, v);
+            v.normalize();
+            return v;
+        };
+        /**
+         * Returns a normalised <code>Vector3D</code> object representing the right vector of the given matrix.
+         * @param    m        The Matrix3D object to use to get the right vector
+         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
+         * @return            The right vector
+         */
+        Matrix3DUtils.getRight = function (m, v) {
+            if (v === void 0) { v = null; }
+            if (!v)
+                v = new Vector3D();
+            m.copyColumnTo(0, v);
+            v.normalize();
+            return v;
+        };
+        /**
+         * Returns a boolean value representing whether there is any significant difference between the two given 3d matrices.
+         */
+        Matrix3DUtils.compare = function (m1, m2) {
+            var r1 = Matrix3DUtils.RAW_DATA_CONTAINER;
+            var r2 = m2.rawData;
+            m1.copyRawDataTo(r1);
+            for (var i = 0; i < 16; ++i) {
+                if (r1[i] != r2[i])
+                    return false;
+            }
+            return true;
+        };
+        Matrix3DUtils.lookAt = function (matrix, pos, dir, up) {
+            var dirN;
+            var upN;
+            var lftN;
+            var raw = RAW_DATA_CONTAINER;
+            lftN = dir.crossProduct(up);
+            lftN.normalize();
+            upN = lftN.crossProduct(dir);
+            upN.normalize();
+            dirN = dir.clone();
+            dirN.normalize();
+            raw[0] = lftN.x;
+            raw[1] = upN.x;
+            raw[2] = -dirN.x;
+            raw[3] = 0.0;
+            raw[4] = lftN.y;
+            raw[5] = upN.y;
+            raw[6] = -dirN.y;
+            raw[7] = 0.0;
+            raw[8] = lftN.z;
+            raw[9] = upN.z;
+            raw[10] = -dirN.z;
+            raw[11] = 0.0;
+            raw[12] = -lftN.dotProduct(pos);
+            raw[13] = -upN.dotProduct(pos);
+            raw[14] = dirN.dotProduct(pos);
+            raw[15] = 1.0;
+            matrix.copyRawDataFrom(raw);
+        };
+        Matrix3DUtils.reflection = function (plane, target) {
+            if (target === void 0) { target = null; }
+            target || ;
+            new Matrix3D();
+            var a = plane.a, b = plane.b, c = plane.c, d = plane.d;
+            var rawData = Matrix3DUtils.RAW_DATA_CONTAINER;
+            var ab2 = -2 * a * b;
+            var ac2 = -2 * a * c;
+            var bc2 = -2 * b * c;
+            // reflection matrix
+            rawData[0] = 1 - 2 * a * a;
+            rawData[4] = ab2;
+            rawData[8] = ac2;
+            rawData[12] = -2 * a * d;
+            rawData[1] = ab2;
+            rawData[5] = 1 - 2 * b * b;
+            rawData[9] = bc2;
+            rawData[13] = -2 * b * d;
+            rawData[2] = ac2;
+            rawData[6] = bc2;
+            rawData[10] = 1 - 2 * c * c;
+            rawData[14] = -2 * c * d;
+            rawData[3] = 0;
+            rawData[7] = 0;
+            rawData[11] = 0;
+            rawData[15] = 1;
+            target.copyRawDataFrom(rawData);
+            return target;
+        };
+        Matrix3DUtils.decompose = function (sourceMatrix, orientationStyle) {
+            if (orientationStyle === void 0) { orientationStyle = "eulerAngles"; }
+            var raw = RAW_DATA_CONTAINER;
+            sourceMatrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var x = raw[12];
+            var y = raw[13];
+            var z = raw[14];
+            var tx = Math.sqrt(a * a + e * e + i * i);
+            var ty = Math.sqrt(b * b + f * f + j * j);
+            var tz = Math.sqrt(c * c + g * g + k * k);
+            var tw = 0;
+            var scaleX = tx;
+            var scaleY = ty;
+            var scaleZ = tz;
+            if (a * (f * k - j * g) - e * (b * k - j * c) + i * (b * g - f * c) < 0) {
+                scaleZ = -scaleZ;
+            }
+            a = a / scaleX;
+            e = e / scaleX;
+            i = i / scaleX;
+            b = b / scaleY;
+            f = f / scaleY;
+            j = j / scaleY;
+            c = c / scaleZ;
+            g = g / scaleZ;
+            k = k / scaleZ;
+            //from away3d-ts
+            if (orientationStyle == Orientation3D.EULER_ANGLES) {
+                tx = Math.atan2(j, k);
+                ty = Math.atan2(-i, Math.sqrt(a * a + e * e));
+                var s1 = Math.sin(tx);
+                var c1 = Math.cos(tx);
+                tz = Math.atan2(s1 * c - c1 * b, c1 * f - s1 * g);
+            }
+            else if (orientationStyle == Orientation3D.AXIS_ANGLE) {
+                tw = Math.acos((a + f + k - 1) / 2);
+                var len = Math.sqrt((j - g) * (j - g) + (c - i) * (c - i) + (e - b) * (e - b));
+                tx = (j - g) / len;
+                ty = (c - i) / len;
+                tz = (e - b) / len;
+            }
+            else {
+                var tr = a + f + k;
+                if (tr > 0) {
+                    tw = Math.sqrt(1 + tr) / 2;
+                    tx = (j - g) / (4 * tw);
+                    ty = (c - i) / (4 * tw);
+                    tz = (e - b) / (4 * tw);
+                }
+                else if ((a > f) && (a > k)) {
+                    tx = Math.sqrt(1 + a - f - k) / 2;
+                    tw = (j - g) / (4 * tx);
+                    ty = (e + b) / (4 * tx);
+                    tz = (c + i) / (4 * tx);
+                }
+                else if (f > k) {
+                    ty = Math.sqrt(1 + f - a - k) / 2;
+                    tx = (e + b) / (4 * ty);
+                    tw = (c - i) / (4 * ty);
+                    tz = (j + g) / (4 * ty);
+                }
+                else {
+                    tz = Math.sqrt(1 + k - a - f) / 2;
+                    tx = (c + i) / (4 * tz);
+                    ty = (j + g) / (4 * tz);
+                    tw = (e - b) / (4 * tz);
+                }
+            }
+            var v = CALCULATION_DECOMPOSE;
+            v[0].x = x;
+            v[0].y = y;
+            v[0].z = z;
+            v[1].x = tx;
+            v[1].y = ty;
+            v[1].z = tz;
+            v[1].w = tw;
+            v[2].x = scaleX;
+            v[2].y = scaleY;
+            v[2].z = scaleZ;
+            return v;
+        };
+        Matrix3DUtils.transformVector = function (matrix, vector, result) {
+            if (result === void 0) { result = null; }
+            if (!result)
+                result = new Vector3D();
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            matrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var m = raw[3];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var n = raw[7];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var o = raw[11];
+            var d = raw[12];
+            var h = raw[13];
+            var l = raw[14];
+            var p = raw[15];
+            var x = vector.x;
+            var y = vector.y;
+            var z = vector.z;
+            result.x = a * x + b * y + c * z + d;
+            result.y = e * x + f * y + g * z + h;
+            result.z = i * x + j * y + k * z + l;
+            result.w = m * x + n * y + o * z + p;
+            return result;
+        };
+        Matrix3DUtils.deltaTransformVector = function (matrix, vector, result) {
+            if (result === void 0) { result = null; }
+            if (!result)
+                result = new Vector3D();
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            matrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var m = raw[3];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var n = raw[7];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var o = raw[11];
+            var x = vector.x;
+            var y = vector.y;
+            var z = vector.z;
+            result.x = a * x + b * y + c * z;
+            result.y = e * x + f * y + g * z;
+            result.z = i * x + j * y + k * z;
+            result.w = m * x + n * y + o * z;
+            return result;
+        };
+        Matrix3DUtils.getTranslation = function (transform, result) {
+            if (result === void 0) { result = null; }
+            if (!result)
+                result = new Vector3D();
+            transform.copyColumnTo(3, result);
+            return result;
+        };
+        Matrix3DUtils.deltaTransformVectors = function (matrix, vin, vout) {
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            matrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var m = raw[3];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var n = raw[7];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var o = raw[11];
+            var outIndex = 0;
+            var length = vin.length;
+            for (var index = 0; index < length; index += 3) {
+                var x = vin[index];
+                var y = vin[index + 1];
+                var z = vin[index + 2];
+                vout[outIndex++] = a * x + b * y + c * z;
+                vout[outIndex++] = e * x + f * y + g * z;
+                vout[outIndex++] = i * x + j * y + k * z;
+            }
+        };
+        /**
+         * 更新本地射线
+         * @param inverseSceneTransform 逆场景变换矩阵
+         * @param ray3D 场景射线
+         * @param localRay 本地射线
+         */
+        Matrix3DUtils.updateLocalRay = function (inverseSceneTransform, ray3D, localRay) {
+            Matrix3DUtils.transformVector(inverseSceneTransform, ray3D.position, localRay.position);
+            Matrix3DUtils.deltaTransformVector(inverseSceneTransform, ray3D.direction, localRay.direction);
+        };
+        /**
          * A reference to a Vector to be used as a temporary raw data container, to prevent object creation.
          */
         Matrix3DUtils.RAW_DATA_CONTAINER = new number[](16);
         Matrix3DUtils.CALCULATION_MATRIX = new Matrix3D();
         Matrix3DUtils.CALCULATION_VECTOR3D = new Vector3D();
         Matrix3DUtils.CALCULATION_DECOMPOSE = Vector3D[]([new Vector3D(), new Vector3D(), new Vector3D()]);
-        /**
-         * Fills the 3d matrix object with values representing the transformation made by the given quaternion.
-         *
-         * @param    quarternion    The quarterion object to convert.
-         */
-        Matrix3DUtils.function = quaternion2matrix(quarternion, Quaternion, m, Matrix3D = null);
         return Matrix3DUtils;
     }());
     feng3d.Matrix3DUtils = Matrix3DUtils;
-    {
-        var x = quarternion.x;
-        var y = quarternion.y;
-        var z = quarternion.z;
-        var w = quarternion.w;
-        var xx = x * x;
-        var xy = x * y;
-        var xz = x * z;
-        var xw = x * w;
-        var yy = y * y;
-        var yz = y * z;
-        var yw = y * w;
-        var zz = z * z;
-        var zw = z * w;
-        var raw = RAW_DATA_CONTAINER;
-        raw[0] = 1 - 2 * (yy + zz);
-        raw[1] = 2 * (xy + zw);
-        raw[2] = 2 * (xz - yw);
-        raw[4] = 2 * (xy - zw);
-        raw[5] = 1 - 2 * (xx + zz);
-        raw[6] = 2 * (yz + xw);
-        raw[8] = 2 * (xz + yw);
-        raw[9] = 2 * (yz - xw);
-        raw[10] = 1 - 2 * (xx + yy);
-        raw[3] = raw[7] = raw[11] = raw[12] = raw[13] = raw[14] = 0;
-        raw[15] = 1;
-        if (m) {
-            m.copyRawDataFrom(raw);
-            return m;
-        }
-        else
-            return new Matrix3D(raw);
-    }
-    /**
-     *
-     * Returns a normalised <code>Vector3D</code> object representing the forward vector of the given matrix.
-     * @param    m        The Matrix3D object to use to get the forward vector
-     * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
-     * @return            The forward vector
-     */
-    function getForward(m, v) {
-        if (v === void 0) { v = null; }
-        if (!v)
-            v = new Vector3D();
-        m.copyColumnTo(2, v);
-        v.normalize();
-        return v;
-    }
-    /**
-     * Returns a normalised <code>Vector3D</code> object representing the up vector of the given matrix.
-     * @param    m        The Matrix3D object to use to get the up vector
-     * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
-     * @return            The up vector
-     */
-    function getUp(m, v) {
-        if (v === void 0) { v = null; }
-        if (!v)
-            v = new Vector3D();
-        m.copyColumnTo(1, v);
-        v.normalize();
-        return v;
-    }
-    /**
-     * Returns a normalised <code>Vector3D</code> object representing the right vector of the given matrix.
-     * @param    m        The Matrix3D object to use to get the right vector
-     * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
-     * @return            The right vector
-     */
-    function getRight(m, v) {
-        if (v === void 0) { v = null; }
-        if (!v)
-            v = new Vector3D();
-        m.copyColumnTo(0, v);
-        v.normalize();
-        return v;
-    }
-    /**
-     * Returns a boolean value representing whether there is any significant difference between the two given 3d matrices.
-     */
-    function compare(m1, m2) {
-        var r1 = Matrix3DUtils.RAW_DATA_CONTAINER;
-        var r2 = m2.rawData;
-        m1.copyRawDataTo(r1);
-        for (var i = 0; i < 16; ++i) {
-            if (r1[i] != r2[i])
-                return false;
-        }
-        return true;
-    }
-    function lookAt(matrix, pos, dir, up) {
-        var dirN;
-        var upN;
-        var lftN;
-        var raw = RAW_DATA_CONTAINER;
-        lftN = dir.crossProduct(up);
-        lftN.normalize();
-        upN = lftN.crossProduct(dir);
-        upN.normalize();
-        dirN = dir.clone();
-        dirN.normalize();
-        raw[0] = lftN.x;
-        raw[1] = upN.x;
-        raw[2] = -dirN.x;
-        raw[3] = 0.0;
-        raw[4] = lftN.y;
-        raw[5] = upN.y;
-        raw[6] = -dirN.y;
-        raw[7] = 0.0;
-        raw[8] = lftN.z;
-        raw[9] = upN.z;
-        raw[10] = -dirN.z;
-        raw[11] = 0.0;
-        raw[12] = -lftN.dotProduct(pos);
-        raw[13] = -upN.dotProduct(pos);
-        raw[14] = dirN.dotProduct(pos);
-        raw[15] = 1.0;
-        matrix.copyRawDataFrom(raw);
-    }
-    function reflection(plane, target) {
-        if (target === void 0) { target = null; }
-        target || ;
-        new Matrix3D();
-        var a = plane.a, b = plane.b, c = plane.c, d = plane.d;
-        var rawData = Matrix3DUtils.RAW_DATA_CONTAINER;
-        var ab2 = -2 * a * b;
-        var ac2 = -2 * a * c;
-        var bc2 = -2 * b * c;
-        // reflection matrix
-        rawData[0] = 1 - 2 * a * a;
-        rawData[4] = ab2;
-        rawData[8] = ac2;
-        rawData[12] = -2 * a * d;
-        rawData[1] = ab2;
-        rawData[5] = 1 - 2 * b * b;
-        rawData[9] = bc2;
-        rawData[13] = -2 * b * d;
-        rawData[2] = ac2;
-        rawData[6] = bc2;
-        rawData[10] = 1 - 2 * c * c;
-        rawData[14] = -2 * c * d;
-        rawData[3] = 0;
-        rawData[7] = 0;
-        rawData[11] = 0;
-        rawData[15] = 1;
-        target.copyRawDataFrom(rawData);
-        return target;
-    }
-    function decompose(sourceMatrix, orientationStyle) {
-        if (orientationStyle === void 0) { orientationStyle = "eulerAngles"; }
-        var raw = RAW_DATA_CONTAINER;
-        sourceMatrix.copyRawDataTo(raw);
-        var a = raw[0];
-        var e = raw[1];
-        var i = raw[2];
-        var b = raw[4];
-        var f = raw[5];
-        var j = raw[6];
-        var c = raw[8];
-        var g = raw[9];
-        var k = raw[10];
-        var x = raw[12];
-        var y = raw[13];
-        var z = raw[14];
-        var tx = Math.sqrt(a * a + e * e + i * i);
-        var ty = Math.sqrt(b * b + f * f + j * j);
-        var tz = Math.sqrt(c * c + g * g + k * k);
-        var tw = 0;
-        var scaleX = tx;
-        var scaleY = ty;
-        var scaleZ = tz;
-        if (a * (f * k - j * g) - e * (b * k - j * c) + i * (b * g - f * c) < 0) {
-            scaleZ = -scaleZ;
-        }
-        a = a / scaleX;
-        e = e / scaleX;
-        i = i / scaleX;
-        b = b / scaleY;
-        f = f / scaleY;
-        j = j / scaleY;
-        c = c / scaleZ;
-        g = g / scaleZ;
-        k = k / scaleZ;
-        //from away3d-ts
-        if (orientationStyle == Orientation3D.EULER_ANGLES) {
-            tx = Math.atan2(j, k);
-            ty = Math.atan2(-i, Math.sqrt(a * a + e * e));
-            var s1 = Math.sin(tx);
-            var c1 = Math.cos(tx);
-            tz = Math.atan2(s1 * c - c1 * b, c1 * f - s1 * g);
-        }
-        else if (orientationStyle == Orientation3D.AXIS_ANGLE) {
-            tw = Math.acos((a + f + k - 1) / 2);
-            var len = Math.sqrt((j - g) * (j - g) + (c - i) * (c - i) + (e - b) * (e - b));
-            tx = (j - g) / len;
-            ty = (c - i) / len;
-            tz = (e - b) / len;
-        }
-        else {
-            var tr = a + f + k;
-            if (tr > 0) {
-                tw = Math.sqrt(1 + tr) / 2;
-                tx = (j - g) / (4 * tw);
-                ty = (c - i) / (4 * tw);
-                tz = (e - b) / (4 * tw);
-            }
-            else if ((a > f) && (a > k)) {
-                tx = Math.sqrt(1 + a - f - k) / 2;
-                tw = (j - g) / (4 * tx);
-                ty = (e + b) / (4 * tx);
-                tz = (c + i) / (4 * tx);
-            }
-            else if (f > k) {
-                ty = Math.sqrt(1 + f - a - k) / 2;
-                tx = (e + b) / (4 * ty);
-                tw = (c - i) / (4 * ty);
-                tz = (j + g) / (4 * ty);
-            }
-            else {
-                tz = Math.sqrt(1 + k - a - f) / 2;
-                tx = (c + i) / (4 * tz);
-                ty = (j + g) / (4 * tz);
-                tw = (e - b) / (4 * tz);
-            }
-        }
-        var v = CALCULATION_DECOMPOSE;
-        v[0].x = x;
-        v[0].y = y;
-        v[0].z = z;
-        v[1].x = tx;
-        v[1].y = ty;
-        v[1].z = tz;
-        v[1].w = tw;
-        v[2].x = scaleX;
-        v[2].y = scaleY;
-        v[2].z = scaleZ;
-        return v;
-    }
-    function transformVector(matrix, vector, result) {
-        if (result === void 0) { result = null; }
-        if (!result)
-            result = new Vector3D();
-        var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-        matrix.copyRawDataTo(raw);
-        var a = raw[0];
-        var e = raw[1];
-        var i = raw[2];
-        var m = raw[3];
-        var b = raw[4];
-        var f = raw[5];
-        var j = raw[6];
-        var n = raw[7];
-        var c = raw[8];
-        var g = raw[9];
-        var k = raw[10];
-        var o = raw[11];
-        var d = raw[12];
-        var h = raw[13];
-        var l = raw[14];
-        var p = raw[15];
-        var x = vector.x;
-        var y = vector.y;
-        var z = vector.z;
-        result.x = a * x + b * y + c * z + d;
-        result.y = e * x + f * y + g * z + h;
-        result.z = i * x + j * y + k * z + l;
-        result.w = m * x + n * y + o * z + p;
-        return result;
-    }
-    function deltaTransformVector(matrix, vector, result) {
-        if (result === void 0) { result = null; }
-        if (!result)
-            result = new Vector3D();
-        var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-        matrix.copyRawDataTo(raw);
-        var a = raw[0];
-        var e = raw[1];
-        var i = raw[2];
-        var m = raw[3];
-        var b = raw[4];
-        var f = raw[5];
-        var j = raw[6];
-        var n = raw[7];
-        var c = raw[8];
-        var g = raw[9];
-        var k = raw[10];
-        var o = raw[11];
-        var x = vector.x;
-        var y = vector.y;
-        var z = vector.z;
-        result.x = a * x + b * y + c * z;
-        result.y = e * x + f * y + g * z;
-        result.z = i * x + j * y + k * z;
-        result.w = m * x + n * y + o * z;
-        return result;
-    }
-    function getTranslation(transform, result) {
-        if (result === void 0) { result = null; }
-        if (!result)
-            result = new Vector3D();
-        transform.copyColumnTo(3, result);
-        return result;
-    }
-    function deltaTransformVectors(matrix, vin, vout) {
-        var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-        matrix.copyRawDataTo(raw);
-        var a = raw[0];
-        var e = raw[1];
-        var i = raw[2];
-        var m = raw[3];
-        var b = raw[4];
-        var f = raw[5];
-        var j = raw[6];
-        var n = raw[7];
-        var c = raw[8];
-        var g = raw[9];
-        var k = raw[10];
-        var o = raw[11];
-        var outIndex = 0;
-        var length = vin.length;
-        for (var index = 0; index < length; index += 3) {
-            var x = vin[index];
-            var y = vin[index + 1];
-            var z = vin[index + 2];
-            vout[outIndex++] = a * x + b * y + c * z;
-            vout[outIndex++] = e * x + f * y + g * z;
-            vout[outIndex++] = i * x + j * y + k * z;
-        }
-    }
-    /**
-     * 更新本地射线
-     * @param inverseSceneTransform 逆场景变换矩阵
-     * @param ray3D 场景射线
-     * @param localRay 本地射线
-     */
-    function updateLocalRay(inverseSceneTransform, ray3D, localRay) {
-        Matrix3DUtils.transformVector(inverseSceneTransform, ray3D.position, localRay.position);
-        Matrix3DUtils.deltaTransformVector(inverseSceneTransform, ray3D.direction, localRay.direction);
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -35696,45 +35847,39 @@ var feng3d;
          * @return
          *
          */
-        ParserUtil.function = toByteArray(data,  * );
+        ParserUtil.toByteArray = function (data) {
+            if (data === void 0) { data =  * ; }
+            if (data)
+                is;
+            Class;
+            data = new data();
+            if (data)
+                is;
+            ByteArray;
+            return data;
+        };
         return ParserUtil;
     }());
     feng3d.ParserUtil = ParserUtil;
-    {
-        if (data)
-            is;
-        Class;
-        data = new data();
-        if (data)
-            is;
-        ByteArray;
-        return data;
-        return null;
-    }
-    /**
-     * 把数据转换为字符串
-     * @param data 数据
-     * @param length 需要转换的长度
-     * @return
-     */
-    function toString(data, length) {
-        if (data === void 0) { data =  * ; }
-        if (length === void 0) { length = 0; }
-        var ba;
-        length || ;
-        number.MAX_VALUE;
-        if (data)
-            is;
-        string;
-        return string(data).substr(0, length);
-        ba = toByteArray(data);
-        if (ba) {
-            ba.position = 0;
-            return ba.readUTFBytes(Math.min(ba.bytesAvailable, length));
-        }
-        return null;
-    }
+    return null;
 })(feng3d || (feng3d = {}));
+toString(data,  * , length, number = 0);
+string;
+{
+    var ba;
+    length || ;
+    number.MAX_VALUE;
+    if (data)
+        is;
+    string;
+    return string(data).substr(0, length);
+    ba = toByteArray(data);
+    if (ba) {
+        ba.position = 0;
+        return ba.readUTFBytes(Math.min(ba.bytesAvailable, length));
+    }
+    return null;
+}
 var feng3d;
 (function (feng3d) {
     /**
@@ -36154,73 +36299,72 @@ var feng3d;
     var ParticleGeometryHelper = (function () {
         function ParticleGeometryHelper() {
         }
-        /** stage3d单次渲染支持的最大顶点数 */
-        ParticleGeometryHelper.MAX_VERTEX = 65535;
         /**
          * 创建一个粒子几何体
          * @param geometries 单个粒子几何体列表
          * @param transforms
          * @return 粒子几何体
          */
-        ParticleGeometryHelper.function = generateGeometry(geometries, feng3d.Geometry[]);
+        ParticleGeometryHelper.generateGeometry = function (geometries) {
+            var particleGeometry = new feng3d.ParticleGeometry();
+            /** 粒子数量 */
+            var numParticles = particleGeometry.numParticles = geometries.length;
+            /** 粒子数据 */
+            var particles = particleGeometry.particles = new feng3d.ParticleData[](numParticles, true);
+            /** 当前粒子子几何体 */
+            var particleSubGeometry = createParticleSubGeometry();
+            particleGeometry.addSubGeometry(particleSubGeometry);
+            //单个粒子几何体
+            var sourceGeometry;
+            /** 单个粒子子几何体列表 */
+            var sourceSubGeometries;
+            /** 单个粒子的子几何体 */
+            var sourceSubGeometry;
+            /** 单个粒子子几何体数 */
+            var numSubGeometries;
+            /** 单个粒子子几何体索引 */
+            var srcIndex = 0;
+            /** 粒子索引 */
+            var i;
+            //遍历粒子
+            for (i = 0; i < numParticles; i++) {
+                sourceGeometry = geometries[i];
+                if (sourceGeometry.numVertices > MAX_VERTEX)
+                    throw new Error("不支持顶点数大于" + MAX_VERTEX + "的粒子");
+                sourceSubGeometries = geometries[i].subGeometries;
+                numSubGeometries = sourceSubGeometries.length;
+                //判断 当前单个粒子子网格 是否会使当前粒子子几何体顶点数量超出最大值 ,如果超出就创建一个新的粒子子几何体
+                if (sourceGeometry.numVertices + particleSubGeometry.numVertices > MAX_VERTEX) {
+                    particleSubGeometry = createParticleSubGeometry();
+                    particleGeometry.addSubGeometry(particleSubGeometry);
+                }
+                //收集粒子数据
+                var particleData = new feng3d.ParticleData();
+                particleData.numVertices = sourceGeometry.numVertices;
+                particleData.startVertexIndex = particleSubGeometry.numVertices;
+                particleData.subGeometry = particleSubGeometry;
+                particles[i] = particleData;
+                //遍历单个粒子的子几何体
+                for (srcIndex = 0; srcIndex < numSubGeometries; srcIndex++) {
+                    //设置当前单个粒子子网格
+                    sourceSubGeometry = sourceSubGeometries[srcIndex];
+                    //添加 单个粒子的子几何体 到  当前粒子子几何体
+                    feng3d.GeomUtil.addSubGeometry(sourceSubGeometry, particleSubGeometry);
+                }
+            }
+            return particleGeometry;
+        };
+        ParticleGeometryHelper.createParticleSubGeometry = function () {
+            /** 当前粒子子几何体 */
+            var particleSubGeometry = new feng3d.SubGeometry();
+            particleSubGeometry.updateIndexData(new number[]());
+            return particleSubGeometry;
+        };
+        /** stage3d单次渲染支持的最大顶点数 */
+        ParticleGeometryHelper.MAX_VERTEX = 65535;
         return ParticleGeometryHelper;
     }());
     feng3d.ParticleGeometryHelper = ParticleGeometryHelper;
-    {
-        var particleGeometry = new feng3d.ParticleGeometry();
-        /** 粒子数量 */
-        var numParticles = particleGeometry.numParticles = geometries.length;
-        /** 粒子数据 */
-        var particles = particleGeometry.particles = new feng3d.ParticleData[](numParticles, true);
-        /** 当前粒子子几何体 */
-        var particleSubGeometry = createParticleSubGeometry();
-        particleGeometry.addSubGeometry(particleSubGeometry);
-        //单个粒子几何体
-        var sourceGeometry;
-        /** 单个粒子子几何体列表 */
-        var sourceSubGeometries;
-        /** 单个粒子的子几何体 */
-        var sourceSubGeometry;
-        /** 单个粒子子几何体数 */
-        var numSubGeometries;
-        /** 单个粒子子几何体索引 */
-        var srcIndex = 0;
-        /** 粒子索引 */
-        var i;
-        //遍历粒子
-        for (i = 0; i < numParticles; i++) {
-            sourceGeometry = geometries[i];
-            if (sourceGeometry.numVertices > MAX_VERTEX)
-                throw new Error("不支持顶点数大于" + MAX_VERTEX + "的粒子");
-            sourceSubGeometries = geometries[i].subGeometries;
-            numSubGeometries = sourceSubGeometries.length;
-            //判断 当前单个粒子子网格 是否会使当前粒子子几何体顶点数量超出最大值 ,如果超出就创建一个新的粒子子几何体
-            if (sourceGeometry.numVertices + particleSubGeometry.numVertices > MAX_VERTEX) {
-                particleSubGeometry = createParticleSubGeometry();
-                particleGeometry.addSubGeometry(particleSubGeometry);
-            }
-            //收集粒子数据
-            var particleData = new feng3d.ParticleData();
-            particleData.numVertices = sourceGeometry.numVertices;
-            particleData.startVertexIndex = particleSubGeometry.numVertices;
-            particleData.subGeometry = particleSubGeometry;
-            particles[i] = particleData;
-            //遍历单个粒子的子几何体
-            for (srcIndex = 0; srcIndex < numSubGeometries; srcIndex++) {
-                //设置当前单个粒子子网格
-                sourceSubGeometry = sourceSubGeometries[srcIndex];
-                //添加 单个粒子的子几何体 到  当前粒子子几何体
-                feng3d.GeomUtil.addSubGeometry(sourceSubGeometry, particleSubGeometry);
-            }
-        }
-        return particleGeometry;
-    }
-    function createParticleSubGeometry() {
-        /** 当前粒子子几何体 */
-        var particleSubGeometry = new feng3d.SubGeometry();
-        particleSubGeometry.updateIndexData(new number[]());
-        return particleSubGeometry;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -36348,142 +36492,179 @@ var feng3d;
      */
     var Bounds = (function () {
         function Bounds() {
-            this.Vector3D = new Vector3D(0.0, 0.0, 0.0);
         }
-        Bounds.var = _minX;
-        Bounds.var = _minY;
-        Bounds.var = _minZ;
-        Bounds.var = _maxX;
-        Bounds.var = _maxY;
-        Bounds.var = _maxZ;
-        Bounds.var = _defaultPosition;
-        Bounds.var = _containers;
         /**
          * Calculate the bounds of a Mesh object
          * @param mesh        Mesh. The Mesh to get the bounds from.
          * Use the getters of this class to retrieve the results
          */
-        Bounds.function = getMeshBounds(mesh, feng3d.Mesh);
+        Bounds.getMeshBounds = function (mesh) {
+            getObjectContainerBounds(mesh);
+        };
+        /**
+         * Calculate the bounds of an ObjectContainer3D object
+         * @param container        ObjectContainer3D. The ObjectContainer3D to get the bounds from.
+         * Use the getters of this class to retrieve the results
+         */
+        Bounds.getObjectContainerBounds = function (container, worldBased) {
+            if (worldBased === void 0) { worldBased = true; }
+            reset();
+            parseObjectContainerBounds(container);
+            if (isInfinite(_minX) || isInfinite(_minY) || isInfinite(_minZ) || isInfinite(_maxX) || isInfinite(_maxY) || isInfinite(_maxZ)) {
+                return;
+            }
+            // Transform min/max values to the scene if required
+            if (worldBased) {
+                var b = number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+                var c = getBoundsCorners(_minX, _minY, _minZ, _maxX, _maxY, _maxZ);
+                transformContainer(b, c, container.sceneTransform);
+                _minX = b[0];
+                _minY = b[1];
+                _minZ = b[2];
+                _maxX = b[3];
+                _maxY = b[4];
+                _maxZ = b[5];
+            }
+        };
+        /**
+         * Calculate the bounds from a vector of number representing the vertices. &lt;x,y,z,x,y,z.....&gt;
+         * @param vertices        Vector.&lt;number&gt;. The vertices to get the bounds from.
+         * Use the getters of this class to retrieve the results
+         */
+        Bounds.getVerticesVectorBounds = function (vertices) {
+            reset();
+            var l = vertices.length;
+            if (l % 3 != 0)
+                return;
+            var x;
+            var y;
+            var z;
+            for (var i = 0; i < l; i += 3) {
+                x = vertices[i];
+                y = vertices[i + 1];
+                z = vertices[i + 2];
+                if (x < _minX)
+                    _minX = x;
+                if (x > _maxX)
+                    _maxX = x;
+                if (y < _minY)
+                    _minY = y;
+                if (y > _maxY)
+                    _maxY = y;
+                if (z < _minZ)
+                    _minZ = z;
+                if (z > _maxZ)
+                    _maxZ = z;
+            }
+        };
+        /**
+         * @param outCenter        Vector3D. Optional Vector3D, if provided the same Vector3D is returned with the bounds center.
+         * @return the center of the bound
+         */
+        Bounds.getCenter = function (outCenter) {
+            if (outCenter === void 0) { outCenter = null; }
+            var center = outCenter || new Vector3D();
+            center.x = _minX + (_maxX - _minX) * .5;
+            center.y = _minY + (_maxY - _minY) * .5;
+            center.z = _minZ + (_maxZ - _minZ) * .5;
+            return center;
+        };
+        Object.defineProperty(Bounds, "minX", {
+            /**
+             * @return the smalest x value
+             */
+            get: function () {
+                return _minX;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "minY", {
+            /**
+             * @return the smalest y value
+             */
+            get: function () {
+                return _minY;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "minZ", {
+            /**
+             * @return the smalest z value
+             */
+            get: function () {
+                return _minZ;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "maxX", {
+            /**
+             * @return the biggest x value
+             */
+            get: function () {
+                return _maxX;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "maxY", {
+            /**
+             * @return the biggest y value
+             */
+            get: function () {
+                return _maxY;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "maxZ", {
+            /**
+             * @return the biggest z value
+             */
+            get: function () {
+                return _maxZ;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "width", {
+            /**
+             * @return the width value from the bounds
+             */
+            get: function () {
+                return _maxX - _minX;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "height", {
+            /**
+             * @return the height value from the bounds
+             */
+            get: function () {
+                return _maxY - _minY;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Bounds, "depth", {
+            /**
+             * @return the depth value from the bounds
+             */
+            get: function () {
+                return _maxZ - _minZ;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Bounds._defaultPosition = new Vector3D(0.0, 0.0, 0.0);
+        Bounds.function = reset();
         return Bounds;
     }());
     feng3d.Bounds = Bounds;
     {
-        getObjectContainerBounds(mesh);
-    }
-    /**
-     * Calculate the bounds of an ObjectContainer3D object
-     * @param container        ObjectContainer3D. The ObjectContainer3D to get the bounds from.
-     * Use the getters of this class to retrieve the results
-     */
-    function getObjectContainerBounds(container, worldBased) {
-        if (worldBased === void 0) { worldBased = true; }
-        reset();
-        parseObjectContainerBounds(container);
-        if (isInfinite(_minX) || isInfinite(_minY) || isInfinite(_minZ) || isInfinite(_maxX) || isInfinite(_maxY) || isInfinite(_maxZ)) {
-            return;
-        }
-        // Transform min/max values to the scene if required
-        if (worldBased) {
-            var b = number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
-            var c = getBoundsCorners(_minX, _minY, _minZ, _maxX, _maxY, _maxZ);
-            transformContainer(b, c, container.sceneTransform);
-            _minX = b[0];
-            _minY = b[1];
-            _minZ = b[2];
-            _maxX = b[3];
-            _maxY = b[4];
-            _maxZ = b[5];
-        }
-    }
-    /**
-     * Calculate the bounds from a vector of number representing the vertices. &lt;x,y,z,x,y,z.....&gt;
-     * @param vertices        Vector.&lt;number&gt;. The vertices to get the bounds from.
-     * Use the getters of this class to retrieve the results
-     */
-    function getVerticesVectorBounds(vertices) {
-        reset();
-        var l = vertices.length;
-        if (l % 3 != 0)
-            return;
-        var x;
-        var y;
-        var z;
-        for (var i = 0; i < l; i += 3) {
-            x = vertices[i];
-            y = vertices[i + 1];
-            z = vertices[i + 2];
-            if (x < _minX)
-                _minX = x;
-            if (x > _maxX)
-                _maxX = x;
-            if (y < _minY)
-                _minY = y;
-            if (y > _maxY)
-                _maxY = y;
-            if (z < _minZ)
-                _minZ = z;
-            if (z > _maxZ)
-                _maxZ = z;
-        }
-    }
-    /**
-     * @param outCenter        Vector3D. Optional Vector3D, if provided the same Vector3D is returned with the bounds center.
-     * @return the center of the bound
-     */
-    function getCenter(outCenter) {
-        if (outCenter === void 0) { outCenter = null; }
-        var center = outCenter || new Vector3D();
-        center.x = _minX + (_maxX - _minX) * .5;
-        center.y = _minY + (_maxY - _minY) * .5;
-        center.z = _minZ + (_maxZ - _minZ) * .5;
-        return center;
-    }
-    minX();
-    number;
-    {
-        return _minX;
-    }
-    minY();
-    number;
-    {
-        return _minY;
-    }
-    minZ();
-    number;
-    {
-        return _minZ;
-    }
-    maxX();
-    number;
-    {
-        return _maxX;
-    }
-    maxY();
-    number;
-    {
-        return _maxY;
-    }
-    maxZ();
-    number;
-    {
-        return _maxZ;
-    }
-    width();
-    number;
-    {
-        return _maxX - _minX;
-    }
-    height();
-    number;
-    {
-        return _maxY - _minY;
-    }
-    depth();
-    number;
-    {
-        return _maxZ - _minZ;
-    }
-    function reset() {
         _containers = new Dictionary();
         _minX = _minY = _minZ = Infinity;
         _maxX = _maxY = _maxZ = -Infinity;
@@ -36603,121 +36784,118 @@ var feng3d;
      */
     var Cast = (function () {
         function Cast() {
-            this.Dictionary = new Dictionary();
-            this.Dictionary = new Dictionary();
         }
-        Cast.var = _notClasses;
-        Cast.var = _classes;
         /**
          * 获取类定义
          * @param name		类描述字符串
          * @return			类定义
          */
-        Cast.function = tryClass(name, string);
+        Cast.tryClass = function (name) {
+            if (_notClasses[name])
+                return name;
+            var result = _classes[name];
+            if (result != null)
+                return result;
+            try {
+                result = getDefinitionByName(name);
+                _classes[name] = result;
+                return result;
+            }
+            catch (error) {
+            }
+            _notClasses[name] = true;
+            return name;
+        };
+        /**
+         * 转换位图数据
+         * @param data		位图数据
+         * @return 			位图数据
+         */
+        Cast.bitmapData = function (data) {
+            if (data === void 0) { data =  * ; }
+            if (data == null)
+                return null;
+            if (data)
+                is;
+            string;
+            data = tryClass(data);
+            if (data)
+                is;
+            Class;
+            {
+                try {
+                    data = new data;
+                }
+                catch (bitmapError) {
+                    data = new data(0, 0);
+                }
+            }
+            if (data)
+                is;
+            BitmapData;
+            return data;
+            if (data)
+                is;
+            Bitmap;
+            {
+                if (data.hasOwnProperty("bitmapData"))
+                    return data.bitmapData;
+            }
+            if (data)
+                is;
+            DisplayObject;
+            {
+                var ds = data;
+                var bmd = new BitmapData(ds.width, ds.height, true, 0x00FFFFFF);
+                var mat = ds.transform.matrix.clone();
+                mat.tx = 0;
+                mat.ty = 0;
+                bmd.draw(ds, mat, ds.transform.colorTransform, ds.blendMode, bmd.rect, true);
+                return bmd;
+            }
+            throw new Error("Can't cast to BitmapData: " + data);
+        };
+        /**
+         * 转换位图纹理
+         * @param data		位图数据
+         * @return 			位图纹理
+         */
+        Cast.bitmapTexture = function (data) {
+            if (data === void 0) { data =  * ; }
+            if (data == null)
+                return null;
+            if (data)
+                is;
+            string;
+            data = tryClass(data);
+            if (data)
+                is;
+            Class;
+            {
+                try {
+                    data = new data;
+                }
+                catch (materialError) {
+                    data = new data(0, 0);
+                }
+            }
+            if (data)
+                is;
+            Texture;
+            return data;
+            try {
+                var bmd = Cast.bitmapData(data);
+                return new feng3d.BitmapTexture(bmd);
+            }
+            catch (error) {
+            }
+            throw new Error("Can't cast to BitmapTexture: " + data);
+        };
+        Cast._notClasses = new Dictionary();
+        Cast._classes = new Dictionary();
         return Cast;
     }());
     feng3d.Cast = Cast;
-    {
-        if (_notClasses[name])
-            return name;
-        var result = _classes[name];
-        if (result != null)
-            return result;
-        try {
-            result = getDefinitionByName(name);
-            _classes[name] = result;
-            return result;
-        }
-        catch (error) {
-        }
-        _notClasses[name] = true;
-        return name;
-    }
-    /**
-     * 转换位图数据
-     * @param data		位图数据
-     * @return 			位图数据
-     */
-    function bitmapData(data) {
-        if (data === void 0) { data =  * ; }
-        if (data == null)
-            return null;
-        if (data)
-            is;
-        string;
-        data = tryClass(data);
-        if (data)
-            is;
-        Class;
-        {
-            try {
-                data = new data;
-            }
-            catch (bitmapError) {
-                data = new data(0, 0);
-            }
-        }
-        if (data)
-            is;
-        BitmapData;
-        return data;
-        if (data)
-            is;
-        Bitmap;
-        {
-            if (data.hasOwnProperty("bitmapData"))
-                return data.bitmapData;
-        }
-        if (data)
-            is;
-        DisplayObject;
-        {
-            var ds = data;
-            var bmd = new BitmapData(ds.width, ds.height, true, 0x00FFFFFF);
-            var mat = ds.transform.matrix.clone();
-            mat.tx = 0;
-            mat.ty = 0;
-            bmd.draw(ds, mat, ds.transform.colorTransform, ds.blendMode, bmd.rect, true);
-            return bmd;
-        }
-        throw new Error("Can't cast to BitmapData: " + data);
-    }
-    /**
-     * 转换位图纹理
-     * @param data		位图数据
-     * @return 			位图纹理
-     */
-    function bitmapTexture(data) {
-        if (data === void 0) { data =  * ; }
-        if (data == null)
-            return null;
-        if (data)
-            is;
-        string;
-        data = tryClass(data);
-        if (data)
-            is;
-        Class;
-        {
-            try {
-                data = new data;
-            }
-            catch (materialError) {
-                data = new data(0, 0);
-            }
-        }
-        if (data)
-            is;
-        Texture;
-        return data;
-        try {
-            var bmd = Cast.bitmapData(data);
-            return new feng3d.BitmapTexture(bmd);
-        }
-        catch (error) {
-        }
-        throw new Error("Can't cast to BitmapTexture: " + data);
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -36737,111 +36915,106 @@ var feng3d;
          * @param p2				三角形顶点2
          * @return					交点
          */
-        ColliderUtils.function = rayTriangleCollision(rayPosition, Vector3D, rayDirection, Vector3D, p0, Vector3D, p1, Vector3D, p2, Vector3D);
+        ColliderUtils.rayTriangleCollision = function (rayPosition, rayDirection, p0, p1, p2) {
+            var t;
+            var rx, ry, rz;
+            var nx, ny, nz;
+            var cx, cy, cz;
+            var coeff, u, v, w;
+            var p0x, p0y, p0z;
+            var p1x, p1y, p1z;
+            var p2x, p2y, p2z;
+            var s0x, s0y, s0z;
+            var s1x, s1y, s1z;
+            var nl, nDotV, D, disToPlane;
+            var Q1Q2, Q1Q1, Q2Q2, RQ1, RQ2;
+            //三角形三个顶点数据
+            p0x = p0.x;
+            p0y = p0.y;
+            p0z = p0.z;
+            p1x = p1.x;
+            p1y = p1.y;
+            p1z = p1.z;
+            p2x = p2.x;
+            p2y = p2.y;
+            p2z = p2.z;
+            //计算出三角面的法线
+            s0x = p1x - p0x; // s0 = p1 - p0
+            s0y = p1y - p0y;
+            s0z = p1z - p0z;
+            s1x = p2x - p0x; // s1 = p2 - p0
+            s1y = p2y - p0y;
+            s1z = p2z - p0z;
+            nx = s0y * s1z - s0z * s1y; // n = s0 x s1
+            ny = s0z * s1x - s0x * s1z;
+            nz = s0x * s1y - s0y * s1x;
+            nl = 1 / Math.sqrt(nx * nx + ny * ny + nz * nz); // normalize n
+            nx *= nl;
+            ny *= nl;
+            nz *= nl;
+            //计算射线与法线的点积，小于零表示射线所在直线与三角面相交
+            nDotV = nx * rayDirection.x + ny * +rayDirection.y + nz * rayDirection.z; // rayDirection . normal
+            //判断射线所在直线是否与三角面相交
+            if (nDotV != 0.0) {
+                //计算平面方程D值，参考Plane3D
+                D = -(nx * p0x + ny * p0y + nz * p0z);
+                //射线点到平面的距离
+                disToPlane = -(nx * rayPosition.x + ny * rayPosition.y + nz * rayPosition.z + D);
+                t = disToPlane / nDotV;
+                //得到交点
+                cx = rayPosition.x + t * rayDirection.x;
+                cy = rayPosition.y + t * rayDirection.y;
+                cz = rayPosition.z + t * rayDirection.z;
+                //判断交点是否在三角形内( using barycentric coordinates )
+                Q1Q2 = s0x * s1x + s0y * s1y + s0z * s1z;
+                Q1Q1 = s0x * s0x + s0y * s0y + s0z * s0z;
+                Q2Q2 = s1x * s1x + s1y * s1y + s1z * s1z;
+                rx = cx - p0x;
+                ry = cy - p0y;
+                rz = cz - p0z;
+                RQ1 = rx * s0x + ry * s0y + rz * s0z;
+                RQ2 = rx * s1x + ry * s1y + rz * s1z;
+                coeff = 1 / (Q1Q1 * Q2Q2 - Q1Q2 * Q1Q2);
+                v = coeff * (Q2Q2 * RQ1 - Q1Q2 * RQ2);
+                w = coeff * (-Q1Q2 * RQ1 + Q1Q1 * RQ2);
+                if (v < 0)
+                    return null;
+                if (w < 0)
+                    return null;
+                u = 1 - v - w;
+                //u v w都大于0表示点在三角形内 射线的坐标t大于0表示射线朝向三角面
+                if (u >= 0 && t > 0) {
+                    return new Vector3D(cx, cy, cz);
+                }
+            }
+            return null;
+        };
         return ColliderUtils;
     }());
     feng3d.ColliderUtils = ColliderUtils;
-    {
-        var t;
-        var rx, ry, rz;
-        var nx, ny, nz;
-        var cx, cy, cz;
-        var coeff, u, v, w;
-        var p0x, p0y, p0z;
-        var p1x, p1y, p1z;
-        var p2x, p2y, p2z;
-        var s0x, s0y, s0z;
-        var s1x, s1y, s1z;
-        var nl, nDotV, D, disToPlane;
-        var Q1Q2, Q1Q1, Q2Q2, RQ1, RQ2;
-        //三角形三个顶点数据
-        p0x = p0.x;
-        p0y = p0.y;
-        p0z = p0.z;
-        p1x = p1.x;
-        p1y = p1.y;
-        p1z = p1.z;
-        p2x = p2.x;
-        p2y = p2.y;
-        p2z = p2.z;
-        //计算出三角面的法线
-        s0x = p1x - p0x; // s0 = p1 - p0
-        s0y = p1y - p0y;
-        s0z = p1z - p0z;
-        s1x = p2x - p0x; // s1 = p2 - p0
-        s1y = p2y - p0y;
-        s1z = p2z - p0z;
-        nx = s0y * s1z - s0z * s1y; // n = s0 x s1
-        ny = s0z * s1x - s0x * s1z;
-        nz = s0x * s1y - s0y * s1x;
-        nl = 1 / Math.sqrt(nx * nx + ny * ny + nz * nz); // normalize n
-        nx *= nl;
-        ny *= nl;
-        nz *= nl;
-        //计算射线与法线的点积，小于零表示射线所在直线与三角面相交
-        nDotV = nx * rayDirection.x + ny * +rayDirection.y + nz * rayDirection.z; // rayDirection . normal
-        //判断射线所在直线是否与三角面相交
-        if (nDotV != 0.0) {
-            //计算平面方程D值，参考Plane3D
-            D = -(nx * p0x + ny * p0y + nz * p0z);
-            //射线点到平面的距离
-            disToPlane = -(nx * rayPosition.x + ny * rayPosition.y + nz * rayPosition.z + D);
-            t = disToPlane / nDotV;
-            //得到交点
-            cx = rayPosition.x + t * rayDirection.x;
-            cy = rayPosition.y + t * rayDirection.y;
-            cz = rayPosition.z + t * rayDirection.z;
-            //判断交点是否在三角形内( using barycentric coordinates )
-            Q1Q2 = s0x * s1x + s0y * s1y + s0z * s1z;
-            Q1Q1 = s0x * s0x + s0y * s0y + s0z * s0z;
-            Q2Q2 = s1x * s1x + s1y * s1y + s1z * s1z;
-            rx = cx - p0x;
-            ry = cy - p0y;
-            rz = cz - p0z;
-            RQ1 = rx * s0x + ry * s0y + rz * s0z;
-            RQ2 = rx * s1x + ry * s1y + rz * s1z;
-            coeff = 1 / (Q1Q1 * Q2Q2 - Q1Q2 * Q1Q2);
-            v = coeff * (Q2Q2 * RQ1 - Q1Q2 * RQ2);
-            w = coeff * (-Q1Q2 * RQ1 + Q1Q1 * RQ2);
-            if (v < 0)
-                return null;
-            if (w < 0)
-                return null;
-            u = 1 - v - w;
-            //u v w都大于0表示点在三角形内 射线的坐标t大于0表示射线朝向三角面
-            if (u >= 0 && t > 0) {
-                return new Vector3D(cx, cy, cz);
-            }
-        }
-        return null;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     var DefaultMaterialManager = (function () {
         function DefaultMaterialManager() {
         }
-        DefaultMaterialManager.var = _defaultTextureBitmapData;
-        DefaultMaterialManager.var = _defaultMaterial;
-        DefaultMaterialManager.var = _defaultTexture;
-        DefaultMaterialManager.function = getDefaultMaterial();
+        DefaultMaterialManager.getDefaultMaterial = function () {
+            if (!_defaultTexture)
+                createDefaultTexture();
+            if (!_defaultMaterial)
+                createDefaultMaterial();
+            return _defaultMaterial;
+        };
+        DefaultMaterialManager.getDefaultTexture = function () {
+            if (!_defaultTexture)
+                createDefaultTexture();
+            return _defaultTexture;
+        };
+        DefaultMaterialManager.function = createDefaultTexture(color, number = 0XFFFFFF);
         return DefaultMaterialManager;
     }());
     feng3d.DefaultMaterialManager = DefaultMaterialManager;
     {
-        if (!_defaultTexture)
-            createDefaultTexture();
-        if (!_defaultMaterial)
-            createDefaultMaterial();
-        return _defaultMaterial;
-    }
-    function getDefaultTexture() {
-        if (!_defaultTexture)
-            createDefaultTexture();
-        return _defaultTexture;
-    }
-    function createDefaultTexture(color) {
-        if (color === void 0) { color = 0XFFFFFF; }
         _defaultTextureBitmapData = new BitmapData(8, 8, false, 0x0);
         //create chekerboard
         var i, j;
@@ -36867,10 +37040,7 @@ var feng3d;
      */
     var GeomUtil = (function () {
         function GeomUtil() {
-            this.SubGeometry = [];
         }
-        /** stage3d单次渲染支持的最大顶点数 */
-        GeomUtil.MAX_VERTEX = 65535;
         /**
          * 根据数据数组创建子网格
          * @param verts
@@ -36883,174 +37053,176 @@ var feng3d;
          * @param triangleOffset
          * @return
          */
-        GeomUtil.function = fromVectors(verts, number[], indices, number[], uvs, number[], weights, number[], jointIndices, number[], triangleOffset, number = 0);
+        GeomUtil.fromVectors = function (verts, indices, uvs, weights, jointIndices, triangleOffset) {
+            if (triangleOffset === void 0) { triangleOffset = 0; }
+            LIMIT_VERTS: number = 3 * 0xffff;
+            LIMIT_INDICES: number = 15 * 0xffff;
+            var subs = new feng3d.SubGeometry[]();
+            if (uvs && !uvs.length)
+                uvs = null;
+            if (weights && !weights.length)
+                weights = null;
+            if (jointIndices && !jointIndices.length)
+                jointIndices = null;
+            if ((indices.length >= LIMIT_INDICES) || (verts.length >= LIMIT_VERTS)) {
+                var i, len, outIndex, j;
+                var splitVerts = new number[]();
+                var splitIndices = new number[]();
+                var splitUvs = (uvs != null) ? new number[]() : null;
+                var splitWeights = (weights != null) ? new number[]() : null;
+                var splitJointIndices = (jointIndices != null) ? new number[]() : null;
+                var mappings = new number[](verts.length / 3, true);
+                i = mappings.length;
+                while (i-- > 0)
+                    mappings[i] = -1;
+                var originalIndex;
+                var splitIndex;
+                var o0, o1, o2, s0, s1, s2, su, ou, sv, ov;
+                // Loop over all triangles
+                outIndex = 0;
+                len = indices.length;
+                for (i = 0; i < len; i += 3) {
+                    splitIndex = splitVerts.length + 6;
+                    if (((outIndex + 2) >= LIMIT_INDICES) || (splitIndex >= LIMIT_VERTS)) {
+                        subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
+                        splitVerts = new number[]();
+                        splitIndices = new number[]();
+                        splitUvs = (uvs != null) ? new number[]() : null;
+                        splitWeights = (weights != null) ? new number[]() : null;
+                        splitJointIndices = (jointIndices != null) ? new number[]() : null;
+                        splitIndex = 0;
+                        j = mappings.length;
+                        while (j-- > 0)
+                            mappings[j] = -1;
+                        outIndex = 0;
+                    }
+                    // Loop over all vertices in triangle
+                    for (j = 0; j < 3; j++) {
+                        originalIndex = indices[i + j];
+                        if (mappings[originalIndex] >= 0)
+                            splitIndex = mappings[originalIndex];
+                        else {
+                            o0 = originalIndex * 3 + 0;
+                            o1 = originalIndex * 3 + 1;
+                            o2 = originalIndex * 3 + 2;
+                            // This vertex does not yet exist in the split list and
+                            // needs to be copied from the long list.
+                            splitIndex = splitVerts.length / 3;
+                            s0 = splitIndex * 3 + 0;
+                            s1 = splitIndex * 3 + 1;
+                            s2 = splitIndex * 3 + 2;
+                            splitVerts[s0] = verts[o0];
+                            splitVerts[s1] = verts[o1];
+                            splitVerts[s2] = verts[o2];
+                            if (uvs) {
+                                su = splitIndex * 2 + 0;
+                                sv = splitIndex * 2 + 1;
+                                ou = originalIndex * 2 + 0;
+                                ov = originalIndex * 2 + 1;
+                                splitUvs[su] = uvs[ou];
+                                splitUvs[sv] = uvs[ov];
+                            }
+                            if (weights) {
+                                splitWeights[s0] = weights[o0];
+                                splitWeights[s1] = weights[o1];
+                                splitWeights[s2] = weights[o2];
+                            }
+                            if (jointIndices) {
+                                splitJointIndices[s0] = jointIndices[o0];
+                                splitJointIndices[s1] = jointIndices[o1];
+                                splitJointIndices[s2] = jointIndices[o2];
+                            }
+                            mappings[originalIndex] = splitIndex;
+                        }
+                        // Store new index, which may have come from the mapping look-up,
+                        // or from copying a new set of vertex data from the original vector
+                        splitIndices[outIndex + j] = splitIndex;
+                    }
+                    outIndex += 3;
+                }
+                if (splitVerts.length > 0) {
+                    // More was added in the last iteration of the loop.
+                    subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
+                }
+            }
+            else
+                subs.push(constructSubGeometry(verts, indices, uvs, weights, jointIndices, triangleOffset));
+            return subs;
+        };
+        GeomUtil.constructSubGeometry = function (verts, indices, uvs, weights, jointIndices, triangleOffset) {
+            var sub = new feng3d.SubGeometry();
+            if (weights && jointIndices) {
+                // If there were weights and joint indices defined, this
+                // is a skinned mesh and needs to be built from skinned
+                // sub-geometries.
+                var skinnedSubGeometry = new feng3d.SkinnedSubGeometry(weights.length / (verts.length / 3));
+                sub.addComponent(skinnedSubGeometry);
+                skinnedSubGeometry.updateJointWeightsData(weights);
+                skinnedSubGeometry.updateJointIndexData(jointIndices);
+            }
+            else
+                sub = new feng3d.SubGeometry();
+            sub.numVertices = verts.length / 3;
+            sub.updateIndexData(indices);
+            sub.fromVectors(verts, uvs);
+            sub.getOrCreateComponentByClass(feng3d.AutoDeriveVertexNormals);
+            sub.getOrCreateComponentByClass(feng3d.AutoDeriveVertexTangents);
+            return sub;
+        };
+        /**
+         * 拷贝子网格数据
+         * @param source 源子网格
+         * @param target 目标子网格
+         */
+        GeomUtil.copyDataSubGeom = function (source, target) {
+            target.numVertices = source.numVertices;
+            target.updateVertexPositionData(source.vertexPositionData.concat());
+            target.updateUVData(source.UVData.concat());
+            target.updateIndexData(source.indices.concat());
+        };
+        /**
+         * source添加到target中
+         * @param source 源自几何体
+         * @param target 目标子几何体
+         * @return true：添加成功；false：添加失败，应该是顶点个数超出最大值65535
+         */
+        GeomUtil.addSubGeometry = function (source, target) {
+            if (source.numVertices + target.numVertices > MAX_VERTEX)
+                return false;
+            //顶点属性编号列表
+            var vaIdList = source.vaIdList;
+            var vaId;
+            /** 顶点数据字典 */
+            var sourceVertexDataDic = new Dictionary();
+            var targetVertexDataDic = new Dictionary();
+            for (each(vaId in vaIdList); {
+                sourceVertexDataDic: (_a = source.getVAData(vaId), vaId = _a[0], _a),
+                assert: function (sourceVertexDataDic) { },
+                targetVertexDataDic: (_b = target.getVAData(vaId), vaId = _b[0], _b),
+                assert: function (targetVertexDataDic) { }
+            }; 
+            //添加索引数据
+            )
+                //添加索引数据
+                var indices = feng3d.VectorUtils.add1(source.indices, target.indices, target.numVertices);
+            target.updateIndexData(indices);
+            //更改顶点数量
+            target.numVertices = source.numVertices + target.numVertices;
+            var vertexData;
+            //添加顶点数据
+            for (each(vaId in vaIdList); {
+                //
+                vertexData: vertexData,
+                target: .setVAData(vaId, vertexData)
+            }; )
+                return true;
+            var _a, _b;
+        };
+        /** stage3d单次渲染支持的最大顶点数 */
+        GeomUtil.MAX_VERTEX = 65535;
         return GeomUtil;
     }());
     feng3d.GeomUtil = GeomUtil;
-    {
-        LIMIT_VERTS: number = 3 * 0xffff;
-        LIMIT_INDICES: number = 15 * 0xffff;
-        var subs = new feng3d.SubGeometry[]();
-        if (uvs && !uvs.length)
-            uvs = null;
-        if (weights && !weights.length)
-            weights = null;
-        if (jointIndices && !jointIndices.length)
-            jointIndices = null;
-        if ((indices.length >= LIMIT_INDICES) || (verts.length >= LIMIT_VERTS)) {
-            var i, len, outIndex, j;
-            var splitVerts = new number[]();
-            var splitIndices = new number[]();
-            var splitUvs = (uvs != null) ? new number[]() : null;
-            var splitWeights = (weights != null) ? new number[]() : null;
-            var splitJointIndices = (jointIndices != null) ? new number[]() : null;
-            var mappings = new number[](verts.length / 3, true);
-            i = mappings.length;
-            while (i-- > 0)
-                mappings[i] = -1;
-            var originalIndex;
-            var splitIndex;
-            var o0, o1, o2, s0, s1, s2, su, ou, sv, ov;
-            // Loop over all triangles
-            outIndex = 0;
-            len = indices.length;
-            for (i = 0; i < len; i += 3) {
-                splitIndex = splitVerts.length + 6;
-                if (((outIndex + 2) >= LIMIT_INDICES) || (splitIndex >= LIMIT_VERTS)) {
-                    subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
-                    splitVerts = new number[]();
-                    splitIndices = new number[]();
-                    splitUvs = (uvs != null) ? new number[]() : null;
-                    splitWeights = (weights != null) ? new number[]() : null;
-                    splitJointIndices = (jointIndices != null) ? new number[]() : null;
-                    splitIndex = 0;
-                    j = mappings.length;
-                    while (j-- > 0)
-                        mappings[j] = -1;
-                    outIndex = 0;
-                }
-                // Loop over all vertices in triangle
-                for (j = 0; j < 3; j++) {
-                    originalIndex = indices[i + j];
-                    if (mappings[originalIndex] >= 0)
-                        splitIndex = mappings[originalIndex];
-                    else {
-                        o0 = originalIndex * 3 + 0;
-                        o1 = originalIndex * 3 + 1;
-                        o2 = originalIndex * 3 + 2;
-                        // This vertex does not yet exist in the split list and
-                        // needs to be copied from the long list.
-                        splitIndex = splitVerts.length / 3;
-                        s0 = splitIndex * 3 + 0;
-                        s1 = splitIndex * 3 + 1;
-                        s2 = splitIndex * 3 + 2;
-                        splitVerts[s0] = verts[o0];
-                        splitVerts[s1] = verts[o1];
-                        splitVerts[s2] = verts[o2];
-                        if (uvs) {
-                            su = splitIndex * 2 + 0;
-                            sv = splitIndex * 2 + 1;
-                            ou = originalIndex * 2 + 0;
-                            ov = originalIndex * 2 + 1;
-                            splitUvs[su] = uvs[ou];
-                            splitUvs[sv] = uvs[ov];
-                        }
-                        if (weights) {
-                            splitWeights[s0] = weights[o0];
-                            splitWeights[s1] = weights[o1];
-                            splitWeights[s2] = weights[o2];
-                        }
-                        if (jointIndices) {
-                            splitJointIndices[s0] = jointIndices[o0];
-                            splitJointIndices[s1] = jointIndices[o1];
-                            splitJointIndices[s2] = jointIndices[o2];
-                        }
-                        mappings[originalIndex] = splitIndex;
-                    }
-                    // Store new index, which may have come from the mapping look-up,
-                    // or from copying a new set of vertex data from the original vector
-                    splitIndices[outIndex + j] = splitIndex;
-                }
-                outIndex += 3;
-            }
-            if (splitVerts.length > 0) {
-                // More was added in the last iteration of the loop.
-                subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
-            }
-        }
-        else
-            subs.push(constructSubGeometry(verts, indices, uvs, weights, jointIndices, triangleOffset));
-        return subs;
-    }
-    function constructSubGeometry(verts, indices, uvs, weights, jointIndices, triangleOffset) {
-        var sub = new feng3d.SubGeometry();
-        if (weights && jointIndices) {
-            // If there were weights and joint indices defined, this
-            // is a skinned mesh and needs to be built from skinned
-            // sub-geometries.
-            var skinnedSubGeometry = new feng3d.SkinnedSubGeometry(weights.length / (verts.length / 3));
-            sub.addComponent(skinnedSubGeometry);
-            skinnedSubGeometry.updateJointWeightsData(weights);
-            skinnedSubGeometry.updateJointIndexData(jointIndices);
-        }
-        else
-            sub = new feng3d.SubGeometry();
-        sub.numVertices = verts.length / 3;
-        sub.updateIndexData(indices);
-        sub.fromVectors(verts, uvs);
-        sub.getOrCreateComponentByClass(feng3d.AutoDeriveVertexNormals);
-        sub.getOrCreateComponentByClass(feng3d.AutoDeriveVertexTangents);
-        return sub;
-    }
-    /**
-     * 拷贝子网格数据
-     * @param source 源子网格
-     * @param target 目标子网格
-     */
-    function copyDataSubGeom(source, target) {
-        target.numVertices = source.numVertices;
-        target.updateVertexPositionData(source.vertexPositionData.concat());
-        target.updateUVData(source.UVData.concat());
-        target.updateIndexData(source.indices.concat());
-    }
-    /**
-     * source添加到target中
-     * @param source 源自几何体
-     * @param target 目标子几何体
-     * @return true：添加成功；false：添加失败，应该是顶点个数超出最大值65535
-     */
-    function addSubGeometry(source, target) {
-        if (source.numVertices + target.numVertices > MAX_VERTEX)
-            return false;
-        //顶点属性编号列表
-        var vaIdList = source.vaIdList;
-        var vaId;
-        /** 顶点数据字典 */
-        var sourceVertexDataDic = new Dictionary();
-        var targetVertexDataDic = new Dictionary();
-        for (each(vaId in vaIdList); {
-            sourceVertexDataDic: (_a = source.getVAData(vaId), vaId = _a[0], _a),
-            assert: function (sourceVertexDataDic) { },
-            targetVertexDataDic: (_b = target.getVAData(vaId), vaId = _b[0], _b),
-            assert: function (targetVertexDataDic) { }
-        }; 
-        //添加索引数据
-        )
-            //添加索引数据
-            var indices = feng3d.VectorUtils.add1(source.indices, target.indices, target.numVertices);
-        target.updateIndexData(indices);
-        //更改顶点数量
-        target.numVertices = source.numVertices + target.numVertices;
-        var vertexData;
-        //添加顶点数据
-        for (each(vaId in vaIdList); {
-            //
-            vertexData: vertexData,
-            target: .setVAData(vaId, vertexData)
-        }; )
-            return true;
-        var _a, _b;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -37060,29 +37232,28 @@ var feng3d;
      */
     var MaterialUtils = (function () {
         function MaterialUtils() {
-            this.GlobalDispatcher = feng3d.GlobalDispatcher.instance;
         }
-        MaterialUtils.var = dispatcher;
         /**
          * 创建纹理材质
          * @param url		贴图路径
          * @return			纹理材质
          */
-        MaterialUtils.function = createTextureMaterial(url, string);
+        MaterialUtils.createTextureMaterial = function (url) {
+            feng3d.Load.init();
+            var textureMaterial = new feng3d.TextureMaterial(feng3d.DefaultMaterialManager.getDefaultTexture());
+            var loadObj = new feng3d.LoadModuleEventData();
+            loadObj.urls = [url];
+            loadObj.addEventListener(feng3d.LoadUrlEvent.LOAD_SINGLE_COMPLETE, onLoadSingleComplete);
+            loadObj.data = { textureMaterial: textureMaterial };
+            dispatcher.dispatchEvent(new feng3d.LoadModuleEvent(feng3d.LoadModuleEvent.LOAD_RESOURCE, loadObj));
+            return textureMaterial;
+        };
+        MaterialUtils.dispatcher = feng3d.GlobalDispatcher.instance;
+        MaterialUtils.function = onLoadSingleComplete(event, feng3d.LoadUrlEvent);
         return MaterialUtils;
     }());
     feng3d.MaterialUtils = MaterialUtils;
     {
-        feng3d.Load.init();
-        var textureMaterial = new feng3d.TextureMaterial(feng3d.DefaultMaterialManager.getDefaultTexture());
-        var loadObj = new feng3d.LoadModuleEventData();
-        loadObj.urls = [url];
-        loadObj.addEventListener(feng3d.LoadUrlEvent.LOAD_SINGLE_COMPLETE, onLoadSingleComplete);
-        loadObj.data = { textureMaterial: textureMaterial };
-        dispatcher.dispatchEvent(new feng3d.LoadModuleEvent(feng3d.LoadModuleEvent.LOAD_RESOURCE, loadObj));
-        return textureMaterial;
-    }
-    function onLoadSingleComplete(event) {
         var loadData = event.target;
         var textureMaterial = loadData.data.textureMaterial;
         var bitmap = event.loadTaskItem.loadingItem.content;
@@ -37096,11 +37267,11 @@ var feng3d;
      */
     var MipmapGenerator = (function () {
         function MipmapGenerator() {
-            this.Matrix = new Matrix();
-            this.Rectangle = new Rectangle();
+            this.w =  >>= 1;
+            this.h =  >>= 1;
+            this.width = w > 1 ? w : 1;
+            this.height = h > 1 ? h : 1;
         }
-        MipmapGenerator.var = _matrix;
-        MipmapGenerator.var = _rect;
         /**
          * Uploads a BitmapData with mip maps to a target Texture object.
          * @param source The source BitmapData to upload.
@@ -37108,37 +37279,37 @@ var feng3d;
          * @param mipmap An optional mip map holder to avoids creating new instances for fe animated materials.
          * @param alpha Indicate whether or not the uploaded bitmapData is transparent.
          */
-        MipmapGenerator.function = generateMipMaps(source, BitmapData, target, TextureBase, mipmap, BitmapData = null, alpha, boolean = false, side, number = -1);
+        MipmapGenerator.generateMipMaps = function (source, target, mipmap, alpha, side) {
+            if (mipmap === void 0) { mipmap = null; }
+            if (alpha === void 0) { alpha = false; }
+            if (side === void 0) { side = -1; }
+            var w = source.width, h = source.height;
+            var i;
+            var regen = mipmap != null;
+            mipmap || ;
+            new BitmapData(w, h, alpha);
+            _rect.width = w;
+            _rect.height = h;
+            while (w >= 1 || h >= 1) {
+                if (alpha)
+                    mipmap.fillRect(_rect, 0);
+                _matrix.a = _rect.width / source.width;
+                _matrix.d = _rect.height / source.height;
+                mipmap.draw(source, _matrix, null, null, null, true);
+                if (target)
+                    is;
+                Texture;
+                Texture(target).uploadFromBitmapData(mipmap, i++);
+            }
+        };
+        MipmapGenerator.prototype.CubeTexture = ;
+        MipmapGenerator._matrix = new Matrix();
+        MipmapGenerator._rect = new Rectangle();
         return MipmapGenerator;
     }());
     feng3d.MipmapGenerator = MipmapGenerator;
-    {
-        var w = source.width, h = source.height;
-        var i;
-        var regen = mipmap != null;
-        mipmap || ;
-        new BitmapData(w, h, alpha);
-        _rect.width = w;
-        _rect.height = h;
-        while (w >= 1 || h >= 1) {
-            if (alpha)
-                mipmap.fillRect(_rect, 0);
-            _matrix.a = _rect.width / source.width;
-            _matrix.d = _rect.height / source.height;
-            mipmap.draw(source, _matrix, null, null, null, true);
-            if (target)
-                is;
-            Texture;
-            Texture(target).uploadFromBitmapData(mipmap, i++);
-            CubeTexture(target).uploadFromBitmapData(mipmap, side, i++);
-            w >>= 1;
-            h >>= 1;
-            _rect.width = w > 1 ? w : 1;
-            _rect.height = h > 1 ? h : 1;
-        }
-        if (!regen)
-            mipmap.dispose();
-    }
+    if (!regen)
+        mipmap.dispose();
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -37148,7 +37319,6 @@ var feng3d;
      */
     var SubGeomUtil = (function () {
         function SubGeomUtil() {
-            this.number = [];
         }
         /**
          * 更新面法线数据
@@ -37159,228 +37329,227 @@ var feng3d;
          * @param _useFaceWeights
          * @return
          */
-        SubGeomUtil.function = updateFaceNormals(_faceNormals, number[], vertices, number[], _indices, number[]);
+        SubGeomUtil.updateFaceNormals = function (_faceNormals, vertices, _indices) {
+            var i, j, k;
+            var index;
+            var len = _indices.length;
+            var x1, x2, x3;
+            var y1, y2, y3;
+            var z1, z2, z3;
+            var dx1, dy1, dz1;
+            var dx2, dy2, dz2;
+            var cx, cy, cz;
+            var d;
+            var posStride = 3;
+            var posOffset = 0;
+            _faceNormals || ;
+            new number[](len, true);
+            while (i < len) {
+                index = posOffset + _indices[i++] * posStride;
+                x1 = vertices[index];
+                y1 = vertices[index + 1];
+                z1 = vertices[index + 2];
+                index = posOffset + _indices[i++] * posStride;
+                x2 = vertices[index];
+                y2 = vertices[index + 1];
+                z2 = vertices[index + 2];
+                index = posOffset + _indices[i++] * posStride;
+                x3 = vertices[index];
+                y3 = vertices[index + 1];
+                z3 = vertices[index + 2];
+                dx1 = x3 - x1;
+                dy1 = y3 - y1;
+                dz1 = z3 - z1;
+                dx2 = x2 - x1;
+                dy2 = y2 - y1;
+                dz2 = z2 - z1;
+                cx = dz1 * dy2 - dy1 * dz2;
+                cy = dx1 * dz2 - dz1 * dx2;
+                cz = dy1 * dx2 - dx1 * dy2;
+                d = Math.sqrt(cx * cx + cy * cy + cz * cz);
+                // length of cross product = 2*triangle area
+                d = 1 / d;
+                _faceNormals[j++] = cx * d;
+                _faceNormals[j++] = cy * d;
+                _faceNormals[j++] = cz * d;
+            }
+            return _faceNormals;
+        };
+        /**
+         * 更新面切线数据
+         * @param _faceTangents
+         * @param vertices
+         * @param uvs
+         * @param _indices
+         * @return
+         *
+         */
+        SubGeomUtil.updateFaceTangents = function (_faceTangents, vertices, uvs, _indices) {
+            var i;
+            var index1, index2, index3;
+            var len = _indices.length;
+            var ui, vi;
+            var v0;
+            var dv1, dv2;
+            var denom;
+            var x0, y0, z0;
+            var dx1, dy1, dz1;
+            var dx2, dy2, dz2;
+            var cx, cy, cz;
+            var posStride = 3;
+            var texStride = 2;
+            _faceTangents || ;
+            new number[](_indices.length, true);
+            while (i < len) {
+                index1 = _indices[i];
+                index2 = _indices[i + 1];
+                index3 = _indices[i + 2];
+                ui = index1 * texStride + 1;
+                v0 = uvs[ui];
+                ui = index2 * texStride + 1;
+                dv1 = uvs[ui] - v0;
+                ui = index3 * texStride + 1;
+                dv2 = uvs[ui] - v0;
+                vi = index1 * posStride;
+                x0 = vertices[vi];
+                y0 = vertices[number(vi + 1)];
+                z0 = vertices[number(vi + 2)];
+                vi = index2 * posStride;
+                dx1 = vertices[number(vi)] - x0;
+                dy1 = vertices[number(vi + 1)] - y0;
+                dz1 = vertices[number(vi + 2)] - z0;
+                vi = index3 * posStride;
+                dx2 = vertices[number(vi)] - x0;
+                dy2 = vertices[number(vi + 1)] - y0;
+                dz2 = vertices[number(vi + 2)] - z0;
+                cx = dv2 * dx1 - dv1 * dx2;
+                cy = dv2 * dy1 - dv1 * dy2;
+                cz = dv2 * dz1 - dv1 * dz2;
+                denom = 1 / Math.sqrt(cx * cx + cy * cy + cz * cz);
+                _faceTangents[i++] = denom * cx;
+                _faceTangents[i++] = denom * cy;
+                _faceTangents[i++] = denom * cz;
+            }
+            return _faceTangents;
+        };
+        /**
+         * 计算顶点法线数据
+         * @param target
+         * @param _faceNormals
+         * @param _faceWeights
+         * @param _indices
+         * @param numVertices
+         * @param _useFaceWeights
+         * @return
+         */
+        SubGeomUtil.updateVertexNormals = function (target, _faceNormals, _indices, numVertices) {
+            var v1;
+            var f1 = 0, f2 = 1, f3 = 2;
+            var lenV = numVertices * 3;
+            var normalStride = 3;
+            target || ;
+            new number[](lenV, true);
+            v1 = 0;
+            while (v1 < lenV) {
+                target[v1] = 0.0;
+                target[v1 + 1] = 0.0;
+                target[v1 + 2] = 0.0;
+                v1 += normalStride;
+            }
+            var i, k;
+            var lenI = _indices.length;
+            var index;
+            while (i < lenI) {
+                index = _indices[i++] * normalStride;
+                target[index++] += _faceNormals[f1];
+                target[index++] += _faceNormals[f2];
+                target[index] += _faceNormals[f3];
+                index = _indices[i++] * normalStride;
+                target[index++] += _faceNormals[f1];
+                target[index++] += _faceNormals[f2];
+                target[index] += _faceNormals[f3];
+                index = _indices[i++] * normalStride;
+                target[index++] += _faceNormals[f1];
+                target[index++] += _faceNormals[f2];
+                target[index] += _faceNormals[f3];
+                f1 += 3;
+                f2 += 3;
+                f3 += 3;
+            }
+            v1 = 0;
+            while (v1 < lenV) {
+                var vx = target[v1];
+                var vy = target[v1 + 1];
+                var vz = target[v1 + 2];
+                var d = 1.0 / Math.sqrt(vx * vx + vy * vy + vz * vz);
+                target[v1] = vx * d;
+                target[v1 + 1] = vy * d;
+                target[v1 + 2] = vz * d;
+                v1 += normalStride;
+            }
+            return target;
+        };
+        /**
+         * 计算切线数据
+         * @param target
+         * @param _faceTangents
+         * @param _faceWeights
+         * @param _indices
+         * @param numVertices
+         * @param _useFaceWeights
+         * @return
+         */
+        SubGeomUtil.updateVertexTangents = function (target, _faceTangents, _indices, numVertices) {
+            var i;
+            var lenV = numVertices * 3;
+            var tangentStride = 3;
+            target || ;
+            new number[](lenV, true);
+            i = 0;
+            while (i < lenV) {
+                target[i] = 0.0;
+                target[i + 1] = 0.0;
+                target[i + 2] = 0.0;
+                i += tangentStride;
+            }
+            var k;
+            var lenI = _indices.length;
+            var index;
+            var f1 = 0, f2 = 1, f3 = 2;
+            i = 0;
+            while (i < lenI) {
+                index = _indices[i++] * tangentStride;
+                target[index++] += _faceTangents[f1];
+                target[index++] += _faceTangents[f2];
+                target[index] += _faceTangents[f3];
+                index = _indices[i++] * tangentStride;
+                target[index++] += _faceTangents[f1];
+                target[index++] += _faceTangents[f2];
+                target[index] += _faceTangents[f3];
+                index = _indices[i++] * tangentStride;
+                target[index++] += _faceTangents[f1];
+                target[index++] += _faceTangents[f2];
+                target[index] += _faceTangents[f3];
+                f1 += 3;
+                f2 += 3;
+                f3 += 3;
+            }
+            i = 0;
+            while (i < lenV) {
+                var vx = target[i];
+                var vy = target[i + 1];
+                var vz = target[i + 2];
+                var d = 1.0 / Math.sqrt(vx * vx + vy * vy + vz * vz);
+                target[i] = vx * d;
+                target[i + 1] = vy * d;
+                target[i + 2] = vz * d;
+                i += tangentStride;
+            }
+            return target;
+        };
         return SubGeomUtil;
     }());
     feng3d.SubGeomUtil = SubGeomUtil;
-    {
-        var i, j, k;
-        var index;
-        var len = _indices.length;
-        var x1, x2, x3;
-        var y1, y2, y3;
-        var z1, z2, z3;
-        var dx1, dy1, dz1;
-        var dx2, dy2, dz2;
-        var cx, cy, cz;
-        var d;
-        var posStride = 3;
-        var posOffset = 0;
-        _faceNormals || ;
-        new number[](len, true);
-        while (i < len) {
-            index = posOffset + _indices[i++] * posStride;
-            x1 = vertices[index];
-            y1 = vertices[index + 1];
-            z1 = vertices[index + 2];
-            index = posOffset + _indices[i++] * posStride;
-            x2 = vertices[index];
-            y2 = vertices[index + 1];
-            z2 = vertices[index + 2];
-            index = posOffset + _indices[i++] * posStride;
-            x3 = vertices[index];
-            y3 = vertices[index + 1];
-            z3 = vertices[index + 2];
-            dx1 = x3 - x1;
-            dy1 = y3 - y1;
-            dz1 = z3 - z1;
-            dx2 = x2 - x1;
-            dy2 = y2 - y1;
-            dz2 = z2 - z1;
-            cx = dz1 * dy2 - dy1 * dz2;
-            cy = dx1 * dz2 - dz1 * dx2;
-            cz = dy1 * dx2 - dx1 * dy2;
-            d = Math.sqrt(cx * cx + cy * cy + cz * cz);
-            // length of cross product = 2*triangle area
-            d = 1 / d;
-            _faceNormals[j++] = cx * d;
-            _faceNormals[j++] = cy * d;
-            _faceNormals[j++] = cz * d;
-        }
-        return _faceNormals;
-    }
-    /**
-     * 更新面切线数据
-     * @param _faceTangents
-     * @param vertices
-     * @param uvs
-     * @param _indices
-     * @return
-     *
-     */
-    function updateFaceTangents(_faceTangents, vertices, uvs, _indices) {
-        var i;
-        var index1, index2, index3;
-        var len = _indices.length;
-        var ui, vi;
-        var v0;
-        var dv1, dv2;
-        var denom;
-        var x0, y0, z0;
-        var dx1, dy1, dz1;
-        var dx2, dy2, dz2;
-        var cx, cy, cz;
-        var posStride = 3;
-        var texStride = 2;
-        _faceTangents || ;
-        new number[](_indices.length, true);
-        while (i < len) {
-            index1 = _indices[i];
-            index2 = _indices[i + 1];
-            index3 = _indices[i + 2];
-            ui = index1 * texStride + 1;
-            v0 = uvs[ui];
-            ui = index2 * texStride + 1;
-            dv1 = uvs[ui] - v0;
-            ui = index3 * texStride + 1;
-            dv2 = uvs[ui] - v0;
-            vi = index1 * posStride;
-            x0 = vertices[vi];
-            y0 = vertices[number(vi + 1)];
-            z0 = vertices[number(vi + 2)];
-            vi = index2 * posStride;
-            dx1 = vertices[number(vi)] - x0;
-            dy1 = vertices[number(vi + 1)] - y0;
-            dz1 = vertices[number(vi + 2)] - z0;
-            vi = index3 * posStride;
-            dx2 = vertices[number(vi)] - x0;
-            dy2 = vertices[number(vi + 1)] - y0;
-            dz2 = vertices[number(vi + 2)] - z0;
-            cx = dv2 * dx1 - dv1 * dx2;
-            cy = dv2 * dy1 - dv1 * dy2;
-            cz = dv2 * dz1 - dv1 * dz2;
-            denom = 1 / Math.sqrt(cx * cx + cy * cy + cz * cz);
-            _faceTangents[i++] = denom * cx;
-            _faceTangents[i++] = denom * cy;
-            _faceTangents[i++] = denom * cz;
-        }
-        return _faceTangents;
-    }
-    /**
-     * 计算顶点法线数据
-     * @param target
-     * @param _faceNormals
-     * @param _faceWeights
-     * @param _indices
-     * @param numVertices
-     * @param _useFaceWeights
-     * @return
-     */
-    function updateVertexNormals(target, _faceNormals, _indices, numVertices) {
-        var v1;
-        var f1 = 0, f2 = 1, f3 = 2;
-        var lenV = numVertices * 3;
-        var normalStride = 3;
-        target || ;
-        new number[](lenV, true);
-        v1 = 0;
-        while (v1 < lenV) {
-            target[v1] = 0.0;
-            target[v1 + 1] = 0.0;
-            target[v1 + 2] = 0.0;
-            v1 += normalStride;
-        }
-        var i, k;
-        var lenI = _indices.length;
-        var index;
-        while (i < lenI) {
-            index = _indices[i++] * normalStride;
-            target[index++] += _faceNormals[f1];
-            target[index++] += _faceNormals[f2];
-            target[index] += _faceNormals[f3];
-            index = _indices[i++] * normalStride;
-            target[index++] += _faceNormals[f1];
-            target[index++] += _faceNormals[f2];
-            target[index] += _faceNormals[f3];
-            index = _indices[i++] * normalStride;
-            target[index++] += _faceNormals[f1];
-            target[index++] += _faceNormals[f2];
-            target[index] += _faceNormals[f3];
-            f1 += 3;
-            f2 += 3;
-            f3 += 3;
-        }
-        v1 = 0;
-        while (v1 < lenV) {
-            var vx = target[v1];
-            var vy = target[v1 + 1];
-            var vz = target[v1 + 2];
-            var d = 1.0 / Math.sqrt(vx * vx + vy * vy + vz * vz);
-            target[v1] = vx * d;
-            target[v1 + 1] = vy * d;
-            target[v1 + 2] = vz * d;
-            v1 += normalStride;
-        }
-        return target;
-    }
-    /**
-     * 计算切线数据
-     * @param target
-     * @param _faceTangents
-     * @param _faceWeights
-     * @param _indices
-     * @param numVertices
-     * @param _useFaceWeights
-     * @return
-     */
-    function updateVertexTangents(target, _faceTangents, _indices, numVertices) {
-        var i;
-        var lenV = numVertices * 3;
-        var tangentStride = 3;
-        target || ;
-        new number[](lenV, true);
-        i = 0;
-        while (i < lenV) {
-            target[i] = 0.0;
-            target[i + 1] = 0.0;
-            target[i + 2] = 0.0;
-            i += tangentStride;
-        }
-        var k;
-        var lenI = _indices.length;
-        var index;
-        var f1 = 0, f2 = 1, f3 = 2;
-        i = 0;
-        while (i < lenI) {
-            index = _indices[i++] * tangentStride;
-            target[index++] += _faceTangents[f1];
-            target[index++] += _faceTangents[f2];
-            target[index] += _faceTangents[f3];
-            index = _indices[i++] * tangentStride;
-            target[index++] += _faceTangents[f1];
-            target[index++] += _faceTangents[f2];
-            target[index] += _faceTangents[f3];
-            index = _indices[i++] * tangentStride;
-            target[index++] += _faceTangents[f1];
-            target[index++] += _faceTangents[f2];
-            target[index] += _faceTangents[f3];
-            f1 += 3;
-            f2 += 3;
-            f3 += 3;
-        }
-        i = 0;
-        while (i < lenV) {
-            var vx = target[i];
-            var vy = target[i + 1];
-            var vz = target[i + 2];
-            var d = 1.0 / Math.sqrt(vx * vx + vy * vy + vz * vz);
-            target[i] = vx * d;
-            target[i + 1] = vy * d;
-            target[i + 2] = vz * d;
-            i += tangentStride;
-        }
-        return target;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -37392,93 +37561,92 @@ var feng3d;
         function TextureUtils() {
         }
         /**
-         * 支持的最大纹理尺寸
-         */
-        TextureUtils.MAX_SIZE = 4096;
-        /**
          * 判断是否为有效位图
          * @param bitmapData		位图
          * @return
          */
-        TextureUtils.function = isBitmapDataValid(bitmapData, BitmapData);
+        TextureUtils.isBitmapDataValid = function (bitmapData) {
+            if (bitmapData == null)
+                return true;
+            return isDimensionValid(bitmapData.width) && isDimensionValid(bitmapData.height);
+        };
+        /**
+         * 尺寸是否有效
+         * @param d		尺寸
+         * @return
+         */
+        TextureUtils.isDimensionValid = function (d) {
+            return d >= 1 && d <= MAX_SIZE && isPowerOfTwo(d);
+        };
+        /**
+         * 是否为2的指数次方
+         * @param value			被检查的值
+         * @return
+         */
+        TextureUtils.isPowerOfTwo = function (value) {
+            return value ? ((value & -value) == value) : false;
+        };
+        /**
+         * 转换为最佳2的指数次方值
+         * @param value			尺寸
+         * @return
+         */
+        TextureUtils.getBestPowerOf2 = function (value) {
+            var p = 1;
+            while (p < value)
+                p <<= 1;
+            if (p > MAX_SIZE)
+                p = MAX_SIZE;
+            return p;
+        };
+        /**
+         * 获取纹理取样参数
+         * @param useMipmapping 		是否使用贴图分层细化
+         * @param useSmoothTextures 	是否使用平滑纹理
+         * @param repeatTextures 		是否重复纹理
+         * @param texture 				取样纹理
+         * @param forceWrap 			强制重复纹理参数
+         * @return
+         */
+        TextureUtils.getFlags = function (useMipmapping, useSmoothTextures, repeatTextures, texture, forceWrap) {
+            if (forceWrap === void 0) { forceWrap = null; }
+            var flags = [texture.type];
+            var enableMipMaps = useMipmapping && texture.hasMipMaps;
+            if (useSmoothTextures) {
+                flags.push(Context3DTextureFilter.LINEAR);
+                if (enableMipMaps)
+                    flags.push(Context3DMipFilter.MIPLINEAR);
+            }
+            else {
+                flags.push(Context3DTextureFilter.NEAREST);
+                if (enableMipMaps)
+                    flags.push(Context3DMipFilter.MIPNEAREST);
+            }
+            if (forceWrap) {
+                flags.push(forceWrap);
+            }
+            else {
+                if (!(texture))
+                    is;
+                feng3d.BitmapCubeTexture;
+                {
+                    if (repeatTextures) {
+                        flags.push(Context3DWrapMode.REPEAT);
+                    }
+                    else {
+                        flags.push(Context3DWrapMode.CLAMP);
+                    }
+                }
+            }
+            return flags;
+        };
+        /**
+         * 支持的最大纹理尺寸
+         */
+        TextureUtils.MAX_SIZE = 4096;
         return TextureUtils;
     }());
     feng3d.TextureUtils = TextureUtils;
-    {
-        if (bitmapData == null)
-            return true;
-        return isDimensionValid(bitmapData.width) && isDimensionValid(bitmapData.height);
-    }
-    /**
-     * 尺寸是否有效
-     * @param d		尺寸
-     * @return
-     */
-    function isDimensionValid(d) {
-        return d >= 1 && d <= MAX_SIZE && isPowerOfTwo(d);
-    }
-    /**
-     * 是否为2的指数次方
-     * @param value			被检查的值
-     * @return
-     */
-    function isPowerOfTwo(value) {
-        return value ? ((value & -value) == value) : false;
-    }
-    /**
-     * 转换为最佳2的指数次方值
-     * @param value			尺寸
-     * @return
-     */
-    function getBestPowerOf2(value) {
-        var p = 1;
-        while (p < value)
-            p <<= 1;
-        if (p > MAX_SIZE)
-            p = MAX_SIZE;
-        return p;
-    }
-    /**
-     * 获取纹理取样参数
-     * @param useMipmapping 		是否使用贴图分层细化
-     * @param useSmoothTextures 	是否使用平滑纹理
-     * @param repeatTextures 		是否重复纹理
-     * @param texture 				取样纹理
-     * @param forceWrap 			强制重复纹理参数
-     * @return
-     */
-    function getFlags(useMipmapping, useSmoothTextures, repeatTextures, texture, forceWrap) {
-        if (forceWrap === void 0) { forceWrap = null; }
-        var flags = [texture.type];
-        var enableMipMaps = useMipmapping && texture.hasMipMaps;
-        if (useSmoothTextures) {
-            flags.push(Context3DTextureFilter.LINEAR);
-            if (enableMipMaps)
-                flags.push(Context3DMipFilter.MIPLINEAR);
-        }
-        else {
-            flags.push(Context3DTextureFilter.NEAREST);
-            if (enableMipMaps)
-                flags.push(Context3DMipFilter.MIPNEAREST);
-        }
-        if (forceWrap) {
-            flags.push(forceWrap);
-        }
-        else {
-            if (!(texture))
-                is;
-            feng3d.BitmapCubeTexture;
-            {
-                if (repeatTextures) {
-                    flags.push(Context3DWrapMode.REPEAT);
-                }
-                else {
-                    flags.push(Context3DWrapMode.CLAMP);
-                }
-            }
-        }
-        return flags;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -37488,61 +37656,59 @@ var feng3d;
      */
     var VectorUtils = (function () {
         function VectorUtils() {
-            this.number = [];
         }
         /**
          * 把source添加到target中
          * @param source 源向量
          * @param target 目标向量
          */
-        VectorUtils.function = add(source, number[], target, number[]);
+        VectorUtils.add = function (source, target) {
+            var sourceLen = target.length;
+            var targetLen = source.length;
+            var sourceFixed = target.fixed;
+            target.fixed = false;
+            target.length = target.length + source.length;
+            target.fixed = sourceFixed;
+            for (var i = 0; i < targetLen; i++) {
+                target[sourceLen + i] = source[i];
+            }
+            return target;
+        };
+        /**
+         * 拷贝数组
+         * @param source		源数组
+         * @param target		目标数组
+         * @param offset		在源数组中的偏移量
+         */
+        VectorUtils.copy = function (source, target, offset) {
+            source.forEach(function (item, index) {
+                var args = [];
+                for (var _i = 2; _i < arguments.length; _i++) {
+                    args[_i - 2] = arguments[_i];
+                }
+                target[offset + index] = item;
+            });
+        };
+        /**
+         * 把source添加到target中
+         * @param source 源向量
+         * @param target 目标向量
+         */
+        VectorUtils.add1 = function (source, target, addNum) {
+            var sourceLen = target.length;
+            var targetLen = source.length;
+            var sourceFixed = target.fixed;
+            target.fixed = false;
+            target.length = target.length + source.length;
+            target.fixed = sourceFixed;
+            for (var i = 0; i < targetLen; i++) {
+                target[sourceLen + i] = source[i] + addNum;
+            }
+            return target;
+        };
         return VectorUtils;
     }());
     feng3d.VectorUtils = VectorUtils;
-    {
-        var sourceLen = target.length;
-        var targetLen = source.length;
-        var sourceFixed = target.fixed;
-        target.fixed = false;
-        target.length = target.length + source.length;
-        target.fixed = sourceFixed;
-        for (var i = 0; i < targetLen; i++) {
-            target[sourceLen + i] = source[i];
-        }
-        return target;
-    }
-    /**
-     * 拷贝数组
-     * @param source		源数组
-     * @param target		目标数组
-     * @param offset		在源数组中的偏移量
-     */
-    function copy(source, target, offset) {
-        source.forEach(function (item, index) {
-            var args = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                args[_i - 2] = arguments[_i];
-            }
-            target[offset + index] = item;
-        });
-    }
-    /**
-     * 把source添加到target中
-     * @param source 源向量
-     * @param target 目标向量
-     */
-    function add1(source, target, addNum) {
-        var sourceLen = target.length;
-        var targetLen = source.length;
-        var sourceFixed = target.fixed;
-        target.fixed = false;
-        target.length = target.length + source.length;
-        target.fixed = sourceFixed;
-        for (var i = 0; i < targetLen; i++) {
-            target[sourceLen + i] = source[i] + addNum;
-        }
-        return target;
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
