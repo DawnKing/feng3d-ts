@@ -37,7 +37,7 @@ module feng3d
 		/**
 		 * 创建一个天空盒通道
 		 */
-		public SkyBoxPass()
+		constructor()
 		{
 			super();
 		}

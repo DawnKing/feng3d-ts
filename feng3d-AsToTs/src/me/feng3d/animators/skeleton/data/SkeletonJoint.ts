@@ -16,7 +16,7 @@ module feng3d
 		/** bind-pose姿态下节点的位置（位移）和旋转 */
 		public inverseBindPose:number[];
 		
-		public SkeletonJoint()
+		constructor()
 		{
 		}
 	}

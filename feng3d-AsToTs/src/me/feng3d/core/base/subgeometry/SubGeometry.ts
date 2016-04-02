@@ -46,7 +46,7 @@ module feng3d
 		/**
 		 * 创建一个新几何体
 		 */
-		public SubGeometry()
+		constructor()
 		{
 			super();
 

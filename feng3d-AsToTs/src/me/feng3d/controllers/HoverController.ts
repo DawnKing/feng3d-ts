@@ -46,7 +46,7 @@ module feng3d
 		 * @param yFactor
 		 * @param wrapPanAngle 是否把角度约束在0到360度
 		 */
-		public HoverController(targetObject:Entity = null, lookAtObject:Container3D = null, panAngle:number = 0, tiltAngle:number = 90, distance:number = 1000, minTiltAngle:number = -90, maxTiltAngle:number = 90, minPanAngle:number = NaN, maxPanAngle:number = NaN, yFactor:number = 2, wrapPanAngle:boolean = false)
+		constructor(targetObject:Entity = null, lookAtObject:Container3D = null, panAngle:number = 0, tiltAngle:number = 90, distance:number = 1000, minTiltAngle:number = -90, maxTiltAngle:number = 90, minPanAngle:number = NaN, maxPanAngle:number = NaN, yFactor:number = 2, wrapPanAngle:boolean = false)
 		{
 			super(targetObject, lookAtObject);
 

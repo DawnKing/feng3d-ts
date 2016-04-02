@@ -39,7 +39,7 @@ module feng3d
 		private _asset:IAsset;
 		private _prevName:string;
 		
-		public AssetEvent(type:string, asset:IAsset = null, prevName:string = null)
+		constructor(type:string, asset:IAsset = null, prevName:string = null)
 		{
 			super(type);
 			

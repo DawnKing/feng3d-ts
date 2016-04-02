@@ -47,7 +47,7 @@ module feng3d
 		 * 创建一个任务集合
 		 * <p>该类为抽象类，无法直接被实例化，请使用其子类</p>
 		 */
-		public TaskCollection()
+		constructor()
 		{
 			AbstractClassError.check(this);
 			this.allItemList = new TaskItem[]();

@@ -17,7 +17,7 @@ module feng3d
 		 * 创建一个AS碰撞检测器
 		 * @param findClosestCollision 是否查找最短距离碰撞
 		 */
-		public AS3PickingCollider(findClosestCollision:boolean = false)
+		constructor(findClosestCollision:boolean = false)
 		{
 			this._findClosestCollision = findClosestCollision;
 		}

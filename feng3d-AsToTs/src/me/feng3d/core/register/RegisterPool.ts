@@ -18,7 +18,7 @@ module feng3d
 		 * @param regType 寄存器类型
 		 * @param regCount 寄存器总数
 		 */
-		public RegisterPool(regType:string, regCount:number)
+		constructor(regType:string, regCount:number)
 		{
 			this._regType = regType;
 			this._regCount = regCount;

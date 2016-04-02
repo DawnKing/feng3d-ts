@@ -20,7 +20,7 @@ module feng3d
 		 * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature clampDiffuse(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the diffuse strength.
 		 * @param baseDiffuseMethod The base diffuse method on which this method's shading is based.
 		 */
-		public CompositeDiffuseMethod(modulateMethod:Function = null, baseDiffuseMethod:BasicDiffuseMethod = null)
+		constructor(modulateMethod:Function = null, baseDiffuseMethod:BasicDiffuseMethod = null)
 		{
 			this._baseMethod = baseDiffuseMethod || new BasicDiffuseMethod();
 			this._baseMethod._modulateMethod = modulateMethod;

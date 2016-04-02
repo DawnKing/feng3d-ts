@@ -17,7 +17,7 @@ module feng3d
 		/**
 		 * 创建骨骼动画节点
 		 */
-		public SkeletonClipNode()
+		constructor()
 		{
 			_stateClass = SkeletonClipState;
 		}

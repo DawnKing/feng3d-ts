@@ -13,7 +13,7 @@ module feng3d
 		 * 创建一个寄存器数组
 		 * @param regId		寄存器id
 		 */
-		public RegisterArray(regId:string)
+		constructor(regId:string)
 		{
 			this._regs = new Register[]();
 			this._regs.length = 1;

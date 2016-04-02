@@ -31,7 +31,7 @@ module feng3d
 		 * 创建一个广告牌节点
 		 * @param billboardAxis
 		 */
-		public ParticleBillboardNode(billboardAxis:Vector3D = null)
+		constructor(billboardAxis:Vector3D = null)
 		{
 			super("ParticleBillboard", ParticlePropertiesMode.GLOBAL, 0, 4);
 

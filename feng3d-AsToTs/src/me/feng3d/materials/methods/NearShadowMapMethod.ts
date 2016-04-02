@@ -31,7 +31,7 @@ module feng3d
 		 * @param baseMethod		基础映射函数
 		 * @param fadeRatio			消退比率
 		 */
-		public NearShadowMapMethod(baseMethod:SimpleShadowMapMethodBase, fadeRatio:number = .1)
+		constructor(baseMethod:SimpleShadowMapMethodBase, fadeRatio:number = .1)
 		{
 			super(baseMethod.castingLight);
 			this._baseMethod = baseMethod;

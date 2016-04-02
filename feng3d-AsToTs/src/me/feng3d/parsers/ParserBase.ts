@@ -44,7 +44,7 @@ module feng3d
 		/**  */
 		private _materialMode:number;
 
-		public ParserBase(format:string)
+		constructor(format:string)
 		{
 			this._materialMode = 0;
 			this._dataFormat = format;

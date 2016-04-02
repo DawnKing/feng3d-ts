@@ -15,7 +15,7 @@ module feng3d
 		 * 创建一个方向光分区节点
 		 * @param light 		方向光
 		 */
-		public DirectionalLightNode(light:DirectionalLight)
+		constructor(light:DirectionalLight)
 		{
 			super(light);
 			this._light = light;

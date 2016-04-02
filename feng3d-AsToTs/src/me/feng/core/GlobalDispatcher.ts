@@ -13,7 +13,7 @@ module feng3d
 		 * 创建一个全局事件适配器
 		 * <p>此类为单例，只能构造一次，使用时请使用GlobalDispatcher.instance获取实例</p>
 		 */
-		public GlobalDispatcher()
+		constructor()
 		{
 			if (GlobalDispatcher._instance)
 				throw new Error("此类不允许外部创建，请用instance属性！");

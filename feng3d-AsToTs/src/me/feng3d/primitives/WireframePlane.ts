@@ -27,7 +27,7 @@ module feng3d
 		 * @param thickness The thickness of the wireframe lines
 		 * @param orientation The orientaion in which the plane lies.
 		 */
-		public WireframePlane(width:number, height:number, segmentsW:number = 10, segmentsH:number = 10, color:number = 0xFFFFFF, thickness:number = 1, orientation:string = "yz")
+		constructor(width:number, height:number, segmentsW:number = 10, segmentsH:number = 10, color:number = 0xFFFFFF, thickness:number = 1, orientation:string = "yz")
 		{
 			super(color, thickness);
 

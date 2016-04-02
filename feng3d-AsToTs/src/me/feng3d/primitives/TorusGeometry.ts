@@ -294,7 +294,7 @@ module feng3d
 		 * @param segmentsT						纵向段数
 		 * @param yUp							Y轴是否朝上
 		 */
-		public TorusGeometry(radius:number = 50, tubeRadius:number = 50, segmentsR:number = 16, segmentsT:number = 8, yUp:boolean = true)
+		constructor(radius:number = 50, tubeRadius:number = 50, segmentsR:number = 16, segmentsT:number = 8, yUp:boolean = true)
 		{
 			super();
 

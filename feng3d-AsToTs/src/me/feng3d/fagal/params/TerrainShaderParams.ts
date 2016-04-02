@@ -18,7 +18,7 @@ module feng3d
 		/**
 		 * 地形渲染参数
 		 */
-		public TerrainShaderParams()
+		constructor()
 		{
 			super();
 		}

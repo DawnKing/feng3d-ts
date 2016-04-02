@@ -13,7 +13,7 @@ module feng3d
 	{
 		protected ray3D:Ray3D;
 
-		public PickingColliderBase()
+		constructor()
 		{
 		}
 

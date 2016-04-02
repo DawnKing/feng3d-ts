@@ -25,7 +25,7 @@ module feng3d
 		/**
 		 * 创建片段渲染程序主入口
 		 */
-		public F_Main()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.FRAGMENT;
 		}

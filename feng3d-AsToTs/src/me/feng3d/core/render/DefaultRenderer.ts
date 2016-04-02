@@ -40,7 +40,7 @@ module feng3d
 		/**
 		 * 创建一个默认渲染器
 		 */
-		public DefaultRenderer()
+		constructor()
 		{
 			super();
 			this._depthRenderer = new DepthRenderer();

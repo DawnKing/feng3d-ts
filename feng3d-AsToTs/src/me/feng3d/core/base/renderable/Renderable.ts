@@ -22,7 +22,7 @@ module feng3d
 		/**
 		 * 创建一个可渲染对象基类
 		 */
-		public Renderable()
+		constructor()
 		{
 			this._context3dCache = new Context3DCache();
 		}

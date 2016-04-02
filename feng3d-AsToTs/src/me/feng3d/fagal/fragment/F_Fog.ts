@@ -7,7 +7,7 @@ module feng3d
 	 * 雾片段着色器
 	 * @author feng 2015-8-27
 	 */
-	public F_Fog()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

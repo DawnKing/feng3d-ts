@@ -33,7 +33,7 @@ module feng3d
 		 * @param register 		寄存器类型
 		 * @param prop 			组合名称
 		 */
-		public RegisterComponentSelection(register:Register, prop:string)
+		constructor(register:Register, prop:string)
 		{
 			this._register = register;
 			this._prop = prop;

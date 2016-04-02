@@ -11,7 +11,7 @@ module feng3d
 	{
 		public static MATRIX_CHANGED:string = "matrixChanged";
 
-		public LensEvent(type:string, lens:LensBase = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, lens:LensBase = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, this.data, bubbles, cancelable);
 		}

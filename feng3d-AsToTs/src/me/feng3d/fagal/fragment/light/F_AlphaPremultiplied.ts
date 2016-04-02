@@ -6,7 +6,7 @@ module feng3d
 	 *
 	 * @author feng 2015-9-25
 	 */
-	public F_AlphaPremultiplied()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

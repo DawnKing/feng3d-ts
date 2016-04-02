@@ -16,7 +16,7 @@ module feng3d
 		 * 创建SkyBoxNode实例
 		 * @param skyBox		天空盒实例
 		 */
-		public SkyBoxNode(skyBox:SkyBox)
+		constructor(skyBox:SkyBox)
 		{
 			super(skyBox);
 			this._skyBox = skyBox;

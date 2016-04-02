@@ -30,7 +30,7 @@ module feng3d
 		 * @param dataTypeId 		数据缓存编号
 		 * @param updateFunc 		更新回调函数
 		 */
-		public Context3DBuffer(dataTypeId:string, updateFunc:Function)
+		constructor(dataTypeId:string, updateFunc:Function)
 		{
 			this._dataTypeId = dataTypeId;
 			this._updateFunc = updateFunc;

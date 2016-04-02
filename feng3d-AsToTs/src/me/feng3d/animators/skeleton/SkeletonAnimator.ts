@@ -83,7 +83,7 @@ module feng3d
 		 * @param skeleton 骨骼
 		 * @param forceCPU 是否强行使用cpu
 		 */
-		public SkeletonAnimator(animationSet:SkeletonAnimationSet, skeleton:Skeleton, forceCPU:boolean = false)
+		constructor(animationSet:SkeletonAnimationSet, skeleton:Skeleton, forceCPU:boolean = false)
 		{
 			super(animationSet);
 

@@ -15,7 +15,7 @@ module feng3d
 		/**
 		 * 创建一个可渲染对象基类
 		 */
-		public SegmentRenderable(subMesh:SegmentSet)
+		constructor(subMesh:SegmentSet)
 		{
 			super();
 

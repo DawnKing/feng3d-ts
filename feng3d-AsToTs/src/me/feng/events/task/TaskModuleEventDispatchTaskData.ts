@@ -37,7 +37,7 @@ module feng3d
 		 */
 		public params:*;
 
-		public TaskModuleEventDispatchTaskData(taskList:TaskItem[] = null, taskCollectionType:string = TaskCollectionType.LIST, params:* = null)
+		constructor(taskList:TaskItem[] = null, taskCollectionType:string = TaskCollectionType.LIST, params:* = null)
 		{
 			this.taskList = taskList;
 			this.taskCollectionType = taskCollectionType;

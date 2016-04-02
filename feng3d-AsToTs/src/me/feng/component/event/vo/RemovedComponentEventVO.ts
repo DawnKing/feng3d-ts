@@ -17,7 +17,7 @@ module feng3d
 		 * @param container			组件容器
 		 * @param child				子组件
 		 */
-		public RemovedComponentEventVO(container:Component, child:Component)
+		constructor(container:Component, child:Component)
 		{
 			this.container = container;
 			this.child = child;

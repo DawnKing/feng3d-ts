@@ -17,7 +17,7 @@ module feng3d
 		/**
 		 * 创建一个顶点动画剪辑节点
 		 */
-		public VertexClipNode()
+		constructor()
 		{
 			_stateClass = VertexClipState;
 		}

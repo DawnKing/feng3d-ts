@@ -16,7 +16,7 @@ module feng3d
 		/** 骨骼关节数据列表 */
 		public joints:SkeletonJoint[];
 
-		public Skeleton()
+		constructor()
 		{
 			this._namedAsset = new NamedAsset(this,AssetType.SKELETON);
 			this.joints = new SkeletonJoint[]();

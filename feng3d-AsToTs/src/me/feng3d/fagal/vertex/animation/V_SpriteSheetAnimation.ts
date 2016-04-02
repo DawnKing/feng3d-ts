@@ -7,7 +7,7 @@ module feng3d
 	 * Sprite动画顶点渲染程序
 	 * @author feng 2015-9-5
 	 */
-	public V_SpriteSheetAnimation(UVSource:Register, UVTarget:Register)
+	constructor(UVSource:Register, UVTarget:Register)
 	{
 		var _:* = FagalRE.instance.space;
 

@@ -48,7 +48,7 @@ module feng3d
 		 * 创建一个渲染创新基类
 		 * @param renderToTexture		释放渲染到纹理
 		 */
-		public RendererBase(renderToTexture:boolean = false)
+		constructor(renderToTexture:boolean = false)
 		{
 			this._renderableSorter = new RenderableMergeSort();
 		}

@@ -22,7 +22,7 @@ module feng3d
 		/**
 		 * 创建一个线段集合
 		 */
-		public SegmentSet()
+		constructor()
 		{
 			super();
 			this.geometry = this.segmentGeometry = new SegmentGeometry();

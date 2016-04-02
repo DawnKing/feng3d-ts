@@ -22,7 +22,7 @@ module feng3d
 		 * @param type			事件的类型，可以作为 Event.type 访问。
 		 * @param bubbles		确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
 		 */
-		public Stage3DEvent(type:string, bubbles:boolean = false)
+		constructor(type:string, bubbles:boolean = false)
 		{
 			super(type, bubbles);
 		}

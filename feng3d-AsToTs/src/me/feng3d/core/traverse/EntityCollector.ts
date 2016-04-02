@@ -58,7 +58,7 @@ module feng3d
 		/**
 		 * 创建一个实体收集器
 		 */
-		public EntityCollector()
+		constructor()
 		{
 			this.init();
 		}

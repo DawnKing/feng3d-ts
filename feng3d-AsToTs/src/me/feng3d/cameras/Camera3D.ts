@@ -35,7 +35,7 @@ module feng3d
 		 * 创建一个摄像机
 		 * @param lens 摄像机镜头
 		 */
-		public Camera3D(lens:LensBase = null)
+		constructor(lens:LensBase = null)
 		{
 			super();
 			_namedAsset._assetType = AssetType.CAMERA;

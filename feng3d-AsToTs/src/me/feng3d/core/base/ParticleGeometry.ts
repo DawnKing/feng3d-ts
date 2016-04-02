@@ -17,7 +17,7 @@ module feng3d
 		 */
 		public numParticles:number;
 
-		public ParticleGeometry()
+		constructor()
 		{
 			super();
 		}

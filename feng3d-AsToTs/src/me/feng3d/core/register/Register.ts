@@ -83,7 +83,7 @@ module feng3d
 		 * 创建一个寄存器
 		 * @param regId			寄存器id
 		 */
-		public Register(regId:string)
+		constructor(regId:string)
 		{
 			this._regId = regId;
 

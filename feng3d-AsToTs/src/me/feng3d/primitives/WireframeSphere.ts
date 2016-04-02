@@ -20,7 +20,7 @@ module feng3d
 		 * @param color				线框颜色
 		 * @param thickness			线条粗细
 		 */
-		public WireframeSphere(radius:number = 50, segmentsW:number = 16, segmentsH:number = 12, color:number = 0xFFFFFF, thickness:number = 1)
+		constructor(radius:number = 50, segmentsW:number = 16, segmentsH:number = 12, color:number = 0xFFFFFF, thickness:number = 1)
 		{
 			super(color, thickness);
 

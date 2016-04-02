@@ -8,7 +8,7 @@ module feng3d
 	 */
 	export class Texture2DBase extends TextureProxyBase
 	{
-		public Texture2DBase()
+		constructor()
 		{
 			super();
 			this.type = TextureType.TYPE_2D;

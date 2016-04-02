@@ -25,7 +25,7 @@ module feng3d
 		/**
 		 * 创建一个纹理缓存中心
 		 */
-		public TextureCenter()
+		constructor()
 		{
 		}
 

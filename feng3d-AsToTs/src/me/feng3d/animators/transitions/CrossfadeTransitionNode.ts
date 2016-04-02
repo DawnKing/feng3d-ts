@@ -21,7 +21,7 @@ module feng3d
 		/**
 		 * 创建<code>CrossfadeTransitionNode</code>实例
 		 */
-		public CrossfadeTransitionNode()
+		constructor()
 		{
 			_stateClass = CrossfadeTransitionState;
 		}

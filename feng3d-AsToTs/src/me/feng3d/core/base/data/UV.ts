@@ -15,7 +15,7 @@ module feng3d
 		 * @param    u        [optional]    The horizontal coordinate of the texture value. Defaults to 0.
 		 * @param    v        [optional]    The vertical coordinate of the texture value. Defaults to 0.
 		 */
-		public UV(u:number = 0, v:number = 0)
+		constructor(u:number = 0, v:number = 0)
 		{
 			this._u = u;
 			this._v = v;

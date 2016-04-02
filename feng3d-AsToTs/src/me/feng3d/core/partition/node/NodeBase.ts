@@ -29,7 +29,7 @@ module feng3d
 		/**
 		 * 创建一个分区节点基类
 		 */
-		public NodeBase()
+		constructor()
 		{
 			this._childNodes = new NodeBase[]();
 		}

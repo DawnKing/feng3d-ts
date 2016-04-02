@@ -19,7 +19,7 @@ module feng3d
 		 * @param color 线框颜色
 		 * @param thickness 线框厚度
 		 */
-		public WireframePrimitiveBase(color:number = 0xffffff, thickness:number = 1)
+		constructor(color:number = 0xffffff, thickness:number = 1)
 		{
 			if (thickness <= 0)
 				thickness = 1;

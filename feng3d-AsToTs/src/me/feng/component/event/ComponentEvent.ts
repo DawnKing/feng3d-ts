@@ -28,7 +28,7 @@ module feng3d
 		 */
 		public static BE_REMOVED_COMPONET:string = "beRemovedComponet";
 
-		public ComponentEvent(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, data, bubbles, cancelable);
 		}

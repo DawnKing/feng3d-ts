@@ -39,7 +39,7 @@ module feng3d
 		/**
 		 * 创建渲染寄函数基类
 		 */
-		public ShadingMethodBase()
+		constructor()
 		{
 			super();
 

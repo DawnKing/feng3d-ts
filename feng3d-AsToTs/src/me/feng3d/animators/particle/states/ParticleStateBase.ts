@@ -29,7 +29,7 @@ module feng3d
 		 * @param particleNode			粒子节点
 		 * @param needUpdateTime		是否需要更新时间
 		 */
-		public ParticleStateBase(animator:ParticleAnimator, particleNode:ParticleNodeBase, needUpdateTime:boolean = false)
+		constructor(animator:ParticleAnimator, particleNode:ParticleNodeBase, needUpdateTime:boolean = false)
 		{
 			super(animator, particleNode);
 

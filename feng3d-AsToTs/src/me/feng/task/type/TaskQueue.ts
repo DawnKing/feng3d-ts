@@ -20,7 +20,7 @@ module feng3d
 		/**
 		 * 创建任务队列
 		 */
-		public TaskQueue()
+		constructor()
 		{
 			super();
 		}

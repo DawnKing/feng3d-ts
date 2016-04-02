@@ -28,7 +28,7 @@ module feng3d
 		 * @param stage The Stage object that contains the Stage3D objects to be managed.
 		 * @private
 		 */
-		public Stage3DManager(stage:Stage, Stage3DManagerSingletonEnforcer:Stage3DManagerSingletonEnforcer)
+		constructor(stage:Stage, Stage3DManagerSingletonEnforcer:Stage3DManagerSingletonEnforcer)
 		{
 			if (!Stage3DManagerSingletonEnforcer)
 				throw new Error("This class is a multiton and cannot be instantiated manually. Use Stage3DManager.getInstance instead.");

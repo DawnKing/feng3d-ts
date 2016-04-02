@@ -39,7 +39,7 @@ module feng3d
 		/**
 		 * 创建一个可渲染列表
 		 */
-		public RenderableListItem()
+		constructor()
 		{
 		}
 	}

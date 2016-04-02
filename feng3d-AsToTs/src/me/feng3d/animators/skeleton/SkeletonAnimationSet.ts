@@ -24,7 +24,7 @@ module feng3d
 		 * 创建一个骨骼动画集合
 		 * @param jointsPerVertex 每个顶点关联关节的数量
 		 */
-		public SkeletonAnimationSet(jointsPerVertex:number = 4)
+		constructor(jointsPerVertex:number = 4)
 		{
 			this._jointsPerVertex = jointsPerVertex;
 		}

@@ -12,7 +12,7 @@ module feng3d
 	 */
 	export class Trident extends SegmentSet
 	{
-		public Trident(length:number = 100, showLetters:boolean = true)
+		constructor(length:number = 100, showLetters:boolean = true)
 		{
 			this.buildTrident(Math.abs((length == 0) ? 10 : length), showLetters);
 		}

@@ -20,7 +20,7 @@ module feng3d
 		 * @param color1 Ending colour of the line segment
 		 * @param thickness Thickness of the line
 		 */
-		public LineSegment(v0:Vector3D, v1:Vector3D, color0:number = 0x333333, color1:number = 0x333333, thickness:number = 1)
+		constructor(v0:Vector3D, v1:Vector3D, color0:number = 0x333333, color1:number = 0x333333, thickness:number = 1)
 		{
 			super(v0, v1, color0, color1, thickness);
 		}

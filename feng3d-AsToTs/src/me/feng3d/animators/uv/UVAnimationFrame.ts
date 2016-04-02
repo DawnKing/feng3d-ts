@@ -42,7 +42,7 @@ module feng3d
 		 * @param scaleV			V元素缩放
 		 * @param rotation			旋转角度（度数）
 		 */
-		public UVAnimationFrame(offsetU:number = 0, offsetV:number = 0, scaleU:number = 1, scaleV:number = 1, rotation:number = 0)
+		constructor(offsetU:number = 0, offsetV:number = 0, scaleU:number = 1, scaleV:number = 1, rotation:number = 0)
 		{
 			this.offsetU = offsetU;
 			this.offsetV = offsetV;

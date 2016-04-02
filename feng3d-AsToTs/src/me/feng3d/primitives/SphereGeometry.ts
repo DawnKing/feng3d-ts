@@ -22,7 +22,7 @@ module feng3d
 		 * @param segmentsH 纵向分割数，默认值12
 		 * @param yUp 球体朝向 true:Y+ false:Z+
 		 */
-		public SphereGeometry(radius:number = 50, segmentsW:number = 16, segmentsH:number = 12, yUp:boolean = true)
+		constructor(radius:number = 50, segmentsW:number = 16, segmentsH:number = 12, yUp:boolean = true)
 		{
 			super();
 

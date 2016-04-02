@@ -8,7 +8,7 @@ module feng3d
 	 * 编译切线顶点程序
 	 * @author feng 2014-11-7
 	 */
-	public V_TangentNormalMap()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

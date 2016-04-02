@@ -56,7 +56,7 @@ module feng3d
 		/**
 		 * 创建3D环境缓存类
 		 */
-		public Context3DCache()
+		constructor()
 		{
 			super();
 		}

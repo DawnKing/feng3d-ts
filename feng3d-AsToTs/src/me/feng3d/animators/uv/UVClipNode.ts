@@ -24,7 +24,7 @@ module feng3d
 		/**
 		 * 创建<code>UVClipNode</code>实例
 		 */
-		public UVClipNode()
+		constructor()
 		{
 			_stateClass = UVClipState;
 		}

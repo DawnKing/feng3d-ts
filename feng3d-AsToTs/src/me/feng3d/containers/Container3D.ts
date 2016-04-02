@@ -25,7 +25,7 @@ module feng3d
 		/** 是否给根容器 */
 		public _isRoot:boolean = false;
 
-		public Container3D()
+		constructor()
 		{
 			super();
 			this._namedAsset = new NamedAsset(this, AssetType.CONTAINER);

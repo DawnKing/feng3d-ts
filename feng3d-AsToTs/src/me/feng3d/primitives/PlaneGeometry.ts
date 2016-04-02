@@ -24,7 +24,7 @@ module feng3d
 		 * @param yUp 正面朝向 true:Y+ false:Z+
 		 * @param doubleSided 是否双面
 		 */
-		public PlaneGeometry(width:number = 100, height:number = 100, segmentsW:number = 1, segmentsH:number = 1, yUp:boolean = true, doubleSided:boolean = false)
+		constructor(width:number = 100, height:number = 100, segmentsW:number = 1, segmentsH:number = 1, yUp:boolean = true, doubleSided:boolean = false)
 		{
 			super();
 

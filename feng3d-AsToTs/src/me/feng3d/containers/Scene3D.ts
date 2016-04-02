@@ -29,7 +29,7 @@ module feng3d
 		/**
 		 * 创建一个3d场景
 		 */
-		public Scene3D()
+		constructor()
 		{
 			this._isRoot = true;
 			this._scene = this;

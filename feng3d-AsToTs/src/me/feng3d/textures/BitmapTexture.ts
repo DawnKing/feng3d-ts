@@ -14,7 +14,7 @@ module feng3d
 		private _mipMapHolder:BitmapData;
 		private _generateMipmaps:boolean;
 
-		public BitmapTexture(bitmapData:BitmapData, generateMipmaps:boolean = true)
+		constructor(bitmapData:BitmapData, generateMipmaps:boolean = true)
 		{
 			super();
 			this.bitmapData = bitmapData;

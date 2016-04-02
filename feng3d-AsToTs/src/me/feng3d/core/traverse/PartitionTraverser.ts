@@ -37,7 +37,7 @@ module feng3d
 		/**
 		 * 构建一个分区横越者
 		 */
-		public PartitionTraverser()
+		constructor()
 		{
 		}
 

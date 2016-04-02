@@ -15,7 +15,7 @@ module feng3d
 		 * 过滤的阴影映射函数
 		 * @param castingLight		投射灯光
 		 */
-		public FilteredShadowMapMethod(castingLight:DirectionalLight)
+		constructor(castingLight:DirectionalLight)
 		{
 			super(castingLight);
 		}

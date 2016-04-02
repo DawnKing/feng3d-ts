@@ -23,7 +23,7 @@ module feng3d
 		 * @param taskCollectionType			任务集合类型名称
 		 * @param taskCollectionTypeClass		任务集合类型定义
 		 */
-		public TaskModuleEventRegisterData(taskCollectionType:string, taskCollectionTypeClass:Class)
+		constructor(taskCollectionType:string, taskCollectionTypeClass:Class)
 		{
 			this.taskCollectionType = taskCollectionType;
 			this.taskCollectionTypeClass = taskCollectionTypeClass;

@@ -19,7 +19,7 @@ module feng3d
 		/**
 		 * 创建阴影投射者集合
 		 */
-		public ShadowCasterCollector()
+		constructor()
 		{
 			super();
 		}

@@ -9,7 +9,7 @@ module feng3d
 	 *
 	 * @author feng 2015-9-5
 	 */
-	public F_EnvMapMethod()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;

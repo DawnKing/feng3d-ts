@@ -42,7 +42,7 @@ module feng3dSheet
 		 * @param scaleV			V元素缩放
 		 * @param mapID				映射编号
 		 */
-		public SpriteSheetAnimationFrame(offsetU:number = 0, offsetV:number = 0, scaleU:number = 1, scaleV:number = 1, mapID:number = 0)
+		constructor(offsetU:number = 0, offsetV:number = 0, scaleU:number = 1, scaleV:number = 1, mapID:number = 0)
 		{
 			this.offsetU = offsetU;
 			this.offsetV = offsetV;

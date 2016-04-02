@@ -13,7 +13,7 @@ module feng3d
 	 */
 	export class V_SkyBox extends FagalMethod
 	{
-		public V_SkyBox()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.VERTEX;
 		}

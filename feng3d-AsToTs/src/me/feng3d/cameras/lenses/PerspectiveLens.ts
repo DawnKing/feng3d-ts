@@ -22,7 +22,7 @@ module feng3d
 		 * @param fieldOfView 视野
 		 * @param coordinateSystem 坐标系统类型
 		 */
-		public PerspectiveLens(fieldOfView:number = 60, coordinateSystem:number = CoordinateSystem.LEFT_HANDED)
+		constructor(fieldOfView:number = 60, coordinateSystem:number = CoordinateSystem.LEFT_HANDED)
 		{
 			super();
 

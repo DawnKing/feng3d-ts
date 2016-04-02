@@ -66,7 +66,7 @@ module feng3d
 		 * 调用新的 InteractiveObject3D() 构造函数会引发 ArgumentError 异常。
 		 * @throws	me.feng.error.AbstractClassError
 		 */
-		public InteractiveObject3D()
+		constructor()
 		{
 			super();
 

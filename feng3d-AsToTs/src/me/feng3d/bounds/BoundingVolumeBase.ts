@@ -44,7 +44,7 @@ module feng3d
 		/**
 		 * 创建包围盒
 		 */
-		public BoundingVolumeBase()
+		constructor()
 		{
 			this._min = new Vector3D();
 			this._max = new Vector3D();

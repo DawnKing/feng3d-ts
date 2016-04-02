@@ -20,7 +20,7 @@ module feng3d
 		 * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
 		 * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
 		 */
-		public FagalMathEvent(type:string, code:string, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, code:string, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, code, bubbles, cancelable);
 		}

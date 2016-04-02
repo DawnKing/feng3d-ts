@@ -21,7 +21,7 @@ module feng3d
 		 * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
 		 * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
 		 */
-		public MeshEvent(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, data, bubbles, cancelable);
 		}

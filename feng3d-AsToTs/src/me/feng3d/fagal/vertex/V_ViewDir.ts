@@ -6,7 +6,7 @@ module feng3d
 	 * 视线顶点渲染函数
 	 * @author feng 2014-11-7
 	 */
-	public V_ViewDir()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

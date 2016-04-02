@@ -29,7 +29,7 @@ module feng3d
 		 * @param colorEnd 终点颜色
 		 * @param thickness 线段厚度
 		 */		
-		public Segment(start:Vector3D, end:Vector3D, colorStart:number = 0x333333, colorEnd:number = 0x333333, thickness:number = 1)
+		constructor(start:Vector3D, end:Vector3D, colorStart:number = 0x333333, colorEnd:number = 0x333333, thickness:number = 1)
 		{
 			this._thickness = thickness * .5;
 			this._start = start;

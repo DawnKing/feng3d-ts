@@ -10,7 +10,7 @@ module feng3d
 		/**
 		 * 创建一个空分区节点
 		 */
-		public NullNode()
+		constructor()
 		{
 			super();
 		}

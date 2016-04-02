@@ -13,7 +13,7 @@ module feng3d
 		 * @param message 与 Error 对象关联的字符串；此参数为可选。
 		 * @param id 与特定错误消息关联的引用数字。
 		 */
-		public AbstractClassError(message:string = null, id:number = 0)
+		constructor(message:string = null, id:number = 0)
 		{
 			super(message || "无法直接实例化抽象类", id);
 		}

@@ -12,7 +12,7 @@ module feng3d
 		/**
 		 * 创建一个实体列表元素池
 		 */
-		public EntityListItemPool()
+		constructor()
 		{
 		}
 

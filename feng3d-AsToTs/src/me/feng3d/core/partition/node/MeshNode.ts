@@ -17,7 +17,7 @@ module feng3d
 		 * 创建一个网格分区节点
 		 * @param mesh		网格
 		 */
-		public MeshNode(mesh:Mesh)
+		constructor(mesh:Mesh)
 		{
 			super(mesh);
 			this._mesh = mesh;

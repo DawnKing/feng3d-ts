@@ -22,7 +22,7 @@ module feng3d
 		 * 创建一个顶点动画集合
 		 * @param numPoses		姿势数量
 		 */
-		public VertexAnimationSet(numPoses:number = 2)
+		constructor(numPoses:number = 2)
 		{
 			super();
 			this._numPoses = numPoses;

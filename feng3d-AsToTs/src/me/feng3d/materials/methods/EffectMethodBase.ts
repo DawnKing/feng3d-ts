@@ -14,7 +14,7 @@ module feng3d
 		/**
 		 * 创建特效函数基类实例
 		 */
-		public EffectMethodBase()
+		constructor()
 		{
 			super();
 			this._namedAsset = new NamedAsset(this,AssetType.EFFECTS_METHOD);

@@ -11,7 +11,7 @@ module feng3d
 	 * @param particleCommon		粒子常数数据[0,1,2,0]
 	 * @author feng 2014-12-26
 	 */
-	public V_ParticlesInit(positionTemp:Register, animatedPosition:Register, positionReg:Register, particleCommon:Register)
+	constructor(positionTemp:Register, animatedPosition:Register, positionReg:Register, particleCommon:Register)
 	{
 		var _:* = FagalRE.instance.space;
 

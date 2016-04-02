@@ -18,7 +18,7 @@ module feng3d
 		/**  */
 		public useEnvMapMask:number;
 
-		public EnvShaderParams()
+		constructor()
 		{
 			super();
 		}

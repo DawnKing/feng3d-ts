@@ -25,7 +25,7 @@ module feng3d
 		private _splats:Array;
 		private _numSplattingLayers:number;
 
-		public TerrainDiffuseMethod(splatTextures:Array, blendingTexture:Texture2DBase, tileData:number[])
+		constructor(splatTextures:Array, blendingTexture:Texture2DBase, tileData:number[])
 		{
 			super();
 

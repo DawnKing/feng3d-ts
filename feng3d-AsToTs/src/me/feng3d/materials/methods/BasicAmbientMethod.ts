@@ -43,7 +43,7 @@ module feng3d
 		/**
 		 * 创建一个基础环境光函数
 		 */
-		public BasicAmbientMethod()
+		constructor()
 		{
 			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;

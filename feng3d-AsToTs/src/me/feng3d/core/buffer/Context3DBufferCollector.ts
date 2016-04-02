@@ -26,7 +26,7 @@ module feng3d
 		 * 创建3D环境缓冲收集器
 		 * @bufferOwner		缓冲拥有者
 		 */
-		public Context3DBufferCollector()
+		constructor()
 		{
 		}
 

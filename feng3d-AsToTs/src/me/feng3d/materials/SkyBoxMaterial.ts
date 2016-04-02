@@ -19,7 +19,7 @@ module feng3d
 		 * 创建天空盒材质实例
 		 * @param cubeMap			立方体映射纹理
 		 */
-		public SkyBoxMaterial(cubeMap:CubeTextureBase)
+		constructor(cubeMap:CubeTextureBase)
 		{
 			this._cubeMap = cubeMap;
 			addPass(this._skyboxPass = new SkyBoxPass());

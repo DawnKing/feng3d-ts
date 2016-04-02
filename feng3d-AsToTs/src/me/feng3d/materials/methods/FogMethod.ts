@@ -76,7 +76,7 @@ module feng3d
 		 * @param maxDistance			最远距离
 		 * @param fogColor				雾的颜色
 		 */
-		public FogMethod(minDistance:number, maxDistance:number, fogColor:number = 0x808080)
+		constructor(minDistance:number, maxDistance:number, fogColor:number = 0x808080)
 		{
 			super();
 			this.minDistance = minDistance;

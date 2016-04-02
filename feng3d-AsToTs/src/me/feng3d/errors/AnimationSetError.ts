@@ -3,7 +3,7 @@ module feng3d
 	
 	export class AnimationSetError extends Error
 	{
-		public AnimationSetError(message:string)
+		constructor(message:string)
 		{
 			super(message);
 		}

@@ -14,7 +14,7 @@ module feng3d
 		/**
 		 * 创建可渲染列表元素池
 		 */
-		public RenderableListItemPool()
+		constructor()
 		{
 			this._pool = new RenderableListItem[]();
 		}

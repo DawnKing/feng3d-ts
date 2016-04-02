@@ -9,7 +9,7 @@ module feng3d
 	 */
 	export class SegmentSubGeometry extends SubGeometry
 	{
-		public SegmentSubGeometry()
+		constructor()
 		{
 			super();
 		}

@@ -11,7 +11,7 @@ module feng3d
 		/**
 		 * 创建一个立方体纹理代理基类
 		 */
-		public CubeTextureBase()
+		constructor()
 		{
 			super();
 			this.type = TextureType.TYPE_CUBE;

@@ -16,7 +16,7 @@ module feng3d
 		/**
 		 * 创建一个任务队列
 		 */
-		public TaskList()
+		constructor()
 		{
 			super();
 		}

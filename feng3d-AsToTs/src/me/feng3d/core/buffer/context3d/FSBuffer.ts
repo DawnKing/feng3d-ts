@@ -24,7 +24,7 @@ module feng3d
 		 * @param updateFunc 	数据更新回调函数
 		 * @param textureFlags	取样参数回调函数
 		 */
-		public FSBuffer(dataTypeId:string, updateFunc:Function)
+		constructor(dataTypeId:string, updateFunc:Function)
 		{
 			super(dataTypeId, updateFunc);
 		}

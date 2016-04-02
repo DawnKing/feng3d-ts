@@ -24,7 +24,7 @@ module feng3d
 		 * @param targetObject 控制对象
 		 * @param lookAtObject 被注视对象
 		 */
-		public LookAtController(targetObject:Entity = null, lookAtObject:Container3D = null)
+		constructor(targetObject:Entity = null, lookAtObject:Container3D = null)
 		{
 			super(targetObject);
 

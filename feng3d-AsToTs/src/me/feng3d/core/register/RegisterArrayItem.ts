@@ -20,7 +20,7 @@ module feng3d
 		 * @param registerArray			所属寄存器数组
 		 * @param arrayIndex			所在寄存器数组中的索引
 		 */
-		public RegisterArrayItem(registerArray:RegisterArray, arrayIndex:number)
+		constructor(registerArray:RegisterArray, arrayIndex:number)
 		{
 			super(registerArray.regId);
 

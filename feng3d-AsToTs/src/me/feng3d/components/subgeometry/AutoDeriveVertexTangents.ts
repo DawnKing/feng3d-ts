@@ -24,7 +24,7 @@ module feng3d
 		private target:number[];
 		private needGenerate:boolean;
 
-		public AutoDeriveVertexTangents()
+		constructor()
 		{
 			this.dataTypeId = _.tangent_va_3;
 

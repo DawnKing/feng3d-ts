@@ -43,7 +43,7 @@ module feng3d
 		 * @param parentMesh 父网格
 		 * @param material 材质
 		 */
-		public SubMesh(subGeometry:SubGeometry, parentMesh:Mesh, material:MaterialBase = null)
+		constructor(subGeometry:SubGeometry, parentMesh:Mesh, material:MaterialBase = null)
 		{
 			this.context3DBufferOwner = new Context3DBufferOwner();
 			this.renderableBase = new MeshRenderable(this);

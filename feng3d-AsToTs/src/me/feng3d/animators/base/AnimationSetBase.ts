@@ -38,7 +38,7 @@ module feng3d
 		/**
 		 * 创建一个动画集合基类
 		 */
-		public AnimationSetBase()
+		constructor()
 		{
 			super();
 			this._namedAsset = new NamedAsset(this,AssetType.ANIMATION_SET);

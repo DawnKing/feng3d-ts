@@ -21,7 +21,7 @@ module feng3d
 			return jointPoses.length;
 		}
 
-		public SkeletonPose()
+		constructor()
 		{
 			this._namedAsset = new NamedAsset(this,AssetType.SKELETON_POSE);
 			this.jointPoses = new JointPose[]();

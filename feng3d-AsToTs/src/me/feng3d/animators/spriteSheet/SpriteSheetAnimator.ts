@@ -40,7 +40,7 @@ module feng3dSheet
 		 * 创建sprite动画实例
 		 * @param spriteSheetAnimationSet			sprite动画集合
 		 */
-		public SpriteSheetAnimator(spriteSheetAnimationSet:SpriteSheetAnimationSet)
+		constructor(spriteSheetAnimationSet:SpriteSheetAnimationSet)
 		{
 			super(spriteSheetAnimationSet);
 			this._spriteSheetAnimationSet = spriteSheetAnimationSet;

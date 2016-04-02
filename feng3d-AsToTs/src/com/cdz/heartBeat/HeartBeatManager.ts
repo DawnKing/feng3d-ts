@@ -21,7 +21,7 @@ module feng3dBeat
 
 		private _frameEventDriver:Shape = new Shape();
 
-		public HeartBeatManager()
+		constructor()
 		{
 			this.init()
 

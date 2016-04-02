@@ -16,7 +16,7 @@ module feng3d
 		 * 创建一个点光源分区节点
 		 * @param light		点光源
 		 */
-		public PointLightNode(light:PointLight)
+		constructor(light:PointLight)
 		{
 			super(light);
 			this._light = light;

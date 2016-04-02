@@ -10,7 +10,7 @@ module feng3d
 	 * 点光源渲染
 	 * @author feng 2014-11-8
 	 */
-	public F_PointLight()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

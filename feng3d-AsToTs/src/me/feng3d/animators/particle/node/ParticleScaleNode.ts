@@ -67,7 +67,7 @@ module feng3d
 		 * @param cycleDuration
 		 * @param cyclePhase
 		 */
-		public ParticleScaleNode(mode:number, usesCycle:boolean, usesPhase:boolean, minScale:number = 1, maxScale:number = 1, cycleDuration:number = 1, cyclePhase:number = 0)
+		constructor(mode:number, usesCycle:boolean, usesPhase:boolean, minScale:number = 1, maxScale:number = 1, cycleDuration:number = 1, cyclePhase:number = 0)
 		{
 			var len:number = 2;
 			if (usesCycle)

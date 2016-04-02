@@ -33,7 +33,7 @@ module feng3d
 		/**
 		 * 创建一个摄像机镜头
 		 */
-		public LensBase()
+		constructor()
 		{
 			this._matrix = new Matrix3D();
 

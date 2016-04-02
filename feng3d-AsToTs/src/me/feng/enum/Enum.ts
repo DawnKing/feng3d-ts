@@ -35,7 +35,7 @@ module feng3d
 		/**
 		 * 无法直接实例化
 		 */
-		public Enum()
+		constructor()
 		{
 			this.className = getQualifiedClassName(this);
 			this.type = this.className.split("::").pop();

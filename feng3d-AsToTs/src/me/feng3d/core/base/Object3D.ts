@@ -62,7 +62,7 @@ module feng3d
 		/**
 		 * 创建3D对象
 		 */
-		public Object3D()
+		constructor()
 		{
 			super();
 			this.transform3D = new Transform3D();

@@ -42,7 +42,7 @@ module feng3d
 		/**
 		 * 创建超级渲染通道
 		 */
-		public SuperShaderPass()
+		constructor()
 		{
 			super();
 		}

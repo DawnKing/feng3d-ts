@@ -51,7 +51,7 @@ module feng3d
 		/**
 		 * 创建Context3D缓存拥有者
 		 */
-		public Context3DBufferOwner()
+		constructor()
 		{
 			this.childrenBufferOwner = new Context3DBufferOwner[]()
 			this.initBuffers();

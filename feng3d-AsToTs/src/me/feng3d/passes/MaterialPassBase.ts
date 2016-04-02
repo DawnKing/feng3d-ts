@@ -76,7 +76,7 @@ module feng3d
 		/**
 		 * 创建一个纹理通道基类
 		 */
-		public MaterialPassBase()
+		constructor()
 		{
 			AbstractClassError.check(this);
 

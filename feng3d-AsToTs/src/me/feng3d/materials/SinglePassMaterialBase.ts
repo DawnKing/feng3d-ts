@@ -27,7 +27,7 @@ module feng3d
 		/**
 		 * 创建一个单通道纹理
 		 */
-		public SinglePassMaterialBase()
+		constructor()
 		{
 			super();
 			addPass(this._screenPass = new SuperShaderPass());

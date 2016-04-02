@@ -65,7 +65,7 @@ module feng3d
 		 * @param usesLooping	是否循环
 		 * @param usesDelay		是否延时
 		 */
-		public ParticleAnimationSet(usesDuration:boolean = false, usesLooping:boolean = false, usesDelay:boolean = false)
+		constructor(usesDuration:boolean = false, usesLooping:boolean = false, usesDelay:boolean = false)
 		{
 			this._usesDuration = usesDuration;
 			this._usesLooping = usesLooping;

@@ -14,7 +14,7 @@ module feng3d
 		/**
 		 * Creates a new PhongSpecularMethod object.
 		 */
-		public PhongSpecularMethod()
+		constructor()
 		{
 			super();
 		}

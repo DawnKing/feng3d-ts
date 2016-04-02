@@ -43,7 +43,7 @@ module feng3d
 		 * @param urls		加载路径列表
 		 * @param data		自定义数据，可用于保存数据在加载资源后处理
 		 */
-		public LoadModuleEventData(urls:Array = null, data:Object = null)
+		constructor(urls:Array = null, data:Object = null)
 		{
 			this.urls = urls;
 			this.data = data;

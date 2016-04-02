@@ -38,7 +38,7 @@ module feng3d
 		/**
 		 * 创建一个纹理代理基类
 		 */
-		public TextureProxyBase()
+		constructor()
 		{
 //			_namedAsset = new NamedAsset(this, AssetType.TEXTURE);
 		}

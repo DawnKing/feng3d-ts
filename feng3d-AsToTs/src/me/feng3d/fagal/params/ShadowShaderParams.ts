@@ -41,7 +41,7 @@ module feng3d
 		/**
 		 * 阴影渲染参数
 		 */
-		public ShadowShaderParams()
+		constructor()
 		{
 			super();
 		}

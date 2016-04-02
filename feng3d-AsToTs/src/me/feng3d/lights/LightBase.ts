@@ -47,7 +47,7 @@ module feng3d
 		/**
 		 * 创建一个灯光
 		 */
-		public LightBase()
+		constructor()
 		{
 			super();
 			

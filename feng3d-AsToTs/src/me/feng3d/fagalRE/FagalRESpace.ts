@@ -38,7 +38,7 @@ module feng3dRE
 		/**
 		 * 创建Fagal运行环境空间
 		 */
-		public FagalRESpace()
+		constructor()
 		{
 			super();
 		}

@@ -24,7 +24,7 @@ module feng3d
 		 * @param posZ			Z正方向位图
 		 * @param negZ			Z负方向位图
 		 */
-		public BitmapCubeTexture(posX:BitmapData, negX:BitmapData, posY:BitmapData, negY:BitmapData, posZ:BitmapData, negZ:BitmapData)
+		constructor(posX:BitmapData, negX:BitmapData, posY:BitmapData, negY:BitmapData, posZ:BitmapData, negZ:BitmapData)
 		{
 			super();
 

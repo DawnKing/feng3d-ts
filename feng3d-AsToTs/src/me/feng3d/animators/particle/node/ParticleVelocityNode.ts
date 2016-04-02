@@ -46,7 +46,7 @@ module feng3d
 		 * @param mode		模式
 		 * @param velocity	粒子速度
 		 */
-		public ParticleVelocityNode(mode:number, velocity:Vector3D = null)
+		constructor(mode:number, velocity:Vector3D = null)
 		{
 			super("ParticleVelocity", mode, 3);
 

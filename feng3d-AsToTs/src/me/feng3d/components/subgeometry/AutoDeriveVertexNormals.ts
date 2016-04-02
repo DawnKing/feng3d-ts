@@ -25,7 +25,7 @@ module feng3d
 		private target:number[];
 		private needGenerate:boolean;
 
-		public AutoDeriveVertexNormals()
+		constructor()
 		{
 			this.dataTypeId = _.normal_va_3;
 

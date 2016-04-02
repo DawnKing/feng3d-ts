@@ -23,7 +23,7 @@ module feng3d
 		 * @param basedOnSurface Defines whether the fresnel effect should be based on the view angle on the surface (if true), or on the angle between the light and the view.
 		 * @param baseSpecularMethod The specular method to which the fresnel equation. Defaults to BasicSpecularMethod.
 		 */
-		public FresnelSpecularMethod(basedOnSurface:boolean = true)
+		constructor(basedOnSurface:boolean = true)
 		{
 			// may want to offer diff speculars
 			super();

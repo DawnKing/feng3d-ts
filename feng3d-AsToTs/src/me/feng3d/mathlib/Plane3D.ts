@@ -65,7 +65,7 @@ module feng3d
 		 * @param c		C系数
 		 * @param d		D系数
 		 */
-		public Plane3D(a:number = 0, b:number = 0, c:number = 0, d:number = 0)
+		constructor(a:number = 0, b:number = 0, c:number = 0, d:number = 0)
 		{
 			this.a = a;
 			this.b = b;

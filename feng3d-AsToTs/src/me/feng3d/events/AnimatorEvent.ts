@@ -26,7 +26,7 @@ module feng3d
 		 * @param data			事件数据
 		 * @param bubbles		是否冒泡
 		 */
-		public AnimatorEvent(type:string, data:* = null, bubbles:boolean = false)
+		constructor(type:string, data:* = null, bubbles:boolean = false)
 		{
 			super(type, data, bubbles);
 		}

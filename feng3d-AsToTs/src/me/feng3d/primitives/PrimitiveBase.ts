@@ -21,7 +21,7 @@ module feng3d
 
 		private _subGeometry:SubGeometry;
 
-		public PrimitiveBase()
+		constructor()
 		{
 			this._subGeometry = new SubGeometry();
 			this.addSubGeometry(this._subGeometry);

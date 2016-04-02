@@ -53,7 +53,7 @@ module feng3d
 		 * @param depthMapSize The size of the depth map used.
 		 * @param depthMapOffset The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
 		 */
-		public SubsurfaceScatteringDiffuseMethod(depthMapSize:number = 512, depthMapOffset:number = 15)
+		constructor(depthMapSize:number = 512, depthMapOffset:number = 15)
 		{
 			super(this.scatterLight);
 			_passes = new MaterialPassBase[]();

@@ -16,7 +16,7 @@ module feng3d
 		 * @param complexArgs			复杂参数（用来计算所在寄存器数组中的索引值）
 		 * @param arrayIndex			起始索引值
 		 */
-		public RegisterArrayComplexItem(registerArray:RegisterArray, complexArgs:Array, startIndex:number)
+		constructor(registerArray:RegisterArray, complexArgs:Array, startIndex:number)
 		{
 			this._complexArgs = complexArgs;
 

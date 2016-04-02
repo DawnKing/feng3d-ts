@@ -42,7 +42,7 @@ module feng3d
 		/**
 		 * 创建一个实体，该类为虚类
 		 */
-		public Entity()
+		constructor()
 		{
 			super();
 

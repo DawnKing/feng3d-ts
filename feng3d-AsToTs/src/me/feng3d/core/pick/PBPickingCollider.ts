@@ -31,7 +31,7 @@ module feng3d
 		 * 创建一个 PBPickingCollider
 		 * @param findClosestCollision 是否查找最短距离碰撞
 		 */
-		public PBPickingCollider(findClosestCollision:boolean = false)
+		constructor(findClosestCollision:boolean = false)
 		{
 			this._findClosestCollision = findClosestCollision;
 

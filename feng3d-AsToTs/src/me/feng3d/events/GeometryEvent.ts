@@ -20,7 +20,7 @@ module feng3d
 
 		private _subGeometry:SubGeometry;
 
-		public GeometryEvent(type:string, subGeometry:SubGeometry = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, subGeometry:SubGeometry = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, subGeometry, bubbles, cancelable);
 			this._subGeometry = subGeometry;

@@ -31,7 +31,7 @@ module feng3d
 		/**
 		 * 创建顶点数据拥有者
 		 */
-		public VertexBufferOwner()
+		constructor()
 		{
 			super();
 			this.context3DBufferOwner = new Context3DBufferOwner();

@@ -44,7 +44,7 @@ module feng3d
 		 * @param geometry 几何体
 		 * @param material 材质
 		 */
-		public Mesh(geometry:Geometry = null, material:MaterialBase = null)
+		constructor(geometry:Geometry = null, material:MaterialBase = null)
 		{
 			super();
 			_namedAsset._assetType = AssetType.MESH;

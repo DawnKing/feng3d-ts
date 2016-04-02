@@ -24,7 +24,7 @@ module feng3dBeat
 		public static MOUSE_CHECK_BEAT:string = "MouseCheckBeat";
 
 
-		public HeartBeatEvent(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, data, bubbles, cancelable);
 		}

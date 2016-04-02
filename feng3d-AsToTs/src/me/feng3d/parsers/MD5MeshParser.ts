@@ -73,7 +73,7 @@ module feng3d
 		/**
 		 * 创建一个MD5Mesh解析对象
 		 */
-		public MD5MeshParser(additionalRotationAxis:Vector3D = null, additionalRotationRadians:number = 0)
+		constructor(additionalRotationAxis:Vector3D = null, additionalRotationRadians:number = 0)
 		{
 			super(ParserDataFormat.PLAIN_TEXT);
 

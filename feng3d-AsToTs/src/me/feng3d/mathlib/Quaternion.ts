@@ -36,7 +36,7 @@ module feng3d
 		 * @param z The z value of the quaternion.
 		 * @param w The w value of the quaternion.
 		 */
-		public Quaternion(x:number = 0, y:number = 0, z:number = 0, w:number = 1)
+		constructor(x:number = 0, y:number = 0, z:number = 0, w:number = 1)
 		{
 			this.x = x;
 			this.y = y;

@@ -22,7 +22,7 @@ module feng3d
 		/**
 		 * 创建一个拥有名字的对象
 		 */
-		public NamedAsset(asset:IAsset, assetType:string)
+		constructor(asset:IAsset, assetType:string)
 		{
 			super();
 			this._asset = asset;

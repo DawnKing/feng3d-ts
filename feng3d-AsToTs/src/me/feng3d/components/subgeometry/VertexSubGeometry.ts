@@ -8,7 +8,7 @@ module feng3d
 	 */
 	export class VertexSubGeometry extends SubGeometryComponent
 	{
-		public VertexSubGeometry()
+		constructor()
 		{
 			super();
 		}

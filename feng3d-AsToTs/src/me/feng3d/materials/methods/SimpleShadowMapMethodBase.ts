@@ -59,7 +59,7 @@ module feng3d
 		 * 创建简单阴影映射方法基类
 		 * @param castingLight			投射阴影的灯光
 		 */
-		public SimpleShadowMapMethodBase(castingLight:LightBase)
+		constructor(castingLight:LightBase)
 		{
 			this._usePoint = castingLight is PointLight;
 

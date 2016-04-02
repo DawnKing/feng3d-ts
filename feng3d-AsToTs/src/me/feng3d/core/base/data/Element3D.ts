@@ -81,7 +81,7 @@ module feng3d
 		protected _sca:Vector3D = new Vector3D();
 		protected _transformComponents:Vector3D[];
 
-		public Element3D()
+		constructor()
 		{
 			// Cached vector of transformation components used when
 			// recomposing the this.transform matrix in this.updateTransform()

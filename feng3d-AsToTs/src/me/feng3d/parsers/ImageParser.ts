@@ -27,7 +27,7 @@ module feng3d
 		 * @param uri The url or id of the data or file to be parsed.
 		 * @param extra The holder for extra contextual data that the parser might need.
 		 */
-		public ImageParser()
+		constructor()
 		{
 			super(ParserDataFormat.BINARY);
 		}

@@ -38,7 +38,7 @@ module feng3d
 		/**
 		 * 创建深度映射通道
 		 */
-		public PlanarShadowPass()
+		constructor()
 		{
 			super();
 			this.shadowColorCommonsData = number[]([1, 0, 0, 1]);

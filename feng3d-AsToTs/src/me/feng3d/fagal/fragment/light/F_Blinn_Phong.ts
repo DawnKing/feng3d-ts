@@ -7,7 +7,7 @@ module feng3d
 	 * blinn-phong half vector model
 	 * @author feng 2015-9-24
 	 */
-	public F_Blinn_Phong(singleSpecularColorReg:Register, lightDirReg:Register)
+	constructor(singleSpecularColorReg:Register, lightDirReg:Register)
 	{
 		var _:* = FagalRE.instance.space;
 

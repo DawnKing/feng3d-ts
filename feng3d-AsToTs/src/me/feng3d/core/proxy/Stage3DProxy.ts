@@ -56,7 +56,7 @@ module feng3d
 		 * @param forceSoftware		是否强制软件渲染
 		 * @param profile
 		 */
-		public Stage3DProxy(stage3DIndex:number, stage3D:Stage3D, stage3DManager:Stage3DManager, forceSoftware:boolean = false, profile:string = "baseline")
+		constructor(stage3DIndex:number, stage3D:Stage3D, stage3DManager:Stage3DManager, forceSoftware:boolean = false, profile:string = "baseline")
 		{
 			this._stage3DIndex = stage3DIndex;
 			this._stage3D = stage3D;

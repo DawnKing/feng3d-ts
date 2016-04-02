@@ -49,7 +49,7 @@ module feng3d
 		 *
 		 * @param useSmoothingGroups Determines whether the parser looks for smoothing groups in the 3ds file or assumes uniform smoothing. Defaults to true.
 		 */
-		public Max3DSParser(useSmoothingGroups:boolean = true)
+		constructor(useSmoothingGroups:boolean = true)
 		{
 			super(ParserDataFormat.BINARY);
 

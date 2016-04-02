@@ -19,7 +19,7 @@ module feng3d
 		/**
 		 * 构建一个Fagal函数
 		 */
-		public FagalMethod()
+		constructor()
 		{
 			AbstractClassError.check(this);
 		}

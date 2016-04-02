@@ -16,7 +16,7 @@ module feng3d
 
 		public context3D:Context3D;
 
-		public IndexBufferItem(context3D:Context3D,numIndices:number)
+		constructor(context3D:Context3D,numIndices:number)
 		{
 			this.context3D = context3D;
 			this.indexBuffer3D = context3D.createIndexBuffer(numIndices);

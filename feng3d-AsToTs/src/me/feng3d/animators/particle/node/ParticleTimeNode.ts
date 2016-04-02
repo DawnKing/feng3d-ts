@@ -36,7 +36,7 @@ module feng3d
 		 * @param usesLooping	是否延时
 		 * @param usesDelay		是否循环
 		 */
-		public ParticleTimeNode()
+		constructor()
 		{
 			super("ParticleTime", ParticlePropertiesMode.LOCAL_STATIC, 4, 0);
 		}

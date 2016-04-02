@@ -58,7 +58,7 @@ module feng3d
 		/**
 		 * 创建一个材质基类
 		 */
-		public MaterialBase()
+		constructor()
 		{
 			this._namedAsset = new NamedAsset(this,AssetType.MATERIAL);
 			this._owners = new IMaterialOwner[]();

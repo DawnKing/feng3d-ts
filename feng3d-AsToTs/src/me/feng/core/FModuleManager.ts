@@ -17,7 +17,7 @@ module feng3d
 		/**
 		 * 创建一个模块
 		 */
-		public FModuleManager()
+		constructor()
 		{
 		}
 

@@ -9,7 +9,7 @@ module feng3d
 	 * 漫反射纹理取样
 	 * @author feng 2014-11-6
 	 */
-	public F_DiffuseTexure()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;

@@ -19,7 +19,7 @@ module feng3dRE
 		 * @param funcName			函数名称
 		 * @param parameters		参数
 		 */
-		public FagalItem(funcName:string, parameters:Array)
+		constructor(funcName:string, parameters:Array)
 		{
 			this.funcName = funcName;
 			this.parameters = parameters;

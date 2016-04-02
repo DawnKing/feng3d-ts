@@ -29,7 +29,7 @@ module feng3d
 		 * @param envMap		环境映射贴图
 		 * @param alpha			反射率
 		 */
-		public EnvMapMethod(envMap:CubeTextureBase, alpha:number = 1)
+		constructor(envMap:CubeTextureBase, alpha:number = 1)
 		{
 			super();
 			this._cubeTexture = envMap;

@@ -14,7 +14,7 @@ module feng3dRE
 		/**
 		 * 创建Fagal编号中心
 		 */
-		public FagalIdCenter()
+		constructor()
 		{
 			if (_instance)
 				throw new Error("该类为单例");

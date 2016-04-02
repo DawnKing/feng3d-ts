@@ -37,7 +37,7 @@ module feng3d
 		/**
 		 * 创建一个基础漫反射函数
 		 */
-		public BasicDiffuseMethod()
+		constructor()
 		{
 			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;

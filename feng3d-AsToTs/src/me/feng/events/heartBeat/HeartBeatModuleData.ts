@@ -23,7 +23,7 @@ module feng3dBeat
 		 * @param taskCollectionType			任务集合类型名称
 		 * @param taskCollectionTypeClass		任务集合类型定义
 		 */
-		public HeartBeatModuleData(BeatType:string, Interval:number)
+		constructor(BeatType:string, Interval:number)
 		{
 			this.BeatType = BeatType;
 			this.Interval = Interval;

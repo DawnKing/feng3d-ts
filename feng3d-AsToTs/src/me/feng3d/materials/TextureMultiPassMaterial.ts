@@ -15,7 +15,7 @@ module feng3d
 		private _specularMethod:BasicSpecularMethod = new BasicSpecularMethod();
 		private _normalMethod:BasicNormalMethod = new BasicNormalMethod();
 		
-		public TextureMultiPassMaterial(texture:Texture2DBase = null, smooth:boolean = true, repeat:boolean = false, mipmap:boolean = true)
+		constructor(texture:Texture2DBase = null, smooth:boolean = true, repeat:boolean = false, mipmap:boolean = true)
 		{
 			super();
 			this.texture = texture;

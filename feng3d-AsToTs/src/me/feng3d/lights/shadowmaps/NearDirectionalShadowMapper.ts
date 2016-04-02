@@ -14,7 +14,7 @@ module feng3d
 		 * 创建近方向光阴影映射
 		 * @param coverageRatio		覆盖比例
 		 */
-		public NearDirectionalShadowMapper(coverageRatio:number = .5)
+		constructor(coverageRatio:number = .5)
 		{
 			super();
 			this.coverageRatio = coverageRatio;

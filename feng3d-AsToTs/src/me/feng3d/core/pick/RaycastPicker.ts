@@ -21,7 +21,7 @@ module feng3d
 		 *
 		 * @param findClosestCollision 是否需要寻找最接近的
 		 */
-		public RaycastPicker(findClosestCollision:boolean)
+		constructor(findClosestCollision:boolean)
 		{
 			this._findClosestCollision = findClosestCollision;
 		}

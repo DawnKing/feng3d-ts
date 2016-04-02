@@ -31,7 +31,7 @@ module feng3d
 		/**
 		 * 动画渲染参数
 		 */
-		public AnimationShaderParams()
+		constructor()
 		{
 			super();
 		}

@@ -13,7 +13,7 @@ module feng3dSheet
 		/**
 		 * 创建<code>SpriteSheetClipNode</code>实例.
 		 */
-		public SpriteSheetClipNode()
+		constructor()
 		{
 			_stateClass = SpriteSheetAnimationState;
 		}

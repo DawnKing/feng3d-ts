@@ -26,7 +26,7 @@ module feng3d
 		/**
 		 * 创建轴对其包围盒
 		 */
-		public AxisAlignedBoundingBox()
+		constructor()
 		{
 			super();
 		}

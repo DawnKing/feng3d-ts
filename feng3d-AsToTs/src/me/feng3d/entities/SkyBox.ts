@@ -26,7 +26,7 @@ module feng3d
 		 * 创建天空盒实例
 		 * @param cubeMap		立方体贴图
 		 */
-		public SkyBox(cubeMap:CubeTextureBase)
+		constructor(cubeMap:CubeTextureBase)
 		{
 			super();
 			_namedAsset._assetType = AssetType.SKYBOX;

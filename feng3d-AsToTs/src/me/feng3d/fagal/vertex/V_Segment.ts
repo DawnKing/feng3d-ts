@@ -13,7 +13,7 @@ module feng3d
 	 */
 	export class V_Segment extends FagalMethod
 	{
-		public V_Segment()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.VERTEX;
 		}

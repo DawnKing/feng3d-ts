@@ -11,7 +11,7 @@ module feng3d
 	 */
 	export class F_Segment extends FagalMethod
 	{
-		public F_Segment()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.FRAGMENT;
 		}

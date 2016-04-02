@@ -58,7 +58,7 @@ module feng3d
 		 * @param dataLength		数据长度
 		 * @param priority			优先级
 		 */
-		public ParticleNodeBase(animationName:string, mode:number, dataLength:number, priority:number = 1)
+		constructor(animationName:string, mode:number, dataLength:number, priority:number = 1)
 		{
 			this.name = animationName + MODES[mode];
 

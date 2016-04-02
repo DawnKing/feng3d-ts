@@ -30,7 +30,7 @@ module feng3d
 		/**
 		 * 创建3d环境缓存调试工具类
 		 */
-		public Context3DBufferDebug()
+		constructor()
 		{
 		}
 

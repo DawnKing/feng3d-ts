@@ -25,7 +25,7 @@ module feng3d
 		/**
 		 * 创建一个动画剪辑节点基类
 		 */
-		public AnimationClipNodeBase()
+		constructor()
 		{
 			super();
 		}

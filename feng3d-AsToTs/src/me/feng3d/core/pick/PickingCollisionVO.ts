@@ -68,7 +68,7 @@ module feng3d
 		 * 创建射线拾取碰撞数据
 		 * @param entity
 		 */
-		public PickingCollisionVO(entity:Entity)
+		constructor(entity:Entity)
 		{
 			this.firstEntity = entity;
 		}

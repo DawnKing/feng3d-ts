@@ -33,7 +33,7 @@ module feng3d
 		/**
 		 * 创建阴影映射
 		 */
-		public ShadowMapperBase()
+		constructor()
 		{
 			this._casterCollector = this.createCasterCollector();
 		}

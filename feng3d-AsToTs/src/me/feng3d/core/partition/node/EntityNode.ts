@@ -26,7 +26,7 @@ module feng3d
 		 * 创建一个实体分区节点
 		 * @param entity		实体
 		 */
-		public EntityNode(entity:Entity)
+		constructor(entity:Entity)
 		{
 			super();
 			this._entity = entity;

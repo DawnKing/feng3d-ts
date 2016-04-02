@@ -11,7 +11,7 @@ module feng3d
 	 * @param animatedPosition			动画后的顶点坐标数据
 	 * @author feng 2014-12-26
 	 */
-	public V_ParticleScaleGlobal(scaleRegister:Register, inCycleTimeTemp:Register, animatedPosition:Register)
+	constructor(scaleRegister:Register, inCycleTimeTemp:Register, animatedPosition:Register)
 	{
 		var _:* = FagalRE.instance.space;
 

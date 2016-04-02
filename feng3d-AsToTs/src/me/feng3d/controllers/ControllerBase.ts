@@ -20,7 +20,7 @@ module feng3d
 		 * 创建控制器
 		 * @param targetObject 被控制对象
 		 */
-		public ControllerBase(targetObject:Entity = null)
+		constructor(targetObject:Entity = null)
 		{
 			this.targetObject = targetObject;
 

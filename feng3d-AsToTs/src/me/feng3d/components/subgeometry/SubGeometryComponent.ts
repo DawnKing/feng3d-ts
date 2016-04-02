@@ -15,7 +15,7 @@ module feng3d
 	{
 		protected _subGeometry:SubGeometry;
 
-		public SubGeometryComponent()
+		constructor()
 		{
 			super();
 

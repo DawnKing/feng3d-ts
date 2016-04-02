@@ -19,7 +19,7 @@ module feng3d
 		/**
 		 * 创建一个可渲染对象基类
 		 */
-		public MeshRenderable(subMesh:SubMesh)
+		constructor(subMesh:SubMesh)
 		{
 			super();
 

@@ -32,7 +32,7 @@ module feng3d
 		/**
 		 * 创建一个加载管理器
 		 */
-		public LoadManager()
+		constructor()
 		{
 			this.init();
 		}

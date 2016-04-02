@@ -9,7 +9,7 @@ module feng3d
 	 * 地形渲染函数
 	 * @author feng 2014-11-6
 	 */
-	public F_TerrainDiffusePostLighting()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

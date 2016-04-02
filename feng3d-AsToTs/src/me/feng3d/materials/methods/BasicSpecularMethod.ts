@@ -31,7 +31,7 @@ module feng3d
 		/**
 		 * 创建镜面反射函数
 		 */
-		public BasicSpecularMethod()
+		constructor()
 		{
 			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;

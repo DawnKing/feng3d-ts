@@ -11,7 +11,7 @@ module feng3d
 	 */
 	export class F_SkyBox extends FagalMethod
 	{
-		public F_SkyBox()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.FRAGMENT;
 		}

@@ -18,7 +18,7 @@ module feng3d
 		public _fallOff:number = 100000;
 		public _fallOffFactor:number;
 
-		public PointLight()
+		constructor()
 		{
 			super();
 			this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);

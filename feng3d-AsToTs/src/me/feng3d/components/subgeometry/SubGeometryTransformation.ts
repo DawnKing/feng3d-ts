@@ -14,7 +14,7 @@ module feng3d
 		private _scaleU:number = 1;
 		private _scaleV:number = 1;
 
-		public SubGeometryTransformation()
+		constructor()
 		{
 			super();
 		}

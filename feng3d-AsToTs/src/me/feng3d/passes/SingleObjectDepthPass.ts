@@ -48,7 +48,7 @@ module feng3d
 		 *
 		 * todo: provide custom vertex code to assembler
 		 */
-		public SingleObjectDepthPass(textureSize:number = 512, polyOffset:number = 15)
+		constructor(textureSize:number = 512, polyOffset:number = 15)
 		{
 			super();
 			this._textureSize = textureSize;

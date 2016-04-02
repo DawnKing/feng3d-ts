@@ -14,7 +14,7 @@ module feng3d
 		 * 创建一个摄像机分区节点
 		 * @param camera		摄像机
 		 */
-		public CameraNode(camera:Camera3D)
+		constructor(camera:Camera3D)
 		{
 			super(camera);
 		}

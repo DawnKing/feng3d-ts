@@ -9,7 +9,7 @@ module feng3d
 	 * 基本顶点投影渲染
 	 * @author feng 2014-10-30
 	 */
-	public V_BaseOut()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;

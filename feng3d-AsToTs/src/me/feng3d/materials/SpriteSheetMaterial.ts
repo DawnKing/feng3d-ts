@@ -31,7 +31,7 @@ module feng3d
 		 * @param repeat			是否重复
 		 * @param mipmap			是否使用mipmap
 		 */
-		public SpriteSheetMaterial(diffuses:Texture2DBase[], normals:Texture2DBase[] = null, speculars:Texture2DBase[] = null, smooth:boolean = true, repeat:boolean = false, mipmap:boolean = true)
+		constructor(diffuses:Texture2DBase[], normals:Texture2DBase[] = null, speculars:Texture2DBase[] = null, smooth:boolean = true, repeat:boolean = false, mipmap:boolean = true)
 		{
 
 			this._diffuses = diffuses;

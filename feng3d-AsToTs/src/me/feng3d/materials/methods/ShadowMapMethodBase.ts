@@ -31,7 +31,7 @@ module feng3d
 		 * 创建阴影映射函数基类
 		 * @param castingLight		投射灯光
 		 */
-		public ShadowMapMethodBase(castingLight:LightBase)
+		constructor(castingLight:LightBase)
 		{
 			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;

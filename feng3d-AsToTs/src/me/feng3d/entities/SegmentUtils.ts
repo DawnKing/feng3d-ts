@@ -24,7 +24,7 @@ module feng3d
 		private _thicknessData:number[];
 		private _colorData:number[];
 
-		public SegmentUtils()
+		constructor()
 		{
 		}
 

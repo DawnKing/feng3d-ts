@@ -33,7 +33,7 @@ module feng3d
 		 * 创建一个顶点动画
 		 * @param vertexAnimationSet 顶点动画集合
 		 */
-		public VertexAnimator(vertexAnimationSet:VertexAnimationSet)
+		constructor(vertexAnimationSet:VertexAnimationSet)
 		{
 			super(vertexAnimationSet);
 

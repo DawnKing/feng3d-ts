@@ -27,7 +27,7 @@ module feng3d
 		/**
 		 * 创建顶点VA数据缓冲
 		 */
-		public VADataBuffer()
+		constructor()
 		{
 		}
 

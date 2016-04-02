@@ -26,7 +26,7 @@ module feng3d
 		/**
 		 * 创建一个深度渲染器
 		 */
-		public DepthRenderer()
+		constructor()
 		{
 			super();
 			_backgroundR = 1;

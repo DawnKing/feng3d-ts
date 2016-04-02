@@ -14,7 +14,7 @@ module feng3d
 	 */
 	export class UniqueNameComponent extends Component
 	{
-		public UniqueNameComponent()
+		constructor()
 		{
 			super();
 

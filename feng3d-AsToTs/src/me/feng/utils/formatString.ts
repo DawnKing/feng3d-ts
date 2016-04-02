@@ -15,7 +15,7 @@ module feng3d
 	 * </pre>
 	 * @author feng 2014-5-7
 	 */
-	public formatString(format:string, ... args):string
+	constructor(format:string, ... args):string
 	{
 		for (var i:number = 0; i < args.length; ++i)
 			format = format.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);

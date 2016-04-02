@@ -23,7 +23,7 @@ module feng3dMap
 		/**
 		 * 构建 深度图顶点主程序
 		 */
-		public V_Main_DepthMap()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.VERTEX;
 		}

@@ -15,7 +15,7 @@ module feng3d
 		public startVertexIndex:number;
 		public numVertices:number;
 
-		public ParticleAnimationData(index:number, startTime:number, duration:number, delay:number, particle:ParticleData)
+		constructor(index:number, startTime:number, duration:number, delay:number, particle:ParticleData)
 		{
 			this.index = index;
 			this.startTime = startTime;

@@ -37,7 +37,7 @@ module feng3dRE
 		/**
 		 * 创建一个Fagal渲染结果
 		 */
-		public FagalShaderResult()
+		constructor()
 		{
 		}
 

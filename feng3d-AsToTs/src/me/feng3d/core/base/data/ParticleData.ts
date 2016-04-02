@@ -17,7 +17,7 @@ module feng3d
 		/** 粒子子几何体 */
 		public subGeometry:SubGeometry;
 
-		public ParticleData()
+		constructor()
 		{
 
 		}

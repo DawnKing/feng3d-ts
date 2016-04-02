@@ -30,7 +30,7 @@ module feng3d
 		/**
 		 * 创建一个任务管理器
 		 */
-		public TaskManager()
+		constructor()
 		{
 			this.init();
 		}

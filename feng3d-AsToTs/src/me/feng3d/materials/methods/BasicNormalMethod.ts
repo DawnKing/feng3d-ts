@@ -21,7 +21,7 @@ module feng3d
 		/**
 		 * 创建一个基础法线函数
 		 */
-		public BasicNormalMethod()
+		constructor()
 		{
 			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;

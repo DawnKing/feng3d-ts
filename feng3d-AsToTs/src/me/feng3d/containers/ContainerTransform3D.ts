@@ -17,7 +17,7 @@ module feng3d
 		/**
 		 * 创建一个3d容器变换组件
 		 */
-		public ContainerTransform3D()
+		constructor()
 		{
 			this.addEventListener(ComponentEvent.BE_ADDED_COMPONET, this.onBeAddedComponet);
 		}

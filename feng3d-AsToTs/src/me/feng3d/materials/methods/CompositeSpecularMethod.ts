@@ -20,7 +20,7 @@ module feng3d
 		 * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature modSpecular(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the specular strength and t.xyz will contain the half-vector or the reflection vector.
 		 * @param baseSpecularMethod The base specular method on which this method's shading is based.
 		 */
-		public CompositeSpecularMethod(modulateMethod:Function, baseSpecularMethod:BasicSpecularMethod = null)
+		constructor(modulateMethod:Function, baseSpecularMethod:BasicSpecularMethod = null)
 		{
 			super();
 			this._baseMethod = baseSpecularMethod || new BasicSpecularMethod();

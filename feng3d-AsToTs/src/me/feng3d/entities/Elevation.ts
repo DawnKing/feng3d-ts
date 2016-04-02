@@ -38,7 +38,7 @@ module feng3d
 		 * @param    minElevation	最小地形高度
 		 * @param    smoothMap	是否平滑
 		 */
-		public Elevation(material:MaterialBase, heightMap:BitmapData, width:number = 1000, height:number = 100, depth:number = 1000, segmentsW:number = 30, segmentsH:number = 30, maxElevation:number = 255, minElevation:number = 0)
+		constructor(material:MaterialBase, heightMap:BitmapData, width:number = 1000, height:number = 100, depth:number = 1000, segmentsW:number = 30, segmentsH:number = 30, maxElevation:number = 255, minElevation:number = 0)
 		{
 			this._subGeometry = new SubGeometry();
 			super(new Geometry(), material);

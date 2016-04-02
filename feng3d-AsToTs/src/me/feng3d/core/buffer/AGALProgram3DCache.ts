@@ -49,7 +49,7 @@ module feng3d
 		 * 创建AGAL程序缓冲
 		 * @param context3D			3D环境
 		 */
-		public AGALProgram3DCache(context3D:Context3D)
+		constructor(context3D:Context3D)
 		{
 			if (_instanceDic[context3D])
 				throw new Error("已经存在对应的实例，请使用GetInstance方法获取。");

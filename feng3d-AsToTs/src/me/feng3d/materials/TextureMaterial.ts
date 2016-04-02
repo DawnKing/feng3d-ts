@@ -23,7 +23,7 @@ module feng3d
 		 * @param repeat		是否重复
 		 * @param mipmap		是否使用mipmap
 		 */
-		public TextureMaterial(texture:Texture2DBase = null, smooth:boolean = true, repeat:boolean = false, mipmap:boolean = true)
+		constructor(texture:Texture2DBase = null, smooth:boolean = true, repeat:boolean = false, mipmap:boolean = true)
 		{
 			super();
 			this.texture = texture;

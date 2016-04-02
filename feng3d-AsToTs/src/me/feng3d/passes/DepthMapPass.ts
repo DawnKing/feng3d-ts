@@ -44,7 +44,7 @@ module feng3d
 		/**
 		 * 创建深度映射通道
 		 */
-		public DepthMapPass()
+		constructor()
 		{
 			super();
 		}

@@ -10,7 +10,7 @@ module feng3d
 	{
 		private _diffuseAlpha:number = 1;
 
-		public ColorMaterial(color:number = 0xcccccc, alpha:number = 1)
+		constructor(color:number = 0xcccccc, alpha:number = 1)
 		{
 			super();
 			this.color = color;

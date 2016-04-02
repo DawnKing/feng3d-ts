@@ -90,7 +90,7 @@ module feng3d
 		 * @param forceSoftware			是否强行使用软件渲染
 		 * @param profile				指定 Flash Player 支持低级别 GPU 的范围
 		 */
-		public View3D(scene:Scene3D = null, camera:Camera3D = null, renderer:RendererBase = null, forceSoftware:boolean = false, profile:string = Context3DProfile.STANDARD)
+		constructor(scene:Scene3D = null, camera:Camera3D = null, renderer:RendererBase = null, forceSoftware:boolean = false, profile:string = Context3DProfile.STANDARD)
 		{
 			this._scene = scene || new Scene3D();
 			this._camera = camera || new Camera3D();

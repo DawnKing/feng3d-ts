@@ -32,7 +32,7 @@ module feng3d
 		 * 创建粒子动画
 		 * @param particleAnimationSet 粒子动画集合
 		 */
-		public ParticleAnimator(particleAnimationSet:ParticleAnimationSet)
+		constructor(particleAnimationSet:ParticleAnimationSet)
 		{
 			super(particleAnimationSet);
 			this._particleAnimationSet = particleAnimationSet;

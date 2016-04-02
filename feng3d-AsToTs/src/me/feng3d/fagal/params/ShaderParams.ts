@@ -39,7 +39,7 @@ module feng3d
 		/**
 		 * 创建一个渲染参数
 		 */
-		public ShaderParams()
+		constructor()
 		{
 			super();
 			this.addEventListener(ComponentEvent.ADDED_COMPONET,this.onAddedComponet);

@@ -37,7 +37,7 @@ module feng3d
 		/**
 		 * 粒子渲染参数
 		 */
-		public ParticleShaderParams()
+		constructor()
 		{
 			super();
 		}

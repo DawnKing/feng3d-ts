@@ -6,7 +6,7 @@ module feng3d
 	 * 顶点世界坐标渲染函数
 	 * @author feng 2014-11-7
 	 */
-	public V_WorldPosition()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

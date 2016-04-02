@@ -10,7 +10,7 @@ module feng3d
 	 * 方向光渲染函数
 	 * @author feng 2014-11-7
 	 */
-	public F_DirectionalLight()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

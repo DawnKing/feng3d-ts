@@ -14,7 +14,7 @@ module feng3d
 	{
 		private _lights:Array;
 
-		public StaticLightPicker(lights:Array)
+		constructor(lights:Array)
 		{
 			this.lights = lights;
 		}

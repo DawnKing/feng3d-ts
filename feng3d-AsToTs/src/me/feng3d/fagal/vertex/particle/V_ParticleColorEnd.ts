@@ -11,7 +11,7 @@ module feng3d
 	 * @param colorAddVary				粒子颜色偏移值，在片段渲染的最终颜色值上偏移
 	 * @author feng 2015-1-20
 	 */
-	public V_ParticleColorEnd(colorMulTarget:Register, colorAddTarget:Register, colorMulVary:Register, colorAddVary:Register)
+	constructor(colorMulTarget:Register, colorAddTarget:Register, colorMulVary:Register, colorAddVary:Register)
 	{
 		var _:* = FagalRE.instance.space;
 

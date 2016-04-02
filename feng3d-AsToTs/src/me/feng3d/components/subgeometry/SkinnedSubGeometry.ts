@@ -16,7 +16,7 @@ module feng3d
 		/**
 		 * 创建蒙皮子网格
 		 */
-		public SkinnedSubGeometry(jointsPerVertex:number)
+		constructor(jointsPerVertex:number)
 		{
 			this._jointsPerVertex = jointsPerVertex;
 			super();

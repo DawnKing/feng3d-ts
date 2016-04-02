@@ -32,7 +32,7 @@ module feng3d
 		 * @param dataTypeId 		数据缓存编号
 		 * @param updateFunc 		更新回调函数
 		 */
-		public ProgramBuffer(dataTypeId:string, updateFunc:Function)
+		constructor(dataTypeId:string, updateFunc:Function)
 		{
 			super(dataTypeId, updateFunc);
 		}

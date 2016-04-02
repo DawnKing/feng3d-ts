@@ -28,7 +28,7 @@ module feng3d
 		 * 创建顶点渲染程序主入口
 		 *
 		 */
-		public V_Main()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.VERTEX;
 		}

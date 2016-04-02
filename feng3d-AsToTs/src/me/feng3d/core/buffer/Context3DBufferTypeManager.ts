@@ -56,7 +56,7 @@ module feng3d
 		/**
 		 * 创建3d环境缓存类型管理者
 		 */
-		public Context3DBufferTypeManager()
+		constructor()
 		{
 			if (_instance)
 				throw new Error("单例模式");

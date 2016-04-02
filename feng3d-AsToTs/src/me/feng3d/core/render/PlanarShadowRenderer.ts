@@ -26,7 +26,7 @@ module feng3d
 		/**
 		 * 创建一个深度渲染器
 		 */
-		public PlanarShadowRenderer()
+		constructor()
 		{
 			super();
 		}

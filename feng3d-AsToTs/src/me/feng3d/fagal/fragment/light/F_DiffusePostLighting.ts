@@ -12,7 +12,7 @@ module feng3d
 	 * 发布漫反射光
 	 * @author feng 2014-11-7
 	 */
-	public F_DiffusePostLighting()
+	constructor()
 	{
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);

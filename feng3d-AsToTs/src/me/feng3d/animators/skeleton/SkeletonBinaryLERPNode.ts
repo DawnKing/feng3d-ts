@@ -22,7 +22,7 @@ module feng3d
 		/**
 		 * 创建<code>SkeletonBinaryLERPNode</code>对象
 		 */
-		public SkeletonBinaryLERPNode()
+		constructor()
 		{
 			_stateClass = SkeletonBinaryLERPState;
 		}

@@ -55,7 +55,7 @@ class TryConnectURLTaskItem extends TaskItem
 	public result:boolean;
 	public url:string;
 
-	public TryConnectURLTaskItem(url:string)
+	constructorTaskItem(url:string)
 	{
 		this.url = url;
 	}

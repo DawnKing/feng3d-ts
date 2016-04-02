@@ -16,7 +16,7 @@ module feng3d
 		 * Creates a new RenderableNode object.
 		 * @param mesh The mesh to be contained in the node.
 		 */
-		public RenderableNode(renderable:IRenderable)
+		constructor(renderable:IRenderable)
 		{
 			super(Entity(renderable));
 			this._renderable = renderable; // also keep a stronger typed reference

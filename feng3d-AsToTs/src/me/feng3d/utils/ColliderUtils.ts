@@ -8,7 +8,7 @@ module feng3d
 	 */
 	export class ColliderUtils
 	{
-		public ColliderUtils()
+		constructor()
 		{
 		}
 

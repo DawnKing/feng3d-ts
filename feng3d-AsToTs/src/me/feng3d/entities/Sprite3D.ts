@@ -37,7 +37,7 @@ module feng3d
 		private _height:number;
 		private _shadowCaster:boolean = false;
 
-		public Sprite3D(material:MaterialBase, width:number, height:number)
+		constructor(material:MaterialBase, width:number, height:number)
 		{
 			super();
 			this.transform3D.addEventListener(Transform3DEvent.TRANSFORM_UPDATED, this.onTransformUpdated);

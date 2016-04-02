@@ -12,7 +12,7 @@ module feng3d
 		 * @param width			纹理宽度
 		 * @param height		纹理高度
 		 */
-		public RenderTexture(width:number, height:number)
+		constructor(width:number, height:number)
 		{
 			super();
 			setSize(width, height);

@@ -19,7 +19,7 @@ module feng3d
 		 * @param color 线条颜色
 		 * @param thickness 线条厚度
 		 */
-		public WireframeCube(width:number = 100, height:number = 100, depth:number = 100, color:number = 0xFFFFFF, thickness:number = 1)
+		constructor(width:number = 100, height:number = 100, depth:number = 100, color:number = 0xFFFFFF, thickness:number = 1)
 		{
 			super(color, thickness);
 

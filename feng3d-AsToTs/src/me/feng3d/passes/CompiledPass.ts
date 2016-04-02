@@ -73,7 +73,7 @@ module feng3d
 		/**
 		 * 创建一个编译通道类
 		 */
-		public CompiledPass()
+		constructor()
 		{
 			this.init();
 		}

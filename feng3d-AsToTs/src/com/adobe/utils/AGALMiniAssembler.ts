@@ -67,7 +67,7 @@ module feng3d
 		// ======================================================================
 		//	Constructor
 		// ----------------------------------------------------------------------
-		public AGALMiniAssembler( debugging:boolean = false )
+		constructor( debugging:boolean = false )
 		{
 			this.debugEnabled = debugging;
 			if ( !initialized )

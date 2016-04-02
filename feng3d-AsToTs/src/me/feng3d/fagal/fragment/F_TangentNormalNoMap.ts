@@ -6,7 +6,7 @@ module feng3d
 	 * 编译切线片段程序(无法线图)
 	 * @author feng 2014-11-7
 	 */
-	public F_TangentNormalNoMap()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

@@ -77,7 +77,7 @@ module feng3d
 		 * 创建一个动画基类
 		 * @param animationSet
 		 */
-		public AnimatorBase(animationSet:IAnimationSet)
+		constructor(animationSet:IAnimationSet)
 		{
 			this._namedAsset = new NamedAsset(this, AssetType.ANIMATOR);
 			this.context3DBufferOwner = new Context3DBufferOwner();

@@ -26,7 +26,7 @@ module feng3d
 		protected _pointLights:PointLight[];
 		protected _directionalLights:DirectionalLight[];
 
-		public LightPickerBase()
+		constructor()
 		{
 			super();
 			this._namedAsset = new NamedAsset(this,AssetType.CONTAINER);

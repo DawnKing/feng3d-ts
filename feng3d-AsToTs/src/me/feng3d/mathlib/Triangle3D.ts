@@ -14,7 +14,7 @@ module feng3d
 
 		private _normal:Vector3D;
 
-		public Triangle3D(p0:Vector3D, p1:Vector3D, p2:Vector3D)
+		constructor(p0:Vector3D, p1:Vector3D, p2:Vector3D)
 		{
 			this.p0 = p0;
 			this.p1 = p1;

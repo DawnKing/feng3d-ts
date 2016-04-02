@@ -9,7 +9,7 @@ module feng3dMap
 	 * 阴影图采样比较计算阴影值
 	 * @author feng 2015-7-17
 	 */
-	public F_ShadowMapSample()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

@@ -7,7 +7,7 @@ module feng3d
 	 */
 	export class FreeMatrixLens extends LensBase
 	{
-		public FreeMatrixLens()
+		constructor()
 		{
 			super();
 		}

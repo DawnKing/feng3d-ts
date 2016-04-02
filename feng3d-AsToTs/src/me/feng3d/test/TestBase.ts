@@ -38,7 +38,7 @@ module feng3d
 		/** 资源字典 */
 		protected resourceDic:Dictionary;
 
-		public TestBase()
+		constructor()
 		{
 			this.initModules();
 

@@ -28,7 +28,7 @@ module feng3d
 		/**
 		 * 创建一个任务单元数据
 		 */
-		public TaskItem()
+		constructor()
 		{
 			this._state = TaskStateType.STATE_INIT;
 		}

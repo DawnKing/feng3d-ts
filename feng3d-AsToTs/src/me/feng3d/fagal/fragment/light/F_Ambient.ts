@@ -10,7 +10,7 @@ module feng3d
 	 * 环境光片段渲染程序
 	 * @author feng 2014-11-7
 	 */
-	public F_Ambient()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

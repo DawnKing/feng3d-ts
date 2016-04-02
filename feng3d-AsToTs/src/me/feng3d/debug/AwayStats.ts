@@ -160,7 +160,7 @@ module feng3d
 		 * and lower parts of the graph area to increase and decrease SWF frame rate
 		 * respectively.
 		 */
-		public AwayStats(view3d:View3D = null, minimized:boolean = false, transparent:boolean = false, meanDataLength:number = 0, enableClickToReset:boolean = true, enableModifyFrameRate:boolean = true)
+		constructor(view3d:View3D = null, minimized:boolean = false, transparent:boolean = false, meanDataLength:number = 0, enableClickToReset:boolean = true, enableModifyFrameRate:boolean = true)
 		{
 			super();
 

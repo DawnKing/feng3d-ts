@@ -12,7 +12,7 @@ module feng3d
 		/**
 		 * 创建3D环境缓冲编号集合
 		 */
-		public Context3DBufferID()
+		constructor()
 		{
 		}
 

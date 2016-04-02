@@ -25,7 +25,7 @@ module feng3d
 		 * @param yDir		方向Y值
 		 * @param zDir		方向Z值
 		 */
-		public DirectionalLight(xDir:number = 0, yDir:number = -1, zDir:number = 1)
+		constructor(xDir:number = 0, yDir:number = -1, zDir:number = 1)
 		{
 			super();
 

@@ -15,7 +15,7 @@ module feng3d
 		/**
 		 * 创建UV动画集合实例
 		 */
-		public UVAnimationSet()
+		constructor()
 		{
 
 		}

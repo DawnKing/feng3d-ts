@@ -11,7 +11,7 @@ module feng3d
 		 *
 		 * @param regId
 		 */
-		public RegisterMatrix(regId:string)
+		constructor(regId:string)
 		{
 			super(regId);
 

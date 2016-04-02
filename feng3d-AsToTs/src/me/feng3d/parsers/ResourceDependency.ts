@@ -33,7 +33,7 @@ module feng3d
 		 * @param retrieveAsRawData
 		 * @param suppressAssetEvents
 		 */
-		public ResourceDependency(id:string, req:URLRequest, data:*, parentParser:ParserBase, retrieveAsRawData:boolean = false, suppressAssetEvents:boolean = false)
+		constructor(id:string, req:URLRequest, data:*, parentParser:ParserBase, retrieveAsRawData:boolean = false, suppressAssetEvents:boolean = false)
 		{
 			this._id = id;
 			this._req = req;

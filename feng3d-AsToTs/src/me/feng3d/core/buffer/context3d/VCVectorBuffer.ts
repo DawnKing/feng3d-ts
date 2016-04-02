@@ -22,7 +22,7 @@ module feng3d
 		 * @param dataTypeId		数据编号
 		 * @param updateFunc		数据更新回调函数
 		 */
-		public VCVectorBuffer(dataTypeId:string, updateFunc:Function)
+		constructor(dataTypeId:string, updateFunc:Function)
 		{
 			super(dataTypeId, updateFunc);
 		}

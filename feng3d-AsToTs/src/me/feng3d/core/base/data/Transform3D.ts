@@ -21,7 +21,7 @@ module feng3d
 		/**
 		 * 创建3D元素状态变换实例
 		 */
-		public Transform3D()
+		constructor()
 		{
 			super();
 		}

@@ -11,7 +11,7 @@ module feng3d
 	{
 		public static CASTS_SHADOW_CHANGE:string = "castsShadowChange";
 
-		public LightEvent(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, data, bubbles, cancelable);
 		}

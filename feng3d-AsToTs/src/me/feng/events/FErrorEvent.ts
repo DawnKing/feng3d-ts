@@ -19,7 +19,7 @@ module feng3d
 		 */
 		public isProcessed:boolean;
 
-		public FErrorEvent(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, data, bubbles, cancelable);
 		}

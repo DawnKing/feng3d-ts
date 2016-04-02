@@ -37,7 +37,7 @@ module feng3d
 		/**
 		 * 创建方向光阴影映射
 		 */
-		public DirectionalShadowMapper()
+		constructor()
 		{
 			super();
 			this._cullPlanes = new Plane3D[]();

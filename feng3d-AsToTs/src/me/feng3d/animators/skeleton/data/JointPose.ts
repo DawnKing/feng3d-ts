@@ -17,7 +17,7 @@ module feng3d
 		/** 位移信息 */
 		public translation:Vector3D = new Vector3D();
 
-		public JointPose()
+		constructor()
 		{
 		}
 

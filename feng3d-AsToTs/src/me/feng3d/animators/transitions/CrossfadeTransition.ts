@@ -16,7 +16,7 @@ module feng3d
 		 * 创建淡入淡出变换实例
 		 * @param blendSpeed			混合速度
 		 */
-		public CrossfadeTransition(blendSpeed:number)
+		constructor(blendSpeed:number)
 		{
 			this.blendSpeed = blendSpeed;
 		}

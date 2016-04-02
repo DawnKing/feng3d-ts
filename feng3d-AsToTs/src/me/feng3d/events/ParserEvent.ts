@@ -28,7 +28,7 @@ module feng3d
 		 */
 		public static READY_FOR_DEPENDENCIES:string = 'readyForDependencies';
 
-		public ParserEvent(type:string, message:string = '')
+		constructor(type:string, message:string = '')
 		{
 			super(type);
 

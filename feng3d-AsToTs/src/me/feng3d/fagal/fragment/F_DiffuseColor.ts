@@ -7,7 +7,7 @@ module feng3d
 	 * 漫反射材质颜色
 	 * @author feng 2014-11-6
 	 */
-	public F_DiffuseColor()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

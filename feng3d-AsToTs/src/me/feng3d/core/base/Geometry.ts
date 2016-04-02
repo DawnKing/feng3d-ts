@@ -29,7 +29,7 @@ module feng3d
 			return _subGeometries;
 		}
 
-		public Geometry()
+		constructor()
 		{
 			this._namedAsset = new NamedAsset(this, AssetType.GEOMETRY);
 			this._subGeometries = new SubGeometry[]();

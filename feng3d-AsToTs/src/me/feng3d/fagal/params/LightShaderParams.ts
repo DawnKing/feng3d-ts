@@ -57,7 +57,7 @@ module feng3d
 		/**
 		 * 灯光渲染参数
 		 */
-		public LightShaderParams()
+		constructor()
 		{
 			super();
 		}

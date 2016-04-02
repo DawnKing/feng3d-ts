@@ -27,7 +27,7 @@ module feng3d
 		/**
 		 * 通用渲染参数
 		 */
-		public CommonShaderParams()
+		constructor()
 		{
 			super();
 		}

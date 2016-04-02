@@ -35,7 +35,7 @@ module feng3d
 		/** 普通鼠标事件与3d鼠标事件对应关系 */
 		private static var eventMap:Dictionary;
 
-		public Mouse3DManager()
+		constructor()
 		{
 			if (eventMap == null)
 			{

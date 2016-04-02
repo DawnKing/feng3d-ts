@@ -13,7 +13,7 @@ module feng3d
 	{
 		private _segments:Segment[] = new Segment[]();
 
-		public SegmentGeometry()
+		constructor()
 		{
 			super();
 		}

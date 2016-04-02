@@ -24,7 +24,7 @@ module feng3d
 		 * @param numVertices			要在缓冲区中存储的顶点数量。单个缓冲区中的最大顶点数为 65535。
 		 * @param data32PerVertex		与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓冲区内选择属性。
 		 */
-		public VertexBufferItem(context3D:Context3D, numVertices:number, data32PerVertex:number)
+		constructor(context3D:Context3D, numVertices:number, data32PerVertex:number)
 		{
 			this.context3D = context3D;
 			this.vertexBuffer3D = context3D.createVertexBuffer(numVertices, data32PerVertex);

@@ -22,7 +22,7 @@ module feng3d
 		 * @param alwaysIn				是否总在视锥体内
 		 * @param renderable			渲染实体
 		 */
-		public NullBounds(alwaysIn:boolean = true, renderable:WireframePrimitiveBase = null)
+		constructor(alwaysIn:boolean = true, renderable:WireframePrimitiveBase = null)
 		{
 			super();
 			this._alwaysIn = alwaysIn;

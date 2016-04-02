@@ -33,7 +33,7 @@ module feng3d
 		 * 创建一个3D空间分区
 		 * @param rootNode	根节点
 		 */
-		public Partition3D(rootNode:NodeBase)
+		constructor(rootNode:NodeBase)
 		{
 			this._rootNode = rootNode || new NullNode();
 		}

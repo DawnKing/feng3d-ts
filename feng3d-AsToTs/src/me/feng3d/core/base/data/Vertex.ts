@@ -18,7 +18,7 @@ module feng3d
 		 * @param z Z轴坐标
 		 * @param index 顶点索引
 		 */
-		public Vertex(x:number = 0, y:number = 0, z:number = 0, index:number = 0)
+		constructor(x:number = 0, y:number = 0, z:number = 0, index:number = 0)
 		{
 			this._x = x;
 			this._y = y;

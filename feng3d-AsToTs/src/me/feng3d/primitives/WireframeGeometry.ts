@@ -20,7 +20,7 @@ module feng3d
 		 * @param color 线条颜色
 		 * @param thickness 线条粗细
 		 */
-		public WireframeGeometry(color:number = 0xffffff, thickness:number = 1)
+		constructor(color:number = 0xffffff, thickness:number = 1)
 		{
 			super(color, thickness);
 		}

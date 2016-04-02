@@ -14,7 +14,7 @@ module feng3d
 		/**
 		 * 创建一个可渲染合并排序对象
 		 */
-		public RenderableMergeSort()
+		constructor()
 		{
 		}
 

@@ -8,7 +8,7 @@ module feng3d
 	 */
 	export class MultiPassMaterialBase extends MaterialBase
 	{
-		public MultiPassMaterialBase()
+		constructor()
 		{
 			super();
 		}

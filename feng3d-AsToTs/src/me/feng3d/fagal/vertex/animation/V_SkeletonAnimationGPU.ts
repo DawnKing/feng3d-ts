@@ -9,7 +9,7 @@ module feng3d
 	 * 骨骼动画渲染程序(GPU)
 	 * @author feng 2014-11-3
 	 */
-	public V_SkeletonAnimationGPU():Register
+	constructor():Register
 	{
 		var _:* = FagalRE.instance.space;
 

@@ -11,7 +11,7 @@ module feng3d
 	{
 		public static LENS_CHANGED:string = "lensChanged";
 		
-		public CameraEvent(type:string, camera:Camera3D = null, bubbles:boolean=false)
+		constructor(type:string, camera:Camera3D = null, bubbles:boolean=false)
 		{
 			super(type, this.data, bubbles);
 		}

@@ -15,7 +15,7 @@ module feng3dMap
 		/**
 		 * 创建深度图片段主程序
 		 */
-		public F_Main_DepthMap()
+		constructor()
 		{
 			_shaderType = Context3DProgramType.FRAGMENT;
 		}

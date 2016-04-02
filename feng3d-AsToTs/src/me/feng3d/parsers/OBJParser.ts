@@ -81,7 +81,7 @@ module feng3d
 		 * 创建Obj模型解析对象
 		 * @param scale 缩放比例
 		 */
-		public OBJParser(scale:number = 1)
+		constructor(scale:number = 1)
 		{
 			super(ParserDataFormat.PLAIN_TEXT);
 			this._scale = scale;

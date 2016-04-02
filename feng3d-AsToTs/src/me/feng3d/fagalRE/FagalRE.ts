@@ -46,7 +46,7 @@ module feng3dRE
 		/**
 		 * 创建一个Fagal函数运行环境
 		 */
-		public FagalRE()
+		constructor()
 		{
 			if (_instance)
 				throw new Error("该类为单例");

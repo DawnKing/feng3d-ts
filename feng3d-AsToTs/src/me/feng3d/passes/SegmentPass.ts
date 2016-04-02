@@ -48,7 +48,7 @@ module feng3d
 
 		private _thickness:number;
 
-		public SegmentPass(thickness:number)
+		constructor(thickness:number)
 		{
 			this._thickness = thickness;
 			this.constants[1] = 1 / 255;

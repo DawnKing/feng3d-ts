@@ -8,7 +8,7 @@ module feng3d
 	 * 粒子时间节点顶点渲染程序
 	 * @author feng 2014-12-26
 	 */
-	public V_ParticlesTime(particleCommon:Register, animatedPosition:Register, particleTimeVA:Register, particleTimeVC:Register, inCycleTimeTemp:Register)
+	constructor(particleCommon:Register, animatedPosition:Register, particleTimeVA:Register, particleTimeVC:Register, inCycleTimeTemp:Register)
 	{
 		var _:* = FagalRE.instance.space;
 		var vt3:Register = _.getFreeTemp();

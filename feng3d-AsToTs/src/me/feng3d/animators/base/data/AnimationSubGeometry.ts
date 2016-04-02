@@ -11,7 +11,7 @@ module feng3d
 		/**
 		 * 创建一个动画数据
 		 */
-		public AnimationSubGeometry()
+		constructor()
 		{
 		}
 	}

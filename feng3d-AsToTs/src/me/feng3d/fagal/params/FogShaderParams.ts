@@ -16,7 +16,7 @@ module feng3d
 		/**
 		 * 雾渲染参数
 		 */
-		public FogShaderParams()
+		constructor()
 		{
 			super();
 		}

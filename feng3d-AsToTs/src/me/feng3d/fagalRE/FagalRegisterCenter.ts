@@ -33,7 +33,7 @@ module feng3dRE
 		/**
 		 * 构建Fagal寄存器中心
 		 */
-		public FagalRegisterCenter()
+		constructor()
 		{
 			if (_instance)
 				throw new Error("该类为单例");

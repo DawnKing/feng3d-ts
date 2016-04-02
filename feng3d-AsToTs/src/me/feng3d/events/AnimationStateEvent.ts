@@ -30,7 +30,7 @@ module feng3d
 		 * @param animator The animation state object that is the subject of this event.
 		 * @param animationNode The animation node inside the animation state from which the event originated.
 		 */
-		public AnimationStateEvent(type:string, animator:AnimatorBase, animationState:IAnimationState, animationNode:AnimationNodeBase)
+		constructor(type:string, animator:AnimatorBase, animationState:IAnimationState, animationNode:AnimationNodeBase)
 		{
 			super(type, false, false);
 

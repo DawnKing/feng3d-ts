@@ -54,7 +54,7 @@ module feng3d
 		 * @param cycleDuration
 		 * @param cyclePhase
 		 */
-		public ParticleColorNode(mode:number, usesMultiplier:boolean = true, usesOffset:boolean = true, usesCycle:boolean = false, usesPhase:boolean = false, startColor:ColorTransform = null, endColor:ColorTransform = null, cycleDuration:number = 1, cyclePhase:number = 0)
+		constructor(mode:number, usesMultiplier:boolean = true, usesOffset:boolean = true, usesCycle:boolean = false, usesPhase:boolean = false, startColor:ColorTransform = null, endColor:ColorTransform = null, cycleDuration:number = 1, cyclePhase:number = 0)
 		{
 			this._usesMultiplier = usesMultiplier;
 			this._usesOffset = usesOffset;

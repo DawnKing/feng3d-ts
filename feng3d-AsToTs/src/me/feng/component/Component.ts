@@ -58,7 +58,7 @@ module feng3d
 		/**
 		 * 创建一个组件容器
 		 */
-		public Component()
+		constructor()
 		{
 			super();
 		}

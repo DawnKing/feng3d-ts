@@ -11,7 +11,7 @@ module feng3d
 		private _specularColor:number = 0xffffff;
 		private _specular:number = 1;
 		
-		public ColorMultiPassMaterial(color:number = 0xcccccc)
+		constructor(color:number = 0xcccccc)
 		{
 			super();
 		}

@@ -18,7 +18,7 @@ module feng3d
 		/**
 		 * 创建一个界面管理器
 		 */
-		public ViewManager()
+		constructor()
 		{
 
 		}

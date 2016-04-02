@@ -71,7 +71,7 @@ module feng3d
 		 * @param additionalRotationAxis 附加旋转轴
 		 * @param additionalRotationRadians 附加旋转角度
 		 */
-		public MD5AnimParser(additionalRotationAxis:Vector3D = null, additionalRotationRadians:number = 0)
+		constructor(additionalRotationAxis:Vector3D = null, additionalRotationRadians:number = 0)
 		{
 			super(ParserDataFormat.PLAIN_TEXT);
 

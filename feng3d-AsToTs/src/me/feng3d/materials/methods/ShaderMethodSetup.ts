@@ -28,7 +28,7 @@ module feng3d
 		/**
 		 * 创建一个渲染函数设置
 		 */
-		public ShaderMethodSetup()
+		constructor()
 		{
 			this.context3DBufferOwner = new Context3DBufferOwner();
 			this.initBuffers();

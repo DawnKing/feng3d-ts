@@ -21,7 +21,7 @@ module feng3d
 		 * 创建一个加载单元数据
 		 * @param url		加载路径信息
 		 */
-		public LoadTaskItem(url:*)
+		constructor(url:*)
 		{
 			this._url = null;
 			this._type = null;

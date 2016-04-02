@@ -7,7 +7,7 @@ module feng3d
 	 * 世界坐标输出函数
 	 * @author feng 2014-11-7
 	 */
-	public V_WorldPositionOut()
+	constructor()
 	{
 		var _:* = FagalRE.instance.space;
 

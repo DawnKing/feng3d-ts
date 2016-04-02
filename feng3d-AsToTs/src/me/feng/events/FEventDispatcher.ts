@@ -41,7 +41,7 @@ module feng3d
 		 *
 		 * @see flash.events.EventDispatcher.EventDispatcher()
 		 */
-		public FEventDispatcher(target:IEventDispatcher = null)
+		constructor(target:IEventDispatcher = null)
 		{
 			if (target != null)
 				this.dispatcher = new EventDispatcher(target);

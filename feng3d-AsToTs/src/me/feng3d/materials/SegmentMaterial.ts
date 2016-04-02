@@ -10,7 +10,7 @@ module feng3d
 	{
 		private _screenPass:SegmentPass;
 		
-		public SegmentMaterial(thickness:number = 1.25)
+		constructor(thickness:number = 1.25)
 		{
 			super();
 			this.bothSides = true;

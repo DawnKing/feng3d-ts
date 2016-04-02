@@ -58,7 +58,7 @@ module feng3d
 		/**
 		 * 创建渲染寄存器缓存
 		 */
-		public ShaderRegisterCache()
+		constructor()
 		{
 			if (_instance)
 				throw new Error("ShaderRegisterCache 单例");

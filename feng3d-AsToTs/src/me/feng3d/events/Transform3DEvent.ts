@@ -44,7 +44,7 @@ module feng3d
 		 * @param type			事件类型
 		 * @param element3D		发出事件的3D元素
 		 */
-		public Transform3DEvent(type:string, element3D:Element3D, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, element3D:Element3D, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, element3D, bubbles, cancelable);
 		}

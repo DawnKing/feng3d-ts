@@ -39,7 +39,7 @@ module feng3d
 		 * 创建<code>UVAnimator</code>实例
 		 * @param uvAnimationSet			UV动画集合
 		 */
-		public UVAnimator(uvAnimationSet:UVAnimationSet)
+		constructor(uvAnimationSet:UVAnimationSet)
 		{
 			super(uvAnimationSet);
 

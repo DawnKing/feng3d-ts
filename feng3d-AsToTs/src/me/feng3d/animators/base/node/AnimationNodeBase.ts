@@ -32,7 +32,7 @@ module feng3d
 		/**
 		 * 创建一个动画节点基类
 		 */
-		public AnimationNodeBase()
+		constructor()
 		{
 			super();
 			this._namedAsset = new NamedAsset(this, AssetType.ANIMATION_NODE);
