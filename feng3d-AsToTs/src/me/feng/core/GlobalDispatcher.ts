@@ -1,10 +1,5 @@
 module feng3d
 {
-	
-
-	[Event(name = "dispatchTask", type = "me.feng.events.task.TaskModuleEvent")]
-
-	[Event(name = "registerTaskCollectionType", type = "me.feng.events.task.TaskModuleEvent")]
 
 	/**
 	 * 全局事件适配器
@@ -12,7 +7,7 @@ module feng3d
 	 */
 	export class GlobalDispatcher extends FEventDispatcher
 	{
-		private static var _instance:GlobalDispatcher;
+		private static _instance:GlobalDispatcher;
 
 		/**
 		 * 创建一个全局事件适配器
@@ -20,17 +15,17 @@ module feng3d
 		 */
 		public GlobalDispatcher()
 		{
-			if (_instance)
+			if (GlobalDispatcher._instance)
 				throw new Error("此类不允许外部创建，请用instance属性！");
-			_instance = this;
+			GlobalDispatcher._instance = this;
 		}
 
 		/**
 		 * 适配器实例
 		 */
-		public static function get instance():GlobalDispatcher
+		public static get instance():GlobalDispatcher
 		{
-			return _instance || new GlobalDispatcher();
+			return GlobalDispatcher._instance || new GlobalDispatcher();
 		}
 	}
 }

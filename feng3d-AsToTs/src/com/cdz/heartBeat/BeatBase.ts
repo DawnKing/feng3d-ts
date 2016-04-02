@@ -28,11 +28,9 @@ module feng3dBeat
 
 		private _isSuspend:boolean = false;
 
-		public BeatBase()
+		constructor()
 		{
-			super();
 			this._beatInterval = 50 / 3; //设置默认时间
-
 		}
 
 		/**

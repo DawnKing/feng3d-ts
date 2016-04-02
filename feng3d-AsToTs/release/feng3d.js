@@ -21,55 +21,6 @@ var feng3d;
     feng3d.Feng3D = Feng3D;
 })(feng3d || (feng3d = {}));
 /*
- * Copyright (c) 2011 the original author or authors
- *
- * Permission is hereby granted to use, modify, and distribute this file
- * in accordance with the terms of the license agreement accompanying it.
- */
-var feng3d;
-(function (feng3d) {
-    /**
-     * Makes the hidden, inofficial function describeTypeJSON available outside of the avmplus
-     * package.
-     *
-     * <strong>As Adobe doen't officially support this method and it is only visible to client
-     * code by accident, it should only ever be used with runtime-detection and automatic fallback
-     * on describeType.</strong>
-     *
-     * @see http://www.tillschneidereit.de/2009/11/22/improved-reflection-support-in-flash-player-10-1/
-     */
-    var DescribeTypeFlags = (function () {
-        function DescribeTypeFlags() {
-            this.boolean = describeTypeJSON != null;
-        }
-        //----------------------              Public Properties             ----------------------//
-        DescribeTypeFlags.var = available;
-        DescribeTypeFlags.INSTANCE_FLAGS = INCLUDE_BASES | INCLUDE_INTERFACES //
-            | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA //
-            | INCLUDE_CONSTRUCTOR | INCLUDE_TRAITS | USE_ITRAITS | HIDE_OBJECT;
-        DescribeTypeFlags.CLASS_FLAGS = INCLUDE_INTERFACES | INCLUDE_VARIABLES //
-            | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_TRAITS | HIDE_OBJECT;
-        return DescribeTypeFlags;
-    }());
-    feng3d.DescribeTypeFlags = DescribeTypeFlags;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    describeTypeClass(type, Class);
-    Object;
-    {
-        return describeTypeJSON(type, feng3d.DescribeTypeFlags.CLASS_FLAGS);
-    }
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    describeTypeInstance(type, Class);
-    Object;
-    {
-        return describeTypeJSON(type, feng3d.DescribeTypeFlags.INSTANCE_FLAGS);
-    }
-})(feng3d || (feng3d = {}));
-/*
 Copyright (c) 2011, Adobe Systems Incorporated
 All rights reserved.
 
@@ -791,11 +742,8 @@ var feng3dBeat;
     var BeatBase = (function () {
         function BeatBase() {
             this._isSuspend = false;
-        }
-        BeatBase.prototype.BeatBase = function () {
-            _super.call(this);
             this._beatInterval = 50 / 3; //设置默认时间
-        };
+        }
         /**
          * 设置跳动间隔， 毫秒为单位
          * @param interval 时间间隔
@@ -870,14 +818,23 @@ var feng3dBeat;
         heartBeatManager || (heartBeatManager = new feng3dBeat.HeartBeatManager());
     }
 })(feng3dBeat || (feng3dBeat = {}));
-package;
-{
-    logger.apply(void 0, args);
-    {
-        if (DebugCommon.loggerFunc != null)
-            DebugCommon.loggerFunc.apply(null, args);
+var feng3d;
+(function (feng3d) {
+    /**
+     * 生成日志
+     * <p>此处使用CommonDebug.loggerFunc方法输出日志</p>
+     * @see	me.feng.debug.CommonDebug
+     */
+    function logger() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        if (feng3d.DebugCommon.loggerFunc != null)
+            feng3d.DebugCommon.loggerFunc.apply(null, args);
     }
-}
+    feng3d.logger = logger;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -1339,12 +1296,11 @@ var feng3d;
      */
     var DebugCommon = (function () {
         function DebugCommon() {
-            this.Function = trace;
         }
         /**
          * 日志方法
          */
-        DebugCommon.var = loggerFunc;
+        DebugCommon.loggerFunc = console.log;
         return DebugCommon;
     }());
     feng3d.DebugCommon = DebugCommon;
@@ -18757,7 +18713,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    [Event(name = "dispatchTask", type = "me.feng.events.task.TaskModuleEvent")][Event(name = "registerTaskCollectionType", type = "me.feng.events.task.TaskModuleEvent")];
     /**
      * 全局事件适配器
      * @author feng
@@ -18772,18 +18727,20 @@ var feng3d;
          * <p>此类为单例，只能构造一次，使用时请使用GlobalDispatcher.instance获取实例</p>
          */
         GlobalDispatcher.prototype.GlobalDispatcher = function () {
-            if (_instance)
+            if (GlobalDispatcher._instance)
                 throw new Error("此类不允许外部创建，请用instance属性！");
-            _instance = this;
+            GlobalDispatcher._instance = this;
         };
-        GlobalDispatcher.prototype.instance = function () {
-            return _instance || new GlobalDispatcher();
-        };
-        GlobalDispatcher.var = _instance;
-        /**
-         * 适配器实例
-         */
-        GlobalDispatcher.function = get;
+        Object.defineProperty(GlobalDispatcher, "instance", {
+            /**
+             * 适配器实例
+             */
+            get: function () {
+                return GlobalDispatcher._instance || new GlobalDispatcher();
+            },
+            enumerable: true,
+            configurable: true
+        });
         return GlobalDispatcher;
     }(feng3d.FEventDispatcher));
     feng3d.GlobalDispatcher = GlobalDispatcher;
