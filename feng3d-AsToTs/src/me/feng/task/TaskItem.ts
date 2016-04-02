@@ -12,7 +12,7 @@ module feng3d
 	 * 任务
 	 * @author feng 2015-5-27
 	 */
-	export class TaskItem extends FEventDispatcher
+	export class TaskItem extends EventDispatcher
 	{
 		/** 任务状态 */
 		protected _state:number = TaskStateType.STATE_INIT;

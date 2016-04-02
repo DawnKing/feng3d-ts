@@ -6,7 +6,7 @@ module feng3d
 	 * Fagal函数事件
 	 * @author feng 2015-8-8
 	 */
-	export class FagalMathEvent extends FEvent
+	export class FagalMathEvent extends Event
 	{
 		/**
 		 * Fagal函数追加代码事件

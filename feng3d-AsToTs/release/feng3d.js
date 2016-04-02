@@ -480,9 +480,9 @@ var feng3d;
         // ======================================================================
         //	Constants
         // ----------------------------------------------------------------------
-        AGALMiniAssembler.OPMAP = new Dictionary();
-        AGALMiniAssembler.REGMAP = new Dictionary();
-        AGALMiniAssembler.SAMPLEMAP = new Dictionary();
+        AGALMiniAssembler.OPMAP = {};
+        AGALMiniAssembler.REGMAP = {};
+        AGALMiniAssembler.SAMPLEMAP = {};
         AGALMiniAssembler.MAX_NESTING = 4;
         AGALMiniAssembler.MAX_OPCODES = 2048;
         AGALMiniAssembler.FRAGMENT = "fragment";
@@ -941,6 +941,7 @@ var feng3dBeat;
     var HeartBeatManager = (function (_super) {
         __extends(HeartBeatManager, _super);
         function HeartBeatManager() {
+            _super.call(this);
             this._frameEventDriver = new Shape();
             this.init();
             this._frameEventDriver.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
@@ -950,7 +951,7 @@ var feng3dBeat;
          */
         HeartBeatManager.prototype.init = function () {
             //初始化默认任务集合类型字典
-            this._HeartBeatDic = new Dictionary();
+            this._HeartBeatDic = {};
             this.addListeners();
         };
         /**
@@ -1132,9 +1133,9 @@ var feng3d;
          */
         function LoadManager() {
             /** 完成一个资源后执行的函数字典 */
-            this.urlFuncsDic = new Dictionary();
+            this.urlFuncsDic = {};
             /** 完成一组资源后执行的函数字典 */
-            this.urlsFuncsDic = new Dictionary();
+            this.urlsFuncsDic = {};
             this.init();
         }
         /**
@@ -1202,8 +1203,8 @@ var feng3d;
          */
         TaskManager.prototype.init = function () {
             //初始化默认任务集合类型字典
-            this.taskCollectionTypeDic = new Dictionary();
-            this.executingTaskCollectionDic = new Dictionary();
+            this.taskCollectionTypeDic = {};
+            this.executingTaskCollectionDic = {};
             this.registerTaskCollectionType(feng3d.TaskCollectionType.LIST, feng3d.TaskList);
             this.registerTaskCollectionType(feng3d.TaskCollectionType.QUEUE, feng3d.TaskQueue);
             this.addListeners();
@@ -1335,7 +1336,7 @@ var feng3d;
         /**
          * 枚举计数字典
          */
-        Enum.autoIndexDic = new Dictionary();
+        Enum.autoIndexDic = {};
         return Enum;
     }());
     feng3d.Enum = Enum;
@@ -2822,7 +2823,7 @@ var feng3d;
          * @param container
          */
         UniqueClassComponent.prototype.checkUniqueName = function (container) {
-            var nameDic = new Dictionary();
+            var nameDic = {};
             for (var i = 0; i < container.numComponents; i++) {
                 var component = container.getComponentAt(i);
                 var classDefine = getQualifiedClassName(component);
@@ -2880,7 +2881,7 @@ var feng3d;
          * @param container
          */
         UniqueNameComponent.prototype.checkUniqueName = function (container) {
-            var nameDic = new Dictionary();
+            var nameDic = {};
             for (var i = 0; i < container.numComponents; i++) {
                 var component = container.getComponentAt(i);
                 if (nameDic[component.componentName]) {
@@ -4745,7 +4746,7 @@ var feng3d;
             _super.call(this, animationSet);
             this._globalMatrices = new number[]();
             this._globalPose = new feng3d.SkeletonPose();
-            this._animationStates = new Dictionary();
+            this._animationStates = {};
             this._skeleton = skeleton;
             this._forceCPU = forceCPU;
             this._jointsPerVertex = animationSet.jointsPerVertex;
@@ -7820,7 +7821,8 @@ var feng3d;
              */
             get: function () {
                 return _bufferDic || ;
-                new Dictionary();
+                { }
+                ;
             },
             enumerable: true,
             configurable: true
@@ -10119,8 +10121,8 @@ var feng3d;
         function Scene3D() {
             this._isRoot = true;
             this._scene = this;
-            this._entityDic = new Dictionary();
-            this._displayEntityDic = new Dictionary();
+            this._entityDic = {};
+            this._displayEntityDic = {};
             this._mouseCollisionEntitys = new feng3d.Entity[]();
             this._partitions = new feng3d.Partition3D[]();
             this.partition = new feng3d.Partition3D(new feng3d.NodeBase());
@@ -11523,7 +11525,7 @@ var feng3d;
             if (this.drawGeometry == null)
                 return;
             //避免重复绘制同一条线段
-            var segmentDic = new Dictionary();
+            var segmentDic = {};
             var subGeometries = this.drawGeometry.subGeometries;
             var subGeometry;
             for (var j = 0; j < subGeometries.length; j++) {
@@ -12394,13 +12396,13 @@ var feng3d;
             _super.call(this);
             this._vaIdList = new string[]();
             /** 顶点属性数据缓存字典 */
-            this.vaBufferDic = new Dictionary();
+            this.vaBufferDic = {};
             /** 顶点数据长度字典 */
-            this.data32PerVertexDic = new Dictionary();
+            this.data32PerVertexDic = {};
             /** 顶点数据字典 */
-            this.vertexDataDic = new Dictionary();
+            this.vertexDataDic = {};
             /** 数据有效(与脏相反)标记字典 */
-            this.dataValidDic = new Dictionary();
+            this.dataValidDic = {};
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
         }
         Object.defineProperty(VertexBufferOwner.prototype, "numVertices", {
@@ -12826,7 +12828,7 @@ var feng3d;
             //顶点属性编号列表
             var vaId;
             /** 顶点数据字典 */
-            var sourceVertexDataDic = new Dictionary();
+            var sourceVertexDataDic = {};
             for (each(vaId in this.vaIdList); {
                 sourceVertexDataDic: (_a = this.getVAData(vaId), vaId = _a[0], _a),
                 assert: function (sourceVertexDataDic) { }
@@ -13208,7 +13210,7 @@ var feng3d;
          * 初始化
          */
         ShaderParams.prototype.init = function () {
-            this.sampleFlagsDic = new Dictionary();
+            this.sampleFlagsDic = {};
         };
         /**
          * 运行渲染程序前
@@ -13449,7 +13451,7 @@ var feng3d;
         function ShaderMethodSetup() {
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this.initBuffers();
-            this.uniqueMethodDic = new Dictionary();
+            this.uniqueMethodDic = {};
             this.methods = new feng3d.ShadingMethodBase[]();
             this.addMethod(new feng3d.BasicNormalMethod());
             this.addMethod(new feng3d.BasicAmbientMethod());
@@ -17578,8 +17580,8 @@ var feng3d;
             this.objectProjectionMatrix = new Matrix3D();
             this._textureSize = textureSize;
             this._polyOffset[0] = polyOffset;
-            this._textures = new Dictionary();
-            this._projections = new Dictionary();
+            this._textures = {};
+            this._projections = {};
             //			_enc = number[]([1.0, 255.0, 65025.0, 16581375.0, 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
             //			this.depthCommonsData0 = number[]([1.0, 255.0, 65025.0, 16581375.0]);
             //			this.depthCommonsData1 = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
@@ -17617,8 +17619,8 @@ var feng3d;
          * Updates the projection textures used to contain the depth renders.
          */
         SingleObjectDepthPass.prototype.updateProjectionTextures = function () {
-            this._textures = new Dictionary();
-            this._projections = new Dictionary();
+            this._textures = {};
+            this._projections = {};
             this._projectionTexturesInvalid = false;
         };
         /**
@@ -17670,7 +17672,8 @@ var feng3d;
          */
         SingleObjectDepthPass.prototype.getDepthMap = function (renderable) {
             this._textures || ;
-            new Dictionary();
+            { }
+            ;
             // todo: use texture proxy?
             var target = this._textures[renderable] || ;
             new feng3d.RenderTexture(this._textureSize, this._textureSize);
@@ -25847,7 +25850,7 @@ var feng3d;
          */
         function VADataBuffer() {
             /** 缓存字典 可在多个寄存器共享数据缓存时使用同一个 */
-            this.bufferItemDic = new Dictionary();
+            this.bufferItemDic = {};
             /** 是否无效 */
             this.invalid = true;
             /** 缓存是否无效 */
@@ -25864,7 +25867,7 @@ var feng3d;
             if (this.bufferInvalid) {
                 for (each(vertexBufferItem in this.bufferItemDic); {
                     vertexBufferItem: vertexBufferItem
-                }; this.bufferItemDic = new Dictionary())
+                }; this.bufferItemDic = {})
                     ;
                 this.bufferInvalid = false;
                 this.invalid = false;
@@ -26156,7 +26159,7 @@ var feng3d;
          */
         function IndexBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-            this._bufferItemDic = new Dictionary();
+            this._bufferItemDic = {};
             this.firstIndex = 0;
             this.numTriangles = -1;
             /** 是否无效 */
@@ -26174,7 +26177,7 @@ var feng3d;
             if (this.bufferInvalid) {
                 for (each(indexBufferItem in this._bufferItemDic); {
                     indexBufferItem: indexBufferItem
-                }; this._bufferItemDic = new Dictionary())
+                }; this._bufferItemDic = {})
                     ;
                 this.bufferInvalid = false;
                 this.dicInvalid = false;
@@ -26242,7 +26245,7 @@ var feng3d;
          */
         function ProgramBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-            this.bufferItemDic = new Dictionary();
+            this.bufferItemDic = {};
             /** 是否无效 */
             this.bufferInvalid = true;
         }
@@ -26265,7 +26268,7 @@ var feng3d;
                     var contextTemp = key;
                     feng3d.AGALProgram3DCache.getInstance(contextTemp).freeProgram3D(this.bufferItemDic[contextTemp]);
                 }
-                this.bufferItemDic = new Dictionary();
+                this.bufferItemDic = {};
                 this.bufferInvalid = false;
             }
             var oldProgram3D = this.bufferItemDic[context3D];
@@ -26739,9 +26742,9 @@ var feng3d;
                 throw new Error("已经存在对应的实例，请使用GetInstance方法获取。");
             _instanceDic[context3D] = this;
             this._context3D = context3D;
-            this._program3Ds = new Dictionary();
-            this._usages = new Dictionary();
-            this._keys = new Dictionary();
+            this._program3Ds = {};
+            this._usages = {};
+            this._keys = {};
         }
         /**
          * 获取AGAL程序缓冲实例
@@ -26858,11 +26861,11 @@ var feng3d;
         /**
          * 实例字典
          */
-        AGALProgram3DCache._instanceDic = new Dictionary();
+        AGALProgram3DCache._instanceDic = {};
         /**
          * 字符串与二进制字典
          */
-        AGALProgram3DCache.shaderByteCodeDic = new Dictionary();
+        AGALProgram3DCache.shaderByteCodeDic = {};
         return AGALProgram3DCache;
     }());
     feng3d.AGALProgram3DCache = AGALProgram3DCache;
@@ -26880,7 +26883,7 @@ var feng3d;
          */
         function Context3DBufferCollector() {
             /** 所有数据缓存 */
-            this.bufferDic = new Dictionary();
+            this.bufferDic = {};
         }
         Object.defineProperty(Context3DBufferCollector.prototype, "rootBufferOwner", {
             /**
@@ -27009,9 +27012,9 @@ var feng3d;
         function Context3DCache() {
             _super.call(this);
             /** 寄存器数据缓存 */
-            this.regBufferDic = new Dictionary();
+            this.regBufferDic = {};
             /** 其他数据缓存 */
-            this.otherBufferDic = new Dictionary();
+            this.otherBufferDic = {};
             /**
              * @inheritDoc
              */
@@ -27087,12 +27090,11 @@ render(context3D, Context3D, renderIndex, number = 0);
 }
 get;
 dataRegisterDic();
-Dictionary;
 {
     return _dataRegisterDic;
 }
 set;
-dataRegisterDic(value, Dictionary);
+dataRegisterDic(value);
 {
     if (_dataRegisterDic != value) {
         _dataRegisterDic = value;
@@ -27156,8 +27158,8 @@ var feng3d;
             if (_instance)
                 throw new Error("单例模式");
             _instance = this;
-            this.bufferTypeDic = new Dictionary();
-            this.typeClassDic = new Dictionary();
+            this.bufferTypeDic = {};
+            this.typeClassDic = {};
         }
         Context3DBufferTypeManager.prototype.instance = function () {
             return _instance || new Context3DBufferTypeManager();
@@ -27296,7 +27298,7 @@ var feng3d;
             return null;
         };
         /** 纹理字典 */
-        TextureCenter.textureDic = new Dictionary();
+        TextureCenter.textureDic = {};
         /**
          * 获取纹理
          * @param context3D		3D环境
@@ -27365,7 +27367,7 @@ var feng3d;
     function saveTextureBuffer(texture, context3D, textureBase) {
         var textureDic1 = textureDic[texture];
         if (textureDic1 == null)
-            textureDic1 = textureDic[texture] = new Dictionary();
+            textureDic1 = textureDic[texture] = {};
         textureDic1[context3D] = textureBase;
     }
 })(feng3d || (feng3d = {}));
@@ -27458,7 +27460,7 @@ var feng3d;
             /** 是否开启鼠标事件检测 */
             this.mouseEventOpen = false;
             if (eventMap == null) {
-                eventMap = new Dictionary();
+                eventMap = {};
                 eventMap[MouseEvent.CLICK] = feng3d.MouseEvent3D.CLICK;
                 eventMap[MouseEvent.DOUBLE_CLICK] = feng3d.MouseEvent3D.DOUBLE_CLICK;
                 eventMap[MouseEvent.MOUSE_DOWN] = feng3d.MouseEvent3D.MOUSE_DOWN;
@@ -27597,7 +27599,7 @@ var feng3d;
          * @return The Stage3DManager instance for the given Stage object.
          */
         Stage3DManager.getInstance = function (stage) {
-            return (_instances || ) = new Dictionary();
+            return (_instances || ) = {};
             [stage] || ;
             new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
         };
@@ -29760,8 +29762,8 @@ var feng3d;
          * 初始化
          */
         ShaderRegisterCache.prototype.init = function () {
-            this._dataRegisterDic = new Dictionary();
-            this.registerPoolDic = new Dictionary();
+            this._dataRegisterDic = {};
+            this.registerPoolDic = {};
             this.usedDataRegisterNum = 0;
             for (var i = 0; i < this.registerConfig.length; i++) {
                 this.registerPoolDic[this.registerConfig[i][0]] = new feng3d.RegisterPool(this.registerConfig[i][0], this.registerConfig[i][1]);
@@ -29772,7 +29774,7 @@ var feng3d;
          * 重置
          */
         ShaderRegisterCache.prototype.reset = function () {
-            this._dataRegisterDic = new Dictionary();
+            this._dataRegisterDic = {};
             this.usedDataRegisterNum = 0;
             for (each(); ; )
                 var registerPool;
@@ -33855,7 +33857,7 @@ var feng3dRE;
          * @return						寄存器id字典(key:regID,value:count)
          */
         FagalItem.prototype.getRegCountDic = function () {
-            var dic = new Dictionary();
+            var dic = {};
             //针对使用到的寄存器计数
             if (this.funcName == "comment") {
                 return dic;
@@ -33914,7 +33916,7 @@ var feng3dRE;
         return FagalRE;
     }());
     feng3dRE.FagalRE = FagalRE;
-    var idDic = new Dictionary();
+    var idDic = {};
     addBufferID(configs, Array);
     {
         for (var i = 0; i < configs.length; i++) {
@@ -34109,7 +34111,8 @@ var feng3dRE;
              */
             get: function () {
                 return _dataRegisterDic || ;
-                new Dictionary();
+                { }
+                ;
             },
             enumerable: true,
             configurable: true
@@ -34261,7 +34264,7 @@ var feng3dRE;
          */
         FagalShaderResult.prototype.requestRegisterValue = function () {
             //使用寄存器计数字典
-            var useRegDic = new Dictionary();
+            var useRegDic = {};
             var callLog = this.vertexCallLog.concat(this.fragmentCallLog);
             var i;
             var regCountDic;
@@ -34293,7 +34296,7 @@ var feng3dRE;
                     }
                 }
             }
-            this.regDic = new Dictionary();
+            this.regDic = {};
             var register;
             Register.TO_STRING = Register.NAME;
             for (regId in useRegDic) {
@@ -34451,7 +34454,7 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        NamedAsset.nameDic = new Dictionary();
+        NamedAsset.nameDic = {};
         return NamedAsset;
     }());
     feng3d.NamedAsset = NamedAsset;
@@ -36255,7 +36258,7 @@ var feng3d;
          * 加载纹理资源
          */
         TestBase.prototype.loadTextures = function () {
-            this.resourceDic = new Dictionary();
+            this.resourceDic = {};
             //加载资源
             var loadObj = new feng3d.LoadModuleEventData();
             loadObj.urls = [];
@@ -36665,7 +36668,7 @@ var feng3d;
     }());
     feng3d.Bounds = Bounds;
     {
-        _containers = new Dictionary();
+        _containers = {};
         _minX = _minY = _minZ = Infinity;
         _maxX = _maxY = _maxZ = -Infinity;
         _defaultPosition.x = 0.0;
@@ -36891,8 +36894,8 @@ var feng3d;
             }
             throw new Error("Can't cast to BitmapTexture: " + data);
         };
-        Cast._notClasses = new Dictionary();
-        Cast._classes = new Dictionary();
+        Cast._notClasses = {};
+        Cast._classes = {};
         return Cast;
     }());
     feng3d.Cast = Cast;
@@ -37193,8 +37196,8 @@ var feng3d;
             var vaIdList = source.vaIdList;
             var vaId;
             /** 顶点数据字典 */
-            var sourceVertexDataDic = new Dictionary();
-            var targetVertexDataDic = new Dictionary();
+            var sourceVertexDataDic = {};
+            var targetVertexDataDic = {};
             for (each(vaId in vaIdList); {
                 sourceVertexDataDic: (_a = source.getVAData(vaId), vaId = _a[0], _a),
                 assert: function (sourceVertexDataDic) { },

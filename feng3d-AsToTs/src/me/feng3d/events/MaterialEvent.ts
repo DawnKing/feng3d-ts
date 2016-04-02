@@ -6,7 +6,7 @@ module feng3d
 	 * 材质事件
 	 * @author feng 2014-9-9
 	 */
-	export class MaterialEvent extends FEvent
+	export class MaterialEvent extends Event
 	{
 		/** 添加pass */
 		public static PASS_ADDED:string = "passAdded";

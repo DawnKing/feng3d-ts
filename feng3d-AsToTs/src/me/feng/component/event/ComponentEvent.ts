@@ -6,7 +6,7 @@ module feng3d
 	 * 组件事件
 	 * @author feng 2015-12-2
 	 */
-	export class ComponentEvent extends FEvent
+	export class ComponentEvent extends Event
 	{
 		/**
 		 * 添加子组件事件

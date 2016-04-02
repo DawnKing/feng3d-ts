@@ -6,7 +6,7 @@ module feng3d
 	 * 动画事件
 	 * @author feng 2014-5-27
 	 */
-	export class AnimatorEvent extends FEvent
+	export class AnimatorEvent extends Event
 	{
 		/** 开始播放动画 */
 		public static START:string = "start";

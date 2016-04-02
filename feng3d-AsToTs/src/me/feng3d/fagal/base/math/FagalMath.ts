@@ -19,7 +19,7 @@ module feng3d
 	 * Fagal数学运算
 	 * @author feng 2015-7-22
 	 */
-	export class FagalMath extends FEventDispatcher
+	export class FagalMath extends EventDispatcher
 	{
 		/**
 		 * destination=abs(source1):一个寄存器的绝对值，分量形式

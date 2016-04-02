@@ -11,7 +11,7 @@ module feng3d
 	 * @author feng 2014-4-29
 	 * @see flash.events.MouseEvent
 	 */
-	export class MouseEvent3D extends FEvent
+	export class MouseEvent3D extends Event
 	{
 		/**
 		 * 单击

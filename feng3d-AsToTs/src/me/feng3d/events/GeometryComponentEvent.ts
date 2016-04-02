@@ -6,7 +6,7 @@ module feng3d
 	 * 几何体组件事件
 	 * @author feng 2015-12-8
 	 */
-	export class GeometryComponentEvent extends FEvent
+	export class GeometryComponentEvent extends Event
 	{
 		/**
 		 * 获取几何体顶点数据

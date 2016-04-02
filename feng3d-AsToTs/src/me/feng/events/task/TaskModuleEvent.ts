@@ -6,7 +6,7 @@ module feng3d
 	 * 任务模块事件
 	 * @author feng 2015-10-29
 	 */
-	export class TaskModuleEvent extends FEvent
+	export class TaskModuleEvent extends Event
 	{
 		/** 派发任务 */
 		public static DISPATCH_TASK:string = "dispatchTask";

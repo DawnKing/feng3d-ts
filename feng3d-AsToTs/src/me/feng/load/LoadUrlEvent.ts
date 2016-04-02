@@ -7,7 +7,7 @@ module feng3d
 	 * 加载url事件
 	 * @author feng 2015-10-22
 	 */
-	export class LoadUrlEvent extends FEvent
+	export class LoadUrlEvent extends Event
 	{
 		/** 单项资源加载完成 */
 		public static LOAD_SINGLE_COMPLETE:string = "loadSingleComplete";

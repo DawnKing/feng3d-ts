@@ -6,7 +6,7 @@ module feng3d
 	 * 解析事件
 	 * @author feng 2014-5-16
 	 */
-	export class ParserEvent extends FEvent
+	export class ParserEvent extends Event
 	{
 		private _message:string;
 

@@ -20,7 +20,7 @@ module feng3d
 	 * 任务模块事件数据
 	 * @author feng 2015-10-29
 	 */
-	export class TaskModuleEventDispatchTaskData extends FEventDispatcher
+	export class TaskModuleEventDispatchTaskData extends EventDispatcher
 	{
 		/**
 		 * 任务集合类型

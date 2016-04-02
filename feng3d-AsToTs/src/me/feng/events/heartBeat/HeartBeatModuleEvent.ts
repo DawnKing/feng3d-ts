@@ -7,7 +7,7 @@ module feng3dBeat
 	 *
 	 * @author cdz 2015-10-31
 	 */
-	export class HeartBeatModuleEvent extends FEvent
+	export class HeartBeatModuleEvent extends Event
 	{
 		/** 注册心跳类型 */
 		public static REGISTER_BEAT_TYPE:string = "registerBeatType";

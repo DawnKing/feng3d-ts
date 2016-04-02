@@ -7,7 +7,7 @@ module feng3d
 	 * 几何体事件
 	 * @author feng 2014-5-15
 	 */
-	export class GeometryEvent extends FEvent
+	export class GeometryEvent extends Event
 	{
 		/** 添加子几何体 */
 		public static SUB_GEOMETRY_ADDED:string = "SubGeometryAdded";

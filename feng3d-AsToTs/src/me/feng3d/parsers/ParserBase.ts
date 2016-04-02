@@ -22,7 +22,7 @@ module feng3d
 	 * 解析基类
 	 * @author feng 2014-5-16
 	 */
-	export class ParserBase extends FEventDispatcher
+	export class ParserBase extends EventDispatcher
 	{
 		protected static PARSING_DONE:boolean = true;
 		protected static MORE_TO_PARSE:boolean = false;

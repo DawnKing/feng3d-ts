@@ -5,7 +5,7 @@ module feng3d
 	 * 全局事件适配器
 	 * @author feng
 	 */
-	export class GlobalDispatcher extends FEventDispatcher
+	export class GlobalDispatcher extends EventDispatcher
 	{
 		private static _instance:GlobalDispatcher;
 

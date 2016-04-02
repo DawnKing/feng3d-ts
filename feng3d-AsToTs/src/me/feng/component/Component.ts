@@ -31,7 +31,7 @@ module feng3d
 	 * 组件容器（集合）
 	 * @author feng 2015-5-6
 	 */
-	export class Component extends FEventDispatcher
+	export class Component extends EventDispatcher
 	{
 		private _componentName:string;
 
@@ -295,7 +295,7 @@ module feng3d
 		 * <p>事件广播给子组件</p>
 		 * @param event
 		 */
-		protected dispatchChildrenEvent(event:FEvent)
+		protected dispatchChildrenEvent(event:Event)
 		{
 			this.components.forEach(function(item:Component, ... args)
 			{

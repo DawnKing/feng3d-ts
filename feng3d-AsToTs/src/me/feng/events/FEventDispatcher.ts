@@ -21,7 +21,7 @@ module feng3d
 	 *
 	 * @author feng 2014-5-7
 	 */
-	export class FEventDispatcher implements IEventDispatcher
+	export class EventDispatcher implements IEventDispatcher
 	{
 		/**
 		 * 冒泡属性名称，或者称为上级（默认为parent）
@@ -33,9 +33,9 @@ module feng3d
 		protected _name:string;
 
 		/**
-		 * 创建 FEventDispatcher 类的实例.
+		 * 创建 EventDispatcher 类的实例.
 		 *
-		 * <p>FEventDispatcher 类通常用作基类，这意味着大多数开发人员都无需使用此构造函数。但是，实现 IEventDispatcher 接口的高级开发人员则需要使用此构造函数。如果您无法扩展 EventDispatcher 类并且必须实现 IEventDispatcher 接口，请使用此构造函数来聚合 EventDispatcher 类的实例。</p>
+		 * <p>EventDispatcher 类通常用作基类，这意味着大多数开发人员都无需使用此构造函数。但是，实现 IEventDispatcher 接口的高级开发人员则需要使用此构造函数。如果您无法扩展 EventDispatcher 类并且必须实现 IEventDispatcher 接口，请使用此构造函数来聚合 EventDispatcher 类的实例。</p>
 		 *
 		 * @param target		 (default = null) — 调度到 EventDispatcher 对象的事件的目标对象。当 EventDispatcher 实例由实现 IEventDispatcher 的类聚合时，使用此参数；此参数是必需的，以便包含对象可以是事件的目标。请勿在类扩展了 EventDispatcher 的简单情况下使用此参数。
 		 *

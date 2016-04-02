@@ -7,7 +7,7 @@ module feng3d
 	 * 3D环境缓冲拥有者事件
 	 * @author feng 2015-7-18
 	 */
-	export class Context3DBufferOwnerEvent extends FEvent
+	export class Context3DBufferOwnerEvent extends Event
 	{
 		/**
 		 * 添加3D环境缓冲事件

@@ -6,7 +6,7 @@ module feng3d
 	/**
 	 * Dispatched whenever a ressource (asset) is parsed and created completly.
 	 */
-	export class AssetEvent extends FEvent
+	export class AssetEvent extends Event
 	{
 		public static ASSET_COMPLETE:string = "assetComplete";
 		public static ENTITY_COMPLETE:string = "entityComplete";

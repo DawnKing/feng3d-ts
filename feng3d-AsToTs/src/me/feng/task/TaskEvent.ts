@@ -6,7 +6,7 @@ module feng3d
 	 * 任务事件
 	 * @author feng 2014-7-24
 	 */
-	export class TaskEvent extends FEvent
+	export class TaskEvent extends Event
 	{
 		/** 完成任务 */
 		public static COMPLETED:string = "completed";

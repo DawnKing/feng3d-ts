@@ -6,7 +6,7 @@ module feng3d
 	 * 渲染函数事件
 	 * @author feng 2014-7-1
 	 */
-	export class ShadingMethodEvent extends FEvent
+	export class ShadingMethodEvent extends Event
 	{
 		/** 渲染函数失效 */
 		public static SHADER_INVALIDATED:string = "ShaderInvalidated";

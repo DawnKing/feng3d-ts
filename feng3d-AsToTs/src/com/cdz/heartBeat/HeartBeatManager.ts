@@ -13,6 +13,7 @@ module feng3dBeat {
         private _frameEventDriver: Shape = new Shape();
 
         constructor() {
+            super();
             this.init()
 
             this._frameEventDriver.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);

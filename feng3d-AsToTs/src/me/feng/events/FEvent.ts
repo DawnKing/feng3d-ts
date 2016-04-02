@@ -10,7 +10,7 @@ module feng3d
 	 * 携带数据的事件，该类为自定义事件基类
 	 * @author feng 2014-5-7
 	 */
-	export class FEvent extends Event
+	export class Event extends Event
 	{
 		private _data:*;
 

@@ -15,7 +15,7 @@ module feng3d
 	 * 摄像机镜头
 	 * @author feng 2014-10-14
 	 */
-	export class LensBase extends FEventDispatcher
+	export class LensBase extends EventDispatcher
 	{
 		protected _matrix:Matrix3D;
 		protected _scissorRect:Rectangle = new Rectangle();

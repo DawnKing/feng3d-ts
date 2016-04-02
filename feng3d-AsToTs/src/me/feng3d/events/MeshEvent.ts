@@ -7,7 +7,7 @@ module feng3d
 	 * 网格事件
 	 * @author feng 2015-3-20
 	 */
-	export class MeshEvent extends FEvent
+	export class MeshEvent extends Event
 	{
 		/**
 		 * 材质发生变化

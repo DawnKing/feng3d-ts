@@ -10,7 +10,7 @@ module feng3d
 	/**
 	 * Dispatched to notify changes in an animation state's state.
 	 */
-	export class AnimationStateEvent extends FEvent
+	export class AnimationStateEvent extends Event
 	{
 		/**
 		 * Dispatched when a non-looping clip node inside an animation state reaches the end of its timeline.

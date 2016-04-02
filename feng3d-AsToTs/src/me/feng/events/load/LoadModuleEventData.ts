@@ -27,7 +27,7 @@ module feng3d
 	 * 加载事件数据
 	 * @author feng 2015-5-27
 	 */
-	export class LoadModuleEventData extends FEventDispatcher
+	export class LoadModuleEventData extends EventDispatcher
 	{
 		private _urls:Array;
 

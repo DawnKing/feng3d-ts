@@ -6,7 +6,7 @@ module feng3d
 	 * 加载事件
 	 * @author feng 2014-7-25
 	 */
-	export class LoadModuleEvent extends FEvent
+	export class LoadModuleEvent extends Event
 	{
 		/** 加载资源 */
 		public static LOAD_RESOURCE:string = "loadResource";

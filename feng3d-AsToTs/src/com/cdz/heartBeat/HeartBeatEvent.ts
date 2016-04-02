@@ -5,7 +5,7 @@ module feng3dBeat {
 	 *
 	 * @author cdz 2015-10-31
 	 */
-    export class HeartBeatEvent extends FEvent {
+    export class HeartBeatEvent extends Event {
         /** 渲染心跳 */
         public static RENDER_BEAT: string = "renderBeat";
 
