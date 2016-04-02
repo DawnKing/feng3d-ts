@@ -25,7 +25,7 @@ module feng3d
 		{
 			this._url = null;
 			this._type = null;
-			if (url is String)
+			if (url is string)
 			{
 				this._url = url;
 			}

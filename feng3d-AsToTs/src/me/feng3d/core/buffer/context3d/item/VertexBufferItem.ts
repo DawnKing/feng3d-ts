@@ -37,7 +37,7 @@ module feng3d
 		 * @param startVertex			要加载的第一个顶点的索引。startVertex 的非零值可用于加载顶点数据的子区域。
 		 * @param numVertices			data 表示的顶点数量。
 		 */
-		public uploadFromVector(data:Number[], startVertex:number, numVertices:number)
+		public uploadFromVector(data:number[], startVertex:number, numVertices:number)
 		{
 			this.vertexBuffer3D.uploadFromVector(data, startVertex, numVertices);
 			this.invalid = false;

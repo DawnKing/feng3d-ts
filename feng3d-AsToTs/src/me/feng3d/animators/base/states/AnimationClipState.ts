@@ -160,7 +160,7 @@ module feng3d
 				this._nextFrame = 0;
 
 				var dur:number = 0, frameTime:number;
-				var durations:uint[] = this._animationClipNode.durations;
+				var durations:number[] = this._animationClipNode.durations;
 
 				do
 				{

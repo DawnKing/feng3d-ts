@@ -87,7 +87,7 @@ module feng3d
 		{
 			/** 当前粒子子几何体 */
 			var particleSubGeometry:SubGeometry = new SubGeometry();
-			particleSubGeometry.updateIndexData(new uint[]());
+			particleSubGeometry.updateIndexData(new number[]());
 			return particleSubGeometry;
 		}
 

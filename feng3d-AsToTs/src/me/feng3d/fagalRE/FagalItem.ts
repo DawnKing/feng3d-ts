@@ -43,7 +43,7 @@ module feng3dRE
 			var list:IField[] = this.getIFieldList();
 			for each (var reg:IField in list)
 			{
-				dic[reg.regId] = int(dic[reg.regId]) + 1;
+				dic[reg.regId] = number(dic[reg.regId]) + 1;
 			}
 
 			return dic;

@@ -25,7 +25,7 @@ module feng3d
 		/** 最后被检测的几何体 */
 		private _lastSubMeshUploaded:SubMesh;
 		/** 渲染器输出内容 */
-		private _kernelOutputBuffer:Number[];
+		private _kernelOutputBuffer:number[];
 
 		/**
 		 * 创建一个 PBPickingCollider
@@ -36,7 +36,7 @@ module feng3d
 			this._findClosestCollision = findClosestCollision;
 
 			//初始化出入缓存
-			this._kernelOutputBuffer = new Number[]();
+			this._kernelOutputBuffer = new number[]();
 			//初始化渲染器
 			this._rayTriangleKernel = new Shader(new this.RayTriangleKernelClass() as ByteArray);
 		}
@@ -56,17 +56,17 @@ module feng3d
 
 			var cx:number, cy:number, cz:number;
 			var u:number, v:number, w:number;
-			var indexData:uint[] = subGeom.indexData;
-			var vertexData:Number[] = subGeom.vertexPositionData;
-			var uvData:Number[] = subGeom.UVData;
-			var numericIndexData:Number[] = Number[](indexData);
+			var indexData:number[] = subGeom.indexData;
+			var vertexData:number[] = subGeom.vertexPositionData;
+			var uvData:number[] = subGeom.UVData;
+			var numericIndexData:number[] = number[](indexData);
 			var indexBufferDims:Point = this.evaluateArrayAsGrid(numericIndexData);
 
 			//更新几何体数据到渲染器
 			if (!this._lastSubMeshUploaded || this._lastSubMeshUploaded !== subMesh)
 			{
 				//上传顶点数据到pb
-				var duplicateVertexData:Number[] = vertexData.concat();
+				var duplicateVertexData:number[] = vertexData.concat();
 				var vertexBufferDims:Point = this.evaluateArrayAsGrid(duplicateVertexData);
 				this._rayTriangleKernel.data.vertexBuffer.width = vertexBufferDims.x;
 				this._rayTriangleKernel.data.vertexBuffer.height = vertexBufferDims.y;
@@ -129,7 +129,7 @@ module feng3d
 		 * @param array
 		 * @return
 		 */
-		private evaluateArrayAsGrid(array:Number[]):Point
+		private evaluateArrayAsGrid(array:number[]):Point
 		{
 			var count:number = array.length / 3;
 			var w:number = Math.floor(Math.sqrt(count));

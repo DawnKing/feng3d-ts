@@ -51,7 +51,7 @@ module feng3d
 
 		public set normalMap(value:Texture2DBase)
 		{
-			if (Boolean(value) != Boolean(_texture) || //
+			if (boolean(value) != boolean(_texture) || //
 				(value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) //
 			{
 				invalidateShaderProgram();
@@ -68,7 +68,7 @@ module feng3d
 		 */
 		public get hasOutput():boolean
 		{
-			return Boolean(_texture);
+			return boolean(_texture);
 		}
 
 		/**

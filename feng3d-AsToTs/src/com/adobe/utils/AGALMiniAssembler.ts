@@ -116,7 +116,7 @@ module feng3d
 			
 			for ( i = 0; i < lng && this._error == ""; i++ )
 			{
-				var line:string = new String( lines[i] );
+				var line:string = new string( lines[i] );
 				line = line.replace( REGEXP_OUTER_SPACES, "" );
 				
 				// remove comments
@@ -265,7 +265,7 @@ module feng3d
 					var regidx:number = 0;
 					
 					if ( idxmatch )
-						regidx = uint( idxmatch[0] );
+						regidx = number( idxmatch[0] );
 					
 					if ( regFound.range < regidx )
 					{
@@ -373,7 +373,7 @@ module feng3d
 								{
 									// todo check that it's a number...
 									//trace( "Warning, unknown sampler option: "+opts[k] );
-									bias = Number(opts[k]); 
+									bias = number(opts[k]); 
 									if ( this.verbose )
 										trace( "    bias: " + bias );																	
 								}
@@ -381,11 +381,11 @@ module feng3d
 								{
 									if ( optfound.flag != SAMPLER_SPECIAL_SHIFT )
 										samplerbits &= ~( 0xf << optfound.flag );										
-									samplerbits |= uint( optfound.mask ) << uint( optfound.flag );
+									samplerbits |= number( optfound.mask ) << number( optfound.flag );
 								}
 							}
 							this.agalcode.writeShort( regidx );
-							this.agalcode.writeByte(int(bias*8.0));
+							this.agalcode.writeByte(number(bias*8.0));
 							this.agalcode.writeByte(0);							
 							this.agalcode.writeUnsignedInt( samplerbits );
 							

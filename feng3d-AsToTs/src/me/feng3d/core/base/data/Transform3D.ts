@@ -332,7 +332,7 @@ module feng3d
 			//旋转后的Z轴
 			var zAxis:Vector3D = tempAxeZ;
 
-			var raw:Number[];
+			var raw:number[];
 
 			//向上方向默认值为Y轴
 			upAxis ||= Vector3D.Y_AXIS;
@@ -376,25 +376,25 @@ module feng3d
 			raw = Matrix3DUtils.RAW_DATA_CONTAINER;
 
 			//根据XYZ轴计算变换矩阵
-			raw[uint(0)] = _scaleX * xAxis.x;
-			raw[uint(1)] = _scaleX * xAxis.y;
-			raw[uint(2)] = _scaleX * xAxis.z;
-			raw[uint(3)] = 0;
+			raw[number(0)] = _scaleX * xAxis.x;
+			raw[number(1)] = _scaleX * xAxis.y;
+			raw[number(2)] = _scaleX * xAxis.z;
+			raw[number(3)] = 0;
 
-			raw[uint(4)] = _scaleY * yAxis.x;
-			raw[uint(5)] = _scaleY * yAxis.y;
-			raw[uint(6)] = _scaleY * yAxis.z;
-			raw[uint(7)] = 0;
+			raw[number(4)] = _scaleY * yAxis.x;
+			raw[number(5)] = _scaleY * yAxis.y;
+			raw[number(6)] = _scaleY * yAxis.z;
+			raw[number(7)] = 0;
 
-			raw[uint(8)] = _scaleZ * zAxis.x;
-			raw[uint(9)] = _scaleZ * zAxis.y;
-			raw[uint(10)] = _scaleZ * zAxis.z;
-			raw[uint(11)] = 0;
+			raw[number(8)] = _scaleZ * zAxis.x;
+			raw[number(9)] = _scaleZ * zAxis.y;
+			raw[number(10)] = _scaleZ * zAxis.z;
+			raw[number(11)] = 0;
 
-			raw[uint(12)] = _x;
-			raw[uint(13)] = _y;
-			raw[uint(14)] = _z;
-			raw[uint(15)] = 1;
+			raw[number(12)] = _x;
+			raw[number(13)] = _y;
+			raw[number(14)] = _z;
+			raw[number(15)] = 1;
 
 			_transform.copyRawDataFrom(raw);
 

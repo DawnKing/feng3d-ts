@@ -21,12 +21,12 @@ module feng3d
 		/**
 		 * 雾颜色常量数据
 		 */
-		private fogColorData:Number[] = Number[]([0, 0, 0, 1]);
+		private fogColorData:number[] = number[]([0, 0, 0, 1]);
 
 		/**
 		 * 雾通用常量数据
 		 */
-		private fogCommonData:Number[] = Number[]([0, 0, 0, 0]);
+		private fogCommonData:number[] = number[]([0, 0, 0, 0]);
 
 		/**
 		 * 出现雾效果的最近距离

@@ -31,7 +31,7 @@ module feng3d
 		/** 动画节点列表 */
 		private _animations:AnimationNodeBase[] = new AnimationNodeBase[]();
 		/** 动画名称列表 */
-		private _animationNames:String[] = new String[]();
+		private _animationNames:string[] = new string[]();
 		/** 动画字典 */
 		private _animationDictionary:Dictionary = new Dictionary(true);
 

@@ -18,7 +18,7 @@ module feng3d
 	 */
 	export class EnvMapMethod extends EffectMethodBase
 	{
-		private _envMapData:Number[] = Number[]([1, 0, 0, 0]);
+		private _envMapData:number[] = number[]([1, 0, 0, 0]);
 
 		private _cubeTexture:CubeTextureBase;
 		private _alpha:number;
@@ -46,7 +46,7 @@ module feng3d
 
 		public set mask(value:Texture2DBase)
 		{
-			if (Boolean(value) != Boolean(_mask) || (value && _mask && (value.hasMipMaps != _mask.hasMipMaps || value.format != _mask.format)))
+			if (boolean(value) != boolean(_mask) || (value && _mask && (value.hasMipMaps != _mask.hasMipMaps || value.format != _mask.format)))
 			{
 				invalidateShaderProgram();
 			}

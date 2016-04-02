@@ -25,17 +25,17 @@ module feng3d
 		/**
 		 * (1,1,1,1)向量
 		 */
-		protected static ONE_VECTOR:Number[] = Number[]([1, 1, 1, 1]);
+		protected static ONE_VECTOR:number[] = number[]([1, 1, 1, 1]);
 
 		/**
 		 * 正面向量（Z轴负方向）
 		 */
-		protected static FRONT_VECTOR:Number[] = Number[]([0, 0, -1, 0]);
+		protected static FRONT_VECTOR:number[] = number[]([0, 0, -1, 0]);
 
 		/**
 		 * 常量数据
 		 */
-		private constants:Number[] = new Number[](4, true);
+		private constants:number[] = new number[](4, true);
 
 		/**
 		 * 摄像机坐标系到投影坐标系变换矩阵（c：camera，p：projection）

@@ -69,7 +69,7 @@ module feng3d
 
 			for (var i:number = 0; i < args.length; i++)
 			{
-				if (args[i] is uint)
+				if (args[i] is number)
 				{
 					index += args[i];
 				}

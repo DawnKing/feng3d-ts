@@ -38,11 +38,11 @@ module feng3d
 		private _scatterB:number = 1.0;
 		private _targetReg:Register;
 
-		private vertexToTexData:Number[] = Number[]([0.5, -0.5, 0, 1]);
-		private f$ColorData:Number[] = Number[]([1.0, 1.0, 1.0, 1.0]);
+		private vertexToTexData:number[] = number[]([0.5, -0.5, 0, 1]);
+		private f$ColorData:number[] = number[]([1.0, 1.0, 1.0, 1.0]);
 
-		private fragmentData0:Number[] = Number[]([1.0, 1.0 / 255, 1.0 / 65025, 1.0 / 16581375]);
-		private fragmentData1:Number[] = Number[]([0.2, 1, 0.5, -0.1]);
+		private fragmentData0:number[] = number[]([1.0, 1.0 / 255, 1.0 / 65025, 1.0 / 16581375]);
+		private fragmentData1:number[] = number[]([0.2, 1, 0.5, -0.1]);
 
 		private _isFirstLight:boolean;
 		private _depthMap:TextureProxyBase;

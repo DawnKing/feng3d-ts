@@ -27,17 +27,17 @@ module feng3d
 		private _textureSize:number;
 		private _projectionTexturesInvalid:boolean = true;
 
-		private _polyOffset:Number[] = Number[]([15, 0, 0, 0]);
+		private _polyOffset:number[] = number[]([15, 0, 0, 0]);
 
 		/**
 		 * 通用数据
 		 */
-		private depthCommonsData0:Number[] = Number[]([1.0, 255.0, 65025.0, 16581375.0]);
+		private depthCommonsData0:number[] = number[]([1.0, 255.0, 65025.0, 16581375.0]);
 
 		/**
 		 * 通用数据
 		 */
-		private depthCommonsData1:Number[] = Number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+		private depthCommonsData1:number[] = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
 
 		private objectProjectionMatrix:Matrix3D = new Matrix3D();
 
@@ -57,12 +57,12 @@ module feng3d
 			this._textures = new Dictionary();
 			this._projections = new Dictionary();
 
-//			_enc = Number[]([1.0, 255.0, 65025.0, 16581375.0, 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
-//			this.depthCommonsData0 = Number[]([1.0, 255.0, 65025.0, 16581375.0]);
-//			this.depthCommonsData1 = Number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+//			_enc = number[]([1.0, 255.0, 65025.0, 16581375.0, 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+//			this.depthCommonsData0 = number[]([1.0, 255.0, 65025.0, 16581375.0]);
+//			this.depthCommonsData1 = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
 
-//			_animatableAttributes = String[](["va0", "va1"]);
-//			_animationTargetRegisters = String[](["vt0", "vt1"]);
+//			_animatableAttributes = string[](["va0", "va1"]);
+//			_animationTargetRegisters = string[](["vt0", "vt1"]);
 		}
 
 		protected initBuffers()

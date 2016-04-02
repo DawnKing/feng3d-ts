@@ -23,10 +23,10 @@ module feng3d
 		private _timeParticleStates:ParticleStateBase[] = new ParticleStateBase[];
 
 		/** 常量数据 */
-		private vertexZeroConst:Number[] = Number[]([0, 1, 2, 0]);
+		private vertexZeroConst:number[] = number[]([0, 1, 2, 0]);
 
 		/** 时间常数（粒子当前时间） */
-		private timeConstData:Number[] = new Number[](4);
+		private timeConstData:number[] = new number[](4);
 
 		/**
 		 * 创建粒子动画

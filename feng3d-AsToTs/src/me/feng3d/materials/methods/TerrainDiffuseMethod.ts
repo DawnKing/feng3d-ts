@@ -20,12 +20,12 @@ module feng3d
 	 */
 	export class TerrainDiffuseMethod extends BasicDiffuseMethod
 	{
-		private tileData:Number[] = new Number[](4);
+		private tileData:number[] = new number[](4);
 		private _blendingTexture:Texture2DBase;
 		private _splats:Array;
 		private _numSplattingLayers:number;
 
-		public TerrainDiffuseMethod(splatTextures:Array, blendingTexture:Texture2DBase, tileData:Number[])
+		public TerrainDiffuseMethod(splatTextures:Array, blendingTexture:Texture2DBase, tileData:number[])
 		{
 			super();
 

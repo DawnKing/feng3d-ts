@@ -50,11 +50,11 @@ module feng3d
 			{
 				_sprite3DGeometry = new SubGeometry();
 				_sprite3DGeometry.numVertices = 4;
-				_sprite3DGeometry.updateVertexPositionData(Number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
-				_sprite3DGeometry.updateUVData(Number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
-				_sprite3DGeometry.updateIndexData(uint[]([0, 1, 2, 0, 2, 3]));
-				_sprite3DGeometry.updateVertexTangentData(Number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
-				_sprite3DGeometry.updateVertexNormalData(Number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
+				_sprite3DGeometry.updateVertexPositionData(number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
+				_sprite3DGeometry.updateUVData(number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
+				_sprite3DGeometry.updateIndexData(number[]([0, 1, 2, 0, 2, 3]));
+				_sprite3DGeometry.updateVertexTangentData(number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
+				_sprite3DGeometry.updateVertexNormalData(number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
 			}
 			this.geometry.addSubGeometry(_sprite3DGeometry);
 		}
@@ -116,7 +116,7 @@ module feng3d
 			findClosest = findClosest;
 			var viewTransform:Matrix3D = this._camera.inverseSceneTransform.clone();
 			viewTransform.transpose();
-			var rawViewTransform:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var rawViewTransform:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			viewTransform.copyRawDataTo(rawViewTransform);
 			rawViewTransform[3] = 0;
 			rawViewTransform[7] = 0;

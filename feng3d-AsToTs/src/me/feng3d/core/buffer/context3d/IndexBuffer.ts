@@ -23,7 +23,7 @@ module feng3d
 		public _startOffset:number;
 
 		/** 顶点索引的矢量。仅使用每个索引值的低 16 位。矢量的长度必须大于或等于 count。 */
-		public data:uint[];
+		public data:number[];
 
 		/** 要在缓存区中存储的顶点数量。单个缓存区中的最大索引数为 524287。 */
 		public numIndices:number;
@@ -105,7 +105,7 @@ module feng3d
 		 * @param numIndices 要在缓存区中存储的顶点数量。单个缓存区中的最大索引数为 524287。
 		 * @param count data 中索引的数量。
 		 */
-		public update(data:uint[], numIndices:number, count:number, firstIndex:number = 0, numTriangles:number = -1)
+		public update(data:number[], numIndices:number, count:number, firstIndex:number = 0, numTriangles:number = -1)
 		{
 			if (!data)
 				throw new Error("顶点索引不接收空数组");

@@ -38,7 +38,7 @@ module feng3d
 		/**
 		 * 更新动画顶点数据
 		 */
-		public updateAnimatedData(value:Number[])
+		public updateAnimatedData(value:number[])
 		{
 			subGeometry.setVAData(_.animated_va_3, value);
 		}
@@ -46,25 +46,25 @@ module feng3d
 		/**
 		 * 关节权重数据
 		 */
-		public get jointWeightsData():Number[]
+		public get jointWeightsData():number[]
 		{
-			var data:Number[] = subGeometry.getVAData(_.jointweights_va_x);
+			var data:number[] = subGeometry.getVAData(_.jointweights_va_x);
 			return data;
 		}
 
 		/**
 		 * 关节索引数据
 		 */
-		public get jointIndexData():Number[]
+		public get jointIndexData():number[]
 		{
-			var data:Number[] = subGeometry.getVAData(_.jointindex_va_x);
+			var data:number[] = subGeometry.getVAData(_.jointindex_va_x);
 			return data;
 		}
 
 		/**
 		 * 更新关节权重数据
 		 */
-		public updateJointWeightsData(value:Number[])
+		public updateJointWeightsData(value:number[])
 		{
 			subGeometry.setVAData(_.jointweights_va_x, value);
 		}
@@ -72,7 +72,7 @@ module feng3d
 		/**
 		 * 更新关节索引数据
 		 */
-		public updateJointIndexData(value:Number[])
+		public updateJointIndexData(value:number[])
 		{
 			subGeometry.setVAData(_.jointindex_va_x, value);
 		}

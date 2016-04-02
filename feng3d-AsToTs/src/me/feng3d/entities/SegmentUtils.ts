@@ -18,11 +18,11 @@ module feng3d
 		 */
 		protected _segmentSubGeometry:SegmentSubGeometry;
 
-		private _indices:uint[];
-		private _pointData0:Number[];
-		private _pointData1:Number[];
-		private _thicknessData:Number[];
-		private _colorData:Number[];
+		private _indices:number[];
+		private _pointData0:number[];
+		private _pointData1:number[];
+		private _thicknessData:number[];
+		private _colorData:number[];
 
 		public SegmentUtils()
 		{
@@ -39,11 +39,11 @@ module feng3d
 		{
 			this._segmentSubGeometry = new SegmentSubGeometry();
 
-			this._indices = new uint[]();
-			this._pointData0 = new Number[]();
-			this._pointData1 = new Number[]();
-			this._thicknessData = new Number[]();
-			this._colorData = new Number[]();
+			this._indices = new number[]();
+			this._pointData0 = new number[]();
+			this._pointData1 = new number[]();
+			this._thicknessData = new number[]();
+			this._colorData = new number[]();
 
 			for (var i:number = 0; i < _segments.length; i++)
 			{

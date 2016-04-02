@@ -69,7 +69,7 @@ module feng3dRE
 		 */
 		override flash_proxy function callProperty(name:*, ... parameters):*
 		{
-			var funcName:string = String(name);
+			var funcName:string = string(name);
 			var func:Function = math[funcName];
 			assert(func != null, "在Fagal中尝试调用" + getQualifiedClassName(math) + "." + funcName + "中不存在的函数");
 

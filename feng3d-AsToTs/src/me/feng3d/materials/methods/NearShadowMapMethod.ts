@@ -17,7 +17,7 @@ module feng3d
 	 */
 	export class NearShadowMapMethod extends SimpleShadowMapMethodBase
 	{
-		private secondaryFragmentConstants:Number[] = new Number[](4);
+		private secondaryFragmentConstants:number[] = new number[](4);
 
 		private _baseMethod:SimpleShadowMapMethodBase;
 		/**

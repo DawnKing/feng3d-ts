@@ -55,7 +55,7 @@ module feng3d
 		/** 网格数量 */
 		private _numMeshes:number;
 		/** 渲染材质信息 */
-		private _shaders:String[];
+		private _shaders:string[];
 		/** 顶点最大关节关联数 */
 		private _maxJointCount:number;
 		/** 网格原始数据 */
@@ -306,12 +306,12 @@ module feng3d
 			var ch:string;
 			var vertexData:VertexData[];
 			var weights:WeightData[];
-			var indices:uint[];
+			var indices:number[];
 
 			if (token != "{")
 				this.sendUnknownKeywordError();
 
-			this._shaders ||= new String[]();
+			this._shaders ||= new string[]();
 
 			while (ch != "}")
 			{
@@ -331,7 +331,7 @@ module feng3d
 						break;
 					case MESH_NUM_TRIS_TOKEN:
 						//根据三角形个数 创建顶点数组
-						indices = new uint[](this.getNextInt() * 3, true);
+						indices = new number[](this.getNextInt() * 3, true);
 						break;
 					case MESH_NUM_WEIGHTS_TOKEN:
 						//创建关节数据
@@ -366,7 +366,7 @@ module feng3d
 		 * @param indices 顶点索引数据
 		 * @return 包含所有几何体数据的SkinnedSubGeometry实例
 		 */
-		private translateGeom(vertexData:VertexData[], weights:WeightData[], indices:uint[]):SubGeometry
+		private translateGeom(vertexData:VertexData[], weights:WeightData[], indices:number[]):SubGeometry
 		{
 			var len:number = vertexData.length;
 			var v1:number, v2:number, v3:number;
@@ -378,13 +378,13 @@ module feng3d
 			var skinnedsubGeom:SkinnedSubGeometry = new SkinnedSubGeometry(this._maxJointCount);
 			subGeom.addComponent(skinnedsubGeom);
 			//uv数据
-			var uvs:Number[] = new Number[](len * 2, true);
+			var uvs:number[] = new number[](len * 2, true);
 			//顶点位置数据
-			var vertices:Number[] = new Number[](len * 3, true);
+			var vertices:number[] = new number[](len * 3, true);
 			//关节索引数据
-			var jointIndices:Number[] = new Number[](len * this._maxJointCount, true);
+			var jointIndices:number[] = new number[](len * this._maxJointCount, true);
 			//关节权重数据
-			var jointWeights:Number[] = new Number[](len * this._maxJointCount, true);
+			var jointWeights:number[] = new number[](len * this._maxJointCount, true);
 			var l:number;
 			//0权重个数
 			var nonZeroWeights:number;
@@ -458,7 +458,7 @@ module feng3d
 		 * 解析三角形数据
 		 * @param indices 索引数据
 		 */
-		private parseTri(indices:uint[])
+		private parseTri(indices:number[])
 		{
 			var index:number = this.getNextInt() * 3;
 			indices[index] = this.getNextInt();
@@ -584,18 +584,18 @@ module feng3d
 		}
 
 		/**
-		 * 读取下个int
+		 * 读取下个number
 		 */
 		private getNextInt():number
 		{
 			var i:number = parseInt(this.getNextToken());
 			if (isNaN(i))
-				this.sendParseError("int type");
+				this.sendParseError("number type");
 			return i;
 		}
 
 		/**
-		 * 读取下个Number
+		 * 读取下个number
 		 */
 		private getNextNumber():number
 		{
@@ -764,7 +764,7 @@ class MeshData
 	/** 权重数据 */
 	public weightData:WeightData[];
 	/** 顶点索引 */
-	public indices:uint[];
+	public indices:number[];
 
 	public MeshData()
 	{

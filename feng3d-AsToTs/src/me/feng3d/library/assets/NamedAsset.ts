@@ -37,8 +37,8 @@ module feng3d
 			if (!_name)
 			{
 				var defaultName:string = ClassUtils.getDefaultName(this);
-				_name = defaultName + int(nameDic[defaultName]);
-				nameDic[defaultName] = int(nameDic[defaultName]) + 1;
+				_name = defaultName + number(nameDic[defaultName]);
+				nameDic[defaultName] = number(nameDic[defaultName]) + 1;
 			}
 			return _name;
 		}

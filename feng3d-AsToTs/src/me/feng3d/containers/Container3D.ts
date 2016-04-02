@@ -189,7 +189,7 @@ module feng3d
 		{
 			var i:number;
 			var len:number = _children.length;
-			var min:number = Number.POSITIVE_INFINITY;
+			var min:number = number.POSITIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
@@ -210,7 +210,7 @@ module feng3d
 		{
 			var i:number;
 			var len:number = _children.length;
-			var min:number = Number.POSITIVE_INFINITY;
+			var min:number = number.POSITIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
@@ -231,7 +231,7 @@ module feng3d
 		{
 			var i:number;
 			var len:number = _children.length;
-			var min:number = Number.POSITIVE_INFINITY;
+			var min:number = number.POSITIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
@@ -253,7 +253,7 @@ module feng3d
 			// todo: this isn't right, doesn't take into account transforms
 			var i:number;
 			var len:number = _children.length;
-			var max:number = Number.NEGATIVE_INFINITY;
+			var max:number = number.NEGATIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
@@ -274,7 +274,7 @@ module feng3d
 		{
 			var i:number;
 			var len:number = _children.length;
-			var max:number = Number.NEGATIVE_INFINITY;
+			var max:number = number.NEGATIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
@@ -295,7 +295,7 @@ module feng3d
 		{
 			var i:number;
 			var len:number = _children.length;
-			var max:number = Number.NEGATIVE_INFINITY;
+			var max:number = number.NEGATIVE_INFINITY;
 			var m:number;
 
 			while (i < len)

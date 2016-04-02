@@ -103,7 +103,7 @@ module feng3d
 			if (numSubGeoms > 0)
 			{
 				var subGeom:SubGeometry = subGeoms[0];
-				var vertices:Number[] = subGeom.vertexPositionData;
+				var vertices:number[] = subGeom.vertexPositionData;
 				var i:number = 0;
 				minX = maxX = vertices[i];
 				minY = maxY = vertices[i + 1];

@@ -33,7 +33,7 @@ module feng3d
 		 * @param triangleOffset
 		 * @return
 		 */
-		public static function fromVectors(verts:Number[], indices:uint[], uvs:Number[], weights:Number[], jointIndices:Number[], triangleOffset:number = 0):SubGeometry[]
+		public static function fromVectors(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number = 0):SubGeometry[]
 		{ LIMIT_VERTS:number = 3 * 0xffff; LIMIT_INDICES:number = 15 * 0xffff;
 
 			var subs:SubGeometry[] = new SubGeometry[]();
@@ -50,13 +50,13 @@ module feng3d
 			if ((indices.length >= LIMIT_INDICES) || (verts.length >= LIMIT_VERTS))
 			{
 				var i:number, len:number, outIndex:number, j:number;
-				var splitVerts:Number[] = new Number[]();
-				var splitIndices:uint[] = new uint[]();
-				var splitUvs:Number[] = (uvs != null) ? new Number[]() : null;
-				var splitWeights:Number[] = (weights != null) ? new Number[]() : null;
-				var splitJointIndices:Number[] = (jointIndices != null) ? new Number[]() : null;
+				var splitVerts:number[] = new number[]();
+				var splitIndices:number[] = new number[]();
+				var splitUvs:number[] = (uvs != null) ? new number[]() : null;
+				var splitWeights:number[] = (weights != null) ? new number[]() : null;
+				var splitJointIndices:number[] = (jointIndices != null) ? new number[]() : null;
 
-				var mappings:int[] = new int[](verts.length / 3, true);
+				var mappings:number[] = new number[](verts.length / 3, true);
 				i = mappings.length;
 				while (i-- > 0)
 					mappings[i] = -1;
@@ -75,11 +75,11 @@ module feng3d
 					if (((outIndex + 2) >= LIMIT_INDICES) || (splitIndex >= LIMIT_VERTS))
 					{
 						subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
-						splitVerts = new Number[]();
-						splitIndices = new uint[]();
-						splitUvs = (uvs != null) ? new Number[]() : null;
-						splitWeights = (weights != null) ? new Number[]() : null;
-						splitJointIndices = (jointIndices != null) ? new Number[]() : null;
+						splitVerts = new number[]();
+						splitIndices = new number[]();
+						splitUvs = (uvs != null) ? new number[]() : null;
+						splitWeights = (weights != null) ? new number[]() : null;
+						splitJointIndices = (jointIndices != null) ? new number[]() : null;
 						splitIndex = 0;
 						j = mappings.length;
 						while (j-- > 0)
@@ -165,7 +165,7 @@ module feng3d
 			return subs;
 		}
 
-		public static function constructSubGeometry(verts:Number[], indices:uint[], uvs:Number[], weights:Number[], jointIndices:Number[], triangleOffset:number):SubGeometry
+		public static function constructSubGeometry(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number):SubGeometry
 		{
 			var sub:SubGeometry = new SubGeometry();
 
@@ -217,7 +217,7 @@ module feng3d
 				return false;
 
 			//顶点属性编号列表
-			var vaIdList:String[] = source.vaIdList;
+			var vaIdList:string[] = source.vaIdList;
 			var vaId:string;
 
 			/** 顶点数据字典 */
@@ -233,13 +233,13 @@ module feng3d
 			}
 
 			//添加索引数据
-			var indices:uint[] = VectorUtils.add1(source.indices, target.indices, target.numVertices);
+			var indices:number[] = VectorUtils.add1(source.indices, target.indices, target.numVertices);
 			target.updateIndexData(indices);
 
 			//更改顶点数量
 			target.numVertices = source.numVertices + target.numVertices;
 
-			var vertexData:Number[];
+			var vertexData:number[];
 			//添加顶点数据
 			for each (vaId in vaIdList)
 			{

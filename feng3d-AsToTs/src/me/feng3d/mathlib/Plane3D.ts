@@ -180,7 +180,7 @@ module feng3d
 		 * @return			顶点类型 PlaneClassification.BACK,PlaneClassification.FRONT,PlaneClassification.INTERSECT
 		 * @see				me.feng3d.core.math.PlaneClassification
 		 */
-		public classifyPoint(p:Vector3D, epsilon:number = 0.01):number
+		export classifyPoint(p:Vector3D, epsilon:number = 0.01):number
 		{
 			// check NaN
 			if (this.d != this.d)

@@ -15,7 +15,7 @@ module feng3d
 		/** 与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓存区内选择属性。  */
 		public data32PerVertex:number;
 		/** 顶点数据 */
-		public data:Number[];
+		public data:number[];
 
 		/** 缓存字典 可在多个寄存器共享数据缓存时使用同一个 */
 		private bufferItemDic:Dictionary = new Dictionary();
@@ -80,7 +80,7 @@ module feng3d
 		 * @param numVertices 		要在缓存区中存储的顶点数量。单个缓存区中的最大顶点数为 65535。
 		 * @param data32PerVertex 	与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓存区内选择属性。
 		 */
-		public update(data:Number[], numVertices:number, data32PerVertex:number)
+		public update(data:number[], numVertices:number, data32PerVertex:number)
 		{
 			if (!data || numVertices == 0)
 				throw new Error("顶点缓存不接收空数组");

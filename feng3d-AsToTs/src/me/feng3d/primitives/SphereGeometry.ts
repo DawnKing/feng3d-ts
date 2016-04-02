@@ -37,10 +37,10 @@ module feng3d
 		 */
 		protected override function buildGeometry(target:SubGeometry)
 		{
-			var vertexPositionData:Number[];
-			var vertexNormalData:Number[];
-			var vertexTangentData:Number[];
-			var indices:uint[];
+			var vertexPositionData:number[];
+			var vertexNormalData:number[];
+			var vertexTangentData:number[];
+			var indices:number[];
 			var i:number, j:number, triIndex:number;
 			var numVerts:number = (this._segmentsH + 1) * (this._segmentsW + 1);
 
@@ -53,14 +53,14 @@ module feng3d
 				vertexPositionData = target.vertexPositionData;
 				vertexNormalData = target.vertexNormalData;
 				vertexTangentData = target.vertexTangentData;
-				indices = target.indexData || new uint[]((this._segmentsH - 1) * this._segmentsW * 6, true);
+				indices = target.indexData || new number[]((this._segmentsH - 1) * this._segmentsW * 6, true);
 			}
 			else
 			{
-				vertexPositionData = new Number[](numVerts * vertexPositionStride, true);
-				vertexNormalData = new Number[](numVerts * vertexNormalStride, true);
-				vertexTangentData = new Number[](numVerts * vertexTangentStride, true);
-				indices = new uint[]((this._segmentsH - 1) * this._segmentsW * 6, true);
+				vertexPositionData = new number[](numVerts * vertexPositionStride, true);
+				vertexNormalData = new number[](numVerts * vertexNormalStride, true);
+				vertexTangentData = new number[](numVerts * vertexTangentStride, true);
+				indices = new number[]((this._segmentsH - 1) * this._segmentsW * 6, true);
 				invalidateGeometry();
 			}
 
@@ -178,13 +178,13 @@ module feng3d
 			var i:number, j:number;
 			var stride:number = target.UVStride;
 			var numUvs:number = (this._segmentsH + 1) * (this._segmentsW + 1) * stride;
-			var data:Number[];
+			var data:number[];
 			var skip:number = stride - 2;
 
 			data = target.UVData;
 			if (data == null || numUvs != data.length)
 			{
-				data = new Number[](numUvs, true);
+				data = new number[](numUvs, true);
 				invalidateGeometry();
 			}
 

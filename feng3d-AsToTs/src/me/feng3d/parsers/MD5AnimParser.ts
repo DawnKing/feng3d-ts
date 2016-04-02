@@ -214,7 +214,7 @@ module feng3d
 			var translate:Vector3D = new Vector3D();
 			//旋转四元素
 			var orientation:Quaternion = new Quaternion();
-			var components:Number[] = frameData.components;
+			var components:number[] = frameData.components;
 			//骨骼pose数据
 			var skelPose:SkeletonPose = new SkeletonPose();
 			//骨骼pose列表
@@ -419,7 +419,7 @@ module feng3d
 				if (this._reachedEOF)
 					this.sendEOFError();
 				data = new FrameData();
-				data.components = new Number[](this._numAnimatedComponents, true);
+				data.components = new number[](this._numAnimatedComponents, true);
 
 				for (var i:number = 0; i < this._numAnimatedComponents; ++i)
 					data.components[i] = this.getNextNumber();
@@ -527,18 +527,18 @@ module feng3d
 		}
 
 		/**
-		 * 读取下个int
+		 * 读取下个number
 		 */
 		private getNextInt():number
 		{
 			var i:number = parseInt(this.getNextToken());
 			if (isNaN(i))
-				this.sendParseError("int type");
+				this.sendParseError("number type");
 			return i;
 		}
 
 		/**
-		 * 读取下个Number
+		 * 读取下个number
 		 */
 		private getNextNumber():number
 		{
@@ -712,7 +712,7 @@ class BaseFrameData
 class FrameData
 {
 	public index:number;
-	public components:Number[];
+	public components:number[];
 
 	public FrameData()
 	{

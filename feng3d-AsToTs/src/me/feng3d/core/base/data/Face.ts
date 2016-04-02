@@ -10,8 +10,8 @@ module feng3d
 	{
 		private static var _calcPoint:Point;
 		
-		private _vertices:Number[];
-		private _uvs:Number[];
+		private _vertices:number[];
+		private _uvs:number[];
 		private _faceIndex:number;
 		private _v0Index:number;
 		private _v1Index:number;
@@ -23,13 +23,13 @@ module feng3d
 		/**
 		 * Creates a new <code>Face</code> value object.
 		 *
-		 * @param    vertices        [optional] 9 entries long Vector.&lt;Number&gt; representing the x, y and z of v0, v1, and v2 of a face
-		 * @param    uvs            [optional] 6 entries long Vector.&lt;Number&gt; representing the u and v of uv0, uv1, and uv2 of a face
+		 * @param    vertices        [optional] 9 entries long Vector.&lt;number&gt; representing the x, y and z of v0, v1, and v2 of a face
+		 * @param    uvs            [optional] 6 entries long Vector.&lt;number&gt; representing the u and v of uv0, uv1, and uv2 of a face
 		 */
-		function Face(vertices:Number[] = null, uvs:Number[] = null)
+		function Face(vertices:number[] = null, uvs:number[] = null)
 		{
-			_vertices = vertices || Number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
-			_uvs = uvs || Number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
+			_vertices = vertices || number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
+			_uvs = uvs || number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
 		}
 		
 		//uvs
@@ -233,11 +233,11 @@ module feng3d
 		}
 		
 		/**
-		 * @return Returns a Number[] representing the v0 stored in the Face value object
+		 * @return Returns a number[] representing the v0 stored in the Face value object
 		 */
-		public get v0():Number[]
+		public get v0():number[]
 		{
-			return Number[]([_vertices[0], _vertices[1], _vertices[2]]);
+			return number[]([_vertices[0], _vertices[1], _vertices[2]]);
 		}
 		
 		/**
@@ -283,11 +283,11 @@ module feng3d
 		}
 		
 		/**
-		 * @return Returns a Number[] representing the v1 stored in the Face value object
+		 * @return Returns a number[] representing the v1 stored in the Face value object
 		 */
-		public get v1():Number[]
+		public get v1():number[]
 		{
-			return Number[]([_vertices[3], _vertices[4], _vertices[5]]);
+			return number[]([_vertices[3], _vertices[4], _vertices[5]]);
 		}
 		
 		/**
@@ -333,11 +333,11 @@ module feng3d
 		}
 		
 		/**
-		 * @return Returns a Number[] representing the v2 stored in the Face value object
+		 * @return Returns a number[] representing the v2 stored in the Face value object
 		 */
-		public get v2():Number[]
+		public get v2():number[]
 		{
-			return Number[]([_vertices[6], _vertices[7], _vertices[8]]);
+			return number[]([_vertices[6], _vertices[7], _vertices[8]]);
 		}
 		
 		/**
@@ -369,11 +369,11 @@ module feng3d
 		 */
 		public clone():Face
 		{
-			var nVertices:Number[] = Number[]([    this._vertices[0], this._vertices[1], this._vertices[2],
+			var nVertices:number[] = number[]([    this._vertices[0], this._vertices[1], this._vertices[2],
 				this._vertices[3], this._vertices[4], this._vertices[5],
 				this._vertices[6], this._vertices[7], this._vertices[8]]);
 			
-			var nUvs:Number[] = Number[]([this._uvs[0], this._uvs[1],
+			var nUvs:number[] = number[]([this._uvs[0], this._uvs[1],
 				this._uvs[2], this._uvs[3],
 				this._uvs[4], this._uvs[5]]);
 			

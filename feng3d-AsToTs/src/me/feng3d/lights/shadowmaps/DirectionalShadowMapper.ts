@@ -23,7 +23,7 @@ module feng3d
 	export class DirectionalShadowMapper extends ShadowMapperBase
 	{
 		protected _overallDepthCamera:Camera3D;
-		protected _localFrustum:Number[];
+		protected _localFrustum:number[];
 
 		protected _lightOffset:number = 10000;
 		protected _matrix:Matrix3D;
@@ -43,7 +43,7 @@ module feng3d
 			this._cullPlanes = new Plane3D[]();
 			this._overallDepthLens = new FreeMatrixLens();
 			this._overallDepthCamera = new Camera3D(this._overallDepthLens);
-			this._localFrustum = new Number[](8 * 3);
+			this._localFrustum = new number[](8 * 3);
 			this._matrix = new Matrix3D();
 		}
 
@@ -114,9 +114,9 @@ module feng3d
 		 * @param corners
 		 * @param matrix
 		 */
-		protected updateProjectionFromFrustumCorners(viewCamera:Camera3D, corners:Number[], matrix:Matrix3D)
+		protected updateProjectionFromFrustumCorners(viewCamera:Camera3D, corners:number[], matrix:Matrix3D)
 		{
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			var dir:Vector3D;
 			var x:number, y:number, z:number;
 			var minX:number, minY:number;
@@ -125,9 +125,9 @@ module feng3d
 
 			dir = DirectionalLight(_light).sceneDirection;
 			this._overallDepthCamera.transform3D.transform = _light.sceneTransform;
-			x = int((viewCamera.transform3D.x - dir.x * this._lightOffset) / this._snap) * this._snap;
-			y = int((viewCamera.transform3D.y - dir.y * this._lightOffset) / this._snap) * this._snap;
-			z = int((viewCamera.transform3D.z - dir.z * this._lightOffset) / this._snap) * this._snap;
+			x = number((viewCamera.transform3D.x - dir.x * this._lightOffset) / this._snap) * this._snap;
+			y = number((viewCamera.transform3D.y - dir.y * this._lightOffset) / this._snap) * this._snap;
+			z = number((viewCamera.transform3D.z - dir.z * this._lightOffset) / this._snap) * this._snap;
 			this._overallDepthCamera.transform3D.x = x;
 			this._overallDepthCamera.transform3D.y = y;
 			this._overallDepthCamera.transform3D.z = z;
@@ -144,8 +144,8 @@ module feng3d
 			while (i < 24)
 			{
 				x = this._localFrustum[i];
-				y = this._localFrustum[uint(i + 1)];
-				z = this._localFrustum[uint(i + 2)];
+				y = this._localFrustum[number(i + 1)];
+				z = this._localFrustum[number(i + 2)];
 				if (x < minX)
 					minX = x;
 				if (x > maxX)
@@ -165,15 +165,15 @@ module feng3d
 			var d:number = 1 / (this._maxZ - this._minZ);
 
 			if (minX < 0)
-				minX -= this._snap; // because int() rounds up for < 0
+				minX -= this._snap; // because number() rounds up for < 0
 			if (minY < 0)
 				minY -= this._snap;
-			minX = int(minX / this._snap) * this._snap;
-			minY = int(minY / this._snap) * this._snap;
+			minX = number(minX / this._snap) * this._snap;
+			minY = number(minY / this._snap) * this._snap;
 
 			var snap2:number = 2 * this._snap;
-			w = int(w / snap2 + 2) * snap2;
-			h = int(h / snap2 + 2) * snap2;
+			w = number(w / snap2 + 2) * snap2;
+			h = number(h / snap2 + 2) * snap2;
 
 			maxX = minX + w;
 			maxY = minY + h;

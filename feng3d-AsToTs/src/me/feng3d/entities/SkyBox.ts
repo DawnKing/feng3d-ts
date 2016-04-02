@@ -45,7 +45,7 @@ module feng3d
 		{
 			this.subGeometry.numVertices = 8;
 			//八个顶点，32个number
-			var vertexData:Number[] = new <Number>[ //
+			var vertexData:number[] = new <number>[ //
 				-1, 1, -1, 1, 1, -1, //
 				1, 1, 1, -1, 1, 1, //
 				-1, -1, -1, 1, -1, -1, //
@@ -54,7 +54,7 @@ module feng3d
 			this.subGeometry.updateVertexPositionData(vertexData);
 
 			//6个面，12个三角形，36个顶点索引
-			var indexData:uint[] = new <uint>[ //
+			var indexData:number[] = new <number>[ //
 				0, 1, 2, 2, 3, 0, //
 				6, 5, 4, 4, 7, 6, //
 				2, 6, 7, 7, 3, 2, //

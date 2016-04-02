@@ -293,11 +293,11 @@ module feng3d
 		public set transform(val:Matrix3D)
 		{
 			//ridiculous matrix error
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			val.copyRawDataTo(raw);
-			if (!raw[uint(0)])
+			if (!raw[number(0)])
 			{
-				raw[uint(0)] = _smallestNumber;
+				raw[number(0)] = _smallestNumber;
 				val.copyRawDataFrom(raw);
 			}
 

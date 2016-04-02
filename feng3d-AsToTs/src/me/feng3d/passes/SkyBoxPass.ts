@@ -28,8 +28,8 @@ module feng3d
 	 */
 	export class SkyBoxPass extends MaterialPassBase
 	{
-		private cameraPos:Number[] = new Number[](4);
-		private scaleSkybox:Number[] = new Number[](4);
+		private cameraPos:number[] = new number[](4);
+		private scaleSkybox:number[] = new number[](4);
 		private modelViewProjection:Matrix3D = new Matrix3D();
 
 		private _cubeTexture:CubeTextureBase;

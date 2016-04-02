@@ -27,8 +27,8 @@ module feng3d
 			super();
 			this._alwaysIn = alwaysIn;
 			this._renderable = renderable;
-			_max.x = _max.y = _max.z = Number.POSITIVE_INFINITY;
-			_min.x = _min.y = _min.z = this._alwaysIn ? Number.NEGATIVE_INFINITY :number.POSITIVE_INFINITY;
+			_max.x = _max.y = _max.z = number.POSITIVE_INFINITY;
+			_min.x = _min.y = _min.z = this._alwaysIn ? number.NEGATIVE_INFINITY :number.POSITIVE_INFINITY;
 		}
 
 		/**

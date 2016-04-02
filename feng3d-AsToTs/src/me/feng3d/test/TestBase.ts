@@ -86,7 +86,7 @@ module feng3d
 			loadObj.urls = [];
 			for (var i:number = 0; this.resourceList != null && i < this.resourceList.length; i++)
 			{
-				if (this.resourceList[i] is String)
+				if (this.resourceList[i] is string)
 				{
 					loadObj.urls.push(this.rootPath + this.resourceList[i]);
 				}

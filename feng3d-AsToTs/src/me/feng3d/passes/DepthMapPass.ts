@@ -32,12 +32,12 @@ module feng3d
 		/**
 		 * 通用数据
 		 */
-		private depthCommonsData0:Number[] = Number[]([1.0, 255.0, 255.0 * 255.0, 255.0 * 255.0 * 255.0]);
+		private depthCommonsData0:number[] = number[]([1.0, 255.0, 255.0 * 255.0, 255.0 * 255.0 * 255.0]);
 
 		/**
 		 * 通用数据
 		 */
-		private depthCommonsData1:Number[] = Number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+		private depthCommonsData1:number[] = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
 
 		private _depthMap:TextureProxyBase;
 

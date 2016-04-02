@@ -38,7 +38,7 @@ module feng3d
 		{
 			segmentGeometry.removeAllSegments();
 
-			var vertices:Number[] = new Number[]();
+			var vertices:number[] = new number[]();
 			var v0:Vector3D = new Vector3D();
 			var v1:Vector3D = new Vector3D();
 			var i:number, j:number;

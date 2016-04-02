@@ -41,7 +41,7 @@ module feng3d
 			this.type = this.className.split("::").pop();
 
 			//获取枚举的值
-			this.value = int(autoIndexDic[this.className]);
+			this.value = number(autoIndexDic[this.className]);
 			autoIndexDic[this.className] = this.value + 1;
 		}
 

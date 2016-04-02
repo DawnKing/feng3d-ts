@@ -233,7 +233,7 @@ module feng3d
 			var cx:number = aabb._centerX;
 			var cy:number = aabb._centerY;
 			var cz:number = aabb._centerZ;
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			matrix.copyRawDataTo(raw);
 			var m11:number = raw[0], m12:number = raw[4], m13:number = raw[8], m14:number = raw[12];
 			var m21:number = raw[1], m22:number = raw[5], m23:number = raw[9], m24:number = raw[13];

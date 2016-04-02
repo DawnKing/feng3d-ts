@@ -38,7 +38,7 @@ module feng3d
 		public _lightAmbientB:number = 0;
 
 		/** 环境光分量数据 */
-		private ambientColorData:Number[] = new Number[](4);
+		private ambientColorData:number[] = new number[](4);
 
 		/**
 		 * 创建一个基础环境光函数
@@ -126,11 +126,11 @@ module feng3d
 
 		public set texture(value:Texture2DBase)
 		{
-			if (Boolean(value) != _useTexture || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
+			if (boolean(value) != _useTexture || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
 			{
 				invalidateShaderProgram();
 			}
-			_useTexture = Boolean(value);
+			_useTexture = boolean(value);
 			_texture = value;
 
 			context3DBufferOwner.markBufferDirty(_.ambientTexture_fs);

@@ -24,32 +24,32 @@ module feng3d
 			this.mapVABuffer(this._.segmentColor_va_4, 4);
 		}
 
-		public get vertexPositionData():Number[]
+		public get vertexPositionData():number[]
 		{
 			return pointData0;
 		}
 
-		public get pointData0():Number[]
+		public get pointData0():number[]
 		{
-			var data:Number[] = getVAData(_.segmentStart_va_3);
+			var data:number[] = getVAData(_.segmentStart_va_3);
 			return data;
 		}
 
-		public get pointData1():Number[]
+		public get pointData1():number[]
 		{
-			var data:Number[] = getVAData(_.segmentEnd_va_3);
+			var data:number[] = getVAData(_.segmentEnd_va_3);
 			return data;
 		}
 
-		public get thicknessData():Number[]
+		public get thicknessData():number[]
 		{
-			var data:Number[] = getVAData(_.segmentThickness_va_1);
+			var data:number[] = getVAData(_.segmentThickness_va_1);
 			return data;
 		}
 
-		public get colorData():Number[]
+		public get colorData():number[]
 		{
-			var data:Number[] = getVAData(_.segmentColor_va_4);
+			var data:number[] = getVAData(_.segmentColor_va_4);
 			return data;
 		}
 
@@ -73,22 +73,22 @@ module feng3d
 			return 4;
 		}
 
-		public updatePointData0(value:Number[])
+		public updatePointData0(value:number[])
 		{
 			this.setVAData(this._.segmentStart_va_3, value);
 		}
 
-		public updatePointData1(value:Number[])
+		public updatePointData1(value:number[])
 		{
 			this.setVAData(this._.segmentEnd_va_3, value);
 		}
 
-		public updateThicknessData(value:Number[])
+		public updateThicknessData(value:number[])
 		{
 			this.setVAData(this._.segmentThickness_va_1, value);
 		}
 
-		public updateColorData(value:Number[])
+		public updateColorData(value:number[])
 		{
 			this.setVAData(this._.segmentColor_va_4, value);
 		}

@@ -56,9 +56,9 @@ module feng3d
 				subGeometry = subGeometries[j];
 
 				//顶点索引
-				var _vertexIndices:uint[] = subGeometry.indexData;
+				var _vertexIndices:number[] = subGeometry.indexData;
 				//顶点位置
-				var _vertices:Number[] = subGeometry.vertexPositionData;
+				var _vertices:number[] = subGeometry.vertexPositionData;
 
 				var numTriangle:number = _vertexIndices.length / 3;
 				var indexA:number;

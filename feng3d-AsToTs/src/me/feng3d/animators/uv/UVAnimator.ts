@@ -21,8 +21,8 @@ module feng3d
 	 */
 	export class UVAnimator extends AnimatorBase
 	{
-		private _matrix2d:Number[] = Number[]([1, 0, 0, 0, 1, 0, 0, 0]);
-		private _translate:Number[] = Number[]([0, 0, 0.5, 0.5]);
+		private _matrix2d:number[] = number[]([1, 0, 0, 0, 1, 0, 0, 0]);
+		private _translate:number[] = number[]([0, 0, 0.5, 0.5]);
 
 		private _uvAnimationSet:UVAnimationSet;
 		private _deltaFrame:UVAnimationFrame = new UVAnimationFrame();
@@ -33,7 +33,7 @@ module feng3d
 		private _autoRotation:boolean;
 		private _rotationIncrease:number = 1;
 		private _autoTranslate:boolean;
-		private _translateIncrease:Number[];
+		private _translateIncrease:number[];
 
 		/**
 		 * 创建<code>UVAnimator</code>实例
@@ -77,7 +77,7 @@ module feng3d
 		{
 			_autoTranslate = b;
 			if (b && !_translateIncrease)
-				_translateIncrease = Number[]([0, 0]);
+				_translateIncrease = number[]([0, 0]);
 		}
 
 		/**
@@ -96,7 +96,7 @@ module feng3d
 		public setTranslateIncrease(u:number, v:number)
 		{
 			if (!this._translateIncrease)
-				this._translateIncrease = Number[]([0, 0]);
+				this._translateIncrease = number[]([0, 0]);
 			this._translateIncrease[0] = u;
 			this._translateIncrease[1] = v;
 		}
@@ -104,7 +104,7 @@ module feng3d
 		/**
 		 * 转换值
 		 */
-		public get translateIncrease():Number[]
+		public get translateIncrease():number[]
 		{
 			return _translateIncrease;
 		}

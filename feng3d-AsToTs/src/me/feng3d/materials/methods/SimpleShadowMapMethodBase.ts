@@ -33,22 +33,22 @@ module feng3d
 		/**
 		 * 顶点常量数据0
 		 */
-		protected shadowCommonsVCData0:Number[] = Number[]([0.5, -0.5, 0.0, 1.0]);
+		protected shadowCommonsVCData0:number[] = number[]([0.5, -0.5, 0.0, 1.0]);
 
 		/**
 		 * 通用数据0
 		 */
-		protected shadowCommonsData0:Number[] = Number[]([1.0, 1 / 255.0, 1 / 65025.0, 1 / 16581375.0]);
+		protected shadowCommonsData0:number[] = number[]([1.0, 1 / 255.0, 1 / 65025.0, 1 / 16581375.0]);
 
 		/**
 		 * 通用数据1
 		 */
-		protected shadowCommonsData1:Number[] = Number[]([0, 0, 0, 1]);
+		protected shadowCommonsData1:number[] = number[]([0, 0, 0, 1]);
 
 		/**
 		 * 通用数据2
 		 */
-		protected shadowCommonsData2:Number[] = Number[]([0.5, 2048, 1.0 / 2048, 0]);
+		protected shadowCommonsData2:number[] = number[]([0.5, 2048, 1.0 / 2048, 0]);
 
 		/**
 		 * 深度投影矩阵

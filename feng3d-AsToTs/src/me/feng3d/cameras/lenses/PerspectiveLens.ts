@@ -112,7 +112,7 @@ module feng3d
 
 		protected updateMatrix()
 		{
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 
 			this._yMax = _near * this._focalLengthInv;
 			this._xMax = this._yMax * _aspectRatio;
@@ -127,12 +127,12 @@ module feng3d
 				top = -this._yMax;
 				bottom = this._yMax;
 				// assume unscissored frustum
-				raw[uint(0)] = _near / this._xMax;
-				raw[uint(5)] = _near / this._yMax;
-				raw[uint(10)] = _far / (_far - _near);
-				raw[uint(11)] = 1;
-				raw[uint(1)] = raw[uint(2)] = raw[uint(3)] = raw[uint(4)] = raw[uint(6)] = raw[uint(7)] = raw[uint(8)] = raw[uint(9)] = raw[uint(12)] = raw[uint(13)] = raw[uint(15)] = 0;
-				raw[uint(14)] = -_near * raw[uint(10)];
+				raw[number(0)] = _near / this._xMax;
+				raw[number(5)] = _near / this._yMax;
+				raw[number(10)] = _far / (_far - _near);
+				raw[number(11)] = 1;
+				raw[number(1)] = raw[number(2)] = raw[number(3)] = raw[number(4)] = raw[number(6)] = raw[number(7)] = raw[number(8)] = raw[number(9)] = raw[number(12)] = raw[number(13)] = raw[number(15)] = 0;
+				raw[number(14)] = -_near * raw[number(10)];
 			}
 			else
 			{
@@ -147,19 +147,19 @@ module feng3d
 				top = middle - yHgt;
 				bottom = middle + yHgt;
 
-				raw[uint(0)] = 2 * _near / (right - left);
-				raw[uint(5)] = 2 * _near / (bottom - top);
-				raw[uint(8)] = (right + left) / (right - left);
-				raw[uint(9)] = (bottom + top) / (bottom - top);
-				raw[uint(10)] = (_far + _near) / (_far - _near);
-				raw[uint(11)] = 1;
-				raw[uint(1)] = raw[uint(2)] = raw[uint(3)] = raw[uint(4)] = raw[uint(6)] = raw[uint(7)] = raw[uint(12)] = raw[uint(13)] = raw[uint(15)] = 0;
-				raw[uint(14)] = -2 * _far * _near / (_far - _near);
+				raw[number(0)] = 2 * _near / (right - left);
+				raw[number(5)] = 2 * _near / (bottom - top);
+				raw[number(8)] = (right + left) / (right - left);
+				raw[number(9)] = (bottom + top) / (bottom - top);
+				raw[number(10)] = (_far + _near) / (_far - _near);
+				raw[number(11)] = 1;
+				raw[number(1)] = raw[number(2)] = raw[number(3)] = raw[number(4)] = raw[number(6)] = raw[number(7)] = raw[number(12)] = raw[number(13)] = raw[number(15)] = 0;
+				raw[number(14)] = -2 * _far * _near / (_far - _near);
 			}
 
 			// Switch projection transform from left to right handed.
 			if (this._coordinateSystem == CoordinateSystem.RIGHT_HANDED)
-				raw[uint(5)] = -raw[uint(5)];
+				raw[number(5)] = -raw[number(5)];
 
 			_matrix.copyRawDataFrom(raw);
 

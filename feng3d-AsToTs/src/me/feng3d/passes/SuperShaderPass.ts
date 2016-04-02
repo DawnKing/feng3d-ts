@@ -22,22 +22,22 @@ module feng3d
 	export class SuperShaderPass extends CompiledPass
 	{
 		/** 方向光源场景方向数据 */
-		private dirLightSceneDirData:Number[] = new Number[]();
+		private dirLightSceneDirData:number[] = new number[]();
 
 		/** 方向光源漫反射光颜色数据 */
-		private dirLightDiffuseData:Number[] = new Number[]();
+		private dirLightDiffuseData:number[] = new number[]();
 
 		/** 方向光源镜面反射颜色数据 */
-		private dirLightSpecularData:Number[] = new Number[]();
+		private dirLightSpecularData:number[] = new number[]();
 
 		/** 点光源场景位置数据 */
-		private pointLightScenePositionData:Number[] = new Number[]();
+		private pointLightScenePositionData:number[] = new number[]();
 
 		/** 点光源漫反射光颜色数据 */
-		private pointLightDiffuseData:Number[] = new Number[]();
+		private pointLightDiffuseData:number[] = new number[]();
 
 		/** 点光源镜面反射颜色数据 */
-		private pointLightSpecularData:Number[] = new Number[]();
+		private pointLightSpecularData:number[] = new number[]();
 
 		/**
 		 * 创建超级渲染通道

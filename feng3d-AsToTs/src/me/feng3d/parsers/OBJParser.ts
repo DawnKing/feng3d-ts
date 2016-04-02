@@ -47,7 +47,7 @@ module feng3d
 		/** 对象组列表 */
 		private _objects:ObjectGroup[];
 		/** 材质编号列表 */
-		private _materialIDs:String[];
+		private _materialIDs:string[];
 		/** 加载了的材质列表 */
 		private _materialLoaded:LoadedMaterial[];
 
@@ -172,7 +172,7 @@ module feng3d
 			//单行数据
 			var line:string;
 			//换行符
-			var creturn:string = String.fromCharCode(10);
+			var creturn:string = string.fromCharCode(10);
 			var trunk:Array;
 
 			if (!this._startedParsing)
@@ -184,7 +184,7 @@ module feng3d
 			}
 
 			if (this._textData.indexOf(creturn) == -1)
-				creturn = String.fromCharCode(13);
+				creturn = string.fromCharCode(13);
 
 			//初始化数据
 			if (!this._startedParsing)
@@ -192,7 +192,7 @@ module feng3d
 				this._startedParsing = true;
 				this._vertices = new Vertex[]();
 				this._vertexNormals = new Vertex[]();
-				this._materialIDs = new String[]();
+				this._materialIDs = new string[]();
 				this._materialLoaded = new LoadedMaterial[]();
 				this._meshes = new Mesh[]();
 				this._uvs = new UV[]();
@@ -374,10 +374,10 @@ module feng3d
 			var numVerts:number;
 			var subs:SubGeometry[];
 
-			var vertices:Number[] = new Number[]();
-			var uvs:Number[] = new Number[]();
-			var normals:Number[] = new Number[]();
-			var indices:uint[] = new uint[]();
+			var vertices:number[] = new number[]();
+			var uvs:number[] = new number[]();
+			var normals:number[] = new number[]();
+			var indices:number[] = new number[]();
 
 			this._realIndices = [];
 			this._vertexIndex = 0;
@@ -414,7 +414,7 @@ module feng3d
 		 * @param indices
 		 * @param normals
 		 */
-		private translateVertexData(face:FaceData, vertexIndex:number, vertices:Number[], uvs:Number[], indices:uint[], normals:Number[])
+		private translateVertexData(face:FaceData, vertexIndex:number, vertices:number[], uvs:number[], indices:number[], normals:number[])
 		{
 			var index:number;
 			var vertex:Vertex;
@@ -605,9 +605,9 @@ module feng3d
 				//解析单个面数据，分离出顶点坐标左右、uv索引、法线索引
 				indices = trunk[i].split("/");
 				face.vertexIndices.push(this.parseIndex(parseInt(indices[0]), this._vertices.length));
-				if (indices[1] && String(indices[1]).length > 0)
+				if (indices[1] && string(indices[1]).length > 0)
 					face.uvIndices.push(this.parseIndex(parseInt(indices[1]), this._uvs.length));
-				if (indices[2] && String(indices[2]).length > 0)
+				if (indices[2] && string(indices[2]).length > 0)
 					face.normalIndices.push(this.parseIndex(parseInt(indices[2]), this._vertexNormals.length));
 				face.indexIds.push(trunk[i]);
 			}
@@ -653,7 +653,7 @@ module feng3d
 				lines = (materialDefinitions[i].split('\r') as Array).join("").split('\n');
 
 				if (lines.length == 1)
-					lines = materialDefinitions[i].split(String.fromCharCode(13));
+					lines = materialDefinitions[i].split(string.fromCharCode(13));
 
 				diffuseColor = ambientColor = specularColor = 0xFFFFFF;
 				specular = 0;
@@ -670,7 +670,7 @@ module feng3d
 					{
 						trunk = lines[j].split(" ");
 
-						if (String(trunk[0]).charCodeAt(0) == 9 || String(trunk[0]).charCodeAt(0) == 32)
+						if (string(trunk[0]).charCodeAt(0) == 9 || string(trunk[0]).charCodeAt(0) == 32)
 							trunk[0] = trunk[0].substring(1, trunk[0].length);
 
 						if (j == 0)
@@ -686,12 +686,12 @@ module feng3d
 							{
 
 								case "Ka":
-									if (trunk[1] && !isNaN(Number(trunk[1])) && trunk[2] && !isNaN(Number(trunk[2])) && trunk[3] && !isNaN(Number(trunk[3])))
+									if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3])))
 										ambientColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
 									break;
 
 								case "Ks":
-									if (trunk[1] && !isNaN(Number(trunk[1])) && trunk[2] && !isNaN(Number(trunk[2])) && trunk[3] && !isNaN(Number(trunk[3])))
+									if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3])))
 									{
 										specularColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
 										useSpecular = true;
@@ -699,14 +699,14 @@ module feng3d
 									break;
 
 								case "Ns":
-									if (trunk[1] && !isNaN(Number(trunk[1])))
-										specular = Number(trunk[1]) * 0.001;
+									if (trunk[1] && !isNaN(number(trunk[1])))
+										specular = number(trunk[1]) * 0.001;
 									if (specular == 0)
 										useSpecular = false;
 									break;
 
 								case "Kd":
-									if (trunk[1] && !isNaN(Number(trunk[1])) && trunk[2] && !isNaN(Number(trunk[2])) && trunk[3] && !isNaN(Number(trunk[3])))
+									if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3])))
 									{
 										diffuseColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
 										useColor = true;
@@ -715,8 +715,8 @@ module feng3d
 
 								case "tr":
 								case "d":
-									if (trunk[1] && !isNaN(Number(trunk[1])))
-										alpha = Number(trunk[1]);
+									if (trunk[1] && !isNaN(number(trunk[1])))
+										alpha = number(trunk[1]);
 									break;
 
 								case "map_Kd":
@@ -1050,13 +1050,13 @@ class LoadedMaterial
 class FaceData
 {
 	/** 顶点坐标索引数组 */
-	public vertexIndices:uint[] = new uint[]();
+	public vertexIndices:number[] = new number[]();
 	/** 顶点uv索引数组 */
-	public uvIndices:uint[] = new uint[]();
+	public uvIndices:number[] = new number[]();
 	/** 顶点法线索引数组 */
-	public normalIndices:uint[] = new uint[]();
+	public normalIndices:number[] = new number[]();
 	/** 顶点Id(原本该值存放了顶点索引、uv索引、发现索引，已经被解析为上面3个数组，剩下的就当做ID使用) */
-	public indexIds:String[] = new String[](); // 
+	public indexIds:string[] = new string[](); // 
 
 	public FaceData()
 	{

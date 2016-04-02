@@ -34,8 +34,8 @@ module feng3d
 	 *   <li>Min/Max FPS (only on frame rate bar in minimized mode)</li>
 	 *   <li>Current RAM usage (pink in graph)</li>
 	 *   <li>Maximum RAM usage</li>
-	 *   <li>Number of polygons in scene</li>
-	 *   <li>Number of polygons last rendered (yellow in graph)</li>
+	 *   <li>number of polygons in scene</li>
+	 *   <li>number of polygons last rendered (yellow in graph)</li>
 	 * </ul>
 	 *
 	 * <p>There are two display modes; standard and minimized, which are alternated by clicking
@@ -589,7 +589,7 @@ module feng3d
 			var dia_y:number;
 
 			// Redraw counters
-			this._fps_tf.text = this._fps.toString().concat('/', int(this.stage.frameRate));
+			this._fps_tf.text = this._fps.toString().concat('/', number(this.stage.frameRate));
 			this._afps_tf.text = Math.round(this._avg_fps).toString();
 			this._ram_tf.text = this._getRamString(this._ram).concat(' / ', this._getRamString(this._max_ram));
 
@@ -702,7 +702,7 @@ module feng3d
 			// Reset all values
 			this._updates = 0;
 			this._num_frames = 0;
-			this._min_fps = int.MAX_VALUE;
+			this._min_fps = number.MAX_VALUE;
 			this._max_fps = 0;
 			this._avg_fps = 0;
 			this._fps_sum = 0;
@@ -813,7 +813,7 @@ module feng3d
 			if (this._mean_data)
 			{
 				this._mean_data.push(this._fps);
-				this._fps_sum -= Number(this._mean_data.shift());
+				this._fps_sum -= number(this._mean_data.shift());
 
 				// Average = sum of all log entries over
 				// number of log entries.

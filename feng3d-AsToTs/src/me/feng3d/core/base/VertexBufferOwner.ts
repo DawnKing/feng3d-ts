@@ -17,7 +17,7 @@ module feng3d
 
 		protected _numVertices:number;
 
-		private _vaIdList:String[] = new String[]();
+		private _vaIdList:string[] = new string[]();
 		/** 顶点属性数据缓存字典 */
 		private vaBufferDic:Dictionary = new Dictionary();
 		/** 顶点数据长度字典 */
@@ -65,7 +65,7 @@ module feng3d
 		public mapVABuffer(dataTypeId:string, data32PerVertex:number)
 		{
 			this.data32PerVertexDic[dataTypeId] = data32PerVertex;
-			this.vertexDataDic[dataTypeId] = new Number[]();
+			this.vertexDataDic[dataTypeId] = new number[]();
 			this._vaIdList.push(dataTypeId);
 			this.vaBufferDic[dataTypeId] = this.context3DBufferOwner.mapContext3DBuffer(dataTypeId, this.updateVABuffer);
 		}
@@ -77,7 +77,7 @@ module feng3d
 		private updateVABuffer(vaBuffer:VABuffer)
 		{
 			var data32PerVertex:number = this.getVALen(vaBuffer.dataTypeId);
-			var data:Number[] = this.getVAData(vaBuffer.dataTypeId);
+			var data:number[] = this.getVAData(vaBuffer.dataTypeId);
 			vaBuffer.update(data, this.numVertices, data32PerVertex);
 		}
 
@@ -106,7 +106,7 @@ module feng3d
 		 * @param dataTypeId 数据类型编号
 		 * @param data 顶点属性数据
 		 */
-		public setVAData(dataTypeId:string, data:Number[])
+		public setVAData(dataTypeId:string, data:number[])
 		{
 			var vaLen:number = this.getVALen(dataTypeId);
 			assert(data.length == this.numVertices * vaLen, "数据长度不对，更新数据之前需要给SubGeometry.numVertices赋值");
@@ -124,7 +124,7 @@ module feng3d
 		 * @param needUpdate 是否需要更新数据
 		 * @return 顶点属性数据
 		 */
-		public getVAData(dataTypeId:string):Number[]
+		public getVAData(dataTypeId:string):number[]
 		{
 			if (!this.dataValidDic[dataTypeId])
 				this.updateVAdata(dataTypeId);
@@ -155,7 +155,7 @@ module feng3d
 		}
 
 		/** 顶点属性编号列表 */
-		public get vaIdList():String[]
+		public get vaIdList():string[]
 		{
 			return _vaIdList;
 		}

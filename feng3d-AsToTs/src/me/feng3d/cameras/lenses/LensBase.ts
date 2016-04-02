@@ -25,7 +25,7 @@ module feng3d
 		protected _aspectRatio:number = 1;
 
 		protected _matrixInvalid:boolean = true;
-		protected _frustumCorners:Number[] = new Number[](8 * 3, true);
+		protected _frustumCorners:number[] = new number[](8 * 3, true);
 
 		private _unprojection:Matrix3D;
 		private _unprojectionInvalid:boolean = true;
@@ -43,12 +43,12 @@ module feng3d
 		/**
 		 * Retrieves the corner points of the lens frustum.
 		 */
-		public get frustumCorners():Number[]
+		public get frustumCorners():number[]
 		{
 			return _frustumCorners;
 		}
 
-		public set frustumCorners(frustumCorners:Number[])
+		public set frustumCorners(frustumCorners:number[])
 		{
 			_frustumCorners = frustumCorners;
 		}

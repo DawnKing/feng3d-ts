@@ -18,7 +18,7 @@ module feng3d
 	export class ParticleVelocityNode extends ParticleNodeBase
 	{
 		/** 粒子速度 */
-		public _velocity:Number[] = Number[]([1, 1, 1, 0]);
+		public _velocity:number[] = number[]([1, 1, 1, 0]);
 
 		/**
 		 * 粒子的速度属性

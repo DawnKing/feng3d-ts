@@ -21,7 +21,7 @@ module feng3d
 	 */
 	export class VertexAnimator extends AnimatorBase
 	{
-		private _weights:Number[] = Number[]([1, 0, 0, 0]);
+		private _weights:number[] = number[]([1, 0, 0, 0]);
 
 		private _vertexAnimationSet:VertexAnimationSet;
 		private _poses:Geometry[] = new Geometry[]();
@@ -98,9 +98,9 @@ module feng3d
 		{
 			super.updateDeltaTime(dt);
 
-			this._poses[uint(0)] = this._activeVertexState.currentGeometry;
-			this._poses[uint(1)] = this._activeVertexState.nextGeometry;
-			this._weights[uint(0)] = 1 - (this._weights[uint(1)] = this._activeVertexState.blendWeight);
+			this._poses[number(0)] = this._activeVertexState.currentGeometry;
+			this._poses[number(1)] = this._activeVertexState.nextGeometry;
+			this._weights[number(0)] = 1 - (this._weights[number(1)] = this._activeVertexState.blendWeight);
 		}
 
 		/**

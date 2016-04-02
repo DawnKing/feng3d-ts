@@ -63,7 +63,7 @@ module feng3d
 			// Replaces collision data provided by bounds collider with more precise data.
 			// ---------------------------------------------------------------------
 
-			var shortestCollisionDistance:number = Number.MAX_VALUE;
+			var shortestCollisionDistance:number = number.MAX_VALUE;
 			var bestCollisionVO:PickingCollisionVO;
 			var pickingCollisionVO:PickingCollisionVO;
 			var entity:Entity;

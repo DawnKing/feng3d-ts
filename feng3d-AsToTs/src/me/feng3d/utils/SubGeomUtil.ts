@@ -17,7 +17,7 @@ module feng3d
 		 * @param _useFaceWeights
 		 * @return
 		 */
-		public static function updateFaceNormals(_faceNormals:Number[], vertices:Number[], _indices:uint[]):Number[]
+		public static function updateFaceNormals(_faceNormals:number[], vertices:number[], _indices:number[]):number[]
 		{
 			var i:number, j:number, k:number;
 			var index:number;
@@ -32,7 +32,7 @@ module feng3d
 			var posStride:number = 3;
 			var posOffset:number = 0;
 
-			_faceNormals ||= new Number[](len, true);
+			_faceNormals ||= new number[](len, true);
 
 			while (i < len)
 			{
@@ -78,7 +78,7 @@ module feng3d
 		 * @return
 		 *
 		 */
-		public static function updateFaceTangents(_faceTangents:Number[], vertices:Number[], uvs:Number[], _indices:uint[]):Number[]
+		public static function updateFaceTangents(_faceTangents:number[], vertices:number[], uvs:number[], _indices:number[]):number[]
 		{
 			var i:number;
 			var index1:number, index2:number, index3:number;
@@ -94,7 +94,7 @@ module feng3d
 			var posStride:number = 3;
 			var texStride:number = 2;
 
-			_faceTangents ||= new Number[](_indices.length, true);
+			_faceTangents ||= new number[](_indices.length, true);
 
 			while (i < len)
 			{
@@ -111,16 +111,16 @@ module feng3d
 
 				vi = index1 * posStride;
 				x0 = vertices[vi];
-				y0 = vertices[uint(vi + 1)];
-				z0 = vertices[uint(vi + 2)];
+				y0 = vertices[number(vi + 1)];
+				z0 = vertices[number(vi + 2)];
 				vi = index2 * posStride;
-				dx1 = vertices[uint(vi)] - x0;
-				dy1 = vertices[uint(vi + 1)] - y0;
-				dz1 = vertices[uint(vi + 2)] - z0;
+				dx1 = vertices[number(vi)] - x0;
+				dy1 = vertices[number(vi + 1)] - y0;
+				dz1 = vertices[number(vi + 2)] - z0;
 				vi = index3 * posStride;
-				dx2 = vertices[uint(vi)] - x0;
-				dy2 = vertices[uint(vi + 1)] - y0;
-				dz2 = vertices[uint(vi + 2)] - z0;
+				dx2 = vertices[number(vi)] - x0;
+				dy2 = vertices[number(vi + 1)] - y0;
+				dz2 = vertices[number(vi + 2)] - z0;
 
 				cx = dv2 * dx1 - dv1 * dx2;
 				cy = dv2 * dy1 - dv1 * dy2;
@@ -143,14 +143,14 @@ module feng3d
 		 * @param _useFaceWeights
 		 * @return
 		 */
-		public static function updateVertexNormals(target:Number[], _faceNormals:Number[], _indices:uint[], numVertices:number):Number[]
+		public static function updateVertexNormals(target:number[], _faceNormals:number[], _indices:number[], numVertices:number):number[]
 		{
 			var v1:number;
 			var f1:number = 0, f2:number = 1, f3:number = 2;
 			var lenV:number = numVertices * 3;
 			var normalStride:number = 3;
 
-			target ||= new Number[](lenV, true);
+			target ||= new number[](lenV, true);
 			v1 = 0;
 			while (v1 < lenV)
 			{
@@ -209,13 +209,13 @@ module feng3d
 		 * @param _useFaceWeights
 		 * @return
 		 */
-		public static function updateVertexTangents(target:Number[], _faceTangents:Number[], _indices:uint[], numVertices:number):Number[]
+		public static function updateVertexTangents(target:number[], _faceTangents:number[], _indices:number[], numVertices:number):number[]
 		{
 			var i:number;
 			var lenV:number = numVertices * 3;
 			var tangentStride:number = 3;
 
-			target ||= new Number[](lenV, true);
+			target ||= new number[](lenV, true);
 
 			i = 0;
 			while (i < lenV)

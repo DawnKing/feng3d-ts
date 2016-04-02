@@ -59,7 +59,7 @@ module feng3d
 			if (data == null)
 				return null;
 
-			if (data is String)
+			if (data is string)
 				data = tryClass(data);
 
 			if (data is Class)
@@ -107,7 +107,7 @@ module feng3d
 			if (data == null)
 				return null;
 
-			if (data is String)
+			if (data is string)
 				data = tryClass(data);
 
 			if (data is Class)

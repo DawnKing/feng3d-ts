@@ -15,7 +15,7 @@ module feng3d
 	export class FCVectorBuffer extends ConstantsBuffer
 	{
 		/** 常量向量数据 */
-		public data:Number[];
+		public data:number[];
 
 		/**
 		 * 创建片段向量常量数据缓存
@@ -43,7 +43,7 @@ module feng3d
 		 * @param numRegisters
 		 *
 		 */
-		public update(data:Number[], numRegisters:number = -1)
+		public update(data:number[], numRegisters:number = -1)
 		{
 			assert(data.length % 4 == 0, "常量数据个数必须为4的倍数！");
 

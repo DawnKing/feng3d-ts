@@ -40,9 +40,9 @@ module feng3d
 
 			var subGeom:SubGeometry = subMesh.subGeometry as SubGeometry;
 
-			var indexData:uint[] = subGeom.indexData;
-			var vertexData:Number[] = subGeom.vertexPositionData;
-			var uvData:Number[] = subGeom.UVData;
+			var indexData:number[] = subGeom.indexData;
+			var vertexData:number[] = subGeom.vertexPositionData;
+			var uvData:number[] = subGeom.UVData;
 			var collisionTriangleIndex:number = -1;
 
 			var vertexStride:number = subGeom.vertexPositionStride;
@@ -55,19 +55,19 @@ module feng3d
 			{ // sweep all triangles
 				//三角形三个顶点索引
 				i0 = vertexOffset + indexData[index] * vertexStride;
-				i1 = vertexOffset + indexData[uint(index + 1)] * vertexStride;
-				i2 = vertexOffset + indexData[uint(index + 2)] * vertexStride;
+				i1 = vertexOffset + indexData[number(index + 1)] * vertexStride;
+				i2 = vertexOffset + indexData[number(index + 2)] * vertexStride;
 
 				//三角形三个顶点数据
 				p0x = vertexData[i0];
-				p0y = vertexData[uint(i0 + 1)];
-				p0z = vertexData[uint(i0 + 2)];
+				p0y = vertexData[number(i0 + 1)];
+				p0z = vertexData[number(i0 + 2)];
 				p1x = vertexData[i1];
-				p1y = vertexData[uint(i1 + 1)];
-				p1z = vertexData[uint(i1 + 2)];
+				p1y = vertexData[number(i1 + 1)];
+				p1z = vertexData[number(i1 + 2)];
 				p2x = vertexData[i2];
-				p2y = vertexData[uint(i2 + 1)];
-				p2z = vertexData[uint(i2 + 2)];
+				p2y = vertexData[number(i2 + 1)];
+				p2z = vertexData[number(i2 + 2)];
 
 				//计算出三角面的法线
 				s0x = p1x - p0x; // s0 = p1 - p0

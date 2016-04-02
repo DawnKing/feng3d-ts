@@ -32,7 +32,7 @@ module feng3d
 		public scaleUV(scaleU:number = 1, scaleV:number = 1)
 		{
 			var stride:number = subGeometry.getVALen(_.uv_va_2);
-			var uvs:Number[] = subGeometry.UVData;
+			var uvs:number[] = subGeometry.UVData;
 			var len:number = uvs.length;
 			var ratioU:number = scaleU / this._scaleU;
 			var ratioV:number = scaleV / this._scaleV;
@@ -54,7 +54,7 @@ module feng3d
 		 */
 		public scale(scale:number)
 		{
-			var vertices:Number[] = subGeometry.getVAData(_.position_va_3);
+			var vertices:number[] = subGeometry.getVAData(_.position_va_3);
 			var len:number = vertices.length;
 			var stride:number = subGeometry.getVALen(_.position_va_3);
 
@@ -73,9 +73,9 @@ module feng3d
 		 */
 		public applyTransformation(transform:Matrix3D)
 		{
-			var vertices:Number[] = subGeometry.vertexPositionData;
-			var normals:Number[] = subGeometry.vertexNormalData;
-			var tangents:Number[] = subGeometry.vertexTangentData;
+			var vertices:number[] = subGeometry.vertexPositionData;
+			var normals:number[] = subGeometry.vertexNormalData;
+			var tangents:number[] = subGeometry.vertexTangentData;
 
 			var posStride:number = subGeometry.vertexPositionStride;
 			var normalStride:number = subGeometry.vertexNormalStride;

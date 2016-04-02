@@ -51,7 +51,7 @@ module feng3d
 		/** 动画节点列表 */
 		private _effects:ParticleNodeBase[] = new ParticleNodeBase[]();
 		/** 动画名称列表 */
-		private _effectNames:String[] = new String[]();
+		private _effectNames:string[] = new string[]();
 		/** 动画字典 */
 		private _effectDictionary:Dictionary = new Dictionary(true);
 
@@ -174,7 +174,7 @@ module feng3d
 
 			var counterForVertex:number;
 			var counterForOneData:number;
-			var oneData:Number[];
+			var oneData:number[];
 			var numVertices:number;
 			var vertexOffset:number;
 
@@ -215,7 +215,7 @@ module feng3d
 
 					/** 粒子所在子几何体的顶点位置 */
 					var startVertexIndex:number = particle.startVertexIndex;
-					var vaData:Number[] = particleSubGeometry.getVAData(localNode.vaId);
+					var vaData:number[] = particleSubGeometry.getVAData(localNode.vaId);
 					var vaLen:number = particleSubGeometry.getVALen(localNode.vaId);
 
 					//收集该粒子的每个顶点数据

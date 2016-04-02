@@ -13,7 +13,7 @@ module feng3d
 		/**
 		 * 基础类型列表
 		 */
-		public static BASETYPES:Array = ["int", "Boolean", "Number", "uint", "String", "null"];
+		public static BASETYPES:Array = ["number", "boolean", "number", "number", "string", "null"];
 
 		/**
 		 * 获取类定义
@@ -22,7 +22,7 @@ module feng3d
 		 */
 		public static function getClass(obj:*):Class
 		{
-			if (obj is String)
+			if (obj is string)
 			{
 				try
 				{
@@ -61,7 +61,7 @@ module feng3d
 			{
 				return new obj();
 			}
-			if (obj is String)
+			if (obj is string)
 			{
 				var cla:Class = getClass(obj) as Class;
 				return new cla;
@@ -168,7 +168,7 @@ module feng3d
 					var obj:Object;
 					if (item.paramType == "flash.geom::Matrix3D")
 					{
-						obj = new Matrix3D(Number[](item.paramValue.rawData));
+						obj = new Matrix3D(number[](item.paramValue.rawData));
 					}
 					else
 					{

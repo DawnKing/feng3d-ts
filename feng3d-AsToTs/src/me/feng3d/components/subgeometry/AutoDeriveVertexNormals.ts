@@ -13,16 +13,16 @@ module feng3d
 		/** 面法线脏标记 */
 		private _faceNormalsDirty:boolean = true;
 
-		private _faceNormals:Number[];
+		private _faceNormals:number[];
 
 		/** 是否使用面权重 */
 		private _useFaceWeights:boolean = false;
 
 		/** 面权重 */
-		private _faceWeights:Number[];
+		private _faceWeights:number[];
 
 		private dataTypeId:string;
-		private target:Number[];
+		private target:number[];
 		private needGenerate:boolean;
 
 		public AutoDeriveVertexNormals()
@@ -95,7 +95,7 @@ module feng3d
 		}
 
 		/** 面法线 */
-		public get faceNormals():Number[]
+		public get faceNormals():number[]
 		{
 			if (_faceNormalsDirty)
 				updateFaceNormals();
@@ -124,7 +124,7 @@ module feng3d
 		{
 			var i:number, j:number, k:number;
 			var index:number;
-			var _indices:uint[] = this.subGeometry.indices;
+			var _indices:number[] = this.subGeometry.indices;
 			var len:number = _indices.length;
 			var x1:number, x2:number, x3:number;
 			var y1:number, y2:number, y3:number;
@@ -133,13 +133,13 @@ module feng3d
 			var dx2:number, dy2:number, dz2:number;
 			var cx:number, cy:number, cz:number;
 			var d:number;
-			var vertices:Number[] = this.subGeometry.getVAData(_.position_va_3);
+			var vertices:number[] = this.subGeometry.getVAData(_.position_va_3);
 			var posStride:number = 3;
 			var posOffset:number = 0;
 
-			this._faceNormals ||= new Number[](len, true);
+			this._faceNormals ||= new number[](len, true);
 			if (this._useFaceWeights)
-				this._faceWeights ||= new Number[](len / 3, true);
+				this._faceWeights ||= new number[](len / 3, true);
 
 			while (i < len)
 			{
@@ -187,7 +187,7 @@ module feng3d
 		 * @param target 顶点法线数据
 		 * @return 顶点法线数据
 		 */
-		private updateVertexNormals(target:Number[]):Number[]
+		private updateVertexNormals(target:number[]):number[]
 		{
 			if (this._faceNormalsDirty)
 				this.updateFaceNormals();
@@ -198,7 +198,7 @@ module feng3d
 			var normalStride:number = 3;
 			var normalOffset:number = 0;
 
-			target ||= new Number[](lenV, true);
+			target ||= new number[](lenV, true);
 			v1 = normalOffset;
 			while (v1 < lenV)
 			{
@@ -209,7 +209,7 @@ module feng3d
 			}
 
 			var i:number, k:number;
-			var _indices:uint[] = this.subGeometry.indices;
+			var _indices:number[] = this.subGeometry.indices;
 			var lenI:number = _indices.length;
 			var index:number;
 			var weight:number;

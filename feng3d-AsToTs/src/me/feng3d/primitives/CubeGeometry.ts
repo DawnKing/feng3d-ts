@@ -153,10 +153,10 @@ module feng3d
 		 */
 		protected override function buildGeometry(target:SubGeometry)
 		{
-			var vertexPositionData:Number[];
-			var vertexNormalData:Number[];
-			var vertexTangentData:Number[];
-			var indices:uint[];
+			var vertexPositionData:number[];
+			var vertexNormalData:number[];
+			var vertexTangentData:number[];
+			var indices:number[];
 
 			var tl:number, tr:number, bl:number, br:number;
 			var i:number, j:number, inc:number = 0;
@@ -177,14 +177,14 @@ module feng3d
 				vertexPositionData = target.vertexPositionData;
 				vertexNormalData = target.vertexNormalData;
 				vertexTangentData = target.vertexTangentData;
-				indices = target.indexData || new uint[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
+				indices = target.indexData || new number[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
 			}
 			else
 			{
-				vertexPositionData = new Number[](numVerts * vertexPositionStride, true);
-				vertexNormalData = new Number[](numVerts * vertexNormalStride, true);
-				vertexTangentData = new Number[](numVerts * vertexTangentStride, true);
-				indices = new uint[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
+				vertexPositionData = new number[](numVerts * vertexPositionStride, true);
+				vertexNormalData = new number[](numVerts * vertexNormalStride, true);
+				vertexTangentData = new number[](numVerts * vertexTangentStride, true);
+				indices = new number[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
 				invalidateUVs();
 			}
 
@@ -375,7 +375,7 @@ module feng3d
 		protected buildUVs(target:SubGeometry)
 		{
 			var i:number, j:number, uidx:number;
-			var data:Number[];
+			var data:number[];
 
 			var u_tile_dim:number, v_tile_dim:number;
 			var u_tile_step:number, v_tile_step:number;
@@ -389,7 +389,7 @@ module feng3d
 			data = target.UVData;
 			if (data == null || numUvs != data.length)
 			{
-				data = new Number[](numUvs, true);
+				data = new number[](numUvs, true);
 				invalidateGeometry();
 			}
 

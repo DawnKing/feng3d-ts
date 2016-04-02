@@ -34,10 +34,10 @@ module feng3d
 		{
 			var ba:ByteArray;
 
-			length ||= uint.MAX_VALUE;
+			length ||= number.MAX_VALUE;
 
-			if (data is String)
-				return String(data).substr(0, length);
+			if (data is string)
+				return string(data).substr(0, length);
 
 			ba = toByteArray(data);
 			if (ba)

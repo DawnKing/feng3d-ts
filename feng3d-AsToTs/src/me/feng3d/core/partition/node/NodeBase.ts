@@ -55,7 +55,7 @@ module feng3d
 		 */
 		public set showDebugBounds(value:boolean)
 		{
-			if (Boolean(_debugPrimitive) == value)
+			if (boolean(_debugPrimitive) == value)
 				return;
 
 			if (value)

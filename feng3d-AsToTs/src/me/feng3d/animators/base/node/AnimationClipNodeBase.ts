@@ -16,7 +16,7 @@ module feng3d
 		protected _stitchFinalFrame:boolean = false;
 		protected _numFrames:number = 0;
 
-		protected _durations:uint[] = new uint[]();
+		protected _durations:number[] = new number[]();
 		protected _totalDelta:Vector3D = new Vector3D();
 
 		/** 是否稳定帧率 */
@@ -33,7 +33,7 @@ module feng3d
 		/**
 		 * 持续时间列表（ms）
 		 */
-		public get durations():uint[]
+		public get durations():number[]
 		{
 			return _durations;
 		}

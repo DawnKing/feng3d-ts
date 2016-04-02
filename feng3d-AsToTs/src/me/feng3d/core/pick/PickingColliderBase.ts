@@ -26,7 +26,7 @@ module feng3d
 		 * @return 碰撞法线
 		 *
 		 */
-		protected getCollisionNormal(indexData:uint[], vertexData:Number[], triangleIndex:number, normal:Vector3D = null):Vector3D
+		protected getCollisionNormal(indexData:number[], vertexData:number[], triangleIndex:number, normal:Vector3D = null):Vector3D
 		{
 			var i0:number = indexData[triangleIndex] * 3;
 			var i1:number = indexData[triangleIndex + 1] * 3;
@@ -62,7 +62,7 @@ module feng3d
 		 * @param uv uv坐标
 		 * @return 碰撞uv
 		 */
-		protected getCollisionUV(indexData:uint[], uvData:Number[], triangleIndex:number, v:number, w:number, u:number, uvOffset:number, uvStride:number, uv:Point = null):Point
+		protected getCollisionUV(indexData:number[], uvData:number[], triangleIndex:number, v:number, w:number, u:number, uvOffset:number, uvStride:number, uv:Point = null):Point
 		{
 			var uIndex:number = indexData[triangleIndex] * uvStride + uvOffset;
 			var uv0x:number = uvData[uIndex];

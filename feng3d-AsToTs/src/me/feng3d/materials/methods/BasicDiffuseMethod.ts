@@ -25,9 +25,9 @@ module feng3d
 		private _diffuseColor:number = 0xffffff;
 
 		/** 漫反射颜色数据RGBA */
-		private diffuseInputData:Number[] = new Number[](4);
+		private diffuseInputData:number[] = new number[](4);
 
-		private alphaThresholdData:Number[] = Number[]([0, 0, 0, 0]);
+		private alphaThresholdData:number[] = number[]([0, 0, 0, 0]);
 
 		/** 是否使用环境光材质 */
 		private _useAmbientTexture:boolean;
@@ -118,7 +118,7 @@ module feng3d
 
 		public set texture(value:Texture2DBase)
 		{
-			if (Boolean(value) != Boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
+			if (boolean(value) != boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
 			{
 				invalidateShaderProgram();
 			}

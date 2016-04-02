@@ -58,12 +58,12 @@ module feng3d
 		/**
 		 * 通用数据
 		 */
-		protected commonsData:Number[] = Number[]([0.5, 0, 1 / 255, 1]);
+		protected commonsData:number[] = number[]([0.5, 0, 1 / 255, 1]);
 
 		/**
 		 * 摄像机世界坐标
 		 */
-		protected cameraPosition:Number[] = new Number[](4);
+		protected cameraPosition:number[] = new number[](4);
 
 		/**
 		 * 是否开启灯光衰减

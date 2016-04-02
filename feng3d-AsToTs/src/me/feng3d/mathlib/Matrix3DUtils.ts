@@ -11,7 +11,7 @@ module feng3d
 		/**
 		 * A reference to a Vector to be used as a temporary raw data container, to prevent object creation.
 		 */
-		public static RAW_DATA_CONTAINER:Number[] = new Number[](16);
+		public static RAW_DATA_CONTAINER:number[] = new number[](16);
 
 		public static CALCULATION_MATRIX:Matrix3D = new Matrix3D();
 		public static CALCULATION_VECTOR3D:Vector3D = new Vector3D();
@@ -41,7 +41,7 @@ module feng3d
 			var zz:number = z * z;
 			var zw:number = z * w;
 
-			var raw:Number[] = RAW_DATA_CONTAINER;
+			var raw:number[] = RAW_DATA_CONTAINER;
 			raw[0] = 1 - 2 * (yy + zz);
 			raw[1] = 2 * (xy + zw);
 			raw[2] = 2 * (xz - yw);
@@ -117,8 +117,8 @@ module feng3d
 		 */
 		public static function compare(m1:Matrix3D, m2:Matrix3D):boolean
 		{
-			var r1:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
-			var r2:Number[] = m2.rawData;
+			var r1:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var r2:number[] = m2.rawData;
 			m1.copyRawDataTo(r1);
 
 			for (var i:number = 0; i < 16; ++i)
@@ -135,7 +135,7 @@ module feng3d
 			var dirN:Vector3D;
 			var upN:Vector3D;
 			var lftN:Vector3D;
-			var raw:Number[] = RAW_DATA_CONTAINER;
+			var raw:number[] = RAW_DATA_CONTAINER;
 
 			lftN = dir.crossProduct(up);
 			lftN.normalize();
@@ -172,7 +172,7 @@ module feng3d
 		{
 			target ||= new Matrix3D();
 			var a:number = plane.a, b:number = plane.b, c:number = plane.c, d:number = plane.d;
-			var rawData:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var rawData:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			var ab2:number = -2 * a * b;
 			var ac2:number = -2 * a * c;
 			var bc2:number = -2 * b * c;
@@ -200,7 +200,7 @@ module feng3d
 
 		public static function decompose(sourceMatrix:Matrix3D, orientationStyle:string = "eulerAngles"):Vector3D[]
 		{
-			var raw:Number[] = RAW_DATA_CONTAINER;
+			var raw:number[] = RAW_DATA_CONTAINER;
 			sourceMatrix.copyRawDataTo(raw);
 
 			var a:number = raw[0];
@@ -309,7 +309,7 @@ module feng3d
 		{
 			if (!result)
 				result = new Vector3D();
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			matrix.copyRawDataTo(raw);
 			var a:number = raw[0];
 			var e:number = raw[1];
@@ -342,7 +342,7 @@ module feng3d
 		{
 			if (!result)
 				result = new Vector3D();
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			matrix.copyRawDataTo(raw);
 			var a:number = raw[0];
 			var e:number = raw[1];
@@ -374,9 +374,9 @@ module feng3d
 			return result;
 		}
 
-		public static function deltaTransformVectors(matrix:Matrix3D, vin:Number[], vout:Number[])
+		public static function deltaTransformVectors(matrix:Matrix3D, vin:number[], vout:number[])
 		{
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			matrix.copyRawDataTo(raw);
 			var a:number = raw[0];
 			var e:number = raw[1];

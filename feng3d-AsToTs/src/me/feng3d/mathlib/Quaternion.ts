@@ -249,7 +249,7 @@ module feng3d
 		 */
 		public toMatrix3D(target:Matrix3D = null):Matrix3D
 		{
-			var rawData:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var rawData:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			var xy2:number = 2.0 * this.x * this.y, xz2:number = 2.0 * this.x * this.z, xw2:number = 2.0 * this.x * this.w;
 			var yz2:number = 2.0 * this.y * this.z, yw2:number = 2.0 * this.y * this.w, zw2:number = 2.0 * this.z * this.w;
 			var xx:number = this.x * this.x, yy:number = this.y * this.y, zz:number = this.z * this.z, ww:number = this.w * this.w;
@@ -293,11 +293,11 @@ module feng3d
 		}
 
 		/**
-		 * Converts the quaternion to a Vector.&lt;Number&gt; matrix representation of a rotation equivalent to this quaternion.
-		 * @param target The Vector.&lt;Number&gt; to contain the raw matrix data.
+		 * Converts the quaternion to a Vector.&lt;number&gt; matrix representation of a rotation equivalent to this quaternion.
+		 * @param target The Vector.&lt;number&gt; to contain the raw matrix data.
 		 * @param exclude4thRow If true, the last row will be omitted, and a 4x3 matrix will be generated instead of a 4x4.
 		 */
-		public toRawData(target:Number[], exclude4thRow:boolean = false)
+		public toRawData(target:number[], exclude4thRow:boolean = false)
 		{
 			var xy2:number = 2.0 * this.x * this.y, xz2:number = 2.0 * this.x * this.z, xw2:number = 2.0 * this.x * this.w;
 			var yz2:number = 2.0 * this.y * this.z, yw2:number = 2.0 * this.y * this.w, zw2:number = 2.0 * this.z * this.w;

@@ -65,8 +65,8 @@ module feng3d
 		 */
 		private buildGeometry()
 		{
-			var vertices:Number[];
-			var indices:uint[];
+			var vertices:number[];
+			var indices:number[];
 			var x:number, z:number;
 			var numInds:number;
 			var base:number;
@@ -81,8 +81,8 @@ module feng3d
 			var u:number, v:number;
 			var y:number;
 
-			vertices = this._subGeometry.vertexPositionData || new Number[](numVerts * 3, true);
-			indices = this._subGeometry.indexData || new uint[](this._segmentsH * this._segmentsW * 6, true);
+			vertices = this._subGeometry.vertexPositionData || new number[](numVerts * 3, true);
+			indices = this._subGeometry.indexData || new number[](this._segmentsH * this._segmentsW * 6, true);
 
 			numVerts = 0;
 			var col:number;
@@ -131,12 +131,12 @@ module feng3d
 		 */
 		private buildUVs()
 		{
-			var uvs:Number[] = new Number[]();
+			var uvs:number[] = new number[]();
 			var numUvs:number = (this._segmentsH + 1) * (this._segmentsW + 1) * 2;
 
 			uvs = this._subGeometry.UVData;
 			if (uvs == null || numUvs != uvs.length)
-				uvs = new Number[](numUvs, true);
+				uvs = new number[](numUvs, true);
 
 			numUvs = 0;
 			//计算每个顶点的uv坐标

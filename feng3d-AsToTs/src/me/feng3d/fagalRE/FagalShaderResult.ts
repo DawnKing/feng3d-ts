@@ -99,7 +99,7 @@ module feng3dRE
 				for (regId in regCountDic)
 				{
 					//记录寄存器使用次数
-					useRegDic[regId] = int(useRegDic[regId]) + int(regCountDic[regId]);
+					useRegDic[regId] = number(useRegDic[regId]) + number(regCountDic[regId]);
 				}
 			}
 
@@ -119,7 +119,7 @@ module feng3dRE
 				for (regId in regCountDic)
 				{
 					//记录寄存器使用次数
-					useRegDic[regId] = int(useRegDic[regId]) - int(regCountDic[regId]);
+					useRegDic[regId] = number(useRegDic[regId]) - number(regCountDic[regId]);
 
 					//移除临时寄存器
 					if (useRegDic[regId] == 0)

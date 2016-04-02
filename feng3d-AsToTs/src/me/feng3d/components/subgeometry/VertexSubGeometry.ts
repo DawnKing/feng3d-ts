@@ -28,13 +28,13 @@ module feng3d
 			this.updateVertexData1(subGeometry.vertexPositionData.concat());
 		}
 
-		public updateVertexData0(vertices:Number[])
+		public updateVertexData0(vertices:number[])
 		{
 			subGeometry.updateVertexPositionData(vertices);
 			subGeometry.setVAData(_.position0_va_3, vertices);
 		}
 
-		public updateVertexData1(vertices:Number[])
+		public updateVertexData1(vertices:number[])
 		{
 			subGeometry.setVAData(_.position1_va_3, vertices);
 		}

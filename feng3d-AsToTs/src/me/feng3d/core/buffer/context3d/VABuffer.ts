@@ -19,7 +19,7 @@ module feng3d
 		/**
 		 * 顶点数据缓冲格式数组
 		 */
-		private static bufferFormats:String[] = String[]([null, Context3DVertexBufferFormat.FLOAT_1, Context3DVertexBufferFormat.FLOAT_2, Context3DVertexBufferFormat.FLOAT_3, Context3DVertexBufferFormat.FLOAT_4]);
+		private static bufferFormats:string[] = string[]([null, Context3DVertexBufferFormat.FLOAT_1, Context3DVertexBufferFormat.FLOAT_2, Context3DVertexBufferFormat.FLOAT_3, Context3DVertexBufferFormat.FLOAT_4]);
 
 		/** 顶点数据缓存(真正的数据缓存) */
 		public dataBuffer:VADataBuffer = new VADataBuffer();
@@ -61,7 +61,7 @@ module feng3d
 		 * @param numVertices 		要在缓存区中存储的顶点数量。单个缓存区中的最大顶点数为 65535。
 		 * @param data32PerVertex 	与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓存区内选择属性。
 		 */
-		public update(data:Number[], numVertices:number, data32PerVertex:number)
+		public update(data:number[], numVertices:number, data32PerVertex:number)
 		{
 			assert(1 <= data32PerVertex && data32PerVertex <= 4);
 

@@ -33,7 +33,7 @@ module feng3d
 		private _priority:number;
 
 		protected _dataLength:number = 3;
-		protected _oneData:Number[];
+		protected _oneData:number[];
 
 		/**
 		 * 顶点数据编号
@@ -66,7 +66,7 @@ module feng3d
 			this._priority = priority;
 			this._dataLength = dataLength;
 
-			this._oneData = new Number[](this._dataLength, true);
+			this._oneData = new number[](this._dataLength, true);
 
 			super();
 
@@ -92,7 +92,7 @@ module feng3d
 		/**
 		 * 单个粒子数据
 		 */
-		public get oneData():Number[]
+		public get oneData():number[]
 		{
 			return _oneData;
 		}

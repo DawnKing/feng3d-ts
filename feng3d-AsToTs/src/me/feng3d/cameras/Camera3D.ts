@@ -147,27 +147,27 @@ module feng3d
 			var c31:number, c32:number, c33:number, c34:number;
 			var c41:number, c42:number, c43:number, c44:number;
 			var p:Plane3D;
-			var raw:Number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			//长度倒数
 			var invLen:number;
 			this.viewProjection.copyRawDataTo(raw);
 
-			c11 = raw[uint(0)];
-			c12 = raw[uint(4)];
-			c13 = raw[uint(8)];
-			c14 = raw[uint(12)];
-			c21 = raw[uint(1)];
-			c22 = raw[uint(5)];
-			c23 = raw[uint(9)];
-			c24 = raw[uint(13)];
-			c31 = raw[uint(2)];
-			c32 = raw[uint(6)];
-			c33 = raw[uint(10)];
-			c34 = raw[uint(14)];
-			c41 = raw[uint(3)];
-			c42 = raw[uint(7)];
-			c43 = raw[uint(11)];
-			c44 = raw[uint(15)];
+			c11 = raw[number(0)];
+			c12 = raw[number(4)];
+			c13 = raw[number(8)];
+			c14 = raw[number(12)];
+			c21 = raw[number(1)];
+			c22 = raw[number(5)];
+			c23 = raw[number(9)];
+			c24 = raw[number(13)];
+			c31 = raw[number(2)];
+			c32 = raw[number(6)];
+			c33 = raw[number(10)];
+			c34 = raw[number(14)];
+			c41 = raw[number(3)];
+			c42 = raw[number(7)];
+			c43 = raw[number(11)];
+			c44 = raw[number(15)];
 
 			// left plane
 			p = this._frustumPlanes[0];

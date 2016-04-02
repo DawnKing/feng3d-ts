@@ -27,10 +27,10 @@ module feng3d
 		/** 结束颜色数据 */
 		private _endColor:ColorTransform;
 
-		private _startMultiplierData:Number[];
-		private _deltaMultiplierData:Number[];
-		private _startOffsetData:Number[];
-		private _deltaOffsetData:Number[];
+		private _startMultiplierData:number[];
+		private _deltaMultiplierData:number[];
+		private _startOffsetData:number[];
+		private _deltaOffsetData:number[];
 
 		/**
 		 * 开始颜色属性
@@ -155,14 +155,14 @@ module feng3d
 			{
 				if (this._usesMultiplier)
 				{
-					this._startMultiplierData = Number[]([this._startColor.redMultiplier, this._startColor.greenMultiplier, this._startColor.blueMultiplier, this._startColor.alphaMultiplier]);
-					this._deltaMultiplierData = Number[]([(this._endColor.redMultiplier - this._startColor.redMultiplier), (this._endColor.greenMultiplier - this._startColor.greenMultiplier), (this._endColor.blueMultiplier - this._startColor.blueMultiplier), (this._endColor.alphaMultiplier - this._startColor.alphaMultiplier)]);
+					this._startMultiplierData = number[]([this._startColor.redMultiplier, this._startColor.greenMultiplier, this._startColor.blueMultiplier, this._startColor.alphaMultiplier]);
+					this._deltaMultiplierData = number[]([(this._endColor.redMultiplier - this._startColor.redMultiplier), (this._endColor.greenMultiplier - this._startColor.greenMultiplier), (this._endColor.blueMultiplier - this._startColor.blueMultiplier), (this._endColor.alphaMultiplier - this._startColor.alphaMultiplier)]);
 				}
 
 				if (this._usesOffset)
 				{
-					this._startOffsetData = Number[]([this._startColor.redOffset / 255, this._startColor.greenOffset / 255, this._startColor.blueOffset / 255, this._startColor.alphaOffset / 255]);
-					this._deltaOffsetData = Number[]([(this._endColor.redOffset - this._startColor.redOffset) / 255, (this._endColor.greenOffset - this._startColor.greenOffset) / 255, (this._endColor.blueOffset - this._startColor.blueOffset) / 255, (this._endColor.alphaOffset - this._startColor.alphaOffset) / 255]);
+					this._startOffsetData = number[]([this._startColor.redOffset / 255, this._startColor.greenOffset / 255, this._startColor.blueOffset / 255, this._startColor.alphaOffset / 255]);
+					this._deltaOffsetData = number[]([(this._endColor.redOffset - this._startColor.redOffset) / 255, (this._endColor.greenOffset - this._startColor.greenOffset) / 255, (this._endColor.blueOffset - this._startColor.blueOffset) / 255, (this._endColor.alphaOffset - this._startColor.alphaOffset) / 255]);
 				}
 			}
 		}

@@ -23,7 +23,7 @@ module feng3dSheet
 	 */
 	export class SpriteSheetAnimator extends AnimatorBase
 	{
-		private _vectorFrame:Number[] = new Number[](4, true);
+		private _vectorFrame:number[] = new number[](4, true);
 
 		private _activeSpriteSheetState:ISpriteSheetAnimationState;
 		private _spriteSheetAnimationSet:SpriteSheetAnimationSet;

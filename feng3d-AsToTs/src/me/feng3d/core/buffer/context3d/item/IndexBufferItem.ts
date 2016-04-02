@@ -23,7 +23,7 @@ module feng3d
 			this.invalid = true;
 		}
 
-		public uploadFromVector(data:uint[], startOffset:number, count:number)
+		public uploadFromVector(data:number[], startOffset:number, count:number)
 		{
 			this.indexBuffer3D.uploadFromVector(data, startOffset, count);
 			this.invalid = false;

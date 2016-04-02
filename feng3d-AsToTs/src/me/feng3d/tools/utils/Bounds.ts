@@ -56,8 +56,8 @@ module feng3d
 			// Transform min/max values to the scene if required
 			if (worldBased)
 			{
-				var b:Number[] = Number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
-				var c:Number[] = getBoundsCorners(_minX, _minY, _minZ, _maxX, _maxY, _maxZ);
+				var b:number[] = number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+				var c:number[] = getBoundsCorners(_minX, _minY, _minZ, _maxX, _maxY, _maxZ);
 				transformContainer(b, c, container.sceneTransform);
 				_minX = b[0];
 				_minY = b[1];
@@ -70,10 +70,10 @@ module feng3d
 
 		/**
 		 * Calculate the bounds from a vector of number representing the vertices. &lt;x,y,z,x,y,z.....&gt;
-		 * @param vertices        Vector.&lt;Number&gt;. The vertices to get the bounds from.
+		 * @param vertices        Vector.&lt;number&gt;. The vertices to get the bounds from.
 		 * Use the getters of this class to retrieve the results
 		 */
-		public static function getVerticesVectorBounds(vertices:Number[])
+		public static function getVerticesVectorBounds(vertices:number[])
 		{
 			reset();
 			var l:number = vertices.length;
@@ -208,7 +208,7 @@ module feng3d
 			if (!obj.visible)
 				return;
 
-			var containerBounds:Number[] = _containers[obj] ||= Number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+			var containerBounds:number[] = _containers[obj] ||= number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
 
 			var child:Container3D;
 			var isEntity:Entity = obj as Entity;
@@ -235,7 +235,7 @@ module feng3d
 				parseObjectContainerBounds(child, containerTransform);
 			}
 
-			var parentBounds:Number[] = _containers[obj.parent];
+			var parentBounds:number[] = _containers[obj.parent];
 			if (!isEntity && parentTransform)
 				parseObjectBounds(obj, parentTransform, true);
 
@@ -261,7 +261,7 @@ module feng3d
 
 		private static function isInfinite(value:number):boolean
 		{
-			return value == Number.POSITIVE_INFINITY || value == Number.NEGATIVE_INFINITY;
+			return value == number.POSITIVE_INFINITY || value == number.NEGATIVE_INFINITY;
 		}
 
 		private static function parseObjectBounds(oC:Container3D, parentTransform:Matrix3D = null, resetBounds:boolean = false)
@@ -270,9 +270,9 @@ module feng3d
 				return;
 
 			var e:Entity = oC as Entity;
-			var corners:Number[];
+			var corners:number[];
 			var mat:Matrix3D = oC.transform3D.transform.clone();
-			var cB:Number[] = _containers[oC];
+			var cB:number[] = _containers[oC];
 			if (e)
 			{
 				if (isInfinite(e.minX) || isInfinite(e.minY) || isInfinite(e.minZ) || isInfinite(e.maxX) || isInfinite(e.maxY) || isInfinite(e.maxZ))
@@ -300,12 +300,12 @@ module feng3d
 			transformContainer(cB, corners, mat);
 		}
 
-		private static function getBoundsCorners(minX:number, minY:number, minZ:number, maxX:number, maxY:number, maxZ:number):Number[]
+		private static function getBoundsCorners(minX:number, minY:number, minZ:number, maxX:number, maxY:number, maxZ:number):number[]
 		{
-			return Number[]([minX, minY, minZ, minX, minY, maxZ, minX, maxY, minZ, minX, maxY, maxZ, maxX, minY, minZ, maxX, minY, maxZ, maxX, maxY, minZ, maxX, maxY, maxZ]);
+			return number[]([minX, minY, minZ, minX, minY, maxZ, minX, maxY, minZ, minX, maxY, maxZ, maxX, minY, minZ, maxX, minY, maxZ, maxX, maxY, minZ, maxX, maxY, maxZ]);
 		}
 
-		private static function transformContainer(bounds:Number[], corners:Number[], matrix:Matrix3D)
+		private static function transformContainer(bounds:number[], corners:number[], matrix:Matrix3D)
 		{
 
 			matrix.transformVectors(corners, corners);

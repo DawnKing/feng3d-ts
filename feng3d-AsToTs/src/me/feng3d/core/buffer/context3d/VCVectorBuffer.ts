@@ -15,7 +15,7 @@ module feng3d
 	export class VCVectorBuffer extends ConstantsBuffer
 	{
 		/** 静态向量数据 */
-		public data:Number[];
+		public data:number[];
 
 		/**
 		 * 创建一个顶点向量常量数据缓存
@@ -42,7 +42,7 @@ module feng3d
 		 * @param data				静态向量数据
 		 * @param numRegisters		需要寄存器的个数
 		 */
-		public update(data:Number[], numRegisters:number = -1)
+		public update(data:number[], numRegisters:number = -1)
 		{
 			assert(data.length % 4 == 0, "常量数据个数必须为4的倍数！");
 

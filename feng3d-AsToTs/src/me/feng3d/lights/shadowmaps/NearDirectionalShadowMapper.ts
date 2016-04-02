@@ -45,13 +45,13 @@ module feng3d
 		 */
 		protected updateDepthProjection(viewCamera:Camera3D)
 		{
-			var corners:Number[] = viewCamera.lens.frustumCorners;
+			var corners:number[] = viewCamera.lens.frustumCorners;
 
 			for (var i:number = 0; i < 12; ++i)
 			{
 				var v:number = corners[i];
 				_localFrustum[i] = v;
-				_localFrustum[uint(i + 12)] = v + (corners[uint(i + 12)] - v) * this._coverageRatio;
+				_localFrustum[number(i + 12)] = v + (corners[number(i + 12)] - v) * this._coverageRatio;
 			}
 
 			updateProjectionFromFrustumCorners(viewCamera, _localFrustum, _matrix);

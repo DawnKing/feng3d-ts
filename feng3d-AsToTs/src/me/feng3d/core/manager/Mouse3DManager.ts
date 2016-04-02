@@ -22,7 +22,7 @@ module feng3d
 		private _mousePicker:RaycastPicker = new RaycastPicker(false);
 
 		/** 收集的鼠标事件列表 */
-		private mouseEventList:String[] = new String[]();
+		private mouseEventList:string[] = new string[]();
 
 		/** 是否开启鼠标事件检测 */
 		private mouseEventOpen:boolean = false;

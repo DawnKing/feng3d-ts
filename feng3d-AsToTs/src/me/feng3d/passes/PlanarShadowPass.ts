@@ -31,7 +31,7 @@ module feng3d
 		/**
 		 * 阴影颜色
 		 */
-		private shadowColorCommonsData:Number[] = new Number[](4);
+		private shadowColorCommonsData:number[] = new number[](4);
 
 		public static var groundY:number = 50;
 
@@ -41,7 +41,7 @@ module feng3d
 		public PlanarShadowPass()
 		{
 			super();
-			this.shadowColorCommonsData = Number[]([1, 0, 0, 1]);
+			this.shadowColorCommonsData = number[]([1, 0, 0, 1]);
 		}
 
 		/**
@@ -107,7 +107,7 @@ module feng3d
 			var nl:number = n.dotProduct(l);
 			var d:number = -groundY;
 
-			var mat1:Matrix3D = new Matrix3D(Number[]( //
+			var mat1:Matrix3D = new Matrix3D(number[]( //
 				[nl + d - n.x * l.x, -n.y * l.x, -n.z * l.x, -d * l.x, //
 				-n.x * l.y, nl + d - n.y * l.y, -n.z * l.y, -d * l.y, //
 				-n.x * l.y, -n.y * l.z, nl + d - n.z * l.z, -d * l.z, //

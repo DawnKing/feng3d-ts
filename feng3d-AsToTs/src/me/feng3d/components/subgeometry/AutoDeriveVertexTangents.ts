@@ -16,12 +16,12 @@ module feng3d
 		/** 是否使用面权重 */
 		private _useFaceWeights:boolean = false;
 
-		private _faceTangents:Number[];
+		private _faceTangents:number[];
 		/** 面权重 */
-		private _faceWeights:Number[];
+		private _faceWeights:number[];
 
 		private dataTypeId:string;
-		private target:Number[];
+		private target:number[];
 		private needGenerate:boolean;
 
 		public AutoDeriveVertexTangents()
@@ -94,7 +94,7 @@ module feng3d
 		}
 
 		/** 面切线 */
-		public get faceTangents():Number[]
+		public get faceTangents():number[]
 		{
 			if (_faceTangentsDirty)
 				updateFaceTangents();
@@ -121,7 +121,7 @@ module feng3d
 		{
 			var i:number;
 			var index1:number, index2:number, index3:number;
-			var _indices:uint[] = this.subGeometry.indices;
+			var _indices:number[] = this.subGeometry.indices;
 			var len:number = _indices.length;
 			var ui:number, vi:number;
 			var v0:number;
@@ -131,14 +131,14 @@ module feng3d
 			var dx1:number, dy1:number, dz1:number;
 			var dx2:number, dy2:number, dz2:number;
 			var cx:number, cy:number, cz:number;
-			var vertices:Number[] = this.subGeometry.getVAData(_.position_va_3);
-			var uvs:Number[] = this.subGeometry.getVAData(_.uv_va_2);
+			var vertices:number[] = this.subGeometry.getVAData(_.position_va_3);
+			var uvs:number[] = this.subGeometry.getVAData(_.uv_va_2);
 			var posStride:number = this.subGeometry.getVALen(_.position_va_3);
 			var posOffset:number = 0;
 			var texStride:number = this.subGeometry.getVALen(_.uv_va_2);
 			var texOffset:number = 0;
 
-			this._faceTangents ||= new Number[](_indices.length, true);
+			this._faceTangents ||= new number[](_indices.length, true);
 
 			while (i < len)
 			{
@@ -155,16 +155,16 @@ module feng3d
 
 				vi = posOffset + index1 * posStride;
 				x0 = vertices[vi];
-				y0 = vertices[uint(vi + 1)];
-				z0 = vertices[uint(vi + 2)];
+				y0 = vertices[number(vi + 1)];
+				z0 = vertices[number(vi + 2)];
 				vi = posOffset + index2 * posStride;
-				dx1 = vertices[uint(vi)] - x0;
-				dy1 = vertices[uint(vi + 1)] - y0;
-				dz1 = vertices[uint(vi + 2)] - z0;
+				dx1 = vertices[number(vi)] - x0;
+				dy1 = vertices[number(vi + 1)] - y0;
+				dz1 = vertices[number(vi + 2)] - z0;
 				vi = posOffset + index3 * posStride;
-				dx2 = vertices[uint(vi)] - x0;
-				dy2 = vertices[uint(vi + 1)] - y0;
-				dz2 = vertices[uint(vi + 2)] - z0;
+				dx2 = vertices[number(vi)] - x0;
+				dy2 = vertices[number(vi + 1)] - y0;
+				dz2 = vertices[number(vi + 2)] - z0;
 
 				cx = dv2 * dx1 - dv1 * dx2;
 				cy = dv2 * dy1 - dv1 * dy2;
@@ -183,7 +183,7 @@ module feng3d
 		 * @param target 顶点切线数据
 		 * @return 顶点切线数据
 		 */
-		protected updateVertexTangents(target:Number[]):Number[]
+		protected updateVertexTangents(target:number[]):number[]
 		{
 			if (this._faceTangentsDirty)
 				this.updateFaceTangents();
@@ -193,7 +193,7 @@ module feng3d
 			var tangentStride:number = 3;
 			var tangentOffset:number = 0;
 
-			target ||= new Number[](lenV, true);
+			target ||= new number[](lenV, true);
 
 			i = tangentOffset;
 			while (i < lenV)
@@ -205,7 +205,7 @@ module feng3d
 			}
 
 			var k:number;
-			var _indices:uint[] = this.subGeometry.indices;
+			var _indices:number[] = this.subGeometry.indices;
 			var lenI:number = _indices.length;
 			var index:number;
 			var weight:number;

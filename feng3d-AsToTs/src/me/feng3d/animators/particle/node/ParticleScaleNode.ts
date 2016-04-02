@@ -20,7 +20,7 @@ module feng3d
 		private _minScale:number;
 		private _maxScale:number;
 
-		private _scaleData:Number[];
+		private _scaleData:number[];
 
 		/**
 		 * 缩放属性名
@@ -102,7 +102,7 @@ module feng3d
 		{
 			if (this.mode == ParticlePropertiesMode.GLOBAL)
 			{
-				this._scaleData = Number[]([this._minScale, this._maxScale - this._minScale, 0, 0]);
+				this._scaleData = number[]([this._minScale, this._maxScale - this._minScale, 0, 0]);
 			}
 		}
 

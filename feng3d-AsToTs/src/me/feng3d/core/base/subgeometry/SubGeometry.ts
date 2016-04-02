@@ -38,7 +38,7 @@ module feng3d
 	{
 		private _parent:Geometry;
 
-		protected _indices:uint[];
+		protected _indices:number[];
 
 		protected _numIndices:number;
 		protected _numTriangles:number;
@@ -91,10 +91,10 @@ module feng3d
 		/**
 		 * 顶点索引数据
 		 */
-		public get indexData():uint[]
+		public get indexData():number[]
 		{
 			if (_indices == null)
-				_indices = new uint[]();
+				_indices = new number[]();
 			return _indices;
 		}
 
@@ -109,7 +109,7 @@ module feng3d
 		/**
 		 * 索引数据
 		 */
-		public get indices():uint[]
+		public get indices():number[]
 		{
 			return _indices;
 		}
@@ -117,7 +117,7 @@ module feng3d
 		/**
 		 * 更新顶点索引数据
 		 */
-		public updateIndexData(indices:uint[])
+		public updateIndexData(indices:number[])
 		{
 			this._indices = indices;
 			this._numIndices = indices.length;
@@ -130,7 +130,7 @@ module feng3d
 			this.dispatchEvent(new GeometryComponentEvent(GeometryComponentEvent.CHANGED_INDEX_DATA));
 		}
 
-		public fromVectors(vertices:Number[], uvs:Number[])
+		public fromVectors(vertices:number[], uvs:number[])
 		{
 			this.updateVertexPositionData(vertices);
 
@@ -143,9 +143,9 @@ module feng3d
 		 */
 		public applyTransformation(transform:Matrix3D)
 		{
-			var vertices:Number[] = this.vertexPositionData;
-			var normals:Number[] = this.vertexNormalData;
-			var tangents:Number[] = this.vertexTangentData;
+			var vertices:number[] = this.vertexPositionData;
+			var normals:number[] = this.vertexNormalData;
+			var tangents:number[] = this.vertexTangentData;
 
 			var posStride:number = this.vertexPositionStride;
 			var normalStride:number = this.vertexNormalStride;
@@ -227,7 +227,7 @@ module feng3d
 		 * 更新uv数据
 		 * @param data	uv数据
 		 */
-		public updateUVData(data:Number[])
+		public updateUVData(data:number[])
 		{
 			this.setVAData(this._.uv_va_2, data);
 		}
@@ -235,7 +235,7 @@ module feng3d
 		/**
 		 * 更新顶点数据
 		 */
-		public updateVertexPositionData(data:Number[])
+		public updateVertexPositionData(data:number[])
 		{
 			this.setVAData(this._.position_va_3, data);
 
@@ -246,7 +246,7 @@ module feng3d
 		 * 更新顶点法线数据
 		 * @param vertexNormals 顶点法线数据
 		 */
-		public updateVertexNormalData(vertexNormals:Number[])
+		public updateVertexNormalData(vertexNormals:number[])
 		{
 			this.setVAData(this._.normal_va_3, vertexNormals);
 		}
@@ -255,7 +255,7 @@ module feng3d
 		 * 更新顶点切线数据
 		 * @param vertexTangents 顶点切线数据
 		 */
-		public updateVertexTangentData(vertexTangents:Number[])
+		public updateVertexTangentData(vertexTangents:number[])
 		{
 			this.setVAData(this._.tangent_va_3, vertexTangents);
 		}
@@ -263,7 +263,7 @@ module feng3d
 		/**
 		 * 顶点数据
 		 */
-		public get vertexPositionData():Number[]
+		public get vertexPositionData():number[]
 		{
 			return getVAData(_.position_va_3);
 		}
@@ -271,7 +271,7 @@ module feng3d
 		/**
 		 * 顶点法线数据
 		 */
-		public get vertexNormalData():Number[]
+		public get vertexNormalData():number[]
 		{
 			return getVAData(_.normal_va_3);
 		}
@@ -279,7 +279,7 @@ module feng3d
 		/**
 		 * 顶点切线数据
 		 */
-		public get vertexTangentData():Number[]
+		public get vertexTangentData():number[]
 		{
 			return getVAData(_.tangent_va_3);
 		}
@@ -287,7 +287,7 @@ module feng3d
 		/**
 		 * uv数据
 		 */
-		public get UVData():Number[]
+		public get UVData():number[]
 		{
 			return getVAData(_.uv_va_2);
 		}
@@ -331,7 +331,7 @@ module feng3d
 			this.dispatchEvent(new GeometryComponentEvent(GeometryComponentEvent.CHANGED_VA_DATA, dataTypeId));
 		}
 
-		public getVAData(dataTypeId:string):Number[]
+		public getVAData(dataTypeId:string):number[]
 		{
 			this.dispatchEvent(new GeometryComponentEvent(GeometryComponentEvent.GET_VA_DATA, dataTypeId));
 

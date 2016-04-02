@@ -15,10 +15,10 @@ module feng3d
 		protected _segmentsR:number;
 		protected _segmentsT:number;
 		protected _yUp:boolean;
-		protected vertexPositionData:Number[];
-		protected vertexNormalData:Number[];
-		protected vertexTangentData:Number[];
-		private _rawIndices:uint[];
+		protected vertexPositionData:number[];
+		protected vertexNormalData:number[];
+		protected vertexTangentData:number[];
+		private _rawIndices:number[];
 		private _vertexIndex:number;
 		private _currentTriangleIndex:number;
 		private _numVertices:number;
@@ -82,14 +82,14 @@ module feng3d
 				this.vertexPositionData = target.vertexPositionData;
 				this.vertexNormalData = target.vertexNormalData;
 				this.vertexTangentData = target.vertexTangentData;
-				this._rawIndices = target.indexData || new uint[](numTriangles * 3, true);
+				this._rawIndices = target.indexData || new number[](numTriangles * 3, true);
 			}
 			else
 			{
-				this.vertexPositionData = new Number[](this._numVertices * this.vertexPositionStride, true);
-				this.vertexNormalData = new Number[](this._numVertices * this.vertexNormalStride, true);
-				this.vertexTangentData = new Number[](this._numVertices * this.vertexTangentStride, true);
-				this._rawIndices = new uint[](numTriangles * 3, true);
+				this.vertexPositionData = new number[](this._numVertices * this.vertexPositionStride, true);
+				this.vertexNormalData = new number[](this._numVertices * this.vertexNormalStride, true);
+				this.vertexTangentData = new number[](this._numVertices * this.vertexTangentStride, true);
+				this._rawIndices = new number[](numTriangles * 3, true);
 				invalidateUVs();
 			}
 
@@ -181,7 +181,7 @@ module feng3d
 		protected override function buildUVs(target:SubGeometry)
 		{
 			var i:number, j:number;
-			var data:Number[];
+			var data:number[];
 			var stride:number = target.UVStride;
 
 			// evaluate num uvs
@@ -191,7 +191,7 @@ module feng3d
 			data = target.UVData;
 			if (data == null || numUvs != data.length)
 			{
-				data = new Number[](numUvs, true);
+				data = new number[](numUvs, true);
 			}
 
 			// current uv component index

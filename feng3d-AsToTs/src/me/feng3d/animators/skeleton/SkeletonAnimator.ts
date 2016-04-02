@@ -27,7 +27,7 @@ module feng3d
 	 */
 	export class SkeletonAnimator extends AnimatorBase
 	{
-		private _globalMatrices:Number[] = new Number[]();
+		private _globalMatrices:number[] = new number[]();
 		private _globalPose:SkeletonPose = new SkeletonPose();
 		private _globalPropertiesDirty:boolean;
 		private _numJoints:number;
@@ -42,7 +42,7 @@ module feng3d
 		 * 当前骨骼姿势的全局矩阵
 		 * @see #globalPose
 		 */
-		public get globalMatrices():Number[]
+		public get globalMatrices():number[]
 		{
 			if (_globalPropertiesDirty)
 				updateGlobalProperties();
@@ -232,7 +232,7 @@ module feng3d
 			//矩阵偏移量
 			var mtxOffset:number;
 			var globalPoses:JointPose[] = this._globalPose.jointPoses;
-			var raw:Number[];
+			var raw:number[];
 			var ox:number, oy:number, oz:number, ow:number;
 			var xy2:number, xz2:number, xw2:number;
 			var yz2:number, yw2:number, zw2:number;
@@ -303,21 +303,21 @@ module feng3d
 				m34 = raw[14];
 
 				//计算关节全局变换矩阵(通过初始状态 关节逆矩阵与全局变换矩阵 计算 当前状态的关节矩阵)
-				this._globalMatrices[uint(mtxOffset)] = n11 * m11 + n12 * m21 + n13 * m31;
-				this._globalMatrices[uint(mtxOffset + 1)] = n11 * m12 + n12 * m22 + n13 * m32;
-				this._globalMatrices[uint(mtxOffset + 2)] = n11 * m13 + n12 * m23 + n13 * m33;
-				this._globalMatrices[uint(mtxOffset + 3)] = n11 * m14 + n12 * m24 + n13 * m34 + vec.x;
-				this._globalMatrices[uint(mtxOffset + 4)] = n21 * m11 + n22 * m21 + n23 * m31;
-				this._globalMatrices[uint(mtxOffset + 5)] = n21 * m12 + n22 * m22 + n23 * m32;
-				this._globalMatrices[uint(mtxOffset + 6)] = n21 * m13 + n22 * m23 + n23 * m33;
-				this._globalMatrices[uint(mtxOffset + 7)] = n21 * m14 + n22 * m24 + n23 * m34 + vec.y;
-				this._globalMatrices[uint(mtxOffset + 8)] = n31 * m11 + n32 * m21 + n33 * m31;
-				this._globalMatrices[uint(mtxOffset + 9)] = n31 * m12 + n32 * m22 + n33 * m32;
-				this._globalMatrices[uint(mtxOffset + 10)] = n31 * m13 + n32 * m23 + n33 * m33;
-				this._globalMatrices[uint(mtxOffset + 11)] = n31 * m14 + n32 * m24 + n33 * m34 + vec.z;
+				this._globalMatrices[number(mtxOffset)] = n11 * m11 + n12 * m21 + n13 * m31;
+				this._globalMatrices[number(mtxOffset + 1)] = n11 * m12 + n12 * m22 + n13 * m32;
+				this._globalMatrices[number(mtxOffset + 2)] = n11 * m13 + n12 * m23 + n13 * m33;
+				this._globalMatrices[number(mtxOffset + 3)] = n11 * m14 + n12 * m24 + n13 * m34 + vec.x;
+				this._globalMatrices[number(mtxOffset + 4)] = n21 * m11 + n22 * m21 + n23 * m31;
+				this._globalMatrices[number(mtxOffset + 5)] = n21 * m12 + n22 * m22 + n23 * m32;
+				this._globalMatrices[number(mtxOffset + 6)] = n21 * m13 + n22 * m23 + n23 * m33;
+				this._globalMatrices[number(mtxOffset + 7)] = n21 * m14 + n22 * m24 + n23 * m34 + vec.y;
+				this._globalMatrices[number(mtxOffset + 8)] = n31 * m11 + n32 * m21 + n33 * m31;
+				this._globalMatrices[number(mtxOffset + 9)] = n31 * m12 + n32 * m22 + n33 * m32;
+				this._globalMatrices[number(mtxOffset + 10)] = n31 * m13 + n32 * m23 + n33 * m33;
+				this._globalMatrices[number(mtxOffset + 11)] = n31 * m14 + n32 * m24 + n33 * m34 + vec.z;
 
 				//跳到下个矩阵位置
-				mtxOffset = uint(mtxOffset + 12);
+				mtxOffset = number(mtxOffset + 12);
 			}
 		}
 
@@ -331,11 +331,11 @@ module feng3d
 			var skinnedGeom:SkinnedSubGeometry = subGeom.getOrCreateComponentByClass(SkinnedSubGeometry);
 
 			//几何体顶点数据
-			var vertexData:Number[] = subGeom.vertexPositionData;
+			var vertexData:number[] = subGeom.vertexPositionData;
 			//动画顶点数据（目标数据）
-			var targetData:Number[] = state.animatedVertexData;
-			var jointIndices:Number[] = skinnedGeom.jointIndexData;
-			var jointWeights:Number[] = skinnedGeom.jointWeightsData;
+			var targetData:number[] = state.animatedVertexData;
+			var jointIndices:number[] = skinnedGeom.jointIndexData;
+			var jointWeights:number[] = skinnedGeom.jointWeightsData;
 			var index:number;
 			var j:number, k:number;
 			var vx:number, vy:number, vz:number;
@@ -351,8 +351,8 @@ module feng3d
 			{
 				//提取原始顶点坐标、法线、切线数据
 				vertX = vertexData[index];
-				vertY = vertexData[uint(index + 1)];
-				vertZ = vertexData[uint(index + 2)];
+				vertY = vertexData[number(index + 1)];
+				vertZ = vertexData[number(index + 2)];
 				vx = 0;
 				vy = 0;
 				vz = 0;
@@ -364,19 +364,19 @@ module feng3d
 					if (weight > 0)
 					{
 						//读取该关节的全局变换矩阵
-						var mtxOffset:number = uint(jointIndices[j++]) << 2;
+						var mtxOffset:number = number(jointIndices[j++]) << 2;
 						m11 = this._globalMatrices[mtxOffset];
-						m12 = this._globalMatrices[uint(mtxOffset + 1)];
-						m13 = this._globalMatrices[uint(mtxOffset + 2)];
-						m14 = this._globalMatrices[uint(mtxOffset + 3)];
-						m21 = this._globalMatrices[uint(mtxOffset + 4)];
-						m22 = this._globalMatrices[uint(mtxOffset + 5)];
-						m23 = this._globalMatrices[uint(mtxOffset + 6)];
-						m24 = this._globalMatrices[uint(mtxOffset + 7)];
-						m31 = this._globalMatrices[uint(mtxOffset + 8)];
-						m32 = this._globalMatrices[uint(mtxOffset + 9)];
-						m33 = this._globalMatrices[uint(mtxOffset + 10)];
-						m34 = this._globalMatrices[uint(mtxOffset + 11)];
+						m12 = this._globalMatrices[number(mtxOffset + 1)];
+						m13 = this._globalMatrices[number(mtxOffset + 2)];
+						m14 = this._globalMatrices[number(mtxOffset + 3)];
+						m21 = this._globalMatrices[number(mtxOffset + 4)];
+						m22 = this._globalMatrices[number(mtxOffset + 5)];
+						m23 = this._globalMatrices[number(mtxOffset + 6)];
+						m24 = this._globalMatrices[number(mtxOffset + 7)];
+						m31 = this._globalMatrices[number(mtxOffset + 8)];
+						m32 = this._globalMatrices[number(mtxOffset + 9)];
+						m33 = this._globalMatrices[number(mtxOffset + 10)];
+						m34 = this._globalMatrices[number(mtxOffset + 11)];
 						//根据关节的全局变换矩阵与对应权重计算出对该坐标的影响值
 						vx += weight * (m11 * vertX + m12 * vertY + m13 * vertZ + m14);
 						vy += weight * (m21 * vertX + m22 * vertY + m23 * vertZ + m24);
@@ -385,18 +385,18 @@ module feng3d
 					}
 					else
 					{
-						j += uint(this._jointsPerVertex - k);
+						j += number(this._jointsPerVertex - k);
 						k = this._jointsPerVertex;
 					}
 				}
 
 				//保存最终计算得出的坐标、法线、切线数据
 				targetData[index] = vx;
-				targetData[uint(index + 1)] = vy;
-				targetData[uint(index + 2)] = vz;
+				targetData[number(index + 1)] = vy;
+				targetData[number(index + 2)] = vz;
 
 				//跳到下个顶点的起始位置
-				index = uint(index + subGeom.vertexPositionStride);
+				index = number(index + subGeom.vertexPositionStride);
 			}
 		}
 
@@ -539,7 +539,7 @@ class SubGeomAnimationState
 	/**
 	 * 动画顶点数据
 	 */
-	public animatedVertexData:Number[];
+	public animatedVertexData:number[];
 	public dirty:boolean = true;
 
 	/**
