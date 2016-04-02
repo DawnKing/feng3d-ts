@@ -105,5 +105,20 @@ module feng3d {
         private get parentDispatcher(): IEventDispatcher {
             return this._target[EventDispatcher.BUBBLE_PROPERTY];
         }
+
+        /**
+		 * 抛出错误事件
+		 * <p>该函数会抛出 ErrorEvent.ERROR 事件</p>
+		 * <p>仅当错误事件被正确处理（FErrorEvent.isProcessed == true）时不会使用throw抛出错误</p>
+		 * @see me.feng.events.FErrorEvent
+		 *
+		 * @author feng 2015-12-7
+		 */
+        protected throwEvent(error: Error): void {
+            var errorEvent: FErrorEvent = new FErrorEvent(FErrorEvent.ERROR_EVENT, error);
+            this.dispatchEvent(errorEvent);
+            if (!errorEvent.isProcessed)
+                throw error;
+        }
     }
 }

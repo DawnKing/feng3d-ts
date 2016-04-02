@@ -20,6 +20,231 @@ var feng3d;
     }());
     feng3d.Feng3D = Feng3D;
 })(feng3d || (feng3d = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var feng3d;
+(function (feng3d) {
+    /**
+     * @private
+     */
+    var getDefinitionByNameCache = {};
+    /**
+     * @language en_US
+     * Returns a reference to the class object of the class specified by the name parameter.
+     * @param name The name of a class.
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/getDefinitionByName.ts
+     */
+    /**
+     * @language zh_CN
+     * 返回 name 参数指定的类的类对象引用。
+     * @param name 类的名称。
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/getDefinitionByName.ts
+     */
+    function getDefinitionByName(name) {
+        if (!name)
+            return null;
+        var definition = getDefinitionByNameCache[name];
+        if (definition) {
+            return definition;
+        }
+        var paths = name.split(".");
+        var length = paths.length;
+        definition = __global;
+        for (var i = 0; i < length; i++) {
+            var path = paths[i];
+            definition = definition[path];
+            if (!definition) {
+                return null;
+            }
+        }
+        getDefinitionByNameCache[name] = definition;
+        return definition;
+    }
+    feng3d.getDefinitionByName = getDefinitionByName;
+})(feng3d || (feng3d = {}));
+var __global = __global || this;
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var feng3d;
+(function (feng3d) {
+    /**
+     * @language en_US
+     * Return the fully qualified class name of an object
+     * @param value The object for which a fully qualified class name is desired. Any JavaScript value may be passed to
+     * this method including all available JavaScript types, object instances, primitive types such as number, and class objects.
+     * @returns A string containing the fully qualified class name.
+     * @example
+     * <pre>
+     *  egret.getQualifiedClassName(egret.DisplayObject) //return "egret.DisplayObject"
+     * </pre>
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/getQualifiedClassName.ts
+     */
+    /**
+     * @language zh_CN
+     * 返回对象的完全限定类名。
+     * @param value 需要完全限定类名称的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型
+     * （如number)和类对象
+     * @returns 包含完全限定类名称的字符串。
+     * @example
+     * <pre>
+     *  egret.getQualifiedClassName(egret.DisplayObject) //返回 "egret.DisplayObject"
+     * </pre>
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/getQualifiedClassName.ts
+     */
+    function getQualifiedClassName(value) {
+        var type = typeof value;
+        if (!value || (type != "object" && !value.prototype)) {
+            return type;
+        }
+        var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
+        if (prototype.hasOwnProperty("__class__")) {
+            return prototype["__class__"];
+        }
+        var constructorString = prototype.constructor.toString().trim();
+        var index = constructorString.indexOf("(");
+        var className = constructorString.substring(9, index);
+        Object.defineProperty(prototype, "__class__", {
+            value: className,
+            enumerable: false,
+            writable: true
+        });
+        return className;
+    }
+    feng3d.getQualifiedClassName = getQualifiedClassName;
+})(feng3d || (feng3d = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var feng3d;
+(function (feng3d) {
+    /** @language en_US
+     * Returns the fully qualified class name of the base class of the object specified by the value parameter.
+     * @param value The object for which a parent class is desired. Any JavaScript value may be passed to this method including
+     * all available JavaScript types, object instances, primitive types such as number, and class objects.
+     * @returns  A fully qualified base class name, or null if none exists.
+     * @example
+     * <pre>
+     *  egret.getQualifiedSuperclassName(egret.Bitmap) //return "egret.DisplayObject"
+     * </pre>
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/getQualifiedSuperclassName.ts
+     */
+    /**
+     * @language zh_CN
+     * 返回 value 参数指定的对象的基类的完全限定类名。
+     * @param value 需要取得父类的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型（如number）和类对象
+     * @returns 完全限定的基类名称，或 null（如果不存在基类名称）。
+     * @example
+     * <pre>
+     *  egret.getQualifiedSuperclassName(egret.Sprite) //返回 "egret.DisplayObject"
+     * </pre>
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/getQualifiedSuperclassName.ts
+     */
+    function getQualifiedSuperclassName(value) {
+        if (!value || (typeof value != "object" && !value.prototype)) {
+            return null;
+        }
+        var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
+        var superProto = Object.getPrototypeOf(prototype);
+        if (!superProto) {
+            return null;
+        }
+        var superClass = feng3d.getQualifiedClassName(superProto.constructor);
+        if (!superClass) {
+            return null;
+        }
+        return superClass;
+    }
+    feng3d.getQualifiedSuperclassName = getQualifiedSuperclassName;
+})(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
     /**
@@ -235,6 +460,20 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+        /**
+         * 抛出错误事件
+         * <p>该函数会抛出 ErrorEvent.ERROR 事件</p>
+         * <p>仅当错误事件被正确处理（FErrorEvent.isProcessed == true）时不会使用throw抛出错误</p>
+         * @see me.feng.events.FErrorEvent
+         *
+         * @author feng 2015-12-7
+         */
+        EventDispatcher.prototype.throwEvent = function (error) {
+            var errorEvent = new feng3d.FErrorEvent(feng3d.FErrorEvent.ERROR_EVENT, error);
+            this.dispatchEvent(errorEvent);
+            if (!errorEvent.isProcessed)
+                throw error;
+        };
         /** 冒泡属性名称为“parent” */
         EventDispatcher.BUBBLE_PROPERTY = "parent";
         return EventDispatcher;
@@ -864,7 +1103,7 @@ var feng3d;
          * 无法直接实例化
          */
         function Enum() {
-            this.className = getQualifiedClassName(this);
+            this.className = feng3d.getQualifiedClassName(this);
             this.type = this.className.split("::").pop();
             //获取枚举的值
             this.value = number(autoIndexDic[this.className]);
@@ -941,7 +1180,7 @@ var feng3d;
          * @param obj			用来检测的对象
          */
         AbstractClassError.check = function (obj) {
-            var className = getQualifiedClassName(obj);
+            var className = feng3d.getQualifiedClassName(obj);
             //通过抽象类获取 完全限定类名
             var error = new AbstractClassError("无法直接实例化抽象类" + className);
             var stackTrace = error.getStackTrace();
@@ -1055,8 +1294,11 @@ var feng3d;
      */
     var ComponentEvent = (function (_super) {
         __extends(ComponentEvent, _super);
-        function ComponentEvent() {
-            _super.apply(this, arguments);
+        function ComponentEvent(type, data, bubbles, cancelable) {
+            if (data === void 0) { data = null; }
+            if (bubbles === void 0) { bubbles = false; }
+            if (cancelable === void 0) { cancelable = false; }
+            _super.call(this, type, data, bubbles, cancelable);
         }
         /**
          * 添加子组件事件
@@ -1077,12 +1319,6 @@ var feng3d;
         return ComponentEvent;
     }(feng3d.Event));
     feng3d.ComponentEvent = ComponentEvent;
-    null, bubbles;
-    boolean = false, cancelable;
-    boolean = false;
-    {
-        _super.call(this, type, data, bubbles, cancelable);
-    }
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -1888,10 +2124,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 被添加到组件容器后触发
-     */
-    [feng3d.Event(name = "beAddedComponet", type = "me.feng.component.event.ComponentEvent")][feng3d.Event(name = "beRemovedComponet", type = "me.feng.component.event.ComponentEvent")][feng3d.Event(name = "addedComponet", type = "me.feng.component.event.ComponentEvent")][feng3d.Event(name = "removedComponet", type = "me.feng.component.event.ComponentEvent")];
-    /**
      * 组件容器（集合）
      * @author feng 2015-5-6
      */
@@ -1912,12 +2144,12 @@ var feng3d;
              * 组件名称
              */
             get: function () {
-                _componentName || ;
-                feng3d.ClassUtils.getDefaultName(this);
-                return _componentName;
+                if (this._componentName == null)
+                    this._componentName = feng3d.ClassUtils.getDefaultName(this);
+                return this._componentName;
             },
             set: function (value) {
-                _componentName = value;
+                this._componentName = value;
             },
             enumerable: true,
             configurable: true
@@ -1927,7 +2159,7 @@ var feng3d;
              * 子组件个数
              */
             get: function () {
-                return components.length;
+                return this.components.length;
             },
             enumerable: true,
             configurable: true
@@ -2009,8 +2241,7 @@ var feng3d;
          * @param index			位置索引
          * @return				子组件
          */
-        Component.prototype.getComponentAt = ;
-        Component.prototype. = function () {
+        Component.prototype.getComponentAt = function (index) {
             feng3d.assert(index < this.numComponents, "给出索引超出范围");
             return this.components[index];
         };
@@ -2020,8 +2251,7 @@ var feng3d;
          * @param componentName		组件名称
          * @return 					获取到的组件
          */
-        Component.prototype.getComponentByName = ;
-        Component.prototype. = function () {
+        Component.prototype.getComponentByName = function (componentName) {
             var filterResult = this.getComponentsByName(componentName);
             return filterResult[0];
         };
@@ -2047,8 +2277,7 @@ var feng3d;
          * @param cls				类定义
          * @return
          */
-        Component.prototype.getComponentByClass = ;
-        Component.prototype. = function () {
+        Component.prototype.getComponentByClass = function (cls) {
             var component = this.getComponentsByClass(cls)[0];
             return component;
         };
@@ -2073,8 +2302,7 @@ var feng3d;
          * @param cls
          * @return
          */
-        Component.prototype.getOrCreateComponentByClass = ;
-        Component.prototype. = function () {
+        Component.prototype.getOrCreateComponentByClass = function (cls) {
             var component = this.getComponentByClass(cls);
             if (component == null) {
                 component = new cls();
@@ -2179,9 +2407,9 @@ var feng3d;
             var nameDic = {};
             for (var i = 0; i < container.numComponents; i++) {
                 var component = container.getComponentAt(i);
-                var classDefine = getQualifiedClassName(component);
+                var classDefine = feng3d.getQualifiedClassName(component);
                 if (nameDic[classDefine]) {
-                    throwEvent(new Error("存在多个子组件拥有相同的类型"));
+                    this.throwEvent(new Error("存在多个子组件拥有相同的类型"));
                 }
                 nameDic[classDefine] = true;
             }
@@ -2238,7 +2466,7 @@ var feng3d;
             for (var i = 0; i < container.numComponents; i++) {
                 var component = container.getComponentAt(i);
                 if (nameDic[component.componentName]) {
-                    throwEvent(new Error("存在多个子组件拥有相同的名称"));
+                    this.throwEvent(new Error("存在多个子组件拥有相同的名称"));
                 }
                 nameDic[component.componentName] = true;
             }
@@ -7341,7 +7569,7 @@ var feng3d;
             }
         };
         Geometry.prototype.clone = function () {
-            var cls = getDefinitionByName(getQualifiedClassName(this));
+            var cls = feng3d.getDefinitionByName(feng3d.getQualifiedClassName(this));
             var clone = new cls();
             var len = this._subGeometries.length;
             for (var i = 0; i < len; ++i)
@@ -12176,7 +12404,7 @@ var feng3d;
             return _super.prototype.getVAData.call(this, dataTypeId);
         };
         SubGeometry.prototype.clone = function () {
-            var cls = getDefinitionByName(getQualifiedClassName(this));
+            var cls = feng3d.getDefinitionByName(feng3d.getQualifiedClassName(this));
             var _clone = new cls();
             //顶点属性编号列表
             var vaId;
@@ -21738,7 +21966,7 @@ var feng3d;
          */
         Load.getInstance = ;
         Load.prototype. = function () {
-            var cls = getDefinitionByName(className);
+            var cls = feng3d.getDefinitionByName(className);
             if (cls)
                 return new cls();
             return null;
@@ -21891,19 +22119,19 @@ var feng3d;
             string;
             {
                 try {
-                    return getDefinitionByName(obj);
+                    return feng3d.getDefinitionByName(obj);
                 }
                 catch (error) {
                     return null;
                 }
             }
             var cla = obj;
-            var className = getQualifiedClassName(obj);
+            var className = feng3d.getQualifiedClassName(obj);
             if (className == "null" || className == "void") {
                 return null;
             }
             if (cla == null) {
-                cla = getDefinitionByName(className);
+                cla = feng3d.getDefinitionByName(className);
             }
             return cla;
         };
@@ -22001,7 +22229,7 @@ var feng3d;
         ClassUtils.encodeParams = function (params) {
             for (var i = 0; i < params.length; i++) {
                 var item = params[i];
-                var paramType = getQualifiedClassName(item);
+                var paramType = feng3d.getQualifiedClassName(item);
                 params[i] = { paramType: paramType, paramValue: item };
             }
         };
@@ -22038,7 +22266,7 @@ var feng3d;
         ClassUtils.copyValue = function (obj, value) {
             for (var key in value) {
                 var attrValue =  * , value = [key];
-                var attrType = getQualifiedClassName(attrValue);
+                var attrType = feng3d.getQualifiedClassName(attrValue);
                 var baseType = isBaseType(value[key]);
                 if (baseType) {
                     obj[key] = value[key];
@@ -22054,7 +22282,7 @@ var feng3d;
          * @return				true为基础类型，false为复杂类型
          */
         ClassUtils.isBaseType = function (obj) {
-            var type = getQualifiedClassName(obj);
+            var type = feng3d.getQualifiedClassName(obj);
             var index = BASETYPES.indexOf(type);
             return index != -1;
         };
@@ -22064,7 +22292,7 @@ var feng3d;
          * @return					对象默认名称
          */
         ClassUtils.getDefaultName = function (obj) {
-            return getQualifiedClassName(obj).split("::").pop();
+            return feng3d.getQualifiedClassName(obj).split("::").pop();
         };
         /**
          * 判断两个对象的完全限定类名是否相同
@@ -22075,8 +22303,8 @@ var feng3d;
         ClassUtils.isSameClass = function (obj1, obj2) {
             if (obj1 === void 0) { obj1 =  * ; }
             if (obj2 === void 0) { obj2 =  * ; }
-            var className1 = getQualifiedClassName(obj1);
-            var className2 = getQualifiedClassName(obj2);
+            var className1 = feng3d.getQualifiedClassName(obj1);
+            var className2 = feng3d.getQualifiedClassName(obj2);
             return className1 == className2;
         };
         /**
@@ -25382,7 +25610,7 @@ var feng3d;
          * 字符串描述
          */
         Context3DBuffer.prototype.toString = function () {
-            return formatString("[{0} dataType=\"{1}\"]", getQualifiedClassName(this).split("::").pop(), this._dataTypeId);
+            return formatString("[{0} dataType=\"{1}\"]", feng3d.getQualifiedClassName(this).split("::").pop(), this._dataTypeId);
         };
         return Context3DBuffer;
     }());
@@ -30836,7 +31064,7 @@ var feng3d;
     }());
     feng3d.Context3DBufferDebug = Context3DBufferDebug;
     {
-        var debugInfoItem = { className: getQualifiedClassName(context3DBuffer), constructorParams: [context3DBuffer.dataTypeId, null] };
+        var debugInfoItem = { className: feng3d.getQualifiedClassName(context3DBuffer), constructorParams: [context3DBuffer.dataTypeId, null] };
         var cla = feng3d.ClassUtils.getClass(context3DBuffer);
         switch (cla) {
             case feng3d.ProgramBuffer:
@@ -36153,7 +36381,7 @@ var feng3d;
             if (result != null)
                 return result;
             try {
-                result = getDefinitionByName(name);
+                result = feng3d.getDefinitionByName(name);
                 _classes[name] = result;
                 return result;
             }
