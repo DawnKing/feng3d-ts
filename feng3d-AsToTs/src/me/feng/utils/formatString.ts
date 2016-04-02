@@ -1,5 +1,4 @@
-module feng3d
-{
+module feng3d {
 
 	/**
 	 * 格式化输出字符串
@@ -15,11 +14,10 @@ module feng3d
 	 * </pre>
 	 * @author feng 2014-5-7
 	 */
-	constructor(format:string, ... args):string
-	{
-		for (var i:number = 0; i < args.length; ++i)
-			format = format.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
+    export function formatString(format: string, ...args): string {
+        for (var i: number = 0; i < args.length; ++i)
+            format = format.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
 
-		return format;
-	}
+        return format;
+    }
 }
