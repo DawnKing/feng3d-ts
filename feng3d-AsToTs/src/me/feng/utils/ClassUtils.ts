@@ -20,7 +20,7 @@ module feng3d
 		 * @param obj
 		 * @return
 		 */
-		public static function getClass(obj:*):Class
+		public static getClass(obj:*):Class
 		{
 			if (obj is string)
 			{
@@ -55,7 +55,7 @@ module feng3d
 		 * @param obj
 		 * @return
 		 */
-		public static function getInstance(obj:*):*
+		public static getInstance(obj:*):*
 		{
 			if (obj is Class)
 			{
@@ -75,7 +75,7 @@ module feng3d
 		 * @param params					构造参数
 		 * @return							构造出的实例
 		 */
-		public static function structureInstance(cla:Class, params:Array):*
+		public static structureInstance(cla:Class, params:Array):*
 		{
 			if (params == null)
 			{
@@ -132,7 +132,7 @@ module feng3d
 		 * @param params					函数参数
 		 * @return							函数返回值
 		 */
-		public static function call(space:Object, funcName:string, params:Array):*
+		public static call(space:Object, funcName:string, params:Array):*
 		{
 			var func:Function = space[funcName];
 			var result:* = func.apply(null, params);
@@ -143,7 +143,7 @@ module feng3d
 		 * 编码参数
 		 * @param params		参数数组
 		 */
-		public static function encodeParams(params:Array)
+		public static encodeParams(params:Array)
 		{
 			for (var i:number = 0; i < params.length; i++)
 			{
@@ -157,7 +157,7 @@ module feng3d
 		 * 解码参数
 		 * @param params		参数数组
 		 */
-		public static function decodeParams(params:Array)
+		public static decodeParams(params:Array)
 		{
 			for (var i:number = 0; i < params.length; i++)
 			{
@@ -192,7 +192,7 @@ module feng3d
 		 * @param obj			需要赋值的对象
 		 * @param value			拥有数据的对象
 		 */
-		public static function copyValue(obj:Object, value:Object)
+		public static copyValue(obj:Object, value:Object)
 		{
 			for (var key:string in value)
 			{
@@ -215,7 +215,7 @@ module feng3d
 		 * @param obj			对象
 		 * @return				true为基础类型，false为复杂类型
 		 */
-		public static function isBaseType(obj:Object):boolean
+		public static isBaseType(obj:Object):boolean
 		{
 			var type:string = getQualifiedClassName(obj);
 			var index:number = BASETYPES.indexOf(type);
@@ -227,7 +227,7 @@ module feng3d
 		 * @param obj				对象
 		 * @return					对象默认名称
 		 */
-		public static function getDefaultName(obj:Object):string
+		public static getDefaultName(obj:Object):string
 		{
 			return getQualifiedClassName(obj).split("::").pop();
 		}
@@ -238,7 +238,7 @@ module feng3d
 		 * @param obj2			对象2
 		 * @return
 		 */
-		public static function isSameClass(obj1:*, obj2:*):boolean
+		public static isSameClass(obj1:*, obj2:*):boolean
 		{
 			var className1:string = getQualifiedClassName(obj1);
 			var className2:string = getQualifiedClassName(obj2);

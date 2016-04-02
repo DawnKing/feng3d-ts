@@ -33,7 +33,7 @@ module feng3d
 		 * @param mesh        Mesh. The Mesh to get the bounds from.
 		 * Use the getters of this class to retrieve the results
 		 */
-		public static function getMeshBounds(mesh:Mesh)
+		public static getMeshBounds(mesh:Mesh)
 		{
 			getObjectContainerBounds(mesh);
 		}
@@ -43,7 +43,7 @@ module feng3d
 		 * @param container        ObjectContainer3D. The ObjectContainer3D to get the bounds from.
 		 * Use the getters of this class to retrieve the results
 		 */
-		public static function getObjectContainerBounds(container:Container3D, worldBased:boolean = true)
+		public static getObjectContainerBounds(container:Container3D, worldBased:boolean = true)
 		{
 			reset();
 			parseObjectContainerBounds(container);
@@ -73,7 +73,7 @@ module feng3d
 		 * @param vertices        Vector.&lt;number&gt;. The vertices to get the bounds from.
 		 * Use the getters of this class to retrieve the results
 		 */
-		public static function getVerticesVectorBounds(vertices:number[])
+		public static getVerticesVectorBounds(vertices:number[])
 		{
 			reset();
 			var l:number = vertices.length;
@@ -111,7 +111,7 @@ module feng3d
 		 * @param outCenter        Vector3D. Optional Vector3D, if provided the same Vector3D is returned with the bounds center.
 		 * @return the center of the bound
 		 */
-		public static function getCenter(outCenter:Vector3D = null):Vector3D
+		public static getCenter(outCenter:Vector3D = null):Vector3D
 		{
 			var center:Vector3D = outCenter || new Vector3D();
 			center.x = _minX + (_maxX - _minX) * .5;
@@ -124,7 +124,7 @@ module feng3d
 		/**
 		 * @return the smalest x value
 		 */
-		public static function get minX():number
+		public static get minX():number
 		{
 			return _minX;
 		}
@@ -132,7 +132,7 @@ module feng3d
 		/**
 		 * @return the smalest y value
 		 */
-		public static function get minY():number
+		public static get minY():number
 		{
 			return _minY;
 		}
@@ -140,7 +140,7 @@ module feng3d
 		/**
 		 * @return the smalest z value
 		 */
-		public static function get minZ():number
+		public static get minZ():number
 		{
 			return _minZ;
 		}
@@ -148,7 +148,7 @@ module feng3d
 		/**
 		 * @return the biggest x value
 		 */
-		public static function get maxX():number
+		public static get maxX():number
 		{
 			return _maxX;
 		}
@@ -156,7 +156,7 @@ module feng3d
 		/**
 		 * @return the biggest y value
 		 */
-		public static function get maxY():number
+		public static get maxY():number
 		{
 			return _maxY;
 		}
@@ -164,7 +164,7 @@ module feng3d
 		/**
 		 * @return the biggest z value
 		 */
-		public static function get maxZ():number
+		public static get maxZ():number
 		{
 			return _maxZ;
 		}
@@ -172,7 +172,7 @@ module feng3d
 		/**
 		 * @return the width value from the bounds
 		 */
-		public static function get width():number
+		public static get width():number
 		{
 			return _maxX - _minX;
 		}
@@ -180,7 +180,7 @@ module feng3d
 		/**
 		 * @return the height value from the bounds
 		 */
-		public static function get height():number
+		public static get height():number
 		{
 			return _maxY - _minY;
 		}
@@ -188,7 +188,7 @@ module feng3d
 		/**
 		 * @return the depth value from the bounds
 		 */
-		public static function get depth():number
+		public static get depth():number
 		{
 			return _maxZ - _minZ;
 		}

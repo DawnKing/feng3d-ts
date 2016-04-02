@@ -236,7 +236,7 @@ module feng3d
 		 * during session, the one that was last instantiated.) Allows you to set
 		 * properties and register views from anywhere in your code.
 		 */
-		public static function get instance():AwayStats
+		public static get instance():AwayStats
 		{
 			return _INSTANCE ? _INSTANCE : _INSTANCE = new AwayStats();
 		}

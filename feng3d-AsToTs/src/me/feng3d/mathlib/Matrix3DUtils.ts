@@ -22,7 +22,7 @@ module feng3d
 		 *
 		 * @param    quarternion    The quarterion object to convert.
 		 */
-		public static function quaternion2matrix(quarternion:Quaternion, m:Matrix3D = null):Matrix3D
+		public static quaternion2matrix(quarternion:Quaternion, m:Matrix3D = null):Matrix3D
 		{
 			var x:number = quarternion.x;
 			var y:number = quarternion.y;
@@ -70,7 +70,7 @@ module feng3d
 		 * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
 		 * @return            The forward vector
 		 */
-		public static function getForward(m:Matrix3D, v:Vector3D = null):Vector3D
+		public static getForward(m:Matrix3D, v:Vector3D = null):Vector3D
 		{
 			if (!v)
 				v = new Vector3D();
@@ -86,7 +86,7 @@ module feng3d
 		 * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
 		 * @return            The up vector
 		 */
-		public static function getUp(m:Matrix3D, v:Vector3D = null):Vector3D
+		public static getUp(m:Matrix3D, v:Vector3D = null):Vector3D
 		{
 			if (!v)
 				v = new Vector3D();
@@ -102,7 +102,7 @@ module feng3d
 		 * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
 		 * @return            The right vector
 		 */
-		public static function getRight(m:Matrix3D, v:Vector3D = null):Vector3D
+		public static getRight(m:Matrix3D, v:Vector3D = null):Vector3D
 		{
 			if (!v)
 				v = new Vector3D();
@@ -115,7 +115,7 @@ module feng3d
 		/**
 		 * Returns a boolean value representing whether there is any significant difference between the two given 3d matrices.
 		 */
-		public static function compare(m1:Matrix3D, m2:Matrix3D):boolean
+		public static compare(m1:Matrix3D, m2:Matrix3D):boolean
 		{
 			var r1:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			var r2:number[] = m2.rawData;
@@ -130,7 +130,7 @@ module feng3d
 			return true;
 		}
 
-		public static function lookAt(matrix:Matrix3D, pos:Vector3D, dir:Vector3D, up:Vector3D)
+		public static lookAt(matrix:Matrix3D, pos:Vector3D, dir:Vector3D, up:Vector3D)
 		{
 			var dirN:Vector3D;
 			var upN:Vector3D;
@@ -168,7 +168,7 @@ module feng3d
 			matrix.copyRawDataFrom(raw);
 		}
 
-		public static function reflection(plane:Plane3D, target:Matrix3D = null):Matrix3D
+		public static reflection(plane:Plane3D, target:Matrix3D = null):Matrix3D
 		{
 			target ||= new Matrix3D();
 			var a:number = plane.a, b:number = plane.b, c:number = plane.c, d:number = plane.d;
@@ -198,7 +198,7 @@ module feng3d
 			return target;
 		}
 
-		public static function decompose(sourceMatrix:Matrix3D, orientationStyle:string = "eulerAngles"):Vector3D[]
+		public static decompose(sourceMatrix:Matrix3D, orientationStyle:string = "eulerAngles"):Vector3D[]
 		{
 			var raw:number[] = RAW_DATA_CONTAINER;
 			sourceMatrix.copyRawDataTo(raw);
@@ -305,7 +305,7 @@ module feng3d
 			return v;
 		}
 
-		public static function transformVector(matrix:Matrix3D, vector:Vector3D, result:Vector3D = null):Vector3D
+		public static transformVector(matrix:Matrix3D, vector:Vector3D, result:Vector3D = null):Vector3D
 		{
 			if (!result)
 				result = new Vector3D();
@@ -338,7 +338,7 @@ module feng3d
 			return result;
 		}
 
-		public static function deltaTransformVector(matrix:Matrix3D, vector:Vector3D, result:Vector3D = null):Vector3D
+		public static deltaTransformVector(matrix:Matrix3D, vector:Vector3D, result:Vector3D = null):Vector3D
 		{
 			if (!result)
 				result = new Vector3D();
@@ -366,7 +366,7 @@ module feng3d
 			return result;
 		}
 
-		public static function getTranslation(transform:Matrix3D, result:Vector3D = null):Vector3D
+		public static getTranslation(transform:Matrix3D, result:Vector3D = null):Vector3D
 		{
 			if (!result)
 				result = new Vector3D();
@@ -374,7 +374,7 @@ module feng3d
 			return result;
 		}
 
-		public static function deltaTransformVectors(matrix:Matrix3D, vin:number[], vout:number[])
+		public static deltaTransformVectors(matrix:Matrix3D, vin:number[], vout:number[])
 		{
 			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			matrix.copyRawDataTo(raw);
@@ -409,7 +409,7 @@ module feng3d
 		 * @param ray3D 场景射线
 		 * @param localRay 本地射线
 		 */
-		public static function updateLocalRay(inverseSceneTransform:Matrix3D, ray3D:Ray3D, localRay:Ray3D)
+		public static updateLocalRay(inverseSceneTransform:Matrix3D, ray3D:Ray3D, localRay:Ray3D)
 		{
 			Matrix3DUtils.transformVector(inverseSceneTransform, ray3D.position, localRay.position);
 			Matrix3DUtils.deltaTransformVector(inverseSceneTransform, ray3D.direction, localRay.direction);

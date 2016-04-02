@@ -33,7 +33,7 @@ module feng3d
 		 * @param triangleOffset
 		 * @return
 		 */
-		public static function fromVectors(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number = 0):SubGeometry[]
+		public static fromVectors(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number = 0):SubGeometry[]
 		{ LIMIT_VERTS:number = 3 * 0xffff; LIMIT_INDICES:number = 15 * 0xffff;
 
 			var subs:SubGeometry[] = new SubGeometry[]();
@@ -165,7 +165,7 @@ module feng3d
 			return subs;
 		}
 
-		public static function constructSubGeometry(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number):SubGeometry
+		public static constructSubGeometry(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number):SubGeometry
 		{
 			var sub:SubGeometry = new SubGeometry();
 
@@ -197,7 +197,7 @@ module feng3d
 		 * @param source 源子网格
 		 * @param target 目标子网格
 		 */
-		public static function copyDataSubGeom(source:SubGeometry, target:SubGeometry)
+		public static copyDataSubGeom(source:SubGeometry, target:SubGeometry)
 		{
 			target.numVertices = source.numVertices;
 			target.updateVertexPositionData(source.vertexPositionData.concat());
@@ -211,7 +211,7 @@ module feng3d
 		 * @param target 目标子几何体
 		 * @return true：添加成功；false：添加失败，应该是顶点个数超出最大值65535
 		 */
-		public static function addSubGeometry(source:SubGeometry, target:SubGeometry):boolean
+		public static addSubGeometry(source:SubGeometry, target:SubGeometry):boolean
 		{
 			if (source.numVertices + target.numVertices > MAX_VERTEX)
 				return false;

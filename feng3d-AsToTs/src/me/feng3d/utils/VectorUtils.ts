@@ -13,7 +13,7 @@ module feng3d
 		 * @param source 源向量
 		 * @param target 目标向量
 		 */
-		public static function add(source:number[], target:number[]):number[]
+		public static add(source:number[], target:number[]):number[]
 		{
 			var sourceLen:number = target.length;
 			var targetLen:number = source.length;
@@ -34,7 +34,7 @@ module feng3d
 		 * @param target		目标数组
 		 * @param offset		在源数组中的偏移量
 		 */
-		public static function copy(source:number[], target:number[], offset:number)
+		public static copy(source:number[], target:number[], offset:number)
 		{
 			source.forEach(function(item:number, index:number, ... args)
 			{
@@ -47,7 +47,7 @@ module feng3d
 		 * @param source 源向量
 		 * @param target 目标向量
 		 */
-		public static function add1(source:number[], target:number[], addNum:number):number[]
+		public static add1(source:number[], target:number[], addNum:number):number[]
 		{
 			var sourceLen:number = target.length;
 			var targetLen:number = source.length;

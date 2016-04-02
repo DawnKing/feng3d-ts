@@ -22,7 +22,7 @@ module feng3d
 		 * @param mipmap An optional mip map holder to avoids creating new instances for fe animated materials.
 		 * @param alpha Indicate whether or not the uploaded bitmapData is transparent.
 		 */
-		public static function generateMipMaps(source:BitmapData, target:TextureBase, mipmap:BitmapData = null, alpha:boolean = false, side:number = -1)
+		public static generateMipMaps(source:BitmapData, target:TextureBase, mipmap:BitmapData = null, alpha:boolean = false, side:number = -1)
 		{
 			var w:number = source.width,
 				h:number = source.height;

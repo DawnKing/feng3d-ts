@@ -24,7 +24,7 @@ module feng3d
 		 * @param bitmapData		位图
 		 * @return
 		 */
-		public static function isBitmapDataValid(bitmapData:BitmapData):boolean
+		public static isBitmapDataValid(bitmapData:BitmapData):boolean
 		{
 			if (bitmapData == null)
 				return true;
@@ -37,7 +37,7 @@ module feng3d
 		 * @param d		尺寸
 		 * @return
 		 */
-		public static function isDimensionValid(d:number):boolean
+		public static isDimensionValid(d:number):boolean
 		{
 			return d >= 1 && d <= MAX_SIZE && isPowerOfTwo(d);
 		}
@@ -47,7 +47,7 @@ module feng3d
 		 * @param value			被检查的值
 		 * @return
 		 */
-		public static function isPowerOfTwo(value:number):boolean
+		public static isPowerOfTwo(value:number):boolean
 		{
 			return value ? ((value & -value) == value) : false;
 		}
@@ -57,7 +57,7 @@ module feng3d
 		 * @param value			尺寸
 		 * @return
 		 */
-		public static function getBestPowerOf2(value:number):number
+		public static getBestPowerOf2(value:number):number
 		{
 			var p:number = 1;
 
@@ -79,7 +79,7 @@ module feng3d
 		 * @param forceWrap 			强制重复纹理参数
 		 * @return
 		 */
-		public static function getFlags(useMipmapping:boolean, useSmoothTextures:boolean, repeatTextures:boolean, texture:TextureProxyBase, forceWrap:string = null):Array
+		public static getFlags(useMipmapping:boolean, useSmoothTextures:boolean, repeatTextures:boolean, texture:TextureProxyBase, forceWrap:string = null):Array
 		{
 			var flags:Array = [texture.type];
 

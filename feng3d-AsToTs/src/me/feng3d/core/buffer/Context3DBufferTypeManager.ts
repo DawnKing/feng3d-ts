@@ -78,7 +78,7 @@ module feng3d
 		 * @param typeId 		3d缓存类型编号
 		 * @return				3d缓存类型实例
 		 */
-		public static function getBufferType(typeId:string):Context3DBufferType
+		public static getBufferType(typeId:string):Context3DBufferType
 		{
 			return instance.getBufferType(typeId);
 		}
@@ -88,7 +88,7 @@ module feng3d
 		 * @param typeId 		3d缓存类型编号
 		 * @return				3d缓存类定义
 		 */
-		public static function getBufferClass(typeId:string):Class
+		public static getBufferClass(typeId:string):Class
 		{
 			return instance.getBufferClass(typeId);
 		}

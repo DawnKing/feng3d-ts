@@ -17,7 +17,7 @@ module feng3d
 		 * @param _useFaceWeights
 		 * @return
 		 */
-		public static function updateFaceNormals(_faceNormals:number[], vertices:number[], _indices:number[]):number[]
+		public static updateFaceNormals(_faceNormals:number[], vertices:number[], _indices:number[]):number[]
 		{
 			var i:number, j:number, k:number;
 			var index:number;
@@ -78,7 +78,7 @@ module feng3d
 		 * @return
 		 *
 		 */
-		public static function updateFaceTangents(_faceTangents:number[], vertices:number[], uvs:number[], _indices:number[]):number[]
+		public static updateFaceTangents(_faceTangents:number[], vertices:number[], uvs:number[], _indices:number[]):number[]
 		{
 			var i:number;
 			var index1:number, index2:number, index3:number;
@@ -143,7 +143,7 @@ module feng3d
 		 * @param _useFaceWeights
 		 * @return
 		 */
-		public static function updateVertexNormals(target:number[], _faceNormals:number[], _indices:number[], numVertices:number):number[]
+		public static updateVertexNormals(target:number[], _faceNormals:number[], _indices:number[], numVertices:number):number[]
 		{
 			var v1:number;
 			var f1:number = 0, f2:number = 1, f3:number = 2;
@@ -209,7 +209,7 @@ module feng3d
 		 * @param _useFaceWeights
 		 * @return
 		 */
-		public static function updateVertexTangents(target:number[], _faceTangents:number[], _indices:number[], numVertices:number):number[]
+		public static updateVertexTangents(target:number[], _faceTangents:number[], _indices:number[], numVertices:number):number[]
 		{
 			var i:number;
 			var lenV:number = numVertices * 3;

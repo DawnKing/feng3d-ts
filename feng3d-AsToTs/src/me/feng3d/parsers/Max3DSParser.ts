@@ -61,7 +61,7 @@ module feng3d
 		 * @param extension The file extension of a potential file to be parsed.
 		 * @return Whether or not the given file type is supported.
 		 */
-		public static function supportsType(extension:string):boolean
+		public static supportsType(extension:string):boolean
 		{
 			extension = extension.toLowerCase();
 			return extension == "3ds";
@@ -72,7 +72,7 @@ module feng3d
 		 * @param data The data block to potentially be parsed.
 		 * @return Whether or not the given data is supported.
 		 */
-		public static function supportsData(data:*):boolean
+		public static supportsData(data:*):boolean
 		{
 			var ba:ByteArray;
 

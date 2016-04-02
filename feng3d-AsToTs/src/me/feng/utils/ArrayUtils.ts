@@ -13,7 +13,7 @@ module feng3d
 		 * @param target			目标数据(Array || Vector);in-out
 		 * @param targetType		目标类型(Array || Vector);default:Array
 		 */
-		public static function toArray(source:*, target:* = null, targetType:Class = null):*
+		public static toArray(source:*, target:* = null, targetType:Class = null):*
 		{
 			if (target == null)
 			{

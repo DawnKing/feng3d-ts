@@ -39,7 +39,7 @@ module feng3d
 		 * 是否常量
 		 * @param regType		寄存器类型
 		 */
-		public static function isConst(regType:string):boolean
+		public static isConst(regType:string):boolean
 		{
 			return regType == VC || regType == FC;
 		}
@@ -48,7 +48,7 @@ module feng3d
 		 * 是否临时变量
 		 * @param regType		寄存器类型
 		 */
-		public static function isTemp(regType:string):boolean
+		public static isTemp(regType:string):boolean
 		{
 			return regType == VT || regType == FT;
 		}
@@ -58,7 +58,7 @@ module feng3d
 		 * @param regType		寄存器类型
 		 * @return
 		 */
-		public static function isReadOnly(regType:string):boolean
+		public static isReadOnly(regType:string):boolean
 		{
 			switch (regType)
 			{
@@ -89,7 +89,7 @@ module feng3d
 		 * @param regType		寄存器类型
 		 * @return
 		 */
-		public static function inVertex(regType:string):boolean
+		public static inVertex(regType:string):boolean
 		{
 			switch (regType)
 			{
@@ -120,7 +120,7 @@ module feng3d
 		 * @param regType		寄存器类型
 		 * @return
 		 */
-		public static function inFragment(regType:string):boolean
+		public static inFragment(regType:string):boolean
 		{
 			switch (regType)
 			{
@@ -151,7 +151,7 @@ module feng3d
 		 * @param regType		寄存器类型
 		 * @return
 		 */
-		public static function isInputDataRegister(regType:string):boolean
+		public static isInputDataRegister(regType:string):boolean
 		{
 			switch (regType)
 			{

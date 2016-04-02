@@ -22,7 +22,7 @@ module feng3d
 		 * @param url		贴图路径
 		 * @return			纹理材质
 		 */
-		public static function createTextureMaterial(url:string):TextureMaterial
+		public static createTextureMaterial(url:string):TextureMaterial
 		{
 			Load.init();
 

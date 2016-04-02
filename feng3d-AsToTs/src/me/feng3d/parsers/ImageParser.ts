@@ -38,7 +38,7 @@ module feng3d
 		 * @return Whether or not the given file type is supported.
 		 */
 
-		public static function supportsType(extension:string):boolean
+		public static supportsType(extension:string):boolean
 		{
 			extension = extension.toLowerCase();
 			return extension == "jpg" || extension == "jpeg" || extension == "png" || extension == "gif" || extension == "bmp" || extension == "atf";
@@ -49,7 +49,7 @@ module feng3d
 		 * @param data The data block to potentially be parsed.
 		 * @return Whether or not the given data is supported.
 		 */
-		public static function supportsData(data:*):boolean
+		public static supportsData(data:*):boolean
 		{
 			//shortcut if asset is IFlexAsset
 			if (data is Bitmap)

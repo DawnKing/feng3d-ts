@@ -39,7 +39,7 @@ module feng3d
 		 * @param context3DCache			3D环境缓冲
 		 * @return							调试信息
 		 */
-		public static function debug(context3DCache:Context3DCache):Array
+		public static debug(context3DCache:Context3DCache):Array
 		{
 			var debugInfos:Array = [];
 
@@ -138,7 +138,7 @@ module feng3d
 		 * @param obj				3D环境数据
 		 * @return					3D环境实例
 		 */
-		public static function getContext3DCache(obj:Object):Context3DCache
+		public static getContext3DCache(obj:Object):Context3DCache
 		{
 			var context3DCache:Context3DCache = new Context3DCache();
 

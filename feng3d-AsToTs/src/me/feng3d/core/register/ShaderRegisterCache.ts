@@ -165,7 +165,7 @@ module feng3d
 		/**
 		 * 实例
 		 */
-		public static function get instance():ShaderRegisterCache
+		public static get instance():ShaderRegisterCache
 		{
 			_instance || new ShaderRegisterCache();
 			if (_dirty)
@@ -176,7 +176,7 @@ module feng3d
 		/**
 		 * 使缓存失效
 		 */
-		public static function invalid()
+		public static invalid()
 		{
 			_dirty = true;
 		}

@@ -43,7 +43,7 @@ module feng3d
 		 * @param stage The Stage object that contains the Stage3D objects to be managed.
 		 * @return The Stage3DManager instance for the given Stage object.
 		 */
-		public static function getInstance(stage:Stage):Stage3DManager
+		public static getInstance(stage:Stage):Stage3DManager
 		{
 			return (_instances ||= new Dictionary())[stage] ||= new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
 		}

@@ -94,7 +94,7 @@ module feng3d
 		 * @param extension 文件类型
 		 * @return
 		 */
-		public static function supportsType(extension:string):boolean
+		public static supportsType(extension:string):boolean
 		{
 			extension = extension.toLowerCase();
 			return extension == "md5mesh";
@@ -105,7 +105,7 @@ module feng3d
 		 * @param data 需要解析的数据
 		 * @return
 		 */
-		public static function supportsData(data:*):boolean
+		public static supportsData(data:*):boolean
 		{
 			data = data;
 			return false;

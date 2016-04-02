@@ -13,7 +13,7 @@ module feng3dBeat
 		/**
 		 * 初始化模块
 		 */
-		public static function init()
+		public static init()
 		{
 			heartBeatManager || (heartBeatManager = new HeartBeatManager());
 		}

@@ -18,7 +18,7 @@ module feng3d
 		/**
 		 * 初始化加载模块
 		 */
-		public static function init()
+		public static init()
 		{
 			loadManager || (loadManager = new LoadManager());
 
@@ -28,7 +28,7 @@ module feng3d
 		/**
 		 * 加载器
 		 */
-		public static function get loader():BulkLoader
+		public static get loader():BulkLoader
 		{
 			return loadManager.loader;
 		}
@@ -38,7 +38,7 @@ module feng3d
 		 * @param className			类名
 		 * @return					类定义
 		 */
-		public static function getDefinitionByName(className:string):Object
+		public static getDefinitionByName(className:string):Object
 		{
 			for each (var loadingItem:LoadingItem in loader.items)
 			{
@@ -57,7 +57,7 @@ module feng3d
 		 * @param className		类名
 		 * @return 				实例
 		 */
-		public static function getInstance(className:string):*
+		public static getInstance(className:string):*
 		{
 			var cls:Class = getDefinitionByName(className) as Class;
 			if (cls)

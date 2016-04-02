@@ -43,7 +43,7 @@ module feng3dRE
 		/**
 		 * Fagal编号中心实例
 		 */
-		public static function get instance():FagalIdCenter
+		public static get instance():FagalIdCenter
 		{
 			return _instance || new FagalIdCenter();
 		}

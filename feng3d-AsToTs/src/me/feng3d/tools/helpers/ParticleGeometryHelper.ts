@@ -20,7 +20,7 @@ module feng3d
 		 * @param transforms
 		 * @return 粒子几何体
 		 */
-		public static function generateGeometry(geometries:Geometry[]):ParticleGeometry
+		public static generateGeometry(geometries:Geometry[]):ParticleGeometry
 		{
 			var particleGeometry:ParticleGeometry = new ParticleGeometry();
 			/** 粒子数量 */
@@ -83,7 +83,7 @@ module feng3d
 			return particleGeometry;
 		}
 
-		public static function createParticleSubGeometry():SubGeometry
+		public static createParticleSubGeometry():SubGeometry
 		{
 			/** 当前粒子子几何体 */
 			var particleSubGeometry:SubGeometry = new SubGeometry();

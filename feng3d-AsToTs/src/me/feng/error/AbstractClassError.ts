@@ -22,7 +22,7 @@ module feng3d
 		 * 核查可能存在的创建抽象类错误
 		 * @param obj			用来检测的对象
 		 */
-		public static function check(obj:Object)
+		public static check(obj:Object)
 		{
 			var className:string = getQualifiedClassName(obj);
 

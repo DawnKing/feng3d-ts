@@ -13,7 +13,7 @@ module feng3d
 		 * @return
 		 *
 		 */
-		public static function toByteArray(data:*):ByteArray
+		public static toByteArray(data:*):ByteArray
 		{
 			if (data is Class)
 				data = new data();
@@ -30,7 +30,7 @@ module feng3d
 		 * @param length 需要转换的长度
 		 * @return
 		 */
-		public static function toString(data:*, length:number = 0):string
+		public static toString(data:*, length:number = 0):string
 		{
 			var ba:ByteArray;
 

@@ -21,7 +21,7 @@ module feng3d
 		 * @param p2				三角形顶点2
 		 * @return					交点
 		 */
-		public static function rayTriangleCollision(rayPosition:Vector3D, rayDirection:Vector3D, p0:Vector3D, p1:Vector3D, p2:Vector3D):Vector3D
+		public static rayTriangleCollision(rayPosition:Vector3D, rayDirection:Vector3D, p0:Vector3D, p1:Vector3D, p2:Vector3D):Vector3D
 		{
 			var t:number;
 			var rx:number, ry:number, rz:number;

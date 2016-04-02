@@ -11,7 +11,7 @@ module feng3d
 		private static var _defaultMaterial:TextureMaterial;
 		private static var _defaultTexture:BitmapTexture;
 		
-		public static function getDefaultMaterial():TextureMaterial
+		public static getDefaultMaterial():TextureMaterial
 		{
 			if (!_defaultTexture)
 				createDefaultTexture();
@@ -22,7 +22,7 @@ module feng3d
 			return _defaultMaterial;
 		}
 		
-		public static function getDefaultTexture():BitmapTexture
+		public static getDefaultTexture():BitmapTexture
 		{
 			if (!_defaultTexture)
 				createDefaultTexture();

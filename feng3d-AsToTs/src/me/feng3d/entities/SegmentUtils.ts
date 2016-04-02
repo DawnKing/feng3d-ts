@@ -28,7 +28,7 @@ module feng3d
 		{
 		}
 
-		public static function getSegmentSubGeometrys(_segments:Segment[]):SegmentSubGeometry
+		public static getSegmentSubGeometrys(_segments:Segment[]):SegmentSubGeometry
 		{
 			var segmentUtils:SegmentUtils = new SegmentUtils();
 			var _segmentSubGeometry:SegmentSubGeometry = segmentUtils.getSegmentSubGeometry(_segments);

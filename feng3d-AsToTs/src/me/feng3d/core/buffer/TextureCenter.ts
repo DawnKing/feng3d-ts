@@ -35,7 +35,7 @@ module feng3d
 		 * @param texture		纹理代理
 		 * @return				纹理
 		 */
-		public static function getTexture(context3D:Context3D, texture:TextureProxyBase):TextureBase
+		public static getTexture(context3D:Context3D, texture:TextureProxyBase):TextureBase
 		{
 			//冲缓存中取纹理
 			var textureBase:TextureBase = $getTexture(context3D, texture);

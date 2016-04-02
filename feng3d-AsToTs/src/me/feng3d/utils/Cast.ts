@@ -24,7 +24,7 @@ module feng3d
 		 * @param name		类描述字符串
 		 * @return			类定义
 		 */
-		public static function tryClass(name:string):Object
+		public static tryClass(name:string):Object
 		{
 			if (_notClasses[name])
 				return name;
@@ -54,7 +54,7 @@ module feng3d
 		 * @param data		位图数据
 		 * @return 			位图数据
 		 */
-		public static function bitmapData(data:*):BitmapData
+		public static bitmapData(data:*):BitmapData
 		{
 			if (data == null)
 				return null;
@@ -102,7 +102,7 @@ module feng3d
 		 * @param data		位图数据
 		 * @return 			位图纹理
 		 */
-		public static function bitmapTexture(data:*):BitmapTexture
+		public static bitmapTexture(data:*):BitmapTexture
 		{
 			if (data == null)
 				return null;

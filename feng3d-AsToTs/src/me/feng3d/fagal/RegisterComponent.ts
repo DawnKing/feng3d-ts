@@ -65,7 +65,7 @@ module feng3d
 		 * @param prop
 		 * @return			true：有效，false：无效
 		 */
-		public static function valid(prop:string):boolean
+		public static valid(prop:string):boolean
 		{
 			switch (prop)
 			{

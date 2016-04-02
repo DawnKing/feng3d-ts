@@ -16,7 +16,7 @@ module feng3d
 		/**
 		 * 模块是否初始化
 		 */
-		public static function get isInit():boolean
+		public static get isInit():boolean
 		{
 			return _isInit;
 		}
@@ -24,7 +24,7 @@ module feng3d
 		/**
 		 * 初始化模块
 		 */
-		public static function init()
+		public static init()
 		{
 			taskManager || (taskManager = new TaskManager());
 			_isInit = true;

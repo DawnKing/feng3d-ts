@@ -16,7 +16,7 @@ module feng3d
 		{
 		}
 
-		public static function get instance():Context3DBufferID
+		public static get instance():Context3DBufferID
 		{
 			return _instance ||= new Context3DBufferID();
 		}

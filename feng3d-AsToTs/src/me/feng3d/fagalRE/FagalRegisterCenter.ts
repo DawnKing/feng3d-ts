@@ -43,7 +43,7 @@ module feng3dRE
 		/**
 		 * 数据寄存器缓存
 		 */
-		public static function get dataRegisterDic():Dictionary
+		public static get dataRegisterDic():Dictionary
 		{
 			return _dataRegisterDic ||= new Dictionary();
 		}
@@ -77,7 +77,7 @@ module feng3dRE
 		 * @param numRegister
 		 * @return
 		 */
-		public static function createRegister(dataTypeId:string):Register
+		public static createRegister(dataTypeId:string):Register
 		{
 			if (dataRegisterDic[dataTypeId])
 				return dataRegisterDic[dataTypeId];
@@ -114,7 +114,7 @@ module feng3dRE
 		 * @return
 		 * @author feng 2015-4-24
 		 */
-		public static function getFreeTemp(description:string = ""):Register
+		public static getFreeTemp(description:string = ""):Register
 		{
 			var tempTypeId:string;
 			if (FagalRE.instance.shaderType == Context3DProgramType.VERTEX)
@@ -138,7 +138,7 @@ module feng3dRE
 		 * @return
 		 * @author feng 2015-4-24
 		 */
-		public static function getFreeTemps(description:string = "", num:number = 1):Register
+		public static getFreeTemps(description:string = "", num:number = 1):Register
 		{
 			var tempTypeId:string;
 			if (FagalRE.instance.shaderType == Context3DProgramType.VERTEX)
@@ -173,7 +173,7 @@ module feng3dRE
 		/**
 		 * 清理寄存器值
 		 */
-		public static function clear()
+		public static clear()
 		{
 			for each (var register:Register in dataRegisterDic)
 			{
@@ -184,7 +184,7 @@ module feng3dRE
 		/**
 		 * Fagal寄存器中心实例
 		 */
-		public static function get instance():FagalRegisterCenter
+		public static get instance():FagalRegisterCenter
 		{
 			return _instance || new FagalRegisterCenter();
 		}

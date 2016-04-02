@@ -1236,7 +1236,7 @@ var feng3d;
         TaskManager.prototype.onDispatchTask = function (event) {
             var data = event.data;
             var taskCollectionCls = this.taskCollectionTypeDic[data.taskCollectionType];
-            assert(taskCollectionCls != null, "尝试使用未注册的（" + data.taskCollectionType + "）任务集合类型");
+            feng3d.assert(taskCollectionCls != null, "尝试使用未注册的（" + data.taskCollectionType + "）任务集合类型");
             var taskCollection = new taskCollectionCls();
             this.executingTaskCollectionDic[taskCollection] = data;
             taskCollection.addEventListener(feng3d.TaskEvent.COMPLETEDITEM, this.onCompletedItem);
@@ -1292,11 +1292,12 @@ var feng3d;
      * @msg			在表达式为假时将输出的错误信息
      * @author feng 2014-10-29
      */
-    constructor(b, boolean, msg, string = "assert");
-    {
+    function assert(b, msg) {
+        if (msg === void 0) { msg = "assert"; }
         if (!b)
             throw new Error(msg);
     }
+    feng3d.assert = assert;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -2591,7 +2592,7 @@ var feng3d;
          * @param com 被添加组件
          */
         Component.prototype.addComponent = function (com) {
-            assert(com != this, "子项与父项不能相同");
+            feng3d.assert(com != this, "子项与父项不能相同");
             if (this.hasComponent(com)) {
                 this.setComponentIndex(com, this.components.length - 1);
                 return;
@@ -2604,8 +2605,8 @@ var feng3d;
          * @param index			插入的位置
          */
         Component.prototype.addComponentAt = function (component, index) {
-            assert(component != this, "子项与父项不能相同");
-            assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
+            feng3d.assert(component != this, "子项与父项不能相同");
+            feng3d.assert(index >= 0 && index <= this.numComponents, "给出索引超出范围");
             if (this.hasComponent(component)) {
                 index = Math.min(index, this.components.length - 1);
                 this.setComponentIndex(component, index);
@@ -2623,7 +2624,7 @@ var feng3d;
          * @param com 被移除组件
          */
         Component.prototype.removeComponent = function (com) {
-            assert(this.hasComponent(com), "只能移除在容器中的组件");
+            feng3d.assert(this.hasComponent(com), "只能移除在容器中的组件");
             var index = this.getComponentIndex(com);
             this.removeComponentAt(index);
         };
@@ -2632,7 +2633,7 @@ var feng3d;
          * @param index		要删除的 Component 的子索引。
          */
         Component.prototype.removeComponentAt = function (index) {
-            assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
+            feng3d.assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
             var removeComponent = this.components.splice(index, 1)[0];
             return removeComponent;
         };
@@ -2642,7 +2643,7 @@ var feng3d;
          * @return				组件在容器的索引位置
          */
         Component.prototype.getComponentIndex = function (com) {
-            assert(this.components.indexOf(com) != -1, "组件不在容器中");
+            feng3d.assert(this.components.indexOf(com) != -1, "组件不在容器中");
             var index = this.components.indexOf(com);
             return index;
         };
@@ -2652,9 +2653,9 @@ var feng3d;
          * @param index				位置索引
          */
         Component.prototype.setComponentIndex = function (com, index) {
-            assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
+            feng3d.assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
             var oldIndex = this.components.indexOf(com);
-            assert(oldIndex >= 0 && oldIndex < this.numComponents, "子组件不在容器内");
+            feng3d.assert(oldIndex >= 0 && oldIndex < this.numComponents, "子组件不在容器内");
             this.components.splice(oldIndex, 1);
             this.components.splice(index, 0, com);
         };
@@ -2665,7 +2666,7 @@ var feng3d;
          */
         Component.prototype.getComponentAt = ;
         Component.prototype. = function () {
-            assert(index < this.numComponents, "给出索引超出范围");
+            feng3d.assert(index < this.numComponents, "给出索引超出范围");
             return this.components[index];
         };
         /**
@@ -2750,8 +2751,8 @@ var feng3d;
          * @param index2		第二个子组件的索引位置
          */
         Component.prototype.swapComponentsAt = function (index1, index2) {
-            assert(index1 >= 0 && index1 < this.numComponents, "第一个子组件的索引位置超出范围");
-            assert(index2 >= 0 && index2 < this.numComponents, "第二个子组件的索引位置超出范围");
+            feng3d.assert(index1 >= 0 && index1 < this.numComponents, "第一个子组件的索引位置超出范围");
+            feng3d.assert(index2 >= 0 && index2 < this.numComponents, "第二个子组件的索引位置超出范围");
             var temp = this.components[index1];
             this.components[index1] = this.components[index2];
             this.components[index2] = temp;
@@ -2762,8 +2763,8 @@ var feng3d;
          * @param com2		第二个子组件
          */
         Component.prototype.swapComponents = function (com1, com2) {
-            assert(this.hasComponent(com1), "第一个子组件不在容器中");
-            assert(this.hasComponent(com2), "第二个子组件不在容器中");
+            feng3d.assert(this.hasComponent(com1), "第一个子组件不在容器中");
+            feng3d.assert(this.hasComponent(com2), "第二个子组件不在容器中");
             this.swapComponentsAt(this.getComponentIndex(com1), this.getComponentIndex(com2));
         };
         /**
@@ -2804,7 +2805,7 @@ var feng3d;
          */
         UniqueClassComponent.prototype.onBeAddedComponet = function (event) {
             var addedComponentEventVO = event.data;
-            assert(addedComponentEventVO.child == this);
+            feng3d.assert(addedComponentEventVO.child == this);
             addedComponentEventVO.container.addEventListener(feng3d.ComponentEvent.ADDED_COMPONET, this.onAddedComponetContainer);
             this.checkUniqueName(addedComponentEventVO.container);
         };
@@ -2814,7 +2815,7 @@ var feng3d;
          */
         UniqueClassComponent.prototype.onBeRemovedComponet = function (event) {
             var removedComponentEventVO = event.data;
-            assert(removedComponentEventVO.child == this);
+            feng3d.assert(removedComponentEventVO.child == this);
             removedComponentEventVO.container.removeEventListener(feng3d.ComponentEvent.ADDED_COMPONET, this.onAddedComponetContainer);
         };
         /**
@@ -7859,7 +7860,7 @@ var feng3d;
          */
         Context3DBufferOwner.prototype.addChildBufferOwner = function (childBufferOwner) {
             var index = this.childrenBufferOwner.indexOf(childBufferOwner);
-            assert(index == -1, "不能重复添加子项缓存拥有者");
+            feng3d.assert(index == -1, "不能重复添加子项缓存拥有者");
             this.childrenBufferOwner.push(childBufferOwner);
             //添加事件
             childBufferOwner.addEventListener(feng3d.Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, this.bubbleDispatchEvent);
@@ -7875,7 +7876,7 @@ var feng3d;
          */
         Context3DBufferOwner.prototype.removeChildBufferOwner = function (childBufferOwner) {
             var index = this.childrenBufferOwner.indexOf(childBufferOwner);
-            assert(index != -1, "无法移除不存在的子项缓存拥有者");
+            feng3d.assert(index != -1, "无法移除不存在的子项缓存拥有者");
             this.childrenBufferOwner.splice(index, 1);
             //移除事件
             childBufferOwner.removeEventListener(feng3d.Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, this.bubbleDispatchEvent);
@@ -12481,7 +12482,7 @@ var feng3d;
          */
         VertexBufferOwner.prototype.setVAData = function (dataTypeId, data) {
             var vaLen = this.getVALen(dataTypeId);
-            assert(data.length == this.numVertices * vaLen, "数据长度不对，更新数据之前需要给SubGeometry.numVertices赋值");
+            feng3d.assert(data.length == this.numVertices * vaLen, "数据长度不对，更新数据之前需要给SubGeometry.numVertices赋值");
             this.vertexDataDic[dataTypeId] = data;
             this.context3DBufferOwner.markBufferDirty(dataTypeId);
             this.dataValidDic[dataTypeId] = true;
@@ -22255,7 +22256,7 @@ var feng3d;
     feng3d.Load = Load;
     {
         loadManager || (loadManager = new feng3d.LoadManager());
-        assert(feng3d.Task.isInit, "加载模块依赖任务模块，请先初始化任务模块");
+        feng3d.assert(feng3d.Task.isInit, "加载模块依赖任务模块，请先初始化任务模块");
     }
     loader();
     BulkLoader;
@@ -26287,7 +26288,7 @@ var feng3d;
          */
         FCVectorBuffer.prototype.update = function (data, numRegisters) {
             if (numRegisters === void 0) { numRegisters = -1; }
-            assert(data.length % 4 == 0, "常量数据个数必须为4的倍数！");
+            feng3d.assert(data.length % 4 == 0, "常量数据个数必须为4的倍数！");
             this.data = data;
             this.numRegisters = numRegisters;
         };
@@ -26389,7 +26390,7 @@ var feng3d;
          */
         VCVectorBuffer.prototype.update = function (data, numRegisters) {
             if (numRegisters === void 0) { numRegisters = -1; }
-            assert(data.length % 4 == 0, "常量数据个数必须为4的倍数！");
+            feng3d.assert(data.length % 4 == 0, "常量数据个数必须为4的倍数！");
             this.data = data;
             this.numRegisters = numRegisters;
         };
@@ -26555,7 +26556,7 @@ var feng3d;
          * @param data32PerVertex 	与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓存区内选择属性。
          */
         VABuffer.prototype.update = function (data, numVertices, data32PerVertex) {
-            assert(1 <= data32PerVertex && data32PerVertex <= 4);
+            feng3d.assert(1 <= data32PerVertex && data32PerVertex <= 4);
             this._format = bufferFormats[data32PerVertex];
             this.dataBuffer.update(data, numVertices, data32PerVertex);
         };

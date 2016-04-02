@@ -68,7 +68,7 @@ module feng3d
 		 * @param context3D			3D环境
 		 * @return					AGAL程序缓冲实例
 		 */
-		public static function getInstance(context3D:Context3D):AGALProgram3DCache
+		public static getInstance(context3D:Context3D):AGALProgram3DCache
 		{
 			return _instanceDic[context3D] ||= new AGALProgram3DCache(context3D);
 		}

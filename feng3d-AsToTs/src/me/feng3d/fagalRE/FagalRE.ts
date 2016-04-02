@@ -35,7 +35,7 @@ module feng3dRE
 		 * 添加3d缓冲编号配置
 		 * @param configs
 		 */
-		public static function addBufferID(configs:Array)
+		public static addBufferID(configs:Array)
 		{
 			for (var i:number = 0; i < configs.length; i++)
 			{
@@ -78,7 +78,7 @@ module feng3dRE
 		 * 运行Fagal函数
 		 * @param agalMethod Fagal函数
 		 */
-		public static function runShader(vertexShader:*, fragmentShader:*):FagalShaderResult
+		public static runShader(vertexShader:*, fragmentShader:*):FagalShaderResult
 		{
 			return instance.runShader(vertexShader, fragmentShader);
 		}
@@ -141,7 +141,7 @@ module feng3dRE
 		/**
 		 * Fagal函数运行环境实例
 		 */
-		public static function get instance():FagalRE
+		public static get instance():FagalRE
 		{
 			return _instance || new FagalRE();
 		}
