@@ -1472,48 +1472,219 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 携带数据的事件，该类为自定义事件基类
-     * @author feng 2014-5-7
+     * 自定义事件
+     * @author warden_feng 2014-5-7
      */
-    var FEvent = (function (_super) {
-        __extends(FEvent, _super);
-        function FEvent() {
-            _super.apply(this, arguments);
-            this._data =  * ;
+    var Event = (function () {
+        /**
+         * 创建一个作为参数传递给事件侦听器的 Event 对象。
+         * @param type 事件的类型，可以作为 Event.type 访问。
+         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         * @param cancelable 确定是否可以取消 Event 对象。默认值为 false。
+         */
+        function Event(type, data, bubbles, cancelable) {
+            if (data === void 0) { data = null; }
+            if (bubbles === void 0) { bubbles = false; }
+            if (cancelable === void 0) { cancelable = false; }
+            this._type = type;
+            this._data = data;
+            this._bubbles = bubbles;
         }
-        return FEvent;
-    }(Event));
-    feng3d.FEvent = FEvent;
-    null, bubbles;
-    boolean = false, cancelable;
-    boolean = false;
-    {
-        this._data = data;
-        _super.call(this, type, bubbles, cancelable);
-    }
-    toString();
-    string;
-    {
-        return formatString("[{0} this.type=\"{1}\" this.bubbles={2}  this.cancelable={3}]", getQualifiedClassName(this).split("::").pop(), this.type, this.bubbles, this.cancelable);
-    }
-    get;
-    data();
-     *
-        {
-            return: _data
+        /**
+         * 防止对事件流中当前节点中和所有后续节点中的事件侦听器进行处理。此方法会立即生效，并且会影响当前节点中的事件侦听器。相比之下，在当前节点中的所有事件侦听器都完成处理之前，stopPropagation() 方法不会生效。
+         */
+        Event.prototype.stopImmediatePropagation = function () {
+            this._stopsPropagation = this._stopsImmediatePropagation = true;
         };
-    set;
-    data(value,  * );
-    {
-        _data = value;
-    }
-    clone();
-    Event;
-    {
-        var className = getQualifiedClassName(this);
-        var cls = getDefinitionByName(className);
-        return new cls(this.type, this.data, this.bubbles, this.cancelable);
-    }
+        /**
+         * 防止对事件流中当前节点的后续节点中的所有事件侦听器进行处理。此方法不会影响当前节点 (currentTarget) 中的任何事件侦听器。相比之下，stopImmediatePropagation() 方法可以防止对当前节点中和后续节点中的事件侦听器进行处理。对此方法的其他调用没有任何效果。可以在事件流的任何阶段中调用此方法。
+         */
+        Event.prototype.stopPropagation = function () {
+            this._stopsPropagation = true;
+        };
+        Event.prototype.tostring = function () {
+            return "[" + (typeof this) + " type=\"" + this._type + "\" bubbles=" + this._bubbles + "]";
+        };
+        Object.defineProperty(Event.prototype, "bubbles", {
+            /**
+             * 表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
+             */
+            get: function () {
+                return this._bubbles;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "type", {
+            /**
+             * 事件的类型。类型区分大小写。
+             */
+            get: function () {
+                return this._type;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "data", {
+            /** 事件携带的自定义数据 */
+            get: function () {
+                return this._data;
+            },
+            /**
+             * @private
+             */
+            set: function (value) {
+                this._data = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "target", {
+            /**
+             * 事件目标。
+             */
+            get: function () {
+                return this._target;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "currentTarget", {
+            /**
+             * 当前正在使用某个事件侦听器处理 Event 对象的对象。
+             */
+            get: function () {
+                return this._currentTarget;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "stopsImmediatePropagation", {
+            get: function () {
+                return this._stopsImmediatePropagation;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Event.prototype, "stopsPropagation", {
+            get: function () {
+                return this._stopsPropagation;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Event.prototype.setTarget = function (value) {
+            this._target = value;
+        };
+        Event.prototype.setCurrentTarget = function (value) {
+            this._currentTarget = value;
+        };
+        return Event;
+    }());
+    feng3d.Event = Event;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 为了实现非flash原生显示列表的冒泡事件，自定义事件适配器
+     * @author feng 2016-3-22
+     */
+    var EventDispatcher = (function () {
+        /**
+         * 构建事件适配器
+         * @param target		事件适配主体
+         */
+        function EventDispatcher(target) {
+            if (target === void 0) { target = null; }
+            this._target = target;
+            if (this._target == null)
+                this._target = this;
+            this._eventListeners = {};
+        }
+        EventDispatcher.prototype.addEventListener = function (type, listener, priority, useWeakReference) {
+            if (priority === void 0) { priority = 0; }
+            if (useWeakReference === void 0) { useWeakReference = false; }
+            if (listener == null)
+                return;
+            var listeners = this._eventListeners[type];
+            if (listeners == null)
+                listeners = this._eventListeners[type] = [];
+            var index = listeners.indexOf(listener);
+            if (index == -1) {
+                listeners.push(listener);
+            }
+        };
+        EventDispatcher.prototype.removeEventListener = function (type, listener) {
+            if (this._eventListeners) {
+                var listeners = this._eventListeners[type];
+                var index = listeners.indexOf(listener);
+                listeners.splice(index, 1);
+            }
+        };
+        EventDispatcher.prototype.removeEventListeners = function (type) {
+            if (type === void 0) { type = null; }
+            if (type && this._eventListeners)
+                delete this._eventListeners[type];
+            else
+                this._eventListeners = {};
+        };
+        /**
+         * @inheritDoc
+         */
+        EventDispatcher.prototype.dispatchEvent = function (event) {
+            var _this = this;
+            //停止事件流
+            if (!event || event.stopsPropagation)
+                return false;
+            //设置目标
+            if (!event.target)
+                event.setTarget(this._target);
+            //处理当前事件(目标阶段)
+            var listeners = this._eventListeners[event.type];
+            if (!event.stopsImmediatePropagation) {
+                listeners.forEach(function (listener) {
+                    //设置当前目标
+                    event.setCurrentTarget(_this._target);
+                    listener(event);
+                });
+            }
+            //事件冒泡(冒泡阶段)
+            if (event.bubbles && this.parentDispatcher) {
+                this.parentDispatcher.dispatchEvent(event);
+            }
+            return event.stopsPropagation;
+        };
+        EventDispatcher.prototype.hasEventListener = function (type) {
+            var listeners = this._eventListeners ? this._eventListeners[type] : null;
+            for (var key in listeners) {
+                return true;
+            }
+            return false;
+        };
+        /**
+         * 该功能暂未实现
+         * @param type
+         * @return
+         */
+        EventDispatcher.prototype.willTrigger = function (type) {
+            // TODO Auto Generated method stub
+            return false;
+        };
+        Object.defineProperty(EventDispatcher.prototype, "parentDispatcher", {
+            /**
+             * 父事件适配器
+             */
+            get: function () {
+                return this._target[EventDispatcher.BUBBLE_PROPERTY];
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /** 冒泡属性名称为“parent” */
+        EventDispatcher.BUBBLE_PROPERTY = "parent";
+        return EventDispatcher;
+    }());
+    feng3d.EventDispatcher = EventDispatcher;
 })(feng3d || (feng3d = {}));
 var feng3dBeat;
 (function (feng3dBeat) {
@@ -1540,7 +1711,7 @@ var feng3dBeat;
         /** 鼠标检测心跳 */
         HeartBeatEvent.MOUSE_CHECK_BEAT = "MouseCheckBeat";
         return HeartBeatEvent;
-    }(FEvent));
+    }(Event));
     feng3dBeat.HeartBeatEvent = HeartBeatEvent;
 })(feng3dBeat || (feng3dBeat = {}));
 var feng3d;
@@ -1571,7 +1742,7 @@ var feng3d;
          */
         ComponentEvent.BE_REMOVED_COMPONET = "beRemovedComponet";
         return ComponentEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.ComponentEvent = ComponentEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -1630,7 +1801,7 @@ var feng3dBeat;
         /** 停止所有心跳 */
         HeartBeatModuleEvent.RESUME_ALL_BEAT = "resumeAllBeat";
         return HeartBeatModuleEvent;
-    }(FEvent));
+    }(Event));
     feng3dBeat.HeartBeatModuleEvent = HeartBeatModuleEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -1672,7 +1843,7 @@ var feng3d;
         /** 加载资源 */
         LoadModuleEvent.LOAD_RESOURCE = "loadResource";
         return LoadModuleEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.LoadModuleEvent = LoadModuleEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -1691,7 +1862,7 @@ var feng3d;
         /** 注册任务集合类型 */
         TaskModuleEvent.REGISTER_TASKCOLLECTIONTYPE = "registerTaskCollectionType";
         return TaskModuleEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.TaskModuleEvent = TaskModuleEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -1736,7 +1907,7 @@ var feng3d;
         /** 资源加载完成 */
         LoadUrlEvent.LOAD_COMPLETE = "loadComplete";
         return LoadUrlEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.LoadUrlEvent = LoadUrlEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -1755,7 +1926,7 @@ var feng3d;
         /** 完成一个任务单元 */
         TaskEvent.COMPLETEDITEM = "completedItem";
         return TaskEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.TaskEvent = TaskEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -1828,7 +1999,7 @@ var feng3d;
         AnimationStateEvent.PLAYBACK_COMPLETE = "playbackComplete";
         AnimationStateEvent.TRANSITION_COMPLETE = "transitionComplete";
         return AnimationStateEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.AnimationStateEvent = AnimationStateEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -1851,7 +2022,7 @@ var feng3d;
         /** 周期完成 */
         AnimatorEvent.CYCLE_COMPLETE = "cycle_complete";
         return AnimatorEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.AnimatorEvent = AnimatorEvent;
     null, bubbles;
     boolean = false;
@@ -1913,7 +2084,7 @@ var feng3d;
         AssetEvent.ASSET_CONFLICT_RESOLVED = 'assetConflictResolved';
         AssetEvent.TEXTURE_SIZE_ERROR = 'textureSizeError';
         return AssetEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.AssetEvent = AssetEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -1938,7 +2109,7 @@ var feng3d;
         });
         CameraEvent.LENS_CHANGED = "lensChanged";
         return CameraEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.CameraEvent = CameraEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -1953,7 +2124,7 @@ var feng3d;
             _super.apply(this, arguments);
         }
         return Container3DEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.Container3DEvent = Container3DEvent;
     null, bubbles;
     boolean = false;
@@ -1989,7 +2160,7 @@ var feng3d;
          */
         Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER = "removeChildContext3DBufferOwner";
         return Context3DBufferOwnerEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.Context3DBufferOwnerEvent = Context3DBufferOwnerEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -2033,7 +2204,7 @@ var feng3d;
          */
         FagalMathEvent.FAGALMATHEVENT_APPEND = "fagalMathEventAppend";
         return FagalMathEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.FagalMathEvent = FagalMathEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -2060,7 +2231,7 @@ var feng3d;
          */
         GeometryComponentEvent.CHANGED_INDEX_DATA = "changedIndexData";
         return GeometryComponentEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.GeometryComponentEvent = GeometryComponentEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -2098,7 +2269,7 @@ var feng3d;
         /** 几何体外形发生改变 */
         GeometryEvent.SHAPE_CHANGE = "shapeChange";
         return GeometryEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.GeometryEvent = GeometryEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -2124,7 +2295,7 @@ var feng3d;
         });
         LensEvent.MATRIX_CHANGED = "matrixChanged";
         return LensEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.LensEvent = LensEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -2140,7 +2311,7 @@ var feng3d;
         }
         LightEvent.CASTS_SHADOW_CHANGE = "castsShadowChange";
         return LightEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.LightEvent = LightEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -2165,7 +2336,7 @@ var feng3d;
         /** 移除pass */
         MaterialEvent.PASS_REMOVED = "passRemoved";
         return MaterialEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.MaterialEvent = MaterialEvent;
     null, bubbles;
     boolean = false;
@@ -2189,7 +2360,7 @@ var feng3d;
          */
         MeshEvent.MATERIAL_CHANGE = "materialChange";
         return MeshEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.MeshEvent = MeshEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -2243,7 +2414,7 @@ var feng3d;
          */
         MouseEvent3D.MOUSE_WHEEL = "mouseWheel3d";
         return MouseEvent3D;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.MouseEvent3D = MouseEvent3D;
     null, bubbles;
     boolean = true, cancelable;
@@ -2252,7 +2423,7 @@ var feng3d;
         _super.call(this, type, data, bubbles, cancelable);
     }
     clone();
-    Event;
+    feng3d.Event;
     {
         var cl = _super.clone.call(this);
         cl.object = this.object;
@@ -2299,7 +2470,7 @@ var feng3d;
          */
         ParserEvent.READY_FOR_DEPENDENCIES = 'readyForDependencies';
         return ParserEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.ParserEvent = ParserEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -2316,7 +2487,7 @@ var feng3d;
         /** 渲染函数失效 */
         ShadingMethodEvent.SHADER_INVALIDATED = "ShaderInvalidated";
         return ShadingMethodEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.ShadingMethodEvent = ShadingMethodEvent;
     null, bubbles;
     boolean = false, cancelable;
@@ -2378,7 +2549,7 @@ var feng3d;
          */
         Transform3DEvent.SCENETRANSFORM_CHANGED = "scenetransformChanged";
         return Transform3DEvent;
-    }(feng3d.FEvent));
+    }(feng3d.Event));
     feng3d.Transform3DEvent = Transform3DEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -2386,158 +2557,7 @@ var feng3d;
     /**
      * 被添加到组件容器后触发
      */
-    [Event(name = "errorEvent", type = "me.feng.events.FErrorEvent")];
-    /**
-     * 实现能在非flash原生显示列表中的冒泡的事件适配器.
-     * <p>事件过程使用原生事件机制，不过增强了冒泡功能，使得事件会向上级（默认parent）冒泡。</p>
-     *
-     * @includeExample CustomEventContentAssistTest.as
-     * @includeExample EventBubblesTest.as
-     * @includeExample EventBubblesTest2.as
-     * @includeExample FEventDispatcherTest.as
-     * @includeExample IFEventDispatcherTest.as
-     *
-     * @author feng 2014-5-7
-     */
-    var FEventDispatcher = (function () {
-        /**
-         * 创建 FEventDispatcher 类的实例.
-         *
-         * <p>FEventDispatcher 类通常用作基类，这意味着大多数开发人员都无需使用此构造函数。但是，实现 IEventDispatcher 接口的高级开发人员则需要使用此构造函数。如果您无法扩展 EventDispatcher 类并且必须实现 IEventDispatcher 接口，请使用此构造函数来聚合 EventDispatcher 类的实例。</p>
-         *
-         * @param target		 (default = null) — 调度到 EventDispatcher 对象的事件的目标对象。当 EventDispatcher 实例由实现 IEventDispatcher 的类聚合时，使用此参数；此参数是必需的，以便包含对象可以是事件的目标。请勿在类扩展了 EventDispatcher 的简单情况下使用此参数。
-         *
-         * @see flash.events.EventDispatcher.EventDispatcher()
-         */
-        function FEventDispatcher(target) {
-            if (target === void 0) { target = null; }
-            if (target != null)
-                this.dispatcher = new EventDispatcher(target);
-            else
-                this.dispatcher = new EventDispatcher(this);
-        }
-        Object.defineProperty(FEventDispatcher.prototype, "name", {
-            /**
-             * 名称
-             */
-            get: function () {
-                return _name;
-            },
-            set: function (value) {
-                _name = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 使用 EventDispatcher 对象注册事件侦听器对象，以使侦听器能够接收事件通知. 可以为特定类型的事件、阶段和优先级在显示列表中的所有节点上注册事件侦听器。
-         *
-         * <p>成功注册一个事件侦听器后，无法通过额外调用 addEventListener() 来更改其优先级。要更改侦听器的优先级，必须首先调用 removeListener()。然后，可以使用新的优先级再次注册该侦听器。 </p>
-         * <p>请记住，注册该侦听器后，如果继续调用具有不同 type 或 useCapture 值的 addEventListener()，则会创建单独的侦听器注册。例如，如果首先注册 useCapture 设置为 true 的侦听器，则该侦听器只在捕获阶段进行侦听。如果使用同一个侦听器对象再次调用 addEventListener()，并将 useCapture 设置为 false，那么便会拥有两个单独的侦听器：一个在捕获阶段进行侦听，另一个在目标和冒泡阶段进行侦听。 </p>
-         * <p>不能只为目标阶段或冒泡阶段注册事件侦听器。这些阶段在注册期间是成对出现的，因为冒泡阶段只适用于目标节点的祖代。</p>
-         * <p>如果不再需要某个事件侦听器，可调用 removeEventListener() 删除它，否则会产生内存问题。事件侦听器不会自动从内存中删除，因为只要调度对象存在，垃圾回收器就不会删除侦听器（除非 useWeakReference 参数设置为 true）。</p>
-         * <p>复制 EventDispatcher 实例时并不复制其中附加的事件侦听器。（如果新近创建的节点需要一个事件侦听器，必须在创建该节点后附加该侦听器。）但是，如果移动 EventDispatcher 实例，则其中附加的事件侦听器也会随之移动。</p>
-         * <p>如果在正在处理事件的节点上注册事件侦听器，则不会在当前阶段触发事件侦听器，但会在事件流的稍后阶段触发，如冒泡阶段。</p>
-         * <p>如果从正在处理事件的节点中删除事件侦听器，则该事件侦听器仍由当前操作触发。删除事件侦听器后，决不会再次调用该事件侦听器（除非再次注册以备将来处理）。 </p>
-         * <P>类级别成员函数不属于垃圾回收的对象，因此可以对类级别成员函数将 useWeakReference 设置为 true 而不会使它们受垃圾回收的影响。如果对作为嵌套内部函数的侦听器将 useWeakReference 设置为 true，则该函数将作为垃圾回收并且不再是永久函数。如果创建对该内部函数的引用（将该函数保存到另一个变量中），则该函数将不作为垃圾回收并仍将保持永久。</P>
-         *
-         * @param type						事件的类型。
-         * @param listener					处理事件的侦听器函数。此函数必须接受 Event 对象作为其唯一的参数，并且不能返回任何结果，如下面的实例所示： <pre>function(evt:Event)</pre>函数可以有任何名称。
-         * @param useCapture				确定侦听器是运行于捕获阶段还是运行于目标和冒泡阶段。如果将 useCapture 设置为 true，则侦听器只在捕获阶段处理事件，而不在目标或冒泡阶段处理事件。如果 useCapture 为 false，则侦听器只在目标或冒泡阶段处理事件。要在所有三个阶段都侦听事件，请调用 addEventListener 两次：一次将 useCapture 设置为 true，一次将 useCapture 设置为 false。
-         * @param priority					事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
-         * @param useWeakReference			确定对侦听器的引用是强引用，还是弱引用。强引用（默认值）可防止您的侦听器被当作垃圾回收。弱引用则没有此作用。
-         *
-         * @see flash.events.EventDispatcher.addEventListener()
-         */
-        FEventDispatcher.prototype.addEventListener = function (type, listener, useCapture, priority, useWeakReference) {
-            if (useCapture === void 0) { useCapture = false; }
-            if (priority === void 0) { priority = 0; }
-            if (useWeakReference === void 0) { useWeakReference = false; }
-            this.dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
-        };
-        /**
-         * 从 EventDispatcher 对象中删除侦听器. 如果没有向 EventDispatcher 对象注册任何匹配的侦听器，则对此方法的调用没有任何效果。
-         *
-         * @param type						事件的类型。
-         * @param listener					要删除的侦听器对象。
-         * @param useCapture				指出是为捕获阶段还是为目标和冒泡阶段注册了侦听器。如果为捕获阶段以及目标和冒泡阶段注册了侦听器，则需要对 removeEventListener() 进行两次调用才能将这两个侦听器删除，一次调用将 useCapture() 设置为 true，另一次调用将 useCapture() 设置为 false。
-         * @see flash.events.EventDispatcher.removeEventListener()
-         */
-        FEventDispatcher.prototype.removeEventListener = function (type, listener, useCapture) {
-            if (useCapture === void 0) { useCapture = false; }
-            this.dispatcher.removeEventListener(type, listener, useCapture);
-        };
-        /**
-         * 将事件调度到事件流中. 事件目标是对其调用 dispatchEvent() 方法的 EventDispatcher 对象。
-         *
-         * @param event						调度到事件流中的 Event 对象。如果正在重新调度事件，则会自动创建此事件的一个克隆。在调度了事件后，其 target 属性将无法更改，因此您必须创建此事件的一个新副本以能够重新调度。
-         * @return 							如果成功调度了事件，则值为 true。值 false 表示失败或对事件调用了 preventDefault()。
-         */
-        FEventDispatcher.prototype.dispatchEvent = function (event) {
-            var result = this.dispatcher.dispatchEvent(event);
-            //实现冒泡功能
-            var eventTarget = this;
-            if (eventTarget != null && event.bubbles && this.hasOwnProperty(BUBBLE_PROPERTY)) {
-                eventTarget = eventTarget[BUBBLE_PROPERTY];
-                if (eventTarget)
-                    is;
-                IEventDispatcher;
-                {
-                    result = result && IEventDispatcher(eventTarget).dispatchEvent(event);
-                }
-            }
-            return result;
-        };
-        /**
-         * 检查 EventDispatcher 对象是否为特定事件类型注册了任何侦听器. 这样，您就可以确定 EventDispatcher 对象在事件流层次结构中的哪个位置改变了对事件类型的处理。要确定特定事件类型是否确实触发了事件侦听器，请使用 willTrigger()。
-         * <p>hasEventListener() 与 willTrigger() 的区别是：hasEventListener() 只检查它所属的对象，而 willTrigger() 检查整个事件流以查找由 type 参数指定的事件。</p>
-         * <p>当从 LoaderInfo 对象调用 hasEventListener() 时，只考虑调用方可以访问的侦听器。</p>
-         *
-         * @param type		事件的类型。
-         * @return 			如果指定类型的侦听器已注册，则值为 true；否则，值为 false。
-         */
-        FEventDispatcher.prototype.hasEventListener = function (type) {
-            return this.dispatcher.hasEventListener(type);
-        };
-        /**
-         * 检查是否用此 EventDispatcher 对象或其任何祖代为指定事件类型注册了事件侦听器. 将指定类型的事件调度给此 EventDispatcher 对象或其任一后代时，如果在事件流的任何阶段触发了事件侦听器，则此方法返回 true。
-         * <p>hasEventListener() 与 willTrigger() 方法的区别是：hasEventListener() 只检查它所属的对象，而 willTrigger() 方法检查整个事件流以查找由 type 参数指定的事件。 </p>
-         * <p>当从 LoaderInfo 对象调用 willTrigger() 时，只考虑调用方可以访问的侦听器。</p>
-         *
-         * @param type		事件的类型。
-         * @return 			如果将会触发指定类型的侦听器，则值为 true；否则，值为 false。
-         */
-        FEventDispatcher.prototype.willTrigger = function (type) {
-            return this.dispatcher.willTrigger(type);
-        };
-        /**
-         * 抛出错误事件
-         * <p>该函数会抛出 ErrorEvent.ERROR 事件</p>
-         * <p>仅当错误事件被正确处理（FErrorEvent.isProcessed == true）时不会使用throw抛出错误</p>
-         * @see me.feng.events.FErrorEvent
-         *
-         * @author feng 2015-12-7
-         */
-        FEventDispatcher.prototype.throwEvent = function (error) {
-            var errorEvent = new feng3d.FErrorEvent(feng3d.FErrorEvent.ERROR_EVENT, error);
-            this.dispatchEvent(errorEvent);
-            if (!errorEvent.isProcessed)
-                throw error;
-        };
-        /**
-         * 冒泡属性名称，或者称为上级（默认为parent）
-         */
-        FEventDispatcher.BUBBLE_PROPERTY = "parent";
-        return FEventDispatcher;
-    }());
-    feng3d.FEventDispatcher = FEventDispatcher;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 被添加到组件容器后触发
-     */
-    [Event(name = "beAddedComponet", type = "me.feng.component.event.ComponentEvent")][Event(name = "beRemovedComponet", type = "me.feng.component.event.ComponentEvent")][Event(name = "addedComponet", type = "me.feng.component.event.ComponentEvent")][Event(name = "removedComponet", type = "me.feng.component.event.ComponentEvent")];
+    [feng3d.Event(name = "beAddedComponet", type = "me.feng.component.event.ComponentEvent")][feng3d.Event(name = "beRemovedComponet", type = "me.feng.component.event.ComponentEvent")][feng3d.Event(name = "addedComponet", type = "me.feng.component.event.ComponentEvent")][feng3d.Event(name = "removedComponet", type = "me.feng.component.event.ComponentEvent")];
     /**
      * 组件容器（集合）
      * @author feng 2015-5-6
@@ -2774,7 +2794,7 @@ var feng3d;
             });
         };
         return Component;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.Component = Component;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -4360,7 +4380,7 @@ var feng3d;
      * 当开始播放动画时触发
      * @eventType me.feng3d.events.AnimatorEvent
      */
-    [Event(name = "start", type = "me.feng3d.events.AnimatorEvent")][Event(name = "stop", type = "me.feng3d.events.AnimatorEvent")][Event(name = "cycle_complete", type = "me.feng3d.events.AnimatorEvent")];
+    [feng3d.Event(name = "start", type = "me.feng3d.events.AnimatorEvent")][feng3d.Event(name = "stop", type = "me.feng3d.events.AnimatorEvent")][feng3d.Event(name = "cycle_complete", type = "me.feng3d.events.AnimatorEvent")];
     /**
      * 动画基类
      * @author feng 2014-5-27
@@ -4543,8 +4563,8 @@ var feng3d;
                 return;
             this._time = this._absoluteTime = getTimer();
             this._isPlaying = true;
-            if (!this._broadcaster.hasEventListener(Event.ENTER_FRAME))
-                this._broadcaster.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+            if (!this._broadcaster.hasEventListener(feng3d.Event.ENTER_FRAME))
+                this._broadcaster.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame);
             if (!this.hasEventListener(feng3d.AnimatorEvent.START))
                 return;
             this.dispatchEvent(new feng3d.AnimatorEvent(feng3d.AnimatorEvent.START, this));
@@ -4558,8 +4578,8 @@ var feng3d;
             if (!this._isPlaying)
                 return;
             this._isPlaying = false;
-            if (this._broadcaster.hasEventListener(Event.ENTER_FRAME))
-                this._broadcaster.removeEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+            if (this._broadcaster.hasEventListener(feng3d.Event.ENTER_FRAME))
+                this._broadcaster.removeEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame);
             if (!this.hasEventListener(feng3d.AnimatorEvent.STOP))
                 return;
             this.dispatchEvent(new feng3d.AnimatorEvent(feng3d.AnimatorEvent.STOP, this));
@@ -6535,7 +6555,7 @@ var feng3d;
     /**
      * 位移时抛出
      */
-    [Event(name = "positionChanged", type = "me.feng3d.events.Transform3DEvent")][Event(name = "rotationChanged", type = "me.feng3d.events.Transform3DEvent")][Event(name = "scaleChanged", type = "me.feng3d.events.Transform3DEvent")][Event(name = "transformChanged", type = "me.feng3d.events.Transform3DEvent")][Event(name = "transformUpdated", type = "me.feng3d.events.Transform3DEvent")];
+    [feng3d.Event(name = "positionChanged", type = "me.feng3d.events.Transform3DEvent")][feng3d.Event(name = "rotationChanged", type = "me.feng3d.events.Transform3DEvent")][feng3d.Event(name = "scaleChanged", type = "me.feng3d.events.Transform3DEvent")][feng3d.Event(name = "transformChanged", type = "me.feng3d.events.Transform3DEvent")][feng3d.Event(name = "transformUpdated", type = "me.feng3d.events.Transform3DEvent")];
     /**
      * 3D元素<br/><br/>
      *
@@ -7787,7 +7807,7 @@ var feng3d;
     /**
      * 添加3D环境缓冲事件
      */
-    [Event(name = "addContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")][Event(name = "removeContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")][Event(name = "addChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")][Event(name = "removeChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")];
+    [feng3d.Event(name = "addContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")][feng3d.Event(name = "removeContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")][feng3d.Event(name = "addChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")][feng3d.Event(name = "removeChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")];
     /**
      * Context3D缓存拥有者
      * @author feng 2014-11-26
@@ -9768,7 +9788,7 @@ var feng3d;
      * 当鼠标点击时触发
      * @eventType me.feng3d.events.MouseEvent3D
      */
-    [Event(name = "click3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "mouseOver3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "mouseOut3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "mouseMove3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "doubleClick3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "mouseDown3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "mouseUp3d", type = "me.feng3d.events.MouseEvent3D")][Event(name = "mouseWheel3d", type = "me.feng3d.events.MouseEvent3D")];
+    [feng3d.Event(name = "click3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "mouseOver3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "mouseOut3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "mouseMove3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "doubleClick3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "mouseDown3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "mouseUp3d", type = "me.feng3d.events.MouseEvent3D")][feng3d.Event(name = "mouseWheel3d", type = "me.feng3d.events.MouseEvent3D")];
     /**
      * InteractiveObject3D 类是用户可以使用鼠标、键盘或其他用户输入设备与之交互的所有显示对象的抽象基类。
      * @see		flash.display.InteractiveObject
@@ -10804,7 +10824,7 @@ var feng3d;
     /**
      * 材质发生变化时抛出
      */
-    [Event(name = "materialChange", type = "me.feng3d.events.MeshEvent")];
+    [feng3d.Event(name = "materialChange", type = "me.feng3d.events.MeshEvent")];
     /**
      * 网格
      * @author feng 2014-4-9
@@ -12546,7 +12566,7 @@ var feng3d;
     /**
      * 获取几何体顶点数据时触发
      */
-    [Event(name = "getVAData", type = "me.feng3d.events.GeometryComponentEvent")][Event(name = "changedVAData", type = "me.feng3d.events.GeometryComponentEvent")][Event(name = "changedIndexData", type = "me.feng3d.events.GeometryComponentEvent")];
+    [feng3d.Event(name = "getVAData", type = "me.feng3d.events.GeometryComponentEvent")][feng3d.Event(name = "changedVAData", type = "me.feng3d.events.GeometryComponentEvent")][feng3d.Event(name = "changedIndexData", type = "me.feng3d.events.GeometryComponentEvent")];
     /**
      * 子几何体
      */
@@ -13428,7 +13448,7 @@ var feng3d;
                 }
                 _numDirectionalLights = numDirectionalLights;
                 _numPointLights = numPointLights;
-                dispatchEvent(new Event(Event.CHANGE));
+                dispatchEvent(new feng3d.Event(feng3d.Event.CHANGE));
             },
             enumerable: true,
             configurable: true
@@ -15595,7 +15615,7 @@ var feng3d;
             pass.smooth = this._smooth;
             pass.repeat = this._repeat;
             pass.bothSides = this._bothSides;
-            pass.addEventListener(Event.CHANGE, this.onPassChange);
+            pass.addEventListener(feng3d.Event.CHANGE, this.onPassChange);
             this.invalidatePasses(null);
         };
         /**
@@ -15720,7 +15740,7 @@ var feng3d;
             for (i = 0; i < this._numPasses; ++i)
                 this._passes[i].dispose();
             this._depthPass.dispose();
-            this._depthPass.removeEventListener(Event.CHANGE, this.onPassChange);
+            this._depthPass.removeEventListener(feng3d.Event.CHANGE, this.onPassChange);
         };
         Object.defineProperty(MaterialBase.prototype, "namedAsset", {
             get: function () {
@@ -16657,10 +16677,10 @@ var feng3d;
             },
             set: function (value) {
                 if (_lightPicker)
-                    _lightPicker.removeEventListener(Event.CHANGE, onLightsChange);
+                    _lightPicker.removeEventListener(feng3d.Event.CHANGE, onLightsChange);
                 _lightPicker = value;
                 if (_lightPicker)
-                    _lightPicker.addEventListener(Event.CHANGE, onLightsChange);
+                    _lightPicker.addEventListener(feng3d.Event.CHANGE, onLightsChange);
                 updateLights();
             },
             enumerable: true,
@@ -16792,7 +16812,7 @@ var feng3d;
          */
         MaterialPassBase.prototype.dispose = function () {
             if (this._lightPicker)
-                this._lightPicker.removeEventListener(Event.CHANGE, this.onLightsChange);
+                this._lightPicker.removeEventListener(feng3d.Event.CHANGE, this.onLightsChange);
         };
         return MaterialPassBase;
     }(feng3d.Component));
@@ -18198,7 +18218,7 @@ var feng3d;
             configurable: true
         });
         return GlobalDispatcher;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.GlobalDispatcher = GlobalDispatcher;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -18207,7 +18227,7 @@ var feng3d;
      * 完成一个任务单元时触发
      * @eventType me.feng.load.LoadUrlEvent
      */
-    [Event(name = "loadSingleComplete", type = "me.feng.load.LoadUrlEvent")][Event(name = "loadComplete", type = "me.feng.load.LoadUrlEvent")];
+    [feng3d.Event(name = "loadSingleComplete", type = "me.feng.load.LoadUrlEvent")][feng3d.Event(name = "loadComplete", type = "me.feng.load.LoadUrlEvent")];
     /**
      * 加载事件数据
      * @author feng 2015-5-27
@@ -18291,7 +18311,7 @@ var feng3d;
             this.dispatchEvent(new feng3d.LoadUrlEvent(feng3d.LoadUrlEvent.LOAD_COMPLETE));
         };
         return LoadModuleEventData;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.LoadModuleEventData = LoadModuleEventData;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -18300,7 +18320,7 @@ var feng3d;
      * 完成一个任务单元时触发
      * @eventType me.feng.events.TaskEvent
      */
-    [Event(name = "completedItem", type = "me.feng.task.TaskEvent")][Event(name = "completed", type = "me.feng.task.TaskEvent")];
+    [feng3d.Event(name = "completedItem", type = "me.feng.task.TaskEvent")][feng3d.Event(name = "completed", type = "me.feng.task.TaskEvent")];
     /**
      * 任务模块事件数据
      * @author feng 2015-10-29
@@ -18315,7 +18335,7 @@ var feng3d;
             this.params =  * ;
         }
         return TaskModuleEventDispatchTaskData;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.TaskModuleEventDispatchTaskData = TaskModuleEventDispatchTaskData;
     null;
     {
@@ -18330,7 +18350,7 @@ var feng3d;
      * 完成任务时触发
      * @eventType me.feng.events.TaskEvent
      */
-    [Event(name = "completed", type = "me.feng.task.TaskEvent")];
+    [feng3d.Event(name = "completed", type = "me.feng.task.TaskEvent")];
     /**
      * 任务
      * @author feng 2015-5-27
@@ -18361,7 +18381,7 @@ var feng3d;
          */
         TaskItem.prototype.execute = ;
         return TaskItem;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.TaskItem = TaskItem;
     null;
     {
@@ -18456,7 +18476,7 @@ var feng3d;
      * 完成一个任务单元时触发
      * @eventType me.feng.events.TaskEvent
      */
-    [Event(name = "completedItem", type = "me.feng.task.TaskEvent")];
+    [feng3d.Event(name = "completedItem", type = "me.feng.task.TaskEvent")];
     /**
      * 任务集合，任务列表与任务队列等的基类
      * @author feng 2015-6-16
@@ -18938,7 +18958,7 @@ var feng3d;
             throw new feng3d.AbstractMethodError();
         };
         return LensBase;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.LensBase = LensBase;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19111,7 +19131,7 @@ var feng3d;
     /**
      * Fagal函数追加代码事件
      */
-    [Event(name = "fagalMathEventAppend", type = "me.feng3d.events.FagalMathEvent")];
+    [feng3d.Event(name = "fagalMathEventAppend", type = "me.feng3d.events.FagalMathEvent")];
     /**
      * Fagal数学运算
      * @author feng 2015-7-22
@@ -19423,7 +19443,7 @@ var feng3d;
             this.dispatchEvent(new feng3d.FagalMathEvent(feng3d.FagalMathEvent.FAGALMATHEVENT_APPEND, code));
         };
         return FagalMath;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.FagalMath = FagalMath;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -19702,7 +19722,7 @@ var feng3d;
         ParserBase.PARSING_DONE = true;
         ParserBase.MORE_TO_PARSE = false;
         return ParserBase;
-    }(feng3d.FEventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.ParserBase = ParserBase;
     null, suppressErrorEvents;
     boolean = false;
@@ -24432,9 +24452,9 @@ var feng3d;
             this.initHitField();
             this._mouse3DManager = new feng3d.Mouse3DManager();
             this._mouse3DManager.enableMouseListeners(this);
-            this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage, false, 0, true);
-            this.addEventListener(Event.ADDED, this.onAdded, false, 0, true);
-            this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemoveFromeStage, false, 0, true);
+            this.addEventListener(feng3d.Event.ADDED_TO_STAGE, this.onAddedToStage, false, 0, true);
+            this.addEventListener(feng3d.Event.ADDED, this.onAdded, false, 0, true);
+            this.addEventListener(feng3d.Event.REMOVED_FROM_STAGE, this.onRemoveFromeStage, false, 0, true);
             this._camera.partition = this._scene.partition;
         }
         Object.defineProperty(View3D.prototype, "x", {
@@ -28669,7 +28689,7 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    [Event(name = "enterFrame", type = "flash.events.Event")][Event(name = "exitFrame", type = "flash.events.Event")];
+    [feng3d.Event(name = "enterFrame", type = "flash.events.Event")][feng3d.Event(name = "exitFrame", type = "flash.events.Event")];
     /**
      * 3D舞台代理
      */
@@ -28702,8 +28722,8 @@ var feng3d;
                 if (priority === void 0) { priority = 0; }
                 if (useWeakReference === void 0) { useWeakReference = false; }
                 _super.addEventListener.call(this, type, listener, useCapture, priority, useWeakReference);
-                if ((type == Event.ENTER_FRAME || type == Event.EXIT_FRAME) && !this._frameEventDriver.hasEventListener(Event.ENTER_FRAME))
-                    this._frameEventDriver.addEventListener(Event.ENTER_FRAME, this.onEnterFrame, useCapture, priority, useWeakReference);
+                if ((type == feng3d.Event.ENTER_FRAME || type == feng3d.Event.EXIT_FRAME) && !this._frameEventDriver.hasEventListener(feng3d.Event.ENTER_FRAME))
+                    this._frameEventDriver.addEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, useCapture, priority, useWeakReference);
             };
             /**
              * 移除事件侦听
@@ -28715,8 +28735,8 @@ var feng3d;
                 if (useCapture === void 0) { useCapture = false; }
                 _super.removeEventListener.call(this, type, listener, useCapture);
                 // Remove the main rendering listener if no EnterFrame listeners remain
-                if (!this.hasEventListener(Event.ENTER_FRAME) && !this.hasEventListener(Event.EXIT_FRAME) && this._frameEventDriver.hasEventListener(Event.ENTER_FRAME))
-                    this._frameEventDriver.removeEventListener(Event.ENTER_FRAME, this.onEnterFrame, useCapture);
+                if (!this.hasEventListener(feng3d.Event.ENTER_FRAME) && !this.hasEventListener(feng3d.Event.EXIT_FRAME) && this._frameEventDriver.hasEventListener(feng3d.Event.ENTER_FRAME))
+                    this._frameEventDriver.removeEventListener(feng3d.Event.ENTER_FRAME, this.onEnterFrame, useCapture);
             };
             this._stage3DIndex = stage3DIndex;
             this._stage3D = stage3D;
@@ -28725,7 +28745,7 @@ var feng3d;
             this._stage3D.visible = true;
             this._stage3DManager = stage3DManager;
             this._viewPort = new Rectangle();
-            this._stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.onContext3DUpdate, false, 1000, false);
+            this._stage3D.addEventListener(feng3d.Event.CONTEXT3D_CREATE, this.onContext3DUpdate, false, 1000, false);
             this.requestContext(forceSoftware, profile);
         }
         Object.defineProperty(Stage3DProxy.prototype, "color", {
@@ -28757,20 +28777,20 @@ var feng3d;
          * 通知进入帧事件
          */
         Stage3DProxy.prototype.notifyEnterFrame = function () {
-            if (!this.hasEventListener(Event.ENTER_FRAME))
+            if (!this.hasEventListener(feng3d.Event.ENTER_FRAME))
                 return;
             if (!this._enterFrame)
-                this._enterFrame = new Event(Event.ENTER_FRAME);
+                this._enterFrame = new feng3d.Event(feng3d.Event.ENTER_FRAME);
             this.dispatchEvent(this._enterFrame);
         };
         /**
          * 通知退出帧事件
          */
         Stage3DProxy.prototype.notifyExitFrame = function () {
-            if (!this.hasEventListener(Event.EXIT_FRAME))
+            if (!this.hasEventListener(feng3d.Event.EXIT_FRAME))
                 return;
             if (!this._exitFrame)
-                this._exitFrame = new Event(Event.EXIT_FRAME);
+                this._exitFrame = new feng3d.Event(feng3d.Event.EXIT_FRAME);
             this.dispatchEvent(this._exitFrame);
         };
         /**
@@ -28778,7 +28798,7 @@ var feng3d;
          */
         Stage3DProxy.prototype.dispose = function () {
             this._stage3DManager.removeStage3DProxy(this);
-            this._stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.onContext3DUpdate);
+            this._stage3D.removeEventListener(feng3d.Event.CONTEXT3D_CREATE, this.onContext3DUpdate);
             this.freeContext3D();
             this._stage3D = null;
             this._stage3DManager = null;
@@ -29098,7 +29118,7 @@ var feng3d;
             return true;
         };
         return Stage3DProxy;
-    }(EventDispatcher));
+    }(feng3d.EventDispatcher));
     feng3d.Stage3DProxy = Stage3DProxy;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -30897,8 +30917,8 @@ var feng3d;
             this._initInteraction();
             this.reset();
             this._redrawWindow();
-            this.addEventListener(Event.ADDED_TO_STAGE, this._onAddedToStage);
-            this.addEventListener(Event.REMOVED_FROM_STAGE, this._onRemovedFromStage);
+            this.addEventListener(feng3d.Event.ADDED_TO_STAGE, this._onAddedToStage);
+            this.addEventListener(feng3d.Event.REMOVED_FROM_STAGE, this._onRemovedFromStage);
         };
         Object.defineProperty(AwayStats, "instance", {
             /**
@@ -31315,17 +31335,17 @@ var feng3d;
             this.x = Math.round(this.x);
             this.y = Math.round(this.y);
             this._dragging = false;
-            this.stage.removeEventListener(Event.MOUSE_LEAVE, this._onMouseUpOrLeave);
+            this.stage.removeEventListener(feng3d.Event.MOUSE_LEAVE, this._onMouseUpOrLeave);
             this.stage.removeEventListener(MouseEvent.MOUSE_UP, this._onMouseUpOrLeave);
             this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, this._onMouseMove);
         };
         AwayStats.prototype._onAddedToStage = function (ev) {
             this._timer.start();
-            this.addEventListener(Event.ENTER_FRAME, this._onEnterFrame);
+            this.addEventListener(feng3d.Event.ENTER_FRAME, this._onEnterFrame);
         };
         AwayStats.prototype._onRemovedFromStage = function (ev) {
             this._timer.stop();
-            this.removeEventListener(Event.ENTER_FRAME, this._onTimer);
+            this.removeEventListener(feng3d.Event.ENTER_FRAME, this._onTimer);
         };
         AwayStats.prototype._onTimer = function (ev) {
             // Store current and max RAM
@@ -31408,7 +31428,7 @@ var feng3d;
             this._drag_dy = this.mouseY;
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, this._onMouseMove);
             this.stage.addEventListener(MouseEvent.MOUSE_UP, this._onMouseUpOrLeave);
-            this.stage.addEventListener(Event.MOUSE_LEAVE, this._onMouseUpOrLeave);
+            this.stage.addEventListener(feng3d.Event.MOUSE_LEAVE, this._onMouseUpOrLeave);
         };
         AwayStats.prototype._onMouseMove = function (ev) {
             this._dragging = true;
@@ -31728,7 +31748,7 @@ var feng3d;
         /** 视窗有发生变化 */
         Stage3DEvent.VIEWPORT_UPDATED = "ViewportUpdated";
         return Stage3DEvent;
-    }(Event));
+    }(feng3d.Event));
     feng3d.Stage3DEvent = Stage3DEvent;
 })(feng3d || (feng3d = {}));
 var feng3d;
