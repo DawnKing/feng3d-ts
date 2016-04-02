@@ -550,9 +550,9 @@ module feng3d
 		// ======================================================================
 		//	Constants
 		// ----------------------------------------------------------------------
-		private static OPMAP:Dictionary					= new Dictionary();
-		private static REGMAP:Dictionary					= new Dictionary();
-		private static SAMPLEMAP:Dictionary				= new Dictionary();
+		private static OPMAP					= {};
+		private static REGMAP					= {};
+		private static SAMPLEMAP				= {};
 		
 		private static MAX_NESTING:number					= 4;
 		private static MAX_OPCODES:number					= 2048;

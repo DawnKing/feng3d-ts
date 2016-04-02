@@ -22,8 +22,8 @@ module feng3d
 	 */
 	export class SingleObjectDepthPass extends MaterialPassBase
 	{
-		private _textures:Dictionary;
-		private _projections:Dictionary;
+		private _textures;
+		private _projections;
 		private _textureSize:number;
 		private _projectionTexturesInvalid:boolean = true;
 
@@ -54,8 +54,8 @@ module feng3d
 			this._textureSize = textureSize;
 			this._polyOffset[0] = polyOffset;
 
-			this._textures = new Dictionary();
-			this._projections = new Dictionary();
+			this._textures = {};
+			this._projections = {};
 
 //			_enc = number[]([1.0, 255.0, 65025.0, 16581375.0, 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
 //			this.depthCommonsData0 = number[]([1.0, 255.0, 65025.0, 16581375.0]);
@@ -112,8 +112,8 @@ module feng3d
 		 */
 		private updateProjectionTextures()
 		{
-			this._textures = new Dictionary();
-			this._projections = new Dictionary();
+			this._textures = {};
+			this._projections = {};
 			this._projectionTexturesInvalid = false;
 		}
 
@@ -173,7 +173,7 @@ module feng3d
 		 */
 		public getDepthMap(renderable:IRenderable):TextureProxyBase
 		{
-			this._textures ||= new Dictionary();
+			this._textures ||= {};
 
 			// todo: use texture proxy?
 			var target:TextureProxyBase = this._textures[renderable] ||= new RenderTexture(this._textureSize, this._textureSize);

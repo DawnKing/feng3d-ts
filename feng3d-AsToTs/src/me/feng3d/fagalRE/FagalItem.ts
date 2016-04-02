@@ -30,9 +30,9 @@ module feng3dRE
 		 * @param parameters			拥有寄存器的参数
 		 * @return						寄存器id字典(key:regID,value:count)
 		 */
-		public getRegCountDic():Dictionary
+		public getRegCountDic()
 		{
-			var dic:Dictionary = new Dictionary();
+			var dic = {};
 
 			//针对使用到的寄存器计数
 			if (this.funcName == "comment")

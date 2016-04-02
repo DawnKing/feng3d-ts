@@ -23,9 +23,9 @@ module feng3d
 	export class Context3DCache extends Context3DBufferCollector
 	{
 		/** 寄存器数据缓存 */
-		private regBufferDic:Dictionary = new Dictionary();
+		private regBufferDic = {};
 		/** 其他数据缓存 */
-		public otherBufferDic:Dictionary = new Dictionary();
+		public otherBufferDic = {};
 
 		/**
 		 * 运行寄存器缓冲列表
@@ -46,7 +46,7 @@ module feng3d
 		/**
 		 * 数据寄存器字典
 		 */
-		private _dataRegisterDic:Dictionary;
+		private _dataRegisterDic;
 
 		/**
 		 * 渲染参数
@@ -148,7 +148,7 @@ module feng3d
 		/**
 		 * 使用到的数据寄存器
 		 */
-		private get dataRegisterDic():Dictionary
+		private get dataRegisterDic()
 		{
 			return _dataRegisterDic;
 		}
@@ -156,7 +156,7 @@ module feng3d
 		/**
 		 * @private
 		 */
-		private set dataRegisterDic(value:Dictionary)
+		private set dataRegisterDic(value)
 		{
 			if (_dataRegisterDic != value)
 			{

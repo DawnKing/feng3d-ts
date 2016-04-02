@@ -18,7 +18,7 @@ module feng3d
 		public data:number[];
 
 		/** 缓存字典 可在多个寄存器共享数据缓存时使用同一个 */
-		private bufferItemDic:Dictionary = new Dictionary();
+		private bufferItemDic = {};
 		/** 是否无效 */
 		private invalid:boolean = true;
 		/** 缓存是否无效 */
@@ -46,7 +46,7 @@ module feng3d
 				{
 					vertexBufferItem
 				}
-				this.bufferItemDic = new Dictionary();
+				this.bufferItemDic = {};
 				this.bufferInvalid = false;
 				this.invalid = false;
 			}

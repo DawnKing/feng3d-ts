@@ -20,7 +20,7 @@ module feng3d
 	export class TextureCenter
 	{
 		/** 纹理字典 */
-		private static textureDic:Dictionary = new Dictionary();
+		private static textureDic = {};
 
 		/**
 		 * 创建一个纹理缓存中心
@@ -141,9 +141,9 @@ module feng3d
 		 */
 		private static function saveTextureBuffer(texture:TextureProxyBase, context3D:Context3D, textureBase:TextureBase)
 		{
-			var textureDic1:Dictionary = textureDic[texture];
+			var textureDic1 = textureDic[texture];
 			if (textureDic1 == null)
-				textureDic1 = textureDic[texture] = new Dictionary();
+				textureDic1 = textureDic[texture] = {};
 			textureDic1[context3D] = textureBase;
 		}
 	}

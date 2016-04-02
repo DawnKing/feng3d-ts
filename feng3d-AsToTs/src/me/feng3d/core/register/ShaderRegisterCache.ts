@@ -19,13 +19,13 @@ module feng3d
 		private static _dirty:boolean = true;
 
 		/** 数据寄存器缓存 */
-		private _dataRegisterDic:Dictionary;
+		private _dataRegisterDic;
 
 		/** 使用到的寄存器个数 */
 		private usedDataRegisterNum:number;
 
 		/** 寄存器池字典 */
-		private registerPoolDic:Dictionary;
+		private registerPoolDic;
 
 //		/** 寄存器配置 */
 //		private registerConfig:Array = //
@@ -72,8 +72,8 @@ module feng3d
 		 */
 		private init()
 		{
-			this._dataRegisterDic = new Dictionary();
-			this.registerPoolDic = new Dictionary();
+			this._dataRegisterDic = {};
+			this.registerPoolDic = {};
 			this.usedDataRegisterNum = 0;
 
 			for (var i:number = 0; i < this.registerConfig.length; i++)
@@ -88,7 +88,7 @@ module feng3d
 		 */
 		private reset()
 		{
-			this._dataRegisterDic = new Dictionary();
+			this._dataRegisterDic = {};
 			this.usedDataRegisterNum = 0;
 
 			for each (var registerPool:RegisterPool in this.registerPoolDic)
@@ -184,7 +184,7 @@ module feng3d
 		/**
 		 * 数据寄存器缓存
 		 */
-		public get dataRegisterDic():Dictionary
+		public get dataRegisterDic()
 		{
 			return _dataRegisterDic;
 		}

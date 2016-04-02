@@ -20,12 +20,12 @@ module feng3d
 		/**
 		 * 实例字典
 		 */
-		private static _instanceDic:Dictionary = new Dictionary();
+		private static _instanceDic = {};
 
 		/**
 		 * 字符串与二进制字典
 		 */
-		private static shaderByteCodeDic:Dictionary = new Dictionary();
+		private static shaderByteCodeDic = {};
 
 		/**
 		 * 当前3D环境
@@ -35,15 +35,15 @@ module feng3d
 		/**
 		 * 字符串与程序字典
 		 */
-		private _program3Ds:Dictionary;
+		private _program3Ds;
 		/**
 		 * 程序使用计数
 		 */
-		private _usages:Dictionary;
+		private _usages;
 		/**
 		 * 程序与字符串字典
 		 */
-		private _keys:Dictionary;
+		private _keys;
 
 		/**
 		 * 创建AGAL程序缓冲
@@ -58,9 +58,9 @@ module feng3d
 
 			this._context3D = context3D;
 
-			this._program3Ds = new Dictionary();
-			this._usages = new Dictionary();
-			this._keys = new Dictionary();
+			this._program3Ds = {};
+			this._usages = {};
+			this._keys = {};
 		}
 
 		/**

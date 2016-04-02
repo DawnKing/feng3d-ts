@@ -36,7 +36,7 @@ module feng3d
 		protected resourceList:Array;
 
 		/** 资源字典 */
-		protected resourceDic:Dictionary;
+		protected resourceDic;
 
 		constructor()
 		{
@@ -79,7 +79,7 @@ module feng3d
 		 */
 		private loadTextures()
 		{
-			this.resourceDic = new Dictionary();
+			this.resourceDic = {};
 
 			//加载资源
 			var loadObj:LoadModuleEventData = new LoadModuleEventData();

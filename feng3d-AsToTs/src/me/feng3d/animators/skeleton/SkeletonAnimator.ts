@@ -31,7 +31,7 @@ module feng3d
 		private _globalPose:SkeletonPose = new SkeletonPose();
 		private _globalPropertiesDirty:boolean;
 		private _numJoints:number;
-		private _animationStates:Dictionary = new Dictionary();
+		private _animationStates = {};
 
 		private _skeleton:Skeleton;
 		private _forceCPU:boolean;

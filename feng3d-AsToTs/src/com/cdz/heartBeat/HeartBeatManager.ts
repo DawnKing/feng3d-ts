@@ -8,7 +8,7 @@ module feng3dBeat {
 		/**
 		 * 心跳跳字典
 		 */
-        private _HeartBeatDic: Dictionary;
+        private _HeartBeatDic;
 
         private _frameEventDriver: Shape = new Shape();
 
@@ -23,7 +23,7 @@ module feng3dBeat {
 		 */
         protected init() {
             //初始化默认任务集合类型字典
-            this._HeartBeatDic = new Dictionary();
+            this._HeartBeatDic = {};
 
             this.addListeners();
         }

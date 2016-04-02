@@ -15,7 +15,7 @@ module feng3d
 	export class ShaderParams extends Component
 	{
 		/** 取样标记字典 */
-		private sampleFlagsDic:Dictionary;
+		private sampleFlagsDic;
 
 		/** 是否使用贴图分层细化 */
 		public useMipmapping:boolean;
@@ -96,7 +96,7 @@ module feng3d
 		 */
 		public init()
 		{
-			this.sampleFlagsDic = new Dictionary();
+			this.sampleFlagsDic = {};
 		}
 
 		/**

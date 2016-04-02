@@ -53,7 +53,7 @@ module feng3d
 		/** 动画名称列表 */
 		private _effectNames:string[] = new string[]();
 		/** 动画字典 */
-		private _effectDictionary:Dictionary = new Dictionary(true);
+		private _effectDictionary = new Dictionary(true);
 
 		private _usesDuration:boolean = false;
 		private _usesLooping:boolean = false;

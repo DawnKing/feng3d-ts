@@ -20,9 +20,9 @@ module feng3d
 		private _partitions:Partition3D[];
 
 		/** 实体字典 */
-		private _entityDic:Dictionary;
+		private _entityDic;
 
-		private _displayEntityDic:Dictionary;
+		private _displayEntityDic;
 
 		private _mouseCollisionEntitys:Entity[];
 
@@ -34,8 +34,8 @@ module feng3d
 			this._isRoot = true;
 			this._scene = this;
 
-			this._entityDic = new Dictionary();
-			this._displayEntityDic = new Dictionary();
+			this._entityDic = {};
+			this._displayEntityDic = {};
 			this._mouseCollisionEntitys = new Entity[]();
 
 			this._partitions = new Partition3D[]();
@@ -44,7 +44,7 @@ module feng3d
 		}
 
 		/** 显示实体字典 */
-		public get displayEntityDic():Dictionary
+		public get displayEntityDic()
 		{
 			return _displayEntityDic;
 		}

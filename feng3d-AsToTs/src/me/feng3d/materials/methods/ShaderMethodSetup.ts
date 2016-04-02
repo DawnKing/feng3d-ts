@@ -21,7 +21,7 @@ module feng3d
 	{
 		public context3DBufferOwner:Context3DBufferOwner;
 
-		private uniqueMethodDic:Dictionary;
+		private uniqueMethodDic;
 
 		public methods:ShadingMethodBase[];
 
@@ -33,7 +33,7 @@ module feng3d
 			this.context3DBufferOwner = new Context3DBufferOwner();
 			this.initBuffers();
 
-			this.uniqueMethodDic = new Dictionary();
+			this.uniqueMethodDic = {};
 			this.methods = new ShadingMethodBase[]();
 
 			this.addMethod(new BasicNormalMethod());

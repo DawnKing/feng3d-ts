@@ -29,7 +29,7 @@ module feng3dRE
 		/**
 		 * 数据id字典
 		 */
-		internal static var idDic:Dictionary = new Dictionary();
+		internal static var idDic = {};
 
 		/**
 		 * 添加3d缓冲编号配置

@@ -20,7 +20,7 @@ module feng3d
 		private _rootBufferOwner:Context3DBufferOwner;
 
 		/** 所有数据缓存 */
-		private bufferDic:Dictionary = new Dictionary();
+		private bufferDic = {};
 
 		/**
 		 * 创建3D环境缓冲收集器

@@ -19,14 +19,14 @@ module feng3d
 
 		private _vaIdList:string[] = new string[]();
 		/** 顶点属性数据缓存字典 */
-		private vaBufferDic:Dictionary = new Dictionary();
+		private vaBufferDic = {};
 		/** 顶点数据长度字典 */
-		private data32PerVertexDic:Dictionary = new Dictionary();
+		private data32PerVertexDic = {};
 		/** 顶点数据字典 */
-		protected vertexDataDic:Dictionary = new Dictionary();
+		protected vertexDataDic = {};
 
 		/** 数据有效(与脏相反)标记字典 */
-		private dataValidDic:Dictionary = new Dictionary();
+		private dataValidDic = {};
 
 		/**
 		 * 创建顶点数据拥有者

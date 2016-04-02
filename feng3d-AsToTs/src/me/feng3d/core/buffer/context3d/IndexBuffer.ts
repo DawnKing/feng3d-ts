@@ -14,7 +14,7 @@ module feng3d
 	 */
 	export class IndexBuffer extends Context3DBuffer
 	{
-		private _bufferItemDic:Dictionary = new Dictionary();
+		private _bufferItemDic = {};
 
 		/** data 中索引的数量。 */
 		public count:number;
@@ -62,7 +62,7 @@ module feng3d
 				{
 					indexBufferItem
 				}
-				this._bufferItemDic = new Dictionary();
+				this._bufferItemDic = {};
 				this.bufferInvalid = false;
 				this.dicInvalid = false;
 			}

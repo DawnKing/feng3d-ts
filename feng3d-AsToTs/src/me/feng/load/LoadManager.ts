@@ -24,10 +24,10 @@ module feng3d
 		public loader:BulkLoader;
 
 		/** 完成一个资源后执行的函数字典 */
-		private urlFuncsDic:Dictionary = new Dictionary();
+		private urlFuncsDic = {};
 
 		/** 完成一组资源后执行的函数字典 */
-		private urlsFuncsDic:Dictionary = new Dictionary();
+		private urlsFuncsDic = {};
 
 		/**
 		 * 创建一个加载管理器

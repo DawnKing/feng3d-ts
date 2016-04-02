@@ -47,7 +47,7 @@ module feng3d
 			if (this.drawGeometry == null)
 				return;
 			//避免重复绘制同一条线段
-			var segmentDic:Dictionary = new Dictionary();
+			var segmentDic = {};
 
 			var subGeometries:SubGeometry[] = this.drawGeometry.subGeometries;
 			var subGeometry:SubGeometry;

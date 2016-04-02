@@ -20,12 +20,12 @@ module feng3d
 		/**
 		 * 任务集合类型字典（任务类型名称：任务类型定义）
 		 */
-		private taskCollectionTypeDic:Dictionary;
+		private taskCollectionTypeDic;
 
 		/**
 		 * 执行中的任务集合字典（执行中的任务集合实例：任务相关数据）
 		 */
-		private executingTaskCollectionDic:Dictionary;
+		private executingTaskCollectionDic;
 
 		/**
 		 * 创建一个任务管理器
@@ -41,8 +41,8 @@ module feng3d
 		protected init()
 		{
 			//初始化默认任务集合类型字典
-			this.taskCollectionTypeDic = new Dictionary();
-			this.executingTaskCollectionDic = new Dictionary();
+			this.taskCollectionTypeDic = {};
+			this.executingTaskCollectionDic = {};
 
 			this.registerTaskCollectionType(TaskCollectionType.LIST, TaskList);
 			this.registerTaskCollectionType(TaskCollectionType.QUEUE, TaskQueue);

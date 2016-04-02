@@ -65,7 +65,7 @@ module feng3d
 		protected _activeAnimationName:string;
 		/** 当前动画时间 */
 		protected _absoluteTime:number;
-		private _animationStates:Dictionary = new Dictionary(true);
+		private _animationStates = new Dictionary(true);
 
 		/**
 		 * 是否更新位置

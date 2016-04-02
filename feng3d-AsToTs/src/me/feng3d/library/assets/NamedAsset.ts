@@ -13,7 +13,7 @@ module feng3d
 	 */
 	export class NamedAsset
 	{
-		private static nameDic:Dictionary = new Dictionary();
+		private static nameDic = {};
 
 		private _asset:IAsset;
 		public _assetType:string;

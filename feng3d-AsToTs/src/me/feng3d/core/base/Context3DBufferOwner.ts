@@ -35,7 +35,7 @@ module feng3d
 	 */
 	export class Context3DBufferOwner extends Component
 	{
-		private _bufferDic:Dictionary;
+		private _bufferDic;
 		private _bufferList:Context3DBuffer[];
 		/**
 		 * 缓冲拥有者子项列表
@@ -68,9 +68,9 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get bufferDic():Dictionary
+		public get bufferDic()
 		{
-			return _bufferDic ||= new Dictionary();
+			return _bufferDic ||= {};
 		}
 
 		/**

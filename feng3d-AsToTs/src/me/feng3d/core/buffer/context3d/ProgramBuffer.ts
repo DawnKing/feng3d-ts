@@ -16,7 +16,7 @@ module feng3d
 	 */
 	export class ProgramBuffer extends Context3DBuffer
 	{
-		private bufferItemDic:Dictionary = new Dictionary();
+		private bufferItemDic = {};
 
 		public vertexCode:string;
 		public fragmentCode:string;
@@ -25,7 +25,7 @@ module feng3d
 		private bufferInvalid:boolean = true;
 
 		/** 使用到的数据寄存器 */
-		public dataRegisterDic:Dictionary;
+		public dataRegisterDic;
 
 		/**
 		 * 创建一个渲染程序缓存
@@ -64,7 +64,7 @@ module feng3d
 					var contextTemp:Context3D = key as Context3D;
 					AGALProgram3DCache.getInstance(contextTemp).freeProgram3D(this.bufferItemDic[contextTemp]);
 				}
-				this.bufferItemDic = new Dictionary();
+				this.bufferItemDic = {};
 				this.bufferInvalid = false;
 			}
 

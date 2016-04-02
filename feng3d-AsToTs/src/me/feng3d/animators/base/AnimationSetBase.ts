@@ -33,7 +33,7 @@ module feng3d
 		/** 动画名称列表 */
 		private _animationNames:string[] = new string[]();
 		/** 动画字典 */
-		private _animationDictionary:Dictionary = new Dictionary(true);
+		private _animationDictionary = new Dictionary(true);
 
 		/**
 		 * 创建一个动画集合基类

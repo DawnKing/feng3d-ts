@@ -26,7 +26,7 @@ module feng3d
 		private static _maxY:number;
 		private static _maxZ:number;
 		private static _defaultPosition:Vector3D = new Vector3D(0.0, 0.0, 0.0);
-		private static _containers:Dictionary;
+		private static _containers;
 
 		/**
 		 * Calculate the bounds of a Mesh object
@@ -195,7 +195,7 @@ module feng3d
 
 		private static function reset()
 		{
-			_containers = new Dictionary();
+			_containers = {};
 			_minX = _minY = _minZ = Infinity;
 			_maxX = _maxY = _maxZ = -Infinity;
 			_defaultPosition.x = 0.0;

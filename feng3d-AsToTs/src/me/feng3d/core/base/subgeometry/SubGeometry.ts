@@ -347,7 +347,7 @@ module feng3d
 			var vaId:string;
 
 			/** 顶点数据字典 */
-			var sourceVertexDataDic:Dictionary = new Dictionary();
+			var sourceVertexDataDic = {};
 			for each (vaId in this.vaIdList)
 			{
 				sourceVertexDataDic[vaId] = this.getVAData(vaId);

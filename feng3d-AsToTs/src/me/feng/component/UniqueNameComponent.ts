@@ -61,7 +61,7 @@ module feng3d
 		 */
 		private checkUniqueName(container:Component)
 		{
-			var nameDic:Dictionary = new Dictionary();
+			var nameDic = {};
 			for (var i:number = 0; i < container.numComponents; i++)
 			{
 				var component:Component = container.getComponentAt(i);

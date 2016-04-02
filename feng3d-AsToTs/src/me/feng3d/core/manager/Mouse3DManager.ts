@@ -33,13 +33,13 @@ module feng3d
 		private _previousCollidingObject:PickingCollisionVO;
 
 		/** 普通鼠标事件与3d鼠标事件对应关系 */
-		private static eventMap:Dictionary;
+		private static eventMap;
 
 		constructor()
 		{
 			if (eventMap == null)
 			{
-				eventMap = new Dictionary();
+				eventMap = {};
 				eventMap[MouseEvent.CLICK] = MouseEvent3D.CLICK;
 				eventMap[MouseEvent.DOUBLE_CLICK] = MouseEvent3D.DOUBLE_CLICK;
 				eventMap[MouseEvent.MOUSE_DOWN] = MouseEvent3D.MOUSE_DOWN;

@@ -25,7 +25,7 @@ module feng3dRE
 
 		private agalCode:string = "";
 
-		private regDic:Dictionary;
+		private regDic;
 
 
 		public vertexFCode:string;
@@ -83,12 +83,12 @@ module feng3dRE
 		public requestRegisterValue()
 		{
 			//使用寄存器计数字典
-			var useRegDic:Dictionary = new Dictionary();
+			var useRegDic = {};
 
 			var callLog:FagalItem[] = this.vertexCallLog.concat(this.fragmentCallLog);
 
 			var i:number;
-			var regCountDic:Dictionary;
+			var regCountDic;
 			var regId:string;
 			var fagalItem:FagalItem;
 			for (i = 0; i < callLog.length; i++)
@@ -130,7 +130,7 @@ module feng3dRE
 
 			}
 
-			this.regDic = new Dictionary();
+			this.regDic = {};
 			var register:Register;
 			Register.TO_STRING = Register.NAME;
 			for (regId in useRegDic)

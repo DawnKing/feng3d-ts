@@ -28,9 +28,9 @@ module feng3d
 		private static NAME_REGEXP:string = "[a-zA-Z0-9$]";
 
 		/** 缓存类型字典 */
-		private bufferTypeDic:Dictionary;
+		private bufferTypeDic;
 
-		private typeClassDic:Dictionary;
+		private typeClassDic;
 
 		/** 实例 */
 		private static _instance:Context3DBufferTypeManager;
@@ -61,8 +61,8 @@ module feng3d
 			if (_instance)
 				throw new Error("单例模式");
 			_instance = this;
-			this.bufferTypeDic = new Dictionary();
-			this.typeClassDic = new Dictionary();
+			this.bufferTypeDic = {};
+			this.typeClassDic = {};
 		}
 
 		/**

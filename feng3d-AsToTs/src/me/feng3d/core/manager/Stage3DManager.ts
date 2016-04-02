@@ -17,7 +17,7 @@ module feng3d
 	 */
 	export class Stage3DManager
 	{
-		private static _instances:Dictionary;
+		private static _instances;
 		private static _stageProxies:Stage3DProxy[];
 		private static _numStageProxies:number = 0;
 
@@ -45,7 +45,7 @@ module feng3d
 		 */
 		public static getInstance(stage:Stage):Stage3DManager
 		{
-			return (_instances ||= new Dictionary())[stage] ||= new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
+			return (_instances ||= {})[stage] ||= new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
 		}
 
 		/**

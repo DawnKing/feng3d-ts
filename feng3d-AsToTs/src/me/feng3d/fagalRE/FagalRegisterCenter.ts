@@ -23,7 +23,7 @@ module feng3dRE
 	{
 		private static _instance:FagalRegisterCenter;
 
-		private static _dataRegisterDic:Dictionary;
+		private static _dataRegisterDic;
 
 		/**
 		 * 临时寄存器递增索引（目的是为了获取唯一的临时寄存器名称，顶点与片段临时寄存器公用一个递增索引）
@@ -43,9 +43,9 @@ module feng3dRE
 		/**
 		 * 数据寄存器缓存
 		 */
-		public static get dataRegisterDic():Dictionary
+		public static get dataRegisterDic()
 		{
-			return _dataRegisterDic ||= new Dictionary();
+			return _dataRegisterDic ||= {};
 		}
 
 		/**
