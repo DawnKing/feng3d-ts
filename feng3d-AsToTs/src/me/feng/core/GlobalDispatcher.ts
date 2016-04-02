@@ -15,6 +15,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 			if (GlobalDispatcher._instance)
 				throw new Error("此类不允许外部创建，请用instance属性！");
 			GlobalDispatcher._instance = this;

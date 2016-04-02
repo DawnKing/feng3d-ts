@@ -62,7 +62,11 @@ var feng3d;
     //	Class
     // ---------------------------------------------------------------------------
     var AGALMiniAssembler = (function () {
-        function AGALMiniAssembler() {
+        // ======================================================================
+        //	Constructor
+        // ----------------------------------------------------------------------
+        function AGALMiniAssembler(debugging) {
+            if (debugging === void 0) { debugging = false; }
             // ======================================================================
             //	Properties
             // ----------------------------------------------------------------------
@@ -72,6 +76,9 @@ var feng3d;
             this.debugEnabled = false;
             this.boolean = false;
             this.verbose = false;
+            this.debugEnabled = debugging;
+            if (!initialized)
+                this.init();
         }
         Object.defineProperty(AGALMiniAssembler.prototype, "error", {
             // ======================================================================
@@ -86,15 +93,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        // ======================================================================
-        //	Constructor
-        // ----------------------------------------------------------------------
-        AGALMiniAssembler.prototype.AGALMiniAssembler = function (debugging) {
-            if (debugging === void 0) { debugging = false; }
-            this.debugEnabled = debugging;
-            if (!initialized)
-                this.init();
-        };
         // ======================================================================
         //	Methods
         // ----------------------------------------------------------------------
@@ -128,7 +126,7 @@ var feng3d;
             var i;
             var lng = lines.length;
             for (i = 0; i < lng && this._error == ""; i++) {
-                var line = new String(lines[i]);
+                var line = new string(lines[i]);
                 line = line.replace(REGEXP_OUTER_SPACES, "");
                 // remove comments
                 var startcomment = line.search("//");
@@ -237,7 +235,7 @@ var feng3d;
                     var idxmatch = isRelative ? relreg[0].match(/\d+/) : regs[j].match(/\d+/);
                     var regidx = 0;
                     if (idxmatch)
-                        regidx = uint(idxmatch[0]);
+                        regidx = number(idxmatch[0]);
                     if (regFound.range < regidx) {
                         this._error = "this.error: register operand " + j + " (" + regs[j] + ") index exceeds limit of " + (regFound.range + 1) + ".";
                         badreg = true;
@@ -326,18 +324,18 @@ var feng3d;
                                 if (optfound == null) {
                                     // todo check that it's a number...
                                     //trace( "Warning, unknown sampler option: "+opts[k] );
-                                    bias = Number(opts[k]);
+                                    bias = number(opts[k]);
                                     if (this.verbose)
                                         trace("    bias: " + bias);
                                 }
                                 else {
                                     if (optfound.flag != SAMPLER_SPECIAL_SHIFT)
                                         samplerbits &= ~(0xf << optfound.flag);
-                                    samplerbits |= uint(optfound.mask) << uint(optfound.flag);
+                                    samplerbits |= number(optfound.mask) << number(optfound.flag);
                                 }
                             }
                             this.agalcode.writeShort(regidx);
-                            this.agalcode.writeByte(int(bias * 8.0));
+                            this.agalcode.writeByte(number(bias * 8.0));
                             this.agalcode.writeByte(0);
                             this.agalcode.writeUnsignedInt(samplerbits);
                             if (this.verbose)
@@ -842,17 +840,15 @@ var feng3d;
      * @author feng 2015-12-2
      */
     var AddedComponentEventVO = (function () {
-        function AddedComponentEventVO() {
-        }
         /**
          * 添加组件事件数据
          * @param container			组件容器
          * @param child				子组件
          */
-        AddedComponentEventVO.prototype.AddedComponentEventVO = function (container, child) {
+        function AddedComponentEventVO(container, child) {
             this.container = container;
             this.child = child;
-        };
+        }
         return AddedComponentEventVO;
     }());
     feng3d.AddedComponentEventVO = AddedComponentEventVO;
@@ -864,17 +860,15 @@ var feng3d;
      * @author feng 2015-12-2
      */
     var RemovedComponentEventVO = (function () {
-        function RemovedComponentEventVO() {
-        }
         /**
          * 添加组件事件数据
          * @param container			组件容器
          * @param child				子组件
          */
-        RemovedComponentEventVO.prototype.RemovedComponentEventVO = function (container, child) {
+        function RemovedComponentEventVO(container, child) {
             this.container = container;
             this.child = child;
-        };
+        }
         return RemovedComponentEventVO;
     }());
     feng3d.RemovedComponentEventVO = RemovedComponentEventVO;
@@ -887,14 +881,11 @@ var feng3d;
      * @author feng
      */
     var FModuleManager = (function () {
-        function FModuleManager() {
-            this.GlobalDispatcher = feng3d.GlobalDispatcher.instance;
-        }
         /**
          * 创建一个模块
          */
-        FModuleManager.prototype.FModuleManager = function () {
-        };
+        function FModuleManager() {
+        }
         /**
          * 初始化模块
          */
@@ -939,7 +930,7 @@ var feng3d;
         /**
          * 全局事件
          */
-        FModuleManager.var = dispatcher;
+        FModuleManager.dispatcher = feng3d.GlobalDispatcher.instance;
         return FModuleManager;
     }());
     feng3d.FModuleManager = FModuleManager;
@@ -953,13 +944,10 @@ var feng3dBeat;
     var HeartBeatManager = (function (_super) {
         __extends(HeartBeatManager, _super);
         function HeartBeatManager() {
-            _super.apply(this, arguments);
             this._frameEventDriver = new Shape();
-        }
-        HeartBeatManager.prototype.HeartBeatManager = function () {
             this.init();
             this._frameEventDriver.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -1100,14 +1088,11 @@ var feng3d;
      */
     var ViewManager = (function (_super) {
         __extends(ViewManager, _super);
-        function ViewManager() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个界面管理器
          */
-        ViewManager.prototype.ViewManager = function () {
-        };
+        function ViewManager() {
+        }
         /**
          * 显示界面
          */
@@ -1145,19 +1130,16 @@ var feng3d;
      */
     var LoadManager = (function (_super) {
         __extends(LoadManager, _super);
+        /**
+         * 创建一个加载管理器
+         */
         function LoadManager() {
-            _super.apply(this, arguments);
             /** 完成一个资源后执行的函数字典 */
             this.urlFuncsDic = new Dictionary();
             /** 完成一组资源后执行的函数字典 */
             this.urlsFuncsDic = new Dictionary();
-        }
-        /**
-         * 创建一个加载管理器
-         */
-        LoadManager.prototype.LoadManager = function () {
             this.init();
-        };
+        }
         /**
          * 初始化加载模块
          */
@@ -1212,15 +1194,12 @@ var feng3d;
      */
     var TaskManager = (function (_super) {
         __extends(TaskManager, _super);
-        function TaskManager() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个任务管理器
          */
-        TaskManager.prototype.TaskManager = function () {
+        function TaskManager() {
             this.init();
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -1307,7 +1286,13 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    assert(b, boolean, msg, string = "assert");
+    /**
+     * 断言
+     * @b			判定为真的表达式
+     * @msg			在表达式为假时将输出的错误信息
+     * @author feng 2014-10-29
+     */
+    constructor(b, boolean, msg, string = "assert");
     {
         if (!b)
             throw new Error(msg);
@@ -1326,19 +1311,17 @@ var feng3d;
      * @author feng 2015-5-7
      */
     var Enum = (function () {
-        function Enum() {
-            this.Dictionary = new Dictionary();
-        }
         /**
          * 无法直接实例化
          */
-        Enum.prototype.Enum = function () {
+        function Enum() {
+            this.Dictionary = new Dictionary();
             this.className = getQualifiedClassName(this);
             this.type = this.className.split("::").pop();
             //获取枚举的值
-            this.value = int(autoIndexDic[this.className]);
+            this.value = number(autoIndexDic[this.className]);
             autoIndexDic[this.className] = this.value + 1;
-        };
+        }
         /**
          * 转换值
          * @see http://filimanjaro.com/blog/2012/operators-overloading-in-as3-javascript-too-%E2%80%93-workaround/
@@ -1395,19 +1378,16 @@ var feng3d;
      */
     var AbstractClassError = (function (_super) {
         __extends(AbstractClassError, _super);
-        function AbstractClassError() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个抽象类错误
          * @param message 与 Error 对象关联的字符串；此参数为可选。
          * @param id 与特定错误消息关联的引用数字。
          */
-        AbstractClassError.prototype.AbstractClassError = function (message, id) {
+        function AbstractClassError(message, id) {
             if (message === void 0) { message = null; }
             if (id === void 0) { id = 0; }
             _super.call(this, message || "无法直接实例化抽象类", id);
-        };
+        }
         /**
          * 核查可能存在的创建抽象类错误
          * @param obj			用来检测的对象
@@ -1438,19 +1418,16 @@ var feng3d;
      */
     var AbstractMethodError = (function (_super) {
         __extends(AbstractMethodError, _super);
-        function AbstractMethodError() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个抽象方法错误
          * @param message 与 Error 对象关联的字符串；此参数为可选。
          * @param id 与特定错误消息关联的引用数字。
          */
-        AbstractMethodError.prototype.AbstractMethodError = function (message, id) {
+        function AbstractMethodError(message, id) {
             if (message === void 0) { message = null; }
             if (id === void 0) { id = 0; }
             _super.call(this, message || "子类没有重写抽象方法", id);
-        };
+        }
         return AbstractMethodError;
     }(Error));
     feng3d.AbstractMethodError = AbstractMethodError;
@@ -1462,17 +1439,15 @@ var feng3dBeat;
      * @author cdz 2015-10-31
      */
     var HeartBeatModuleData = (function () {
-        function HeartBeatModuleData() {
-        }
         /**
          *
          * @param taskCollectionType			任务集合类型名称
          * @param taskCollectionTypeClass		任务集合类型定义
          */
-        HeartBeatModuleData.prototype.HeartBeatModuleData = function (BeatType, Interval) {
+        function HeartBeatModuleData(BeatType, Interval) {
             this.BeatType = BeatType;
             this.Interval = Interval;
-        };
+        }
         return HeartBeatModuleData;
     }());
     feng3dBeat.HeartBeatModuleData = HeartBeatModuleData;
@@ -1484,17 +1459,15 @@ var feng3d;
      * @author feng 2015-10-30
      */
     var TaskModuleEventRegisterData = (function () {
-        function TaskModuleEventRegisterData() {
-        }
         /**
          *
          * @param taskCollectionType			任务集合类型名称
          * @param taskCollectionTypeClass		任务集合类型定义
          */
-        TaskModuleEventRegisterData.prototype.TaskModuleEventRegisterData = function (taskCollectionType, taskCollectionTypeClass) {
+        function TaskModuleEventRegisterData(taskCollectionType, taskCollectionTypeClass) {
             this.taskCollectionType = taskCollectionType;
             this.taskCollectionTypeClass = taskCollectionTypeClass;
-        };
+        }
         return TaskModuleEventRegisterData;
     }());
     feng3d.TaskModuleEventRegisterData = TaskModuleEventRegisterData;
@@ -1511,14 +1484,6 @@ var feng3d;
             _super.apply(this, arguments);
             this._data =  * ;
         }
-        /**
-         * 创建一个作为参数传递给事件侦听器的 Event 对象.
-         * @param type 					事件的类型，可以作为 Event.type 访问。
-         * @param data					事件携带的数据
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        FEvent.prototype.FEvent = ;
         return FEvent;
     }(Event));
     feng3d.FEvent = FEvent;
@@ -1564,7 +1529,6 @@ var feng3dBeat;
         function HeartBeatEvent() {
             _super.apply(this, arguments);
         }
-        HeartBeatEvent.prototype.HeartBeatEvent = ;
         /** 渲染心跳 */
         HeartBeatEvent.RENDER_BEAT = "renderBeat";
         /** 逻辑心跳 */
@@ -1596,7 +1560,6 @@ var feng3d;
         function ComponentEvent() {
             _super.apply(this, arguments);
         }
-        ComponentEvent.prototype.ComponentEvent = ;
         /**
          * 添加子组件事件
          */
@@ -1635,7 +1598,6 @@ var feng3d;
         function FErrorEvent() {
             _super.apply(this, arguments);
         }
-        FErrorEvent.prototype.FErrorEvent = ;
         /**
          * 错误事件
          */
@@ -1661,14 +1623,6 @@ var feng3dBeat;
         function HeartBeatModuleEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建任务模块事件
-         * @param type 					事件的类型
-         * @param data					事件携带的数据
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        HeartBeatModuleEvent.prototype.HeartBeatModuleEvent = ;
         /** 注册心跳类型 */
         HeartBeatModuleEvent.REGISTER_BEAT_TYPE = "registerBeatType";
         /** 注销心跳类型 */
@@ -1699,9 +1653,6 @@ var feng3d;
      */
     var LoadModuleEvent = (function (_super) {
         __extends(LoadModuleEvent, _super);
-        function LoadModuleEvent() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个加载事件。
          * @param data					加载事件数据
@@ -1709,11 +1660,11 @@ var feng3d;
          * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
          * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
          */
-        LoadModuleEvent.prototype.LoadModuleEvent = function (type, data, bubbles, cancelable) {
+        function LoadModuleEvent(type, data, bubbles, cancelable) {
             if (bubbles === void 0) { bubbles = false; }
             if (cancelable === void 0) { cancelable = false; }
             _super.call(this, type, data, bubbles, cancelable);
-        };
+        }
         Object.defineProperty(LoadModuleEvent.prototype, "loadEventData", {
             /**
              * 加载事件数据
@@ -1741,14 +1692,6 @@ var feng3d;
         function TaskModuleEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建任务模块事件
-         * @param type 					事件的类型
-         * @param data					事件携带的数据
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        TaskModuleEvent.prototype.TaskModuleEvent = ;
         /** 派发任务 */
         TaskModuleEvent.DISPATCH_TASK = "dispatchTask";
         /** 注册任务集合类型 */
@@ -1771,9 +1714,6 @@ var feng3d;
      */
     var LoadUrlEvent = (function (_super) {
         __extends(LoadUrlEvent, _super);
-        function LoadUrlEvent() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个加载事件。
          * @param data					加载事件数据
@@ -1781,12 +1721,12 @@ var feng3d;
          * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
          * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
          */
-        LoadUrlEvent.prototype.LoadUrlEvent = function (type, data, bubbles, cancelable) {
+        function LoadUrlEvent(type, data, bubbles, cancelable) {
             if (data === void 0) { data = null; }
             if (bubbles === void 0) { bubbles = false; }
             if (cancelable === void 0) { cancelable = false; }
             _super.call(this, type, data, bubbles, cancelable);
-        };
+        }
         Object.defineProperty(LoadUrlEvent.prototype, "loadTaskItem", {
             /**
              * 加载事件数据
@@ -1816,14 +1756,6 @@ var feng3d;
         function TaskEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建任务事件
-         * @param data					事件携带的数据
-         * @param type 					事件的类型
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        TaskEvent.prototype.TaskEvent = ;
         /** 完成任务 */
         TaskEvent.COMPLETED = "completed";
         /** 完成一个任务单元 */
@@ -1845,9 +1777,6 @@ var feng3d;
      */
     var AnimationStateEvent = (function (_super) {
         __extends(AnimationStateEvent, _super);
-        function AnimationStateEvent() {
-            _super.apply(this, arguments);
-        }
         /**
          * Create a new <code>AnimatonStateEvent</code>
          *
@@ -1855,12 +1784,12 @@ var feng3d;
          * @param animator The animation state object that is the subject of this event.
          * @param animationNode The animation node inside the animation state from which the event originated.
          */
-        AnimationStateEvent.prototype.AnimationStateEvent = function (type, animator, animationState, animationNode) {
+        function AnimationStateEvent(type, animator, animationState, animationNode) {
             _super.call(this, type, false, false);
             this._animator = animator;
             this._animationState = animationState;
             this._animationNode = animationNode;
-        };
+        }
         Object.defineProperty(AnimationStateEvent.prototype, "animator", {
             /**
              * The animator object that is the subject of this event.
@@ -1919,13 +1848,6 @@ var feng3d;
         function AnimatorEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建一个动画时间
-         * @param type			事件类型
-         * @param data			事件数据
-         * @param bubbles		是否冒泡
-         */
-        AnimatorEvent.prototype.AnimatorEvent = ;
         /** 开始播放动画 */
         AnimatorEvent.START = "start";
         /** 继续播放动画 */
@@ -1950,16 +1872,13 @@ var feng3d;
      */
     var AssetEvent = (function (_super) {
         __extends(AssetEvent, _super);
-        function AssetEvent() {
-            _super.apply(this, arguments);
-        }
-        AssetEvent.prototype.AssetEvent = function (type, asset, prevName) {
+        function AssetEvent(type, asset, prevName) {
             if (asset === void 0) { asset = null; }
             if (prevName === void 0) { prevName = null; }
             _super.call(this, type);
             this._asset = asset;
             this._prevName = prevName || (this._asset ? this._asset.namedAsset.name : null);
-        };
+        }
         Object.defineProperty(AssetEvent.prototype, "asset", {
             get: function () {
                 return _asset;
@@ -2011,14 +1930,11 @@ var feng3d;
      */
     var CameraEvent = (function (_super) {
         __extends(CameraEvent, _super);
-        function CameraEvent() {
-            _super.apply(this, arguments);
-        }
-        CameraEvent.prototype.CameraEvent = function (type, camera, bubbles) {
+        function CameraEvent(type, camera, bubbles) {
             if (camera === void 0) { camera = null; }
             if (bubbles === void 0) { bubbles = false; }
             _super.call(this, type, this.data, bubbles);
-        };
+        }
         Object.defineProperty(CameraEvent.prototype, "camera", {
             get: function () {
                 return data;
@@ -2042,7 +1958,6 @@ var feng3d;
         function Container3DEvent() {
             _super.apply(this, arguments);
         }
-        Container3DEvent.prototype.Container3DEvent = ;
         return Container3DEvent;
     }(feng3d.FEvent));
     feng3d.Container3DEvent = Container3DEvent;
@@ -2063,14 +1978,6 @@ var feng3d;
         function Context3DBufferOwnerEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建3D环境缓冲拥有者事件
-         * @param type 					事件的类型，可以作为 Event.type 访问。
-         * @param data					事件携带的数据
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        Context3DBufferOwnerEvent.prototype.Context3DBufferOwnerEvent = ;
         /**
          * 添加3D环境缓冲事件
          */
@@ -2105,9 +2012,6 @@ var feng3d;
      */
     var FagalMathEvent = (function (_super) {
         __extends(FagalMathEvent, _super);
-        function FagalMathEvent() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个作为参数传递给事件侦听器的 Event 对象.
          * @param type 					事件的类型，可以作为 Event.type 访问。
@@ -2115,11 +2019,11 @@ var feng3d;
          * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
          * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
          */
-        FagalMathEvent.prototype.FagalMathEvent = function (type, code, bubbles, cancelable) {
+        function FagalMathEvent(type, code, bubbles, cancelable) {
             if (bubbles === void 0) { bubbles = false; }
             if (cancelable === void 0) { cancelable = false; }
             _super.call(this, type, code, bubbles, cancelable);
-        };
+        }
         Object.defineProperty(FagalMathEvent.prototype, "code", {
             /**
              * fagal代码
@@ -2149,7 +2053,6 @@ var feng3d;
         function GeometryComponentEvent() {
             _super.apply(this, arguments);
         }
-        GeometryComponentEvent.prototype.GeometryComponentEvent = ;
         /**
          * 获取几何体顶点数据
          */
@@ -2180,16 +2083,13 @@ var feng3d;
      */
     var GeometryEvent = (function (_super) {
         __extends(GeometryEvent, _super);
-        function GeometryEvent() {
-            _super.apply(this, arguments);
-        }
-        GeometryEvent.prototype.GeometryEvent = function (type, subGeometry, bubbles, cancelable) {
+        function GeometryEvent(type, subGeometry, bubbles, cancelable) {
             if (subGeometry === void 0) { subGeometry = null; }
             if (bubbles === void 0) { bubbles = false; }
             if (cancelable === void 0) { cancelable = false; }
             _super.call(this, type, subGeometry, bubbles, cancelable);
             this._subGeometry = subGeometry;
-        };
+        }
         Object.defineProperty(GeometryEvent.prototype, "subGeometry", {
             get: function () {
                 return _subGeometry;
@@ -2215,15 +2115,12 @@ var feng3d;
      */
     var LensEvent = (function (_super) {
         __extends(LensEvent, _super);
-        function LensEvent() {
-            _super.apply(this, arguments);
-        }
-        LensEvent.prototype.LensEvent = function (type, lens, bubbles, cancelable) {
+        function LensEvent(type, lens, bubbles, cancelable) {
             if (lens === void 0) { lens = null; }
             if (bubbles === void 0) { bubbles = false; }
             if (cancelable === void 0) { cancelable = false; }
             _super.call(this, type, this.data, bubbles, cancelable);
-        };
+        }
         Object.defineProperty(LensEvent.prototype, "lens", {
             get: function () {
                 return data;
@@ -2247,7 +2144,6 @@ var feng3d;
         function LightEvent() {
             _super.apply(this, arguments);
         }
-        LightEvent.prototype.LightEvent = ;
         LightEvent.CASTS_SHADOW_CHANGE = "castsShadowChange";
         return LightEvent;
     }(feng3d.FEvent));
@@ -2271,7 +2167,6 @@ var feng3d;
             _super.apply(this, arguments);
             this.string = "passRemoved";
         }
-        MaterialEvent.prototype.MaterialEvent = ;
         /** 添加pass */
         MaterialEvent.PASS_ADDED = "passAdded";
         /** 移除pass */
@@ -2296,14 +2191,6 @@ var feng3d;
         function MeshEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建一个网格事件。
-         * @param data					事件携带的数据
-         * @param type 					事件的类型，可以作为 Event.type 访问。
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        MeshEvent.prototype.MeshEvent = ;
         /**
          * 材质发生变化
          */
@@ -2330,14 +2217,6 @@ var feng3d;
         function MouseEvent3D() {
             _super.apply(this, arguments);
         }
-        /**
-         * 创建一个3D鼠标事件
-         * @param data					事件携带的数据
-         * @param type 					事件的类型，可以作为 Event.type 访问。
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 			确定是否可以取消 Event 对象。默认值为 false。
-         */
-        MouseEvent3D.prototype.MouseEvent3D = ;
         /**
          * 单击
          */
@@ -2396,14 +2275,11 @@ var feng3d;
      */
     var ParserEvent = (function (_super) {
         __extends(ParserEvent, _super);
-        function ParserEvent() {
-            _super.apply(this, arguments);
-        }
-        ParserEvent.prototype.ParserEvent = function (type, message) {
+        function ParserEvent(type, message) {
             if (message === void 0) { message = ''; }
             _super.call(this, type);
             _message = message;
-        };
+        }
         Object.defineProperty(ParserEvent.prototype, "message", {
             /**
              * Additional human-readable message. Usually supplied for PARSE_ERROR events.
@@ -2444,14 +2320,6 @@ var feng3d;
         function ShadingMethodEvent() {
             _super.apply(this, arguments);
         }
-        /**
-         * 构建一个渲染函数失效事件
-         * @param type 			事件的类型，可以作为 Event.type 访问。
-         * @param data			数据
-         * @param bubbles 		确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 	确定是否可以取消 Event 对象。默认值为 false。
-         */
-        ShadingMethodEvent.prototype.ShadingMethodEvent = ;
         /** 渲染函数失效 */
         ShadingMethodEvent.SHADER_INVALIDATED = "ShaderInvalidated";
         return ShadingMethodEvent;
@@ -2472,19 +2340,16 @@ var feng3d;
      */
     var Transform3DEvent = (function (_super) {
         __extends(Transform3DEvent, _super);
-        function Transform3DEvent() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建3D对象事件
          * @param type			事件类型
          * @param element3D		发出事件的3D元素
          */
-        Transform3DEvent.prototype.Transform3DEvent = function (type, element3D, bubbles, cancelable) {
+        function Transform3DEvent(type, element3D, bubbles, cancelable) {
             if (bubbles === void 0) { bubbles = false; }
             if (cancelable === void 0) { cancelable = false; }
             _super.call(this, type, element3D, bubbles, cancelable);
-        };
+        }
         Object.defineProperty(Transform3DEvent.prototype, "element3D", {
             /**
              * 发出事件的3D元素
@@ -2542,8 +2407,6 @@ var feng3d;
      * @author feng 2014-5-7
      */
     var FEventDispatcher = (function () {
-        function FEventDispatcher() {
-        }
         /**
          * 创建 FEventDispatcher 类的实例.
          *
@@ -2553,13 +2416,13 @@ var feng3d;
          *
          * @see flash.events.EventDispatcher.EventDispatcher()
          */
-        FEventDispatcher.prototype.FEventDispatcher = function (target) {
+        function FEventDispatcher(target) {
             if (target === void 0) { target = null; }
             if (target != null)
                 this.dispatcher = new EventDispatcher(target);
             else
                 this.dispatcher = new EventDispatcher(this);
-        };
+        }
         Object.defineProperty(FEventDispatcher.prototype, "name", {
             /**
              * 名称
@@ -2688,8 +2551,11 @@ var feng3d;
      */
     var Component = (function (_super) {
         __extends(Component, _super);
+        /**
+         * 创建一个组件容器
+         */
         function Component() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /**
              * 组件列表
              */
@@ -2710,12 +2576,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个组件容器
-         */
-        Component.prototype.Component = function () {
-            _super.call(this);
-        };
         Object.defineProperty(Component.prototype, "numComponents", {
             /**
              * 子组件个数
@@ -2934,13 +2794,10 @@ var feng3d;
     var UniqueClassComponent = (function (_super) {
         __extends(UniqueClassComponent, _super);
         function UniqueClassComponent() {
-            _super.apply(this, arguments);
-        }
-        UniqueClassComponent.prototype.UniqueClassComponent = function () {
             _super.call(this);
             this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONET, this.onBeAddedComponet);
             this.addEventListener(feng3d.ComponentEvent.BE_REMOVED_COMPONET, this.onBeRemovedComponet);
-        };
+        }
         /**
          * 处理被添加事件
          * @param event
@@ -2997,13 +2854,10 @@ var feng3d;
     var UniqueNameComponent = (function (_super) {
         __extends(UniqueNameComponent, _super);
         function UniqueNameComponent() {
-            _super.apply(this, arguments);
-        }
-        UniqueNameComponent.prototype.UniqueNameComponent = function () {
             _super.call(this);
             this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONET, this.onBeAddedComponet);
             this.addEventListener(feng3d.ComponentEvent.BE_REMOVED_COMPONET, this.onBeRemovedComponet);
-        };
+        }
         /**
          * 处理被添加事件
          * @param event
@@ -3055,8 +2909,14 @@ var feng3d;
      */
     var AnimationNodeBase = (function (_super) {
         __extends(AnimationNodeBase, _super);
+        /**
+         * 创建一个动画节点基类
+         */
         function AnimationNodeBase() {
-            _super.apply(this, arguments);
+            _super.call(this);
+            this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.ANIMATION_NODE);
+            this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
+            this.initBuffers();
         }
         Object.defineProperty(AnimationNodeBase.prototype, "stateClass", {
             /**
@@ -3068,15 +2928,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个动画节点基类
-         */
-        AnimationNodeBase.prototype.AnimationNodeBase = function () {
-            _super.call(this);
-            this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.ANIMATION_NODE);
-            this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
-            this.initBuffers();
-        };
         /**
          * 初始化Context3d缓存
          */
@@ -3111,24 +2962,21 @@ var feng3d;
      */
     var AnimationClipNodeBase = (function (_super) {
         __extends(AnimationClipNodeBase, _super);
+        /**
+         * 创建一个动画剪辑节点基类
+         */
         function AnimationClipNodeBase() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._looping = true;
             this._totalDuration = 0;
             this._stitchDirty = true;
             this._stitchFinalFrame = false;
             this._numFrames = 0;
-            this._durations = new uint[]();
+            this._durations = new number[]();
             this._totalDelta = new Vector3D();
             /** 是否稳定帧率 */
             this.fixedFrameRate = true;
         }
-        /**
-         * 创建一个动画剪辑节点基类
-         */
-        AnimationClipNodeBase.prototype.AnimationClipNodeBase = function () {
-            _super.call(this);
-        };
         Object.defineProperty(AnimationClipNodeBase.prototype, "durations", {
             /**
              * 持续时间列表（ms）
@@ -3231,16 +3079,13 @@ var feng3d;
      */
     var SkeletonClipNode = (function (_super) {
         __extends(SkeletonClipNode, _super);
-        function SkeletonClipNode() {
-            _super.apply(this, arguments);
-            this._frames = new feng3d.SkeletonPose[]();
-        }
         /**
          * 创建骨骼动画节点
          */
-        SkeletonClipNode.prototype.SkeletonClipNode = function () {
+        function SkeletonClipNode() {
+            this._frames = new feng3d.SkeletonPose[]();
             _stateClass = feng3d.SkeletonClipState;
-        };
+        }
         Object.defineProperty(SkeletonClipNode.prototype, "frames", {
             /**
              * 骨骼姿势动画帧列表
@@ -3303,16 +3148,13 @@ var feng3dSheet;
      */
     var SpriteSheetClipNode = (function (_super) {
         __extends(SpriteSheetClipNode, _super);
-        function SpriteSheetClipNode() {
-            _super.apply(this, arguments);
-            this._frames = new feng3dSheet.SpriteSheetAnimationFrame[]();
-        }
         /**
          * 创建<code>SpriteSheetClipNode</code>实例.
          */
-        SpriteSheetClipNode.prototype.SpriteSheetClipNode = function () {
+        function SpriteSheetClipNode() {
+            this._frames = new feng3dSheet.SpriteSheetAnimationFrame[]();
             _stateClass = feng3dSheet.SpriteSheetAnimationState;
-        };
+        }
         Object.defineProperty(SpriteSheetClipNode.prototype, "frames", {
             /**
              * 帧列表
@@ -3349,9 +3191,12 @@ var feng3d;
      */
     var UVClipNode = (function (_super) {
         __extends(UVClipNode, _super);
+        /**
+         * 创建<code>UVClipNode</code>实例
+         */
         function UVClipNode() {
-            _super.apply(this, arguments);
             this._frames = new feng3d.UVAnimationFrame[]();
+            _stateClass = feng3d.UVClipState;
         }
         Object.defineProperty(UVClipNode.prototype, "frames", {
             /**
@@ -3363,12 +3208,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建<code>UVClipNode</code>实例
-         */
-        UVClipNode.prototype.UVClipNode = function () {
-            _stateClass = feng3d.UVClipState;
-        };
         /**
          * 添加帧
          * @param uvFrame				UV动画帧
@@ -3406,17 +3245,14 @@ var feng3d;
      */
     var VertexClipNode = (function (_super) {
         __extends(VertexClipNode, _super);
-        function VertexClipNode() {
-            _super.apply(this, arguments);
-            this._frames = new feng3d.Geometry[]();
-            this._translations = new Vector3D[]();
-        }
         /**
          * 创建一个顶点动画剪辑节点
          */
-        VertexClipNode.prototype.VertexClipNode = function () {
+        function VertexClipNode() {
+            this._frames = new feng3d.Geometry[]();
+            this._translations = new Vector3D[]();
             _stateClass = feng3d.VertexClipState;
-        };
+        }
         Object.defineProperty(VertexClipNode.prototype, "frames", {
             /**
              * 帧数据列表
@@ -3481,8 +3317,15 @@ var feng3d;
      */
     var ParticleNodeBase = (function (_super) {
         __extends(ParticleNodeBase, _super);
-        function ParticleNodeBase() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个粒子节点
+         * @param animationName		节点名称
+         * @param mode				模式
+         * @param dataLength		数据长度
+         * @param priority			优先级
+         */
+        function ParticleNodeBase(animationName, mode, dataLength, priority) {
+            if (priority === void 0) { priority = 1; }
             this.Object = {
                 0: GLOBAL,
                 1: LOCAL_STATIC,
@@ -3492,6 +3335,13 @@ var feng3d;
             this.string = 'LocalStatic';
             this.string = 'LocalDynamic';
             this._dataLength = 3;
+            this.name = animationName + MODES[mode];
+            this._mode = mode;
+            this._priority = priority;
+            this._dataLength = dataLength;
+            this._oneData = new number[](this._dataLength, true);
+            _super.call(this);
+            feng3d.AbstractClassError.check(this);
         }
         Object.defineProperty(ParticleNodeBase.prototype, "vaId", {
             /**
@@ -3513,23 +3363,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个粒子节点
-         * @param animationName		节点名称
-         * @param mode				模式
-         * @param dataLength		数据长度
-         * @param priority			优先级
-         */
-        ParticleNodeBase.prototype.ParticleNodeBase = function (animationName, mode, dataLength, priority) {
-            if (priority === void 0) { priority = 1; }
-            this.name = animationName + MODES[mode];
-            this._mode = mode;
-            this._priority = priority;
-            this._dataLength = dataLength;
-            this._oneData = new Number[](this._dataLength, true);
-            _super.call(this);
-            feng3d.AbstractClassError.check(this);
-        };
         Object.defineProperty(ParticleNodeBase.prototype, "priority", {
             /**
              * 优先级
@@ -3608,19 +3441,16 @@ var feng3d;
      */
     var ParticleBillboardNode = (function (_super) {
         __extends(ParticleBillboardNode, _super);
-        function ParticleBillboardNode() {
-            _super.apply(this, arguments);
-            this._matrix = new Matrix3D;
-        }
         /**
          * 创建一个广告牌节点
          * @param billboardAxis
          */
-        ParticleBillboardNode.prototype.ParticleBillboardNode = function (billboardAxis) {
+        function ParticleBillboardNode(billboardAxis) {
             if (billboardAxis === void 0) { billboardAxis = null; }
             _super.call(this, "ParticleBillboard", feng3d.ParticlePropertiesMode.GLOBAL, 0, 4);
+            this._matrix = new Matrix3D;
             this.billboardAxis = billboardAxis;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -3699,9 +3529,6 @@ var feng3d;
      */
     var ParticleColorNode = (function (_super) {
         __extends(ParticleColorNode, _super);
-        function ParticleColorNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个粒子颜色节点
          * @param mode					属性模式
@@ -3714,7 +3541,7 @@ var feng3d;
          * @param cycleDuration
          * @param cyclePhase
          */
-        ParticleColorNode.prototype.ParticleColorNode = function (mode, usesMultiplier, usesOffset, usesCycle, usesPhase, startColor, endColor, cycleDuration, cyclePhase) {
+        function ParticleColorNode(mode, usesMultiplier, usesOffset, usesCycle, usesPhase, startColor, endColor, cycleDuration, cyclePhase) {
             if (usesMultiplier === void 0) { usesMultiplier = true; }
             if (usesOffset === void 0) { usesOffset = true; }
             if (usesCycle === void 0) { usesCycle = false; }
@@ -3729,7 +3556,7 @@ var feng3d;
             this._endColor = endColor || new ColorTransform();
             _super.call(this, "ParticleColor", mode, (this._usesMultiplier && this._usesOffset) ? 16 : 8, feng3d.ParticleAnimationSet.COLOR_PRIORITY);
             this.updateColorData();
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -3794,12 +3621,12 @@ var feng3d;
         ParticleColorNode.prototype.updateColorData = function () {
             if (this.mode == feng3d.ParticlePropertiesMode.GLOBAL) {
                 if (this._usesMultiplier) {
-                    this._startMultiplierData = Number[]([this._startColor.redMultiplier, this._startColor.greenMultiplier, this._startColor.blueMultiplier, this._startColor.alphaMultiplier]);
-                    this._deltaMultiplierData = Number[]([(this._endColor.redMultiplier - this._startColor.redMultiplier), (this._endColor.greenMultiplier - this._startColor.greenMultiplier), (this._endColor.blueMultiplier - this._startColor.blueMultiplier), (this._endColor.alphaMultiplier - this._startColor.alphaMultiplier)]);
+                    this._startMultiplierData = number[]([this._startColor.redMultiplier, this._startColor.greenMultiplier, this._startColor.blueMultiplier, this._startColor.alphaMultiplier]);
+                    this._deltaMultiplierData = number[]([(this._endColor.redMultiplier - this._startColor.redMultiplier), (this._endColor.greenMultiplier - this._startColor.greenMultiplier), (this._endColor.blueMultiplier - this._startColor.blueMultiplier), (this._endColor.alphaMultiplier - this._startColor.alphaMultiplier)]);
                 }
                 if (this._usesOffset) {
-                    this._startOffsetData = Number[]([this._startColor.redOffset / 255, this._startColor.greenOffset / 255, this._startColor.blueOffset / 255, this._startColor.alphaOffset / 255]);
-                    this._deltaOffsetData = Number[]([(this._endColor.redOffset - this._startColor.redOffset) / 255, (this._endColor.greenOffset - this._startColor.greenOffset) / 255, (this._endColor.blueOffset - this._startColor.blueOffset) / 255, (this._endColor.alphaOffset - this._startColor.alphaOffset) / 255]);
+                    this._startOffsetData = number[]([this._startColor.redOffset / 255, this._startColor.greenOffset / 255, this._startColor.blueOffset / 255, this._startColor.alphaOffset / 255]);
+                    this._deltaOffsetData = number[]([(this._endColor.redOffset - this._startColor.redOffset) / 255, (this._endColor.greenOffset - this._startColor.greenOffset) / 255, (this._endColor.blueOffset - this._startColor.blueOffset) / 255, (this._endColor.alphaOffset - this._startColor.alphaOffset) / 255]);
                 }
             }
         };
@@ -3831,8 +3658,30 @@ var feng3d;
      */
     var ParticleScaleNode = (function (_super) {
         __extends(ParticleScaleNode, _super);
-        function ParticleScaleNode() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个粒子缩放节点
+         * @param mode				模式
+         * @param usesCycle
+         * @param usesPhase
+         * @param minScale			最小缩放
+         * @param maxScale			最大缩放
+         * @param cycleDuration
+         * @param cyclePhase
+         */
+        function ParticleScaleNode(mode, usesCycle, usesPhase, minScale, maxScale, cycleDuration, cyclePhase) {
+            if (minScale === void 0) { minScale = 1; }
+            if (maxScale === void 0) { maxScale = 1; }
+            if (cycleDuration === void 0) { cycleDuration = 1; }
+            if (cyclePhase === void 0) { cyclePhase = 0; }
+            var len = 2;
+            if (usesCycle)
+                len++;
+            if (usesPhase)
+                len++;
+            _super.call(this, "ParticleScale", mode, len, 3);
+            this._minScale = minScale;
+            this._maxScale = maxScale;
+            this.updateScaleData();
         }
         Object.defineProperty(ParticleScaleNode.prototype, "minScale", {
             /**
@@ -3863,31 +3712,6 @@ var feng3d;
             configurable: true
         });
         /**
-         * 创建一个粒子缩放节点
-         * @param mode				模式
-         * @param usesCycle
-         * @param usesPhase
-         * @param minScale			最小缩放
-         * @param maxScale			最大缩放
-         * @param cycleDuration
-         * @param cyclePhase
-         */
-        ParticleScaleNode.prototype.ParticleScaleNode = function (mode, usesCycle, usesPhase, minScale, maxScale, cycleDuration, cyclePhase) {
-            if (minScale === void 0) { minScale = 1; }
-            if (maxScale === void 0) { maxScale = 1; }
-            if (cycleDuration === void 0) { cycleDuration = 1; }
-            if (cyclePhase === void 0) { cyclePhase = 0; }
-            var len = 2;
-            if (usesCycle)
-                len++;
-            if (usesPhase)
-                len++;
-            _super.call(this, "ParticleScale", mode, len, 3);
-            this._minScale = minScale;
-            this._maxScale = maxScale;
-            this.updateScaleData();
-        };
-        /**
          * @inheritDoc
          */
         ParticleScaleNode.prototype.initBuffers = function () {
@@ -3900,7 +3724,7 @@ var feng3d;
         };
         ParticleScaleNode.prototype.updateScaleData = function () {
             if (this.mode == feng3d.ParticlePropertiesMode.GLOBAL) {
-                this._scaleData = Number[]([this._minScale, this._maxScale - this._minScale, 0, 0]);
+                this._scaleData = number[]([this._minScale, this._maxScale - this._minScale, 0, 0]);
             }
         };
         /**
@@ -3937,8 +3761,14 @@ var feng3d;
      */
     var ParticleTimeNode = (function (_super) {
         __extends(ParticleTimeNode, _super);
+        /**
+         * 创建一个粒子时间节点
+         * @param usesDuration	是否持续
+         * @param usesLooping	是否延时
+         * @param usesDelay		是否循环
+         */
         function ParticleTimeNode() {
-            _super.apply(this, arguments);
+            _super.call(this, "ParticleTime", feng3d.ParticlePropertiesMode.LOCAL_STATIC, 4, 0);
         }
         Object.defineProperty(ParticleTimeNode.prototype, "vaId", {
             /**
@@ -3960,15 +3790,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个粒子时间节点
-         * @param usesDuration	是否持续
-         * @param usesLooping	是否延时
-         * @param usesDelay		是否循环
-         */
-        ParticleTimeNode.prototype.ParticleTimeNode = function () {
-            _super.call(this, "ParticleTime", feng3d.ParticlePropertiesMode.LOCAL_STATIC, 4, 0);
-        };
         /**
          * @inheritDoc
          */
@@ -3997,10 +3818,26 @@ var feng3d;
      */
     var ParticleVelocityNode = (function (_super) {
         __extends(ParticleVelocityNode, _super);
-        function ParticleVelocityNode() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个粒子速度节点
+         * @param mode		模式
+         * @param velocity	粒子速度
+         */
+        function ParticleVelocityNode(mode, velocity) {
+            if (velocity === void 0) { velocity = null; }
+            _super.call(this, "ParticleVelocity", mode, 3);
             /** 粒子速度 */
-            this._velocity = Number[]([1, 1, 1, 0]);
+            this._velocity = number[]([1, 1, 1, 0]);
+            if (velocity) {
+                this._velocity[0] = velocity.x;
+                this._velocity[1] = velocity.y;
+                this._velocity[2] = velocity.z;
+            }
+            else {
+                this._velocity[0] = 0;
+                this._velocity[1] = 0;
+                this._velocity[2] = 0;
+            }
         }
         Object.defineProperty(ParticleVelocityNode.prototype, "vaId", {
             /**
@@ -4022,25 +3859,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个粒子速度节点
-         * @param mode		模式
-         * @param velocity	粒子速度
-         */
-        ParticleVelocityNode.prototype.ParticleVelocityNode = function (mode, velocity) {
-            if (velocity === void 0) { velocity = null; }
-            _super.call(this, "ParticleVelocity", mode, 3);
-            if (velocity) {
-                this._velocity[0] = velocity.x;
-                this._velocity[1] = velocity.y;
-                this._velocity[2] = velocity.z;
-            }
-            else {
-                this._velocity[0] = 0;
-                this._velocity[1] = 0;
-                this._velocity[2] = 0;
-            }
-        };
         /**
          * @inheritDoc
          */
@@ -4087,15 +3905,12 @@ var feng3d;
      */
     var SkeletonBinaryLERPNode = (function (_super) {
         __extends(SkeletonBinaryLERPNode, _super);
-        function SkeletonBinaryLERPNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建<code>SkeletonBinaryLERPNode</code>对象
          */
-        SkeletonBinaryLERPNode.prototype.SkeletonBinaryLERPNode = function () {
+        function SkeletonBinaryLERPNode() {
             _stateClass = feng3d.SkeletonBinaryLERPState;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -4114,15 +3929,12 @@ var feng3d;
      */
     var CrossfadeTransitionNode = (function (_super) {
         __extends(CrossfadeTransitionNode, _super);
-        function CrossfadeTransitionNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建<code>CrossfadeTransitionNode</code>实例
          */
-        CrossfadeTransitionNode.prototype.CrossfadeTransitionNode = function () {
+        function CrossfadeTransitionNode() {
             _stateClass = feng3d.CrossfadeTransitionState;
-        };
+        }
         return CrossfadeTransitionNode;
     }(feng3d.SkeletonBinaryLERPNode));
     feng3d.CrossfadeTransitionNode = CrossfadeTransitionNode;
@@ -4135,25 +3947,22 @@ var feng3d;
      */
     var AnimationSetBase = (function (_super) {
         __extends(AnimationSetBase, _super);
-        function AnimationSetBase() {
-            _super.apply(this, arguments);
-            /** 动画节点列表 */
-            this._animations = new feng3d.AnimationNodeBase[]();
-            /** 动画名称列表 */
-            this._animationNames = new String[]();
-            /** 动画字典 */
-            this._animationDictionary = new Dictionary(true);
-        }
         /**
          * 创建一个动画集合基类
          */
-        AnimationSetBase.prototype.AnimationSetBase = function () {
+        function AnimationSetBase() {
             _super.call(this);
+            /** 动画节点列表 */
+            this._animations = new feng3d.AnimationNodeBase[]();
+            /** 动画名称列表 */
+            this._animationNames = new string[]();
+            /** 动画字典 */
+            this._animationDictionary = new Dictionary(true);
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.ANIMATION_SET);
             feng3d.AbstractClassError.check(this);
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this.initBuffers();
-        };
+        }
         /**
          * 初始化Context3d缓存
          */
@@ -4256,36 +4065,33 @@ var feng3d;
      */
     var ParticleAnimationSet = (function (_super) {
         __extends(ParticleAnimationSet, _super);
-        function ParticleAnimationSet() {
-            _super.apply(this, arguments);
-            this._particleNodes = new feng3d.ParticleNodeBase[]();
-            this._localStaticNodes = new feng3d.ParticleNodeBase[]();
-            /** 动画节点列表 */
-            this._effects = new feng3d.ParticleNodeBase[]();
-            /** 动画名称列表 */
-            this._effectNames = new String[]();
-            /** 动画字典 */
-            this._effectDictionary = new Dictionary(true);
-            this._usesDuration = false;
-            this._usesLooping = false;
-            this._usesDelay = false;
-        }
         /**
          * 创建一个粒子动画集合
          * @param usesDuration	是否持续
          * @param usesLooping	是否循环
          * @param usesDelay		是否延时
          */
-        ParticleAnimationSet.prototype.ParticleAnimationSet = function (usesDuration, usesLooping, usesDelay) {
+        function ParticleAnimationSet(usesDuration, usesLooping, usesDelay) {
             if (usesDuration === void 0) { usesDuration = false; }
             if (usesLooping === void 0) { usesLooping = false; }
             if (usesDelay === void 0) { usesDelay = false; }
+            this._particleNodes = new feng3d.ParticleNodeBase[]();
+            this._localStaticNodes = new feng3d.ParticleNodeBase[]();
+            /** 动画节点列表 */
+            this._effects = new feng3d.ParticleNodeBase[]();
+            /** 动画名称列表 */
+            this._effectNames = new string[]();
+            /** 动画字典 */
+            this._effectDictionary = new Dictionary(true);
+            this._usesDuration = false;
+            this._usesLooping = false;
+            this._usesDelay = false;
             this._usesDuration = usesDuration;
             this._usesLooping = usesLooping;
             this._usesDelay = usesDelay;
             //自动添加一个粒子的时间节点
             this.addParticleEffect(this._timeNode = new feng3d.ParticleTimeNode());
-        };
+        }
         Object.defineProperty(ParticleAnimationSet.prototype, "particleNodes", {
             /**
              * 粒子节点列表
@@ -4399,7 +4205,7 @@ var feng3d;
             oneData: oneData,
             /** 粒子所在子几何体的顶点位置 */
             var: startVertexIndex, number: number,
-            var: vaData, Number: particleSubGeometry.getVAData(localNode.vaId),
+            var: vaData, number: particleSubGeometry.getVAData(localNode.vaId),
             var: vaLen, number: number,
             //收集该粒子的每个顶点数据
             for: function () { }, var: j, number: number, j: function () { } }++;) {
@@ -4425,17 +4231,14 @@ var feng3d;
      */
     var SkeletonAnimationSet = (function (_super) {
         __extends(SkeletonAnimationSet, _super);
-        function SkeletonAnimationSet() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个骨骼动画集合
          * @param jointsPerVertex 每个顶点关联关节的数量
          */
-        SkeletonAnimationSet.prototype.SkeletonAnimationSet = function (jointsPerVertex) {
+        function SkeletonAnimationSet(jointsPerVertex) {
             if (jointsPerVertex === void 0) { jointsPerVertex = 4; }
             this._jointsPerVertex = jointsPerVertex;
-        };
+        }
         Object.defineProperty(SkeletonAnimationSet.prototype, "jointsPerVertex", {
             /**
              * 每个顶点关联关节的数量
@@ -4505,14 +4308,11 @@ var feng3d;
      */
     var UVAnimationSet = (function (_super) {
         __extends(UVAnimationSet, _super);
-        function UVAnimationSet() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建UV动画集合实例
          */
-        UVAnimationSet.prototype.UVAnimationSet = function () {
-        };
+        function UVAnimationSet() {
+        }
         /**
          * @inheritDoc
          */
@@ -4532,18 +4332,15 @@ var feng3d;
      */
     var VertexAnimationSet = (function (_super) {
         __extends(VertexAnimationSet, _super);
-        function VertexAnimationSet() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个顶点动画集合
          * @param numPoses		姿势数量
          */
-        VertexAnimationSet.prototype.VertexAnimationSet = function (numPoses) {
+        function VertexAnimationSet(numPoses) {
             if (numPoses === void 0) { numPoses = 2; }
             _super.call(this);
             this._numPoses = numPoses;
-        };
+        }
         Object.defineProperty(VertexAnimationSet.prototype, "numPoses", {
             /**
              * 姿势数量
@@ -4581,8 +4378,11 @@ var feng3d;
      */
     var AnimatorBase = (function (_super) {
         __extends(AnimatorBase, _super);
-        function AnimatorBase() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个动画基类
+         * @param animationSet
+         */
+        function AnimatorBase(animationSet) {
             /** 动画驱动器 */
             this._broadcaster = new Sprite();
             this._autoUpdate = true;
@@ -4595,17 +4395,11 @@ var feng3d;
              * @see me.feng3d.animators.base.states.IAnimationState#positionDelta
              */
             this.updatePosition = true;
-        }
-        /**
-         * 创建一个动画基类
-         * @param animationSet
-         */
-        AnimatorBase.prototype.AnimatorBase = function (animationSet) {
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.ANIMATOR);
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this._animationSet = animationSet;
             this.initBuffers();
-        };
+        }
         /**
          * 初始化Context3d缓存
          */
@@ -4879,24 +4673,21 @@ var feng3d;
      */
     var ParticleAnimator = (function (_super) {
         __extends(ParticleAnimator, _super);
-        function ParticleAnimator() {
-            _super.apply(this, arguments);
-            this._animationParticleStates = new feng3d.ParticleStateBase[];
-            this._timeParticleStates = new feng3d.ParticleStateBase[];
-            /** 常量数据 */
-            this.vertexZeroConst = Number[]([0, 1, 2, 0]);
-            /** 时间常数（粒子当前时间） */
-            this.timeConstData = new Number[](4);
-        }
         /**
          * 创建粒子动画
          * @param particleAnimationSet 粒子动画集合
          */
-        ParticleAnimator.prototype.ParticleAnimator = function (particleAnimationSet) {
+        function ParticleAnimator(particleAnimationSet) {
             _super.call(this, particleAnimationSet);
+            this._animationParticleStates = new feng3d.ParticleStateBase[];
+            this._timeParticleStates = new feng3d.ParticleStateBase[];
+            /** 常量数据 */
+            this.vertexZeroConst = number[]([0, 1, 2, 0]);
+            /** 时间常数（粒子当前时间） */
+            this.timeConstData = new number[](4);
             this._particleAnimationSet = particleAnimationSet;
             this.context3DBufferOwner.addChildBufferOwner(this._particleAnimationSet.context3DBufferOwner);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -4955,11 +4746,43 @@ var feng3d;
      */
     var SkeletonAnimator = (function (_super) {
         __extends(SkeletonAnimator, _super);
-        function SkeletonAnimator() {
-            _super.apply(this, arguments);
-            this._globalMatrices = new Number[]();
+        /**
+         * 创建一个骨骼动画类
+         * @param animationSet 动画集合
+         * @param skeleton 骨骼
+         * @param forceCPU 是否强行使用cpu
+         */
+        function SkeletonAnimator(animationSet, skeleton, forceCPU) {
+            if (forceCPU === void 0) { forceCPU = false; }
+            _super.call(this, animationSet);
+            this._globalMatrices = new number[]();
             this._globalPose = new feng3d.SkeletonPose();
             this._animationStates = new Dictionary();
+            this._skeleton = skeleton;
+            this._forceCPU = forceCPU;
+            this._jointsPerVertex = animationSet.jointsPerVertex;
+            if (this._forceCPU || this._jointsPerVertex > 4)
+                _animationSet.cancelGPUCompatibility();
+            animationSet.numJoints = this._skeleton.numJoints;
+            this._numJoints = this._skeleton.numJoints;
+            this._globalMatrices.length = this._numJoints * 12;
+            this._globalMatrices.fixed = true;
+            //初始化骨骼变换矩阵
+            var j;
+            for (var i = 0; i < this._numJoints; ++i) {
+                this._globalMatrices[j++] = 1;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 1;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 0;
+                this._globalMatrices[j++] = 1;
+                this._globalMatrices[j++] = 0;
+            }
         }
         Object.defineProperty(SkeletonAnimator.prototype, "globalMatrices", {
             /**
@@ -5006,41 +4829,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个骨骼动画类
-         * @param animationSet 动画集合
-         * @param skeleton 骨骼
-         * @param forceCPU 是否强行使用cpu
-         */
-        SkeletonAnimator.prototype.SkeletonAnimator = function (animationSet, skeleton, forceCPU) {
-            if (forceCPU === void 0) { forceCPU = false; }
-            _super.call(this, animationSet);
-            this._skeleton = skeleton;
-            this._forceCPU = forceCPU;
-            this._jointsPerVertex = animationSet.jointsPerVertex;
-            if (this._forceCPU || this._jointsPerVertex > 4)
-                _animationSet.cancelGPUCompatibility();
-            animationSet.numJoints = this._skeleton.numJoints;
-            this._numJoints = this._skeleton.numJoints;
-            this._globalMatrices.length = this._numJoints * 12;
-            this._globalMatrices.fixed = true;
-            //初始化骨骼变换矩阵
-            var j;
-            for (var i = 0; i < this._numJoints; ++i) {
-                this._globalMatrices[j++] = 1;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 1;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 0;
-                this._globalMatrices[j++] = 1;
-                this._globalMatrices[j++] = 0;
-            }
-        };
         /**
          * @inheritDoc
          */
@@ -5190,20 +4978,20 @@ var feng3d;
                 m33 = raw[10];
                 m34 = raw[14];
                 //计算关节全局变换矩阵(通过初始状态 关节逆矩阵与全局变换矩阵 计算 当前状态的关节矩阵)
-                this._globalMatrices[uint(mtxOffset)] = n11 * m11 + n12 * m21 + n13 * m31;
-                this._globalMatrices[uint(mtxOffset + 1)] = n11 * m12 + n12 * m22 + n13 * m32;
-                this._globalMatrices[uint(mtxOffset + 2)] = n11 * m13 + n12 * m23 + n13 * m33;
-                this._globalMatrices[uint(mtxOffset + 3)] = n11 * m14 + n12 * m24 + n13 * m34 + vec.x;
-                this._globalMatrices[uint(mtxOffset + 4)] = n21 * m11 + n22 * m21 + n23 * m31;
-                this._globalMatrices[uint(mtxOffset + 5)] = n21 * m12 + n22 * m22 + n23 * m32;
-                this._globalMatrices[uint(mtxOffset + 6)] = n21 * m13 + n22 * m23 + n23 * m33;
-                this._globalMatrices[uint(mtxOffset + 7)] = n21 * m14 + n22 * m24 + n23 * m34 + vec.y;
-                this._globalMatrices[uint(mtxOffset + 8)] = n31 * m11 + n32 * m21 + n33 * m31;
-                this._globalMatrices[uint(mtxOffset + 9)] = n31 * m12 + n32 * m22 + n33 * m32;
-                this._globalMatrices[uint(mtxOffset + 10)] = n31 * m13 + n32 * m23 + n33 * m33;
-                this._globalMatrices[uint(mtxOffset + 11)] = n31 * m14 + n32 * m24 + n33 * m34 + vec.z;
+                this._globalMatrices[number(mtxOffset)] = n11 * m11 + n12 * m21 + n13 * m31;
+                this._globalMatrices[number(mtxOffset + 1)] = n11 * m12 + n12 * m22 + n13 * m32;
+                this._globalMatrices[number(mtxOffset + 2)] = n11 * m13 + n12 * m23 + n13 * m33;
+                this._globalMatrices[number(mtxOffset + 3)] = n11 * m14 + n12 * m24 + n13 * m34 + vec.x;
+                this._globalMatrices[number(mtxOffset + 4)] = n21 * m11 + n22 * m21 + n23 * m31;
+                this._globalMatrices[number(mtxOffset + 5)] = n21 * m12 + n22 * m22 + n23 * m32;
+                this._globalMatrices[number(mtxOffset + 6)] = n21 * m13 + n22 * m23 + n23 * m33;
+                this._globalMatrices[number(mtxOffset + 7)] = n21 * m14 + n22 * m24 + n23 * m34 + vec.y;
+                this._globalMatrices[number(mtxOffset + 8)] = n31 * m11 + n32 * m21 + n33 * m31;
+                this._globalMatrices[number(mtxOffset + 9)] = n31 * m12 + n32 * m22 + n33 * m32;
+                this._globalMatrices[number(mtxOffset + 10)] = n31 * m13 + n32 * m23 + n33 * m33;
+                this._globalMatrices[number(mtxOffset + 11)] = n31 * m14 + n32 * m24 + n33 * m34 + vec.z;
                 //跳到下个矩阵位置
-                mtxOffset = uint(mtxOffset + 12);
+                mtxOffset = number(mtxOffset + 12);
             }
         };
         /**
@@ -5232,8 +5020,8 @@ var feng3d;
             while (index < len) {
                 //提取原始顶点坐标、法线、切线数据
                 vertX = vertexData[index];
-                vertY = vertexData[uint(index + 1)];
-                vertZ = vertexData[uint(index + 2)];
+                vertY = vertexData[number(index + 1)];
+                vertZ = vertexData[number(index + 2)];
                 vx = 0;
                 vy = 0;
                 vz = 0;
@@ -5243,19 +5031,19 @@ var feng3d;
                     weight = jointWeights[j];
                     if (weight > 0) {
                         //读取该关节的全局变换矩阵
-                        var mtxOffset = uint(jointIndices[j++]) << 2;
+                        var mtxOffset = number(jointIndices[j++]) << 2;
                         m11 = this._globalMatrices[mtxOffset];
-                        m12 = this._globalMatrices[uint(mtxOffset + 1)];
-                        m13 = this._globalMatrices[uint(mtxOffset + 2)];
-                        m14 = this._globalMatrices[uint(mtxOffset + 3)];
-                        m21 = this._globalMatrices[uint(mtxOffset + 4)];
-                        m22 = this._globalMatrices[uint(mtxOffset + 5)];
-                        m23 = this._globalMatrices[uint(mtxOffset + 6)];
-                        m24 = this._globalMatrices[uint(mtxOffset + 7)];
-                        m31 = this._globalMatrices[uint(mtxOffset + 8)];
-                        m32 = this._globalMatrices[uint(mtxOffset + 9)];
-                        m33 = this._globalMatrices[uint(mtxOffset + 10)];
-                        m34 = this._globalMatrices[uint(mtxOffset + 11)];
+                        m12 = this._globalMatrices[number(mtxOffset + 1)];
+                        m13 = this._globalMatrices[number(mtxOffset + 2)];
+                        m14 = this._globalMatrices[number(mtxOffset + 3)];
+                        m21 = this._globalMatrices[number(mtxOffset + 4)];
+                        m22 = this._globalMatrices[number(mtxOffset + 5)];
+                        m23 = this._globalMatrices[number(mtxOffset + 6)];
+                        m24 = this._globalMatrices[number(mtxOffset + 7)];
+                        m31 = this._globalMatrices[number(mtxOffset + 8)];
+                        m32 = this._globalMatrices[number(mtxOffset + 9)];
+                        m33 = this._globalMatrices[number(mtxOffset + 10)];
+                        m34 = this._globalMatrices[number(mtxOffset + 11)];
                         //根据关节的全局变换矩阵与对应权重计算出对该坐标的影响值
                         vx += weight * (m11 * vertX + m12 * vertY + m13 * vertZ + m14);
                         vy += weight * (m21 * vertX + m22 * vertY + m23 * vertZ + m24);
@@ -5263,16 +5051,16 @@ var feng3d;
                         ++k;
                     }
                     else {
-                        j += uint(this._jointsPerVertex - k);
+                        j += number(this._jointsPerVertex - k);
                         k = this._jointsPerVertex;
                     }
                 }
                 //保存最终计算得出的坐标、法线、切线数据
                 targetData[index] = vx;
-                targetData[uint(index + 1)] = vy;
-                targetData[uint(index + 2)] = vz;
+                targetData[number(index + 1)] = vy;
+                targetData[number(index + 2)] = vz;
                 //跳到下个顶点的起始位置
-                index = uint(index + subGeom.vertexPositionStride);
+                index = number(index + subGeom.vertexPositionStride);
             }
         };
         /**
@@ -5409,21 +5197,18 @@ var feng3dSheet;
      */
     var SpriteSheetAnimator = (function (_super) {
         __extends(SpriteSheetAnimator, _super);
-        function SpriteSheetAnimator() {
-            _super.apply(this, arguments);
-            this._vectorFrame = new Number[](4, true);
-            this._frame = new feng3dSheet.SpriteSheetAnimationFrame();
-            this._fps = 10;
-            this._ms = 100;
-        }
         /**
          * 创建sprite动画实例
          * @param spriteSheetAnimationSet			sprite动画集合
          */
-        SpriteSheetAnimator.prototype.SpriteSheetAnimator = function (spriteSheetAnimationSet) {
+        function SpriteSheetAnimator(spriteSheetAnimationSet) {
             _super.call(this, spriteSheetAnimationSet);
+            this._vectorFrame = new number[](4, true);
+            this._frame = new feng3dSheet.SpriteSheetAnimationFrame();
+            this._fps = 10;
+            this._ms = 100;
             this._spriteSheetAnimationSet = spriteSheetAnimationSet;
-        };
+        }
         Object.defineProperty(SpriteSheetAnimator.prototype, "fps", {
             /**
              * 帧率
@@ -5614,22 +5399,19 @@ var feng3d;
      */
     var UVAnimator = (function (_super) {
         __extends(UVAnimator, _super);
-        function UVAnimator() {
-            _super.apply(this, arguments);
-            this._matrix2d = Number[]([1, 0, 0, 0, 1, 0, 0, 0]);
-            this._translate = Number[]([0, 0, 0.5, 0.5]);
-            this._deltaFrame = new feng3d.UVAnimationFrame();
-            this._rotationIncrease = 1;
-        }
         /**
          * 创建<code>UVAnimator</code>实例
          * @param uvAnimationSet			UV动画集合
          */
-        UVAnimator.prototype.UVAnimator = function (uvAnimationSet) {
+        function UVAnimator(uvAnimationSet) {
             _super.call(this, uvAnimationSet);
+            this._matrix2d = number[]([1, 0, 0, 0, 1, 0, 0, 0]);
+            this._translate = number[]([0, 0, 0.5, 0.5]);
+            this._deltaFrame = new feng3d.UVAnimationFrame();
+            this._rotationIncrease = 1;
             this._uvTransform = new Matrix();
             this._uvAnimationSet = uvAnimationSet;
-        };
+        }
         Object.defineProperty(UVAnimator.prototype, "autoRotation", {
             /**
              * 是否自动旋转
@@ -5666,7 +5448,7 @@ var feng3d;
             set: function (b) {
                 _autoTranslate = b;
                 if (b && !_translateIncrease)
-                    _translateIncrease = Number[]([0, 0]);
+                    _translateIncrease = number[]([0, 0]);
             },
             enumerable: true,
             configurable: true
@@ -5678,7 +5460,7 @@ var feng3d;
          */
         UVAnimator.prototype.setTranslateIncrease = function (u, v) {
             if (!this._translateIncrease)
-                this._translateIncrease = Number[]([0, 0]);
+                this._translateIncrease = number[]([0, 0]);
             this._translateIncrease[0] = u;
             this._translateIncrease[1] = v;
         };
@@ -5787,20 +5569,17 @@ var feng3d;
      */
     var VertexAnimator = (function (_super) {
         __extends(VertexAnimator, _super);
-        function VertexAnimator() {
-            _super.apply(this, arguments);
-            this._weights = Number[]([1, 0, 0, 0]);
-            this._poses = new feng3d.Geometry[]();
-        }
         /**
          * 创建一个顶点动画
          * @param vertexAnimationSet 顶点动画集合
          */
-        VertexAnimator.prototype.VertexAnimator = function (vertexAnimationSet) {
+        function VertexAnimator(vertexAnimationSet) {
             _super.call(this, vertexAnimationSet);
+            this._weights = number[]([1, 0, 0, 0]);
+            this._poses = new feng3d.Geometry[]();
             this._vertexAnimationSet = vertexAnimationSet;
             this._numPoses = vertexAnimationSet.numPoses;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -5843,9 +5622,9 @@ var feng3d;
          */
         VertexAnimator.prototype.updateDeltaTime = function (dt) {
             _super.prototype.updateDeltaTime.call(this, dt);
-            this._poses[uint(0)] = this._activeVertexState.currentGeometry;
-            this._poses[uint(1)] = this._activeVertexState.nextGeometry;
-            this._weights[uint(0)] = 1 - (this._weights[uint(1)] = this._activeVertexState.blendWeight);
+            this._poses[number(0)] = this._activeVertexState.currentGeometry;
+            this._poses[number(1)] = this._activeVertexState.nextGeometry;
+            this._weights[number(0)] = 1 - (this._weights[number(1)] = this._activeVertexState.blendWeight);
         };
         /**
          * @inheritDoc
@@ -5897,12 +5676,9 @@ var feng3d;
     var Skeleton = (function (_super) {
         __extends(Skeleton, _super);
         function Skeleton() {
-            _super.apply(this, arguments);
-        }
-        Skeleton.prototype.Skeleton = function () {
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.SKELETON);
             this.joints = new feng3d.SkeletonJoint[]();
-        };
+        }
         Object.defineProperty(Skeleton.prototype, "numJoints", {
             get: function () {
                 return joints.length;
@@ -5930,7 +5706,8 @@ var feng3d;
     var SkeletonPose = (function (_super) {
         __extends(SkeletonPose, _super);
         function SkeletonPose() {
-            _super.apply(this, arguments);
+            this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.SKELETON_POSE);
+            this.jointPoses = new feng3d.JointPose[]();
         }
         Object.defineProperty(SkeletonPose.prototype, "numJointPoses", {
             get: function () {
@@ -5939,10 +5716,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        SkeletonPose.prototype.SkeletonPose = function () {
-            this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.SKELETON_POSE);
-            this.jointPoses = new feng3d.JointPose[]();
-        };
         Object.defineProperty(SkeletonPose.prototype, "namedAsset", {
             get: function () {
                 return _namedAsset;
@@ -5963,13 +5736,10 @@ var feng3d;
     var SubGeometryComponent = (function (_super) {
         __extends(SubGeometryComponent, _super);
         function SubGeometryComponent() {
-            _super.apply(this, arguments);
-        }
-        SubGeometryComponent.prototype.SubGeometryComponent = function () {
             _super.call(this);
             this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONET, this.onBeAddedComponet);
             this.addEventListener(feng3d.ComponentEvent.BE_REMOVED_COMPONET, this.onBeRemovedComponet);
-        };
+        }
         Object.defineProperty(SubGeometryComponent.prototype, "subGeometry", {
             get: function () {
                 return _subGeometry;
@@ -6019,16 +5789,13 @@ var feng3d;
     var AutoDeriveVertexNormals = (function (_super) {
         __extends(AutoDeriveVertexNormals, _super);
         function AutoDeriveVertexNormals() {
-            _super.apply(this, arguments);
             /** 面法线脏标记 */
             this._faceNormalsDirty = true;
             /** 是否使用面权重 */
             this._useFaceWeights = false;
-        }
-        AutoDeriveVertexNormals.prototype.AutoDeriveVertexNormals = function () {
             this.dataTypeId = _.normal_va_3;
             _super.call(this);
-        };
+        }
         Object.defineProperty(AutoDeriveVertexNormals.prototype, "subGeometry", {
             set: function (value) {
                 if (_subGeometry != null) {
@@ -6118,10 +5885,10 @@ var feng3d;
             var posStride = 3;
             var posOffset = 0;
             this._faceNormals || ;
-            new Number[](len, true);
+            new number[](len, true);
             if (this._useFaceWeights)
                 this._faceWeights || ;
-            new Number[](len / 3, true);
+            new number[](len / 3, true);
             while (i < len) {
                 index = posOffset + _indices[i++] * posStride;
                 x1 = vertices[index];
@@ -6173,7 +5940,7 @@ var feng3d;
             var normalStride = 3;
             var normalOffset = 0;
             target || ;
-            new Number[](lenV, true);
+            new number[](lenV, true);
             v1 = normalOffset;
             while (v1 < lenV) {
                 target[v1] = 0.0;
@@ -6230,16 +5997,13 @@ var feng3d;
     var AutoDeriveVertexTangents = (function (_super) {
         __extends(AutoDeriveVertexTangents, _super);
         function AutoDeriveVertexTangents() {
-            _super.apply(this, arguments);
             /** 面切线脏标记 */
             this._faceTangentsDirty = true;
             /** 是否使用面权重 */
             this._useFaceWeights = false;
-        }
-        AutoDeriveVertexTangents.prototype.AutoDeriveVertexTangents = function () {
             this.dataTypeId = _.tangent_va_3;
             _super.call(this);
-        };
+        }
         Object.defineProperty(AutoDeriveVertexTangents.prototype, "subGeometry", {
             set: function (value) {
                 if (_subGeometry != null) {
@@ -6332,7 +6096,7 @@ var feng3d;
             var texStride = this.subGeometry.getVALen(_.uv_va_2);
             var texOffset = 0;
             this._faceTangents || ;
-            new Number[](_indices.length, true);
+            new number[](_indices.length, true);
             while (i < len) {
                 index1 = _indices[i];
                 index2 = _indices[i + 1];
@@ -6345,16 +6109,16 @@ var feng3d;
                 dv2 = uvs[ui] - v0;
                 vi = posOffset + index1 * posStride;
                 x0 = vertices[vi];
-                y0 = vertices[uint(vi + 1)];
-                z0 = vertices[uint(vi + 2)];
+                y0 = vertices[number(vi + 1)];
+                z0 = vertices[number(vi + 2)];
                 vi = posOffset + index2 * posStride;
-                dx1 = vertices[uint(vi)] - x0;
-                dy1 = vertices[uint(vi + 1)] - y0;
-                dz1 = vertices[uint(vi + 2)] - z0;
+                dx1 = vertices[number(vi)] - x0;
+                dy1 = vertices[number(vi + 1)] - y0;
+                dz1 = vertices[number(vi + 2)] - z0;
                 vi = posOffset + index3 * posStride;
-                dx2 = vertices[uint(vi)] - x0;
-                dy2 = vertices[uint(vi + 1)] - y0;
-                dz2 = vertices[uint(vi + 2)] - z0;
+                dx2 = vertices[number(vi)] - x0;
+                dy2 = vertices[number(vi + 1)] - y0;
+                dz2 = vertices[number(vi + 2)] - z0;
                 cx = dv2 * dx1 - dv1 * dx2;
                 cy = dv2 * dy1 - dv1 * dy2;
                 cz = dv2 * dz1 - dv1 * dz2;
@@ -6378,7 +6142,7 @@ var feng3d;
             var tangentStride = 3;
             var tangentOffset = 0;
             target || ;
-            new Number[](lenV, true);
+            new number[](lenV, true);
             i = tangentOffset;
             while (i < lenV) {
                 target[i] = 0.0;
@@ -6437,12 +6201,9 @@ var feng3d;
     var AutoGenerateDummyUVs = (function (_super) {
         __extends(AutoGenerateDummyUVs, _super);
         function AutoGenerateDummyUVs() {
-            _super.apply(this, arguments);
-        }
-        AutoGenerateDummyUVs.prototype.AutoGenerateDummyUVs = function () {
             this.dataTypeId = _.uv_va_2;
             _super.call(this);
-        };
+        }
         Object.defineProperty(AutoGenerateDummyUVs.prototype, "subGeometry", {
             set: function (value) {
                 if (_subGeometry != null) {
@@ -6486,7 +6247,7 @@ var feng3d;
             var stride = 2;
             var len = this.subGeometry.numVertices * stride;
             if (!target)
-                target = new Number[]();
+                target = new number[]();
             target.fixed = false;
             target.length = len;
             target.fixed = true;
@@ -6517,16 +6278,13 @@ var feng3d;
      */
     var SkinnedSubGeometry = (function (_super) {
         __extends(SkinnedSubGeometry, _super);
-        function SkinnedSubGeometry() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建蒙皮子网格
          */
-        SkinnedSubGeometry.prototype.SkinnedSubGeometry = function (jointsPerVertex) {
+        function SkinnedSubGeometry(jointsPerVertex) {
             this._jointsPerVertex = jointsPerVertex;
             _super.call(this);
-        };
+        }
         /**
          * 处理被添加事件
          * @param event
@@ -6590,13 +6348,10 @@ var feng3d;
     var SubGeometryTransformation = (function (_super) {
         __extends(SubGeometryTransformation, _super);
         function SubGeometryTransformation() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._scaleU = 1;
             this._scaleV = 1;
         }
-        SubGeometryTransformation.prototype.SubGeometryTransformation = function () {
-            _super.call(this);
-        };
         Object.defineProperty(SubGeometryTransformation.prototype, "scaleU", {
             get: function () {
                 return _scaleU;
@@ -6724,11 +6479,8 @@ var feng3d;
     var VertexSubGeometry = (function (_super) {
         __extends(VertexSubGeometry, _super);
         function VertexSubGeometry() {
-            _super.apply(this, arguments);
-        }
-        VertexSubGeometry.prototype.VertexSubGeometry = function () {
             _super.call(this);
-        };
+        }
         /**
          * 处理被添加事件
          * @param event
@@ -6759,15 +6511,12 @@ var feng3d;
      */
     var ContainerTransform3D = (function (_super) {
         __extends(ContainerTransform3D, _super);
-        function ContainerTransform3D() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个3d容器变换组件
          */
-        ContainerTransform3D.prototype.ContainerTransform3D = function () {
+        function ContainerTransform3D() {
             this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONET, this.onBeAddedComponet);
-        };
+        }
         /**
          * 处理组件被添加事件
          * @param event
@@ -6810,7 +6559,6 @@ var feng3d;
     var Element3D = (function (_super) {
         __extends(Element3D, _super);
         function Element3D() {
-            _super.apply(this, arguments);
             this._smallestNumber = 0.0000000000000000000001;
             this._transformDirty = true;
             this._eulers = new Vector3D();
@@ -6829,8 +6577,6 @@ var feng3d;
             this._pos = new Vector3D();
             this._rot = new Vector3D();
             this._sca = new Vector3D();
-        }
-        Element3D.prototype.Element3D = function () {
             // Cached vector of transformation components used when
             // recomposing the this.transform matrix in this.updateTransform()
             this._transformComponents = new Vector3D[](3, true);
@@ -6838,7 +6584,7 @@ var feng3d;
             this._transformComponents[1] = this._rot;
             this._transformComponents[2] = this._sca;
             this._transform.identity();
-        };
+        }
         Object.defineProperty(Element3D.prototype, "x", {
             /**
              * 相对父容器的X坐标
@@ -7018,8 +6764,8 @@ var feng3d;
                 //ridiculous matrix error
                 var raw = feng3d.Matrix3DUtils.RAW_DATA_CONTAINER;
                 val.copyRawDataTo(raw);
-                if (!raw[uint(0)]) {
-                    raw[uint(0)] = _smallestNumber;
+                if (!raw[number(0)]) {
+                    raw[number(0)] = _smallestNumber;
                     val.copyRawDataFrom(raw);
                 }
                 var elements = feng3d.Matrix3DUtils.decompose(val);
@@ -7266,15 +7012,12 @@ var feng3d;
      */
     var Transform3D = (function (_super) {
         __extends(Transform3D, _super);
-        function Transform3D() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建3D元素状态变换实例
          */
-        Transform3D.prototype.Transform3D = function () {
+        function Transform3D() {
             _super.call(this);
-        };
+        }
         Object.defineProperty(Transform3D.prototype, "forwardVector", {
             /**
              * 前方单位向量
@@ -7579,22 +7322,22 @@ var feng3d;
             yAxis.z = zAxis.x * xAxis.y - zAxis.y * xAxis.x;
             raw = feng3d.Matrix3DUtils.RAW_DATA_CONTAINER;
             //根据XYZ轴计算变换矩阵
-            raw[uint(0)] = _scaleX * xAxis.x;
-            raw[uint(1)] = _scaleX * xAxis.y;
-            raw[uint(2)] = _scaleX * xAxis.z;
-            raw[uint(3)] = 0;
-            raw[uint(4)] = _scaleY * yAxis.x;
-            raw[uint(5)] = _scaleY * yAxis.y;
-            raw[uint(6)] = _scaleY * yAxis.z;
-            raw[uint(7)] = 0;
-            raw[uint(8)] = _scaleZ * zAxis.x;
-            raw[uint(9)] = _scaleZ * zAxis.y;
-            raw[uint(10)] = _scaleZ * zAxis.z;
-            raw[uint(11)] = 0;
-            raw[uint(12)] = _x;
-            raw[uint(13)] = _y;
-            raw[uint(14)] = _z;
-            raw[uint(15)] = 1;
+            raw[number(0)] = _scaleX * xAxis.x;
+            raw[number(1)] = _scaleX * xAxis.y;
+            raw[number(2)] = _scaleX * xAxis.z;
+            raw[number(3)] = 0;
+            raw[number(4)] = _scaleY * yAxis.x;
+            raw[number(5)] = _scaleY * yAxis.y;
+            raw[number(6)] = _scaleY * yAxis.z;
+            raw[number(7)] = 0;
+            raw[number(8)] = _scaleZ * zAxis.x;
+            raw[number(9)] = _scaleZ * zAxis.y;
+            raw[number(10)] = _scaleZ * zAxis.z;
+            raw[number(11)] = 0;
+            raw[number(12)] = _x;
+            raw[number(13)] = _y;
+            raw[number(14)] = _z;
+            raw[number(15)] = 1;
             _transform.copyRawDataFrom(raw);
             this.transform = this.transform;
             if (zAxis.z < 0) {
@@ -7615,15 +7358,12 @@ var feng3d;
      */
     var Renderable = (function (_super) {
         __extends(Renderable, _super);
-        function Renderable() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个可渲染对象基类
          */
-        Renderable.prototype.Renderable = function () {
+        function Renderable() {
             this._context3dCache = new feng3d.Context3DCache();
-        };
+        }
         Object.defineProperty(Renderable.prototype, "_", {
             /**
              * Fagal编号中心
@@ -7716,17 +7456,14 @@ var feng3d;
      */
     var MeshRenderable = (function (_super) {
         __extends(MeshRenderable, _super);
-        function MeshRenderable() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个可渲染对象基类
          */
-        MeshRenderable.prototype.MeshRenderable = function (subMesh) {
+        function MeshRenderable(subMesh) {
             _super.call(this);
             this.subMesh = subMesh;
             _context3dCache.addChildBufferOwner(subMesh.context3DBufferOwner);
-        };
+        }
         Object.defineProperty(MeshRenderable.prototype, "mouseEnabled", {
             /**
              * @inheritDoc
@@ -7799,17 +7536,14 @@ var feng3d;
      */
     var SegmentRenderable = (function (_super) {
         __extends(SegmentRenderable, _super);
-        function SegmentRenderable() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个可渲染对象基类
          */
-        SegmentRenderable.prototype.SegmentRenderable = function (subMesh) {
+        function SegmentRenderable(subMesh) {
             _super.call(this);
             this.segmentSet = subMesh;
             //			_context3dCache.addChildBufferOwner(subMesh.context3DBufferOwner);
-        };
+        }
         Object.defineProperty(SegmentRenderable.prototype, "mouseEnabled", {
             /**
              * @inheritDoc
@@ -7881,16 +7615,13 @@ var feng3d;
      */
     var SubMesh = (function (_super) {
         __extends(SubMesh, _super);
-        function SubMesh() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个子网格
          * @param subGeometry 子几何体
          * @param parentMesh 父网格
          * @param material 材质
          */
-        SubMesh.prototype.SubMesh = function (subGeometry, parentMesh, material) {
+        function SubMesh(subGeometry, parentMesh, material) {
             if (material === void 0) { material = null; }
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this.renderableBase = new feng3d.MeshRenderable(this);
@@ -7898,7 +7629,7 @@ var feng3d;
             this.subGeometry = subGeometry;
             this.material = material;
             this._parentMesh.addEventListener(feng3d.MeshEvent.MATERIAL_CHANGE, this.onMaterialChange);
-        };
+        }
         Object.defineProperty(SubMesh.prototype, "material", {
             /**
              * 渲染材质
@@ -8074,20 +7805,17 @@ var feng3d;
      */
     var Context3DBufferOwner = (function (_super) {
         __extends(Context3DBufferOwner, _super);
+        /**
+         * 创建Context3D缓存拥有者
+         */
         function Context3DBufferOwner() {
-            _super.apply(this, arguments);
             /**
              * 所有缓冲列表是否有效
              */
             this.bufferInvalid = true;
-        }
-        /**
-         * 创建Context3D缓存拥有者
-         */
-        Context3DBufferOwner.prototype.Context3DBufferOwner = function () {
             this.childrenBufferOwner = new Context3DBufferOwner[]();
             this.initBuffers();
-        };
+        }
         Object.defineProperty(Context3DBufferOwner.prototype, "_", {
             /**
              * Fagal编号中心
@@ -8213,7 +7941,8 @@ var feng3d;
     var Geometry = (function (_super) {
         __extends(Geometry, _super);
         function Geometry() {
-            _super.apply(this, arguments);
+            this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.GEOMETRY);
+            this._subGeometries = new feng3d.SubGeometry[]();
         }
         Object.defineProperty(Geometry.prototype, "subGeometries", {
             get: function () {
@@ -8222,10 +7951,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        Geometry.prototype.Geometry = function () {
-            this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.GEOMETRY);
-            this._subGeometries = new feng3d.SubGeometry[]();
-        };
         Object.defineProperty(Geometry.prototype, "numVertices", {
             /**
              * 顶点个数
@@ -8332,11 +8057,8 @@ var feng3d;
     var ParticleGeometry = (function (_super) {
         __extends(ParticleGeometry, _super);
         function ParticleGeometry() {
-            _super.apply(this, arguments);
-        }
-        ParticleGeometry.prototype.ParticleGeometry = function () {
             _super.call(this);
-        };
+        }
         ParticleGeometry.prototype.clone = function () {
             var particleGeometry = _super.prototype.clone.call(this);
             particleGeometry.particles = this.particles;
@@ -8356,12 +8078,9 @@ var feng3d;
     var SegmentGeometry = (function (_super) {
         __extends(SegmentGeometry, _super);
         function SegmentGeometry() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._segments = new feng3d.Segment[]();
         }
-        SegmentGeometry.prototype.SegmentGeometry = function () {
-            _super.call(this);
-        };
         /**
          * 添加线段
          * @param segment		线段数据
@@ -8418,15 +8137,12 @@ var feng3d;
     var PrimitiveBase = (function (_super) {
         __extends(PrimitiveBase, _super);
         function PrimitiveBase() {
-            _super.apply(this, arguments);
             this._geomDirty = true;
             this._uvDirty = true;
-        }
-        PrimitiveBase.prototype.PrimitiveBase = function () {
             this._subGeometry = new feng3d.SubGeometry();
             this.addSubGeometry(this._subGeometry);
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(PrimitiveBase.prototype, "subGeometries", {
             /**
              * @inheritDoc
@@ -8526,8 +8242,25 @@ var feng3d;
      */
     var CubeGeometry = (function (_super) {
         __extends(CubeGeometry, _super);
-        function CubeGeometry() {
-            _super.apply(this, arguments);
+        /**
+         * Creates a new Cube object.
+         * @param width The size of the cube along its X-axis.
+         * @param height The size of the cube along its Y-axis.
+         * @param depth The size of the cube along its Z-axis.
+         * @param segmentsW The number of segments that make up the cube along the X-axis.
+         * @param segmentsH The number of segments that make up the cube along the Y-axis.
+         * @param segmentsD The number of segments that make up the cube along the Z-axis.
+         * @param tile6 The type of uv mapping to use. When true, a texture will be subdivided in a 2x3 grid, each used for a single face. When false, the entire image is mapped on each face.
+         */
+        function CubeGeometry(width, height, depth, segmentsW, segmentsH, segmentsD, tile6) {
+            if (width === void 0) { width = 100; }
+            if (height === void 0) { height = 100; }
+            if (depth === void 0) { depth = 100; }
+            if (segmentsW === void 0) { segmentsW = 1; }
+            if (segmentsH === void 0) { segmentsH = 1; }
+            if (segmentsD === void 0) { segmentsD = 1; }
+            if (tile6 === void 0) { tile6 = true; }
+            _super.call(this);
             /**
              * @inheritDoc
              */
@@ -8549,13 +8282,13 @@ var feng3d;
                     vertexPositionData = target.vertexPositionData;
                     vertexNormalData = target.vertexNormalData;
                     vertexTangentData = target.vertexTangentData;
-                    indices = target.indexData || new uint[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
+                    indices = target.indexData || new number[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
                 }
                 else {
-                    vertexPositionData = new Number[](numVerts * vertexPositionStride, true);
-                    vertexNormalData = new Number[](numVerts * vertexNormalStride, true);
-                    vertexTangentData = new Number[](numVerts * vertexTangentStride, true);
-                    indices = new uint[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
+                    vertexPositionData = new number[](numVerts * vertexPositionStride, true);
+                    vertexNormalData = new number[](numVerts * vertexNormalStride, true);
+                    vertexTangentData = new number[](numVerts * vertexTangentStride, true);
+                    indices = new number[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
                     invalidateUVs();
                 }
                 // Indices
@@ -8708,26 +8441,6 @@ var feng3d;
                 target.updateVertexTangentData(vertexTangentData);
                 target.updateIndexData(indices);
             };
-        }
-        /**
-         * Creates a new Cube object.
-         * @param width The size of the cube along its X-axis.
-         * @param height The size of the cube along its Y-axis.
-         * @param depth The size of the cube along its Z-axis.
-         * @param segmentsW The number of segments that make up the cube along the X-axis.
-         * @param segmentsH The number of segments that make up the cube along the Y-axis.
-         * @param segmentsD The number of segments that make up the cube along the Z-axis.
-         * @param tile6 The type of uv mapping to use. When true, a texture will be subdivided in a 2x3 grid, each used for a single face. When false, the entire image is mapped on each face.
-         */
-        CubeGeometry.prototype.CubeGeometry = function (width, height, depth, segmentsW, segmentsH, segmentsD, tile6) {
-            if (width === void 0) { width = 100; }
-            if (height === void 0) { height = 100; }
-            if (depth === void 0) { depth = 100; }
-            if (segmentsW === void 0) { segmentsW = 1; }
-            if (segmentsH === void 0) { segmentsH = 1; }
-            if (segmentsD === void 0) { segmentsD = 1; }
-            if (tile6 === void 0) { tile6 = true; }
-            _super.call(this);
             this._width = width;
             this._height = height;
             this._depth = depth;
@@ -8735,7 +8448,7 @@ var feng3d;
             this._segmentsH = segmentsH;
             this._segmentsD = segmentsD;
             this._tile6 = tile6;
-        };
+        }
         Object.defineProperty(CubeGeometry.prototype, "width", {
             /**
              * The size of the cube along its X-axis.
@@ -8858,7 +8571,7 @@ var feng3d;
             var skip = stride - 2;
             data = target.UVData;
             if (data == null || numUvs != data.length) {
-                data = new Number[](numUvs, true);
+                data = new number[](numUvs, true);
                 invalidateGeometry();
             }
             if (this._tile6) {
@@ -8945,8 +8658,23 @@ var feng3d;
      */
     var PlaneGeometry = (function (_super) {
         __extends(PlaneGeometry, _super);
-        function PlaneGeometry() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个平面
+         * @param width 宽度
+         * @param height 高度
+         * @param segmentsW 横向分割数
+         * @param segmentsH 纵向分割数
+         * @param yUp 正面朝向 true:Y+ false:Z+
+         * @param doubleSided 是否双面
+         */
+        function PlaneGeometry(width, height, segmentsW, segmentsH, yUp, doubleSided) {
+            if (width === void 0) { width = 100; }
+            if (height === void 0) { height = 100; }
+            if (segmentsW === void 0) { segmentsW = 1; }
+            if (segmentsH === void 0) { segmentsH = 1; }
+            if (yUp === void 0) { yUp = true; }
+            if (doubleSided === void 0) { doubleSided = false; }
+            _super.call(this);
             /**
              * @inheritDoc
              */
@@ -8972,13 +8700,13 @@ var feng3d;
                     vertexPositionData = target.vertexPositionData;
                     vertexNormalData = target.vertexNormalData;
                     vertexTangentData = target.vertexTangentData;
-                    indices = target.indexData || new uint[](numIndices, true);
+                    indices = target.indexData || new number[](numIndices, true);
                 }
                 else {
-                    vertexPositionData = new Number[](numVertices * vertexPositionStride, true);
-                    vertexNormalData = new Number[](numVertices * vertexNormalStride, true);
-                    vertexTangentData = new Number[](numVertices * vertexTangentStride, true);
-                    indices = new uint[](numIndices, true);
+                    vertexPositionData = new number[](numVertices * vertexPositionStride, true);
+                    vertexNormalData = new number[](numVertices * vertexNormalStride, true);
+                    vertexTangentData = new number[](numVertices * vertexTangentStride, true);
+                    indices = new number[](numIndices, true);
                     invalidateUVs();
                 }
                 target.numVertices = numVertices;
@@ -9055,31 +8783,13 @@ var feng3d;
                 target.updateVertexTangentData(vertexTangentData);
                 target.updateIndexData(indices);
             };
-        }
-        /**
-         * 创建一个平面
-         * @param width 宽度
-         * @param height 高度
-         * @param segmentsW 横向分割数
-         * @param segmentsH 纵向分割数
-         * @param yUp 正面朝向 true:Y+ false:Z+
-         * @param doubleSided 是否双面
-         */
-        PlaneGeometry.prototype.PlaneGeometry = function (width, height, segmentsW, segmentsH, yUp, doubleSided) {
-            if (width === void 0) { width = 100; }
-            if (height === void 0) { height = 100; }
-            if (segmentsW === void 0) { segmentsW = 1; }
-            if (segmentsH === void 0) { segmentsH = 1; }
-            if (yUp === void 0) { yUp = true; }
-            if (doubleSided === void 0) { doubleSided = false; }
-            _super.call(this);
             this._segmentsW = segmentsW;
             this._segmentsH = segmentsH;
             this._yUp = yUp;
             this._width = width;
             this._height = height;
             this._doubleSided = doubleSided;
-        };
+        }
         Object.defineProperty(PlaneGeometry.prototype, "segmentsW", {
             /**
              * 横向分割数
@@ -9174,7 +8884,7 @@ var feng3d;
                 numUvs *= 2;
             data = target.UVData;
             if (data == null || numUvs != data.length) {
-                data = new Number[](numUvs, true);
+                data = new number[](numUvs, true);
                 invalidateGeometry();
             }
             var index = 0;
@@ -9201,8 +8911,19 @@ var feng3d;
      */
     var SphereGeometry = (function (_super) {
         __extends(SphereGeometry, _super);
-        function SphereGeometry() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个球体
+         * @param radius 半径
+         * @param segmentsW 横向分割数，默认值16
+         * @param segmentsH 纵向分割数，默认值12
+         * @param yUp 球体朝向 true:Y+ false:Z+
+         */
+        function SphereGeometry(radius, segmentsW, segmentsH, yUp) {
+            if (radius === void 0) { radius = 50; }
+            if (segmentsW === void 0) { segmentsW = 16; }
+            if (segmentsH === void 0) { segmentsH = 12; }
+            if (yUp === void 0) { yUp = true; }
+            _super.call(this);
             /**
              * @inheritDoc
              */
@@ -9220,13 +8941,13 @@ var feng3d;
                     vertexPositionData = target.vertexPositionData;
                     vertexNormalData = target.vertexNormalData;
                     vertexTangentData = target.vertexTangentData;
-                    indices = target.indexData || new uint[]((this._segmentsH - 1) * this._segmentsW * 6, true);
+                    indices = target.indexData || new number[]((this._segmentsH - 1) * this._segmentsW * 6, true);
                 }
                 else {
-                    vertexPositionData = new Number[](numVerts * vertexPositionStride, true);
-                    vertexNormalData = new Number[](numVerts * vertexNormalStride, true);
-                    vertexTangentData = new Number[](numVerts * vertexTangentStride, true);
-                    indices = new uint[]((this._segmentsH - 1) * this._segmentsW * 6, true);
+                    vertexPositionData = new number[](numVerts * vertexPositionStride, true);
+                    vertexNormalData = new number[](numVerts * vertexNormalStride, true);
+                    vertexTangentData = new number[](numVerts * vertexTangentStride, true);
+                    indices = new number[]((this._segmentsH - 1) * this._segmentsW * 6, true);
                     invalidateGeometry();
                 }
                 var startPositionIndex;
@@ -9324,7 +9045,7 @@ var feng3d;
                 var skip = stride - 2;
                 data = target.UVData;
                 if (data == null || numUvs != data.length) {
-                    data = new Number[](numUvs, true);
+                    data = new number[](numUvs, true);
                     invalidateGeometry();
                 }
                 var index = 0;
@@ -9337,25 +9058,11 @@ var feng3d;
                 }
                 target.updateUVData(data);
             };
-        }
-        /**
-         * 创建一个球体
-         * @param radius 半径
-         * @param segmentsW 横向分割数，默认值16
-         * @param segmentsH 纵向分割数，默认值12
-         * @param yUp 球体朝向 true:Y+ false:Z+
-         */
-        SphereGeometry.prototype.SphereGeometry = function (radius, segmentsW, segmentsH, yUp) {
-            if (radius === void 0) { radius = 50; }
-            if (segmentsW === void 0) { segmentsW = 16; }
-            if (segmentsH === void 0) { segmentsH = 12; }
-            if (yUp === void 0) { yUp = true; }
-            _super.call(this);
             this._radius = radius;
             this._segmentsW = segmentsW;
             this._segmentsH = segmentsH;
             this._yUp = yUp;
-        };
+        }
         Object.defineProperty(SphereGeometry.prototype, "radius", {
             /**
              * 半径
@@ -9425,8 +9132,21 @@ var feng3d;
      */
     var TorusGeometry = (function (_super) {
         __extends(TorusGeometry, _super);
-        function TorusGeometry() {
-            _super.apply(this, arguments);
+        /**
+         * 创建<code>Torus</code>实例
+         * @param radius						圆环半径
+         * @param tuebRadius					管道半径
+         * @param segmentsR						横向段数
+         * @param segmentsT						纵向段数
+         * @param yUp							Y轴是否朝上
+         */
+        function TorusGeometry(radius, tubeRadius, segmentsR, segmentsT, yUp) {
+            if (radius === void 0) { radius = 50; }
+            if (tubeRadius === void 0) { tubeRadius = 50; }
+            if (segmentsR === void 0) { segmentsR = 16; }
+            if (segmentsT === void 0) { segmentsT = 8; }
+            if (yUp === void 0) { yUp = true; }
+            _super.call(this);
             /**
              * @inheritDoc
              */
@@ -9449,13 +9169,13 @@ var feng3d;
                     this.vertexPositionData = target.vertexPositionData;
                     this.vertexNormalData = target.vertexNormalData;
                     this.vertexTangentData = target.vertexTangentData;
-                    this._rawIndices = target.indexData || new uint[](numTriangles * 3, true);
+                    this._rawIndices = target.indexData || new number[](numTriangles * 3, true);
                 }
                 else {
-                    this.vertexPositionData = new Number[](this._numVertices * this.vertexPositionStride, true);
-                    this.vertexNormalData = new Number[](this._numVertices * this.vertexNormalStride, true);
-                    this.vertexTangentData = new Number[](this._numVertices * this.vertexTangentStride, true);
-                    this._rawIndices = new uint[](numTriangles * 3, true);
+                    this.vertexPositionData = new number[](this._numVertices * this.vertexPositionStride, true);
+                    this.vertexNormalData = new number[](this._numVertices * this.vertexNormalStride, true);
+                    this.vertexTangentData = new number[](this._numVertices * this.vertexTangentStride, true);
+                    this._rawIndices = new number[](numTriangles * 3, true);
                     invalidateUVs();
                 }
                 // evaluate revolution steps
@@ -9531,7 +9251,7 @@ var feng3d;
                 // need to initialize raw array or can be reused?
                 data = target.UVData;
                 if (data == null || numUvs != data.length) {
-                    data = new Number[](numUvs, true);
+                    data = new number[](numUvs, true);
                 }
                 // current uv component index
                 var currentUvCompIndex = 0;
@@ -9548,6 +9268,11 @@ var feng3d;
                 // build real data from raw data
                 target.updateUVData(data);
             };
+            this._radius = radius;
+            this._tubeRadius = tubeRadius;
+            this._segmentsR = segmentsR;
+            this._segmentsT = segmentsT;
+            this._yUp = yUp;
         }
         /**
          * 添加顶点数据
@@ -9647,27 +9372,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建<code>Torus</code>实例
-         * @param radius						圆环半径
-         * @param tuebRadius					管道半径
-         * @param segmentsR						横向段数
-         * @param segmentsT						纵向段数
-         * @param yUp							Y轴是否朝上
-         */
-        TorusGeometry.prototype.TorusGeometry = function (radius, tubeRadius, segmentsR, segmentsT, yUp) {
-            if (radius === void 0) { radius = 50; }
-            if (tubeRadius === void 0) { tubeRadius = 50; }
-            if (segmentsR === void 0) { segmentsR = 16; }
-            if (segmentsT === void 0) { segmentsT = 8; }
-            if (yUp === void 0) { yUp = true; }
-            _super.call(this);
-            this._radius = radius;
-            this._tubeRadius = tubeRadius;
-            this._segmentsR = segmentsR;
-            this._segmentsT = segmentsT;
-            this._yUp = yUp;
-        };
         return TorusGeometry;
     }(feng3d.PrimitiveBase));
     feng3d.TorusGeometry = TorusGeometry;
@@ -9687,8 +9391,11 @@ var feng3d;
      */
     var Object3D = (function (_super) {
         __extends(Object3D, _super);
+        /**
+         * 创建3D对象
+         */
         function Object3D() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._sceneTransform = new Matrix3D();
             this._sceneTransformDirty = true;
             this._inverseSceneTransform = new Matrix3D();
@@ -9697,14 +9404,8 @@ var feng3d;
             this._scenePositionDirty = true;
             this._visible = true;
             this._zOffset = 0;
-        }
-        /**
-         * 创建3D对象
-         */
-        Object3D.prototype.Object3D = function () {
-            _super.call(this);
             this.transform3D = new feng3d.Transform3D();
-        };
+        }
         Object.defineProperty(Object3D.prototype, "transform3D", {
             get: function () {
                 return _transform3D;
@@ -10085,18 +9786,15 @@ var feng3d;
      */
     var InteractiveObject3D = (function (_super) {
         __extends(InteractiveObject3D, _super);
-        function InteractiveObject3D() {
-            _super.apply(this, arguments);
-            this._mouseEnabled = false;
-        }
         /**
          * 调用新的 InteractiveObject3D() 构造函数会引发 ArgumentError 异常。
          * @throws	me.feng.error.AbstractClassError
          */
-        InteractiveObject3D.prototype.InteractiveObject3D = function () {
+        function InteractiveObject3D() {
             _super.call(this);
+            this._mouseEnabled = false;
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(InteractiveObject3D.prototype, "mouseEnabled", {
             /**
              * 是否开启鼠标事件
@@ -10139,18 +9837,15 @@ var feng3d;
     var Container3D = (function (_super) {
         __extends(Container3D, _super);
         function Container3D() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /** 容器内对象列表 */
             this._children = new feng3d.Object3D[]();
             this._mouseChildren = true;
             /** 是否给根容器 */
             this._isRoot = false;
-        }
-        Container3D.prototype.Container3D = function () {
-            _super.call(this);
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.CONTAINER);
             this.addComponent(new feng3d.ContainerTransform3D());
-        };
+        }
         /**
          * 添加子对象
          * @param child		子对象
@@ -10290,7 +9985,7 @@ var feng3d;
             get: function () {
                 var i;
                 var len = _children.length;
-                var min = Number.POSITIVE_INFINITY;
+                var min = number.POSITIVE_INFINITY;
                 var m;
                 while (i < len) {
                     var child = _children[i++];
@@ -10310,7 +10005,7 @@ var feng3d;
             get: function () {
                 var i;
                 var len = _children.length;
-                var min = Number.POSITIVE_INFINITY;
+                var min = number.POSITIVE_INFINITY;
                 var m;
                 while (i < len) {
                     var child = _children[i++];
@@ -10330,7 +10025,7 @@ var feng3d;
             get: function () {
                 var i;
                 var len = _children.length;
-                var min = Number.POSITIVE_INFINITY;
+                var min = number.POSITIVE_INFINITY;
                 var m;
                 while (i < len) {
                     var child = _children[i++];
@@ -10351,7 +10046,7 @@ var feng3d;
                 // todo: this isn't right, doesn't take into account transforms
                 var i;
                 var len = _children.length;
-                var max = Number.NEGATIVE_INFINITY;
+                var max = number.NEGATIVE_INFINITY;
                 var m;
                 while (i < len) {
                     var child = _children[i++];
@@ -10371,7 +10066,7 @@ var feng3d;
             get: function () {
                 var i;
                 var len = _children.length;
-                var max = Number.NEGATIVE_INFINITY;
+                var max = number.NEGATIVE_INFINITY;
                 var m;
                 while (i < len) {
                     var child = _children[i++];
@@ -10391,7 +10086,7 @@ var feng3d;
             get: function () {
                 var i;
                 var len = _children.length;
-                var max = Number.NEGATIVE_INFINITY;
+                var max = number.NEGATIVE_INFINITY;
                 var m;
                 while (i < len) {
                     var child = _children[i++];
@@ -10430,13 +10125,10 @@ var feng3d;
      */
     var Scene3D = (function (_super) {
         __extends(Scene3D, _super);
-        function Scene3D() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个3d场景
          */
-        Scene3D.prototype.Scene3D = function () {
+        function Scene3D() {
             this._isRoot = true;
             this._scene = this;
             this._entityDic = new Dictionary();
@@ -10444,7 +10136,7 @@ var feng3d;
             this._mouseCollisionEntitys = new feng3d.Entity[]();
             this._partitions = new feng3d.Partition3D[]();
             this.partition = new feng3d.Partition3D(new feng3d.NodeBase());
-        };
+        }
         Object.defineProperty(Scene3D.prototype, "displayEntityDic", {
             /** 显示实体字典 */
             get: function () {
@@ -10582,21 +10274,18 @@ var feng3d;
      */
     var Entity = (function (_super) {
         __extends(Entity, _super);
-        function Entity() {
-            _super.apply(this, arguments);
-            this._boundsIsShown = false;
-            this._boundsInvalid = true;
-            this._worldBoundsInvalid = true;
-        }
         /**
          * 创建一个实体，该类为虚类
          */
-        Entity.prototype.Entity = function () {
+        function Entity() {
             _super.call(this);
+            this._boundsIsShown = false;
+            this._boundsInvalid = true;
+            this._worldBoundsInvalid = true;
             this._bounds = this.getDefaultBoundingVolume();
             this._worldBounds = this.getDefaultBoundingVolume();
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(Entity.prototype, "showBounds", {
             /**
              * 是否显示边界
@@ -10904,19 +10593,16 @@ var feng3d;
      */
     var Camera3D = (function (_super) {
         __extends(Camera3D, _super);
-        function Camera3D() {
-            _super.apply(this, arguments);
-            this._viewProjection = new Matrix3D();
-            this._viewProjectionDirty = true;
-            this._frustumPlanesDirty = true;
-        }
         /**
          * 创建一个摄像机
          * @param lens 摄像机镜头
          */
-        Camera3D.prototype.Camera3D = function (lens) {
+        function Camera3D(lens) {
             if (lens === void 0) { lens = null; }
             _super.call(this);
+            this._viewProjection = new Matrix3D();
+            this._viewProjectionDirty = true;
+            this._frustumPlanesDirty = true;
             _namedAsset._assetType = feng3d.AssetType.CAMERA;
             this._lens = lens || new feng3d.PerspectiveLens();
             this._lens.addEventListener(feng3d.LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged);
@@ -10925,7 +10611,7 @@ var feng3d;
             for (var i = 0; i < 6; ++i)
                 this._frustumPlanes[i] = new feng3d.Plane3D();
             this.transform3D.z = -1000;
-        };
+        }
         /**
          * 处理镜头变化事件
          */
@@ -11013,22 +10699,22 @@ var feng3d;
             //长度倒数
             var invLen;
             this.viewProjection.copyRawDataTo(raw);
-            c11 = raw[uint(0)];
-            c12 = raw[uint(4)];
-            c13 = raw[uint(8)];
-            c14 = raw[uint(12)];
-            c21 = raw[uint(1)];
-            c22 = raw[uint(5)];
-            c23 = raw[uint(9)];
-            c24 = raw[uint(13)];
-            c31 = raw[uint(2)];
-            c32 = raw[uint(6)];
-            c33 = raw[uint(10)];
-            c34 = raw[uint(14)];
-            c41 = raw[uint(3)];
-            c42 = raw[uint(7)];
-            c43 = raw[uint(11)];
-            c44 = raw[uint(15)];
+            c11 = raw[number(0)];
+            c12 = raw[number(4)];
+            c13 = raw[number(8)];
+            c14 = raw[number(12)];
+            c21 = raw[number(1)];
+            c22 = raw[number(5)];
+            c23 = raw[number(9)];
+            c24 = raw[number(13)];
+            c31 = raw[number(2)];
+            c32 = raw[number(6)];
+            c33 = raw[number(10)];
+            c34 = raw[number(14)];
+            c41 = raw[number(3)];
+            c42 = raw[number(7)];
+            c43 = raw[number(11)];
+            c44 = raw[number(15)];
             // left plane
             p = this._frustumPlanes[0];
             a = c41 + c11;
@@ -11135,24 +10821,21 @@ var feng3d;
      */
     var Mesh = (function (_super) {
         __extends(Mesh, _super);
-        function Mesh() {
-            _super.apply(this, arguments);
-            this._castsShadows = true;
-        }
         /**
          * 新建网格
          * @param geometry 几何体
          * @param material 材质
          */
-        Mesh.prototype.Mesh = function (geometry, material) {
+        function Mesh(geometry, material) {
             if (geometry === void 0) { geometry = null; }
             if (material === void 0) { material = null; }
             _super.call(this);
+            this._castsShadows = true;
             _namedAsset._assetType = feng3d.AssetType.MESH;
             this._subMeshes = new feng3d.SubMesh[]();
             this.geometry = geometry || new feng3d.Geometry();
             this.material = material || feng3d.DefaultMaterialManager.getDefaultMaterial();
-        };
+        }
         Object.defineProperty(Mesh.prototype, "geometry", {
             /** 几何形状 */
             get: function () {
@@ -11356,11 +11039,6 @@ var feng3d;
      */
     var Elevation = (function (_super) {
         __extends(Elevation, _super);
-        function Elevation() {
-            _super.apply(this, arguments);
-            this._geomDirty = true;
-            this._uvDirty = true;
-        }
         /**
          * 创建高度地形 拥有segmentsW*segmentsH个顶点
          * @param    material	地形纹理
@@ -11374,7 +11052,7 @@ var feng3d;
          * @param    minElevation	最小地形高度
          * @param    smoothMap	是否平滑
          */
-        Elevation.prototype.Elevation = function (material, heightMap, width, height, depth, segmentsW, segmentsH, maxElevation, minElevation) {
+        function Elevation(material, heightMap, width, height, depth, segmentsW, segmentsH, maxElevation, minElevation) {
             if (width === void 0) { width = 1000; }
             if (height === void 0) { height = 100; }
             if (depth === void 0) { depth = 1000; }
@@ -11382,6 +11060,8 @@ var feng3d;
             if (segmentsH === void 0) { segmentsH = 30; }
             if (maxElevation === void 0) { maxElevation = 255; }
             if (minElevation === void 0) { minElevation = 0; }
+            this._geomDirty = true;
+            this._uvDirty = true;
             this._subGeometry = new feng3d.SubGeometry();
             _super.call(this, new feng3d.Geometry(), material);
             this.geometry.addSubGeometry(this._subGeometry);
@@ -11396,7 +11076,7 @@ var feng3d;
             this._subGeometry.numVertices = (this._segmentsH + 1) * (this._segmentsW + 1);
             this.buildUVs();
             this.buildGeometry();
-        };
+        }
         /**
          * 创建顶点坐标
          */
@@ -11416,8 +11096,8 @@ var feng3d;
             var vDiv = (this._heightMap.height - 1) / this._segmentsH;
             var u, v;
             var y;
-            vertices = this._subGeometry.vertexPositionData || new Number[](numVerts * 3, true);
-            indices = this._subGeometry.indexData || new uint[](this._segmentsH * this._segmentsW * 6, true);
+            vertices = this._subGeometry.vertexPositionData || new number[](numVerts * 3, true);
+            indices = this._subGeometry.indexData || new number[](this._segmentsH * this._segmentsW * 6, true);
             numVerts = 0;
             var col;
             for (var zi = 0; zi <= this._segmentsH; ++zi) {
@@ -11455,11 +11135,11 @@ var feng3d;
          * 创建uv坐标
          */
         Elevation.prototype.buildUVs = function () {
-            var uvs = new Number[]();
+            var uvs = new number[]();
             var numUvs = (this._segmentsH + 1) * (this._segmentsW + 1) * 2;
             uvs = this._subGeometry.UVData;
             if (uvs == null || numUvs != uvs.length)
-                uvs = new Number[](numUvs, true);
+                uvs = new number[](numUvs, true);
             numUvs = 0;
             //计算每个顶点的uv坐标
             for (var yi = 0; yi <= this._segmentsH; ++yi) {
@@ -11505,17 +11185,14 @@ var feng3d;
      */
     var SegmentSet = (function (_super) {
         __extends(SegmentSet, _super);
-        function SegmentSet() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个线段集合
          */
-        SegmentSet.prototype.SegmentSet = function () {
+        function SegmentSet() {
             _super.call(this);
             this.geometry = this.segmentGeometry = new feng3d.SegmentGeometry();
             this.material = new feng3d.SegmentMaterial();
-        };
+        }
         /**
          * 添加线段
          * @param segment		线段数据
@@ -11567,14 +11244,11 @@ var feng3d;
      */
     var Trident = (function (_super) {
         __extends(Trident, _super);
-        function Trident() {
-            _super.apply(this, arguments);
-        }
-        Trident.prototype.Trident = function (length, showLetters) {
+        function Trident(length, showLetters) {
             if (length === void 0) { length = 100; }
             if (showLetters === void 0) { showLetters = true; }
             this.buildTrident(Math.abs((length == 0) ? 10 : length), showLetters);
-        };
+        }
         Trident.prototype.buildTrident = function (length, showLetters) {
             var scaleH = length / 10;
             var scaleW = length / 20;
@@ -11617,24 +11291,21 @@ var feng3d;
      */
     var WireframePrimitiveBase = (function (_super) {
         __extends(WireframePrimitiveBase, _super);
-        function WireframePrimitiveBase() {
-            _super.apply(this, arguments);
-            this._color = 0xffffff;
-            this._thickness = 1;
-        }
         /**
          * @param color 线框颜色
          * @param thickness 线框厚度
          */
-        WireframePrimitiveBase.prototype.WireframePrimitiveBase = function (color, thickness) {
+        function WireframePrimitiveBase(color, thickness) {
             if (color === void 0) { color = 0xffffff; }
             if (thickness === void 0) { thickness = 1; }
+            this._color = 0xffffff;
+            this._thickness = 1;
             if (thickness <= 0)
                 thickness = 1;
             this.color = color;
             this.thickness = thickness;
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(WireframePrimitiveBase.prototype, "color", {
             /** 线框颜色 */
             get: function () {
@@ -11699,9 +11370,6 @@ var feng3d;
      */
     var WireframeCube = (function (_super) {
         __extends(WireframeCube, _super);
-        function WireframeCube() {
-            _super.apply(this, arguments);
-        }
         /**
          * @param width X轴方向宽度
          * @param height Y轴方向高度
@@ -11709,7 +11377,7 @@ var feng3d;
          * @param color 线条颜色
          * @param thickness 线条厚度
          */
-        WireframeCube.prototype.WireframeCube = function (width, height, depth, color, thickness) {
+        function WireframeCube(width, height, depth, color, thickness) {
             if (width === void 0) { width = 100; }
             if (height === void 0) { height = 100; }
             if (depth === void 0) { depth = 100; }
@@ -11720,7 +11388,7 @@ var feng3d;
             this._cubeHeight = height;
             this._cubeDepth = depth;
             this.buildGeometry();
-        };
+        }
         Object.defineProperty(WireframeCube.prototype, "cubeWidth", {
             /**
              * The size of the cube along its X-axis.
@@ -11836,21 +11504,18 @@ var feng3d;
      */
     var WireframeGeometry = (function (_super) {
         __extends(WireframeGeometry, _super);
-        function WireframeGeometry() {
-            _super.apply(this, arguments);
-            this._drawGeometry = new feng3d.Geometry();
-        }
         /**
          * 创建几何体线框
          * @param geometry 几何体
          * @param color 线条颜色
          * @param thickness 线条粗细
          */
-        WireframeGeometry.prototype.WireframeGeometry = function (color, thickness) {
+        function WireframeGeometry(color, thickness) {
             if (color === void 0) { color = 0xffffff; }
             if (thickness === void 0) { thickness = 1; }
             _super.call(this, color, thickness);
-        };
+            this._drawGeometry = new feng3d.Geometry();
+        }
         Object.defineProperty(WireframeGeometry.prototype, "drawGeometry", {
             get: function () {
                 return _drawGeometry;
@@ -11923,9 +11588,6 @@ var feng3d;
      */
     var WireframePlane = (function (_super) {
         __extends(WireframePlane, _super);
-        function WireframePlane() {
-            _super.apply(this, arguments);
-        }
         /**
          * Creates a new WireframePlane object.
          * @param width The size of the cube along its X-axis.
@@ -11936,7 +11598,7 @@ var feng3d;
          * @param thickness The thickness of the wireframe lines
          * @param orientation The orientaion in which the plane lies.
          */
-        WireframePlane.prototype.WireframePlane = function (width, height, segmentsW, segmentsH, color, thickness, orientation) {
+        function WireframePlane(width, height, segmentsW, segmentsH, color, thickness, orientation) {
             if (segmentsW === void 0) { segmentsW = 10; }
             if (segmentsH === void 0) { segmentsH = 10; }
             if (color === void 0) { color = 0xFFFFFF; }
@@ -11949,7 +11611,7 @@ var feng3d;
             this._segmentsH = segmentsH;
             this._orientation = orientation;
             this.buildGeometry();
-        };
+        }
         Object.defineProperty(WireframePlane.prototype, "orientation", {
             /**
              * The orientaion in which the plane lies.
@@ -12097,9 +11759,6 @@ var feng3d;
      */
     var WireframeSphere = (function (_super) {
         __extends(WireframeSphere, _super);
-        function WireframeSphere() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个球体线框对象
          * @param radius			球体半径
@@ -12108,7 +11767,7 @@ var feng3d;
          * @param color				线框颜色
          * @param thickness			线条粗细
          */
-        WireframeSphere.prototype.WireframeSphere = function (radius, segmentsW, segmentsH, color, thickness) {
+        function WireframeSphere(radius, segmentsW, segmentsH, color, thickness) {
             if (radius === void 0) { radius = 50; }
             if (segmentsW === void 0) { segmentsW = 16; }
             if (segmentsH === void 0) { segmentsH = 12; }
@@ -12119,13 +11778,13 @@ var feng3d;
             this._segmentsW = segmentsW;
             this._segmentsH = segmentsH;
             this.buildGeometry();
-        };
+        }
         /**
          * @inheritDoc
          */
         WireframeSphere.prototype.buildGeometry = function () {
             segmentGeometry.removeAllSegments();
-            var vertices = new Number[]();
+            var vertices = new number[]();
             var v0 = new Vector3D();
             var v1 = new Vector3D();
             var i, j;
@@ -12202,28 +11861,25 @@ var feng3d;
      */
     var SkyBox = (function (_super) {
         __extends(SkyBox, _super);
-        function SkyBox() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建天空盒实例
          * @param cubeMap		立方体贴图
          */
-        SkyBox.prototype.SkyBox = function (cubeMap) {
+        function SkyBox(cubeMap) {
             _super.call(this);
             _namedAsset._assetType = feng3d.AssetType.SKYBOX;
             this.material = new feng3d.SkyBoxMaterial(cubeMap);
             this.subGeometry = new feng3d.SubGeometry();
             this.geometry.addSubGeometry(this.subGeometry);
             this.buildGeometry();
-        };
+        }
         /**
          * 创建天空盒 顶点与索引数据
          */
         SkyBox.prototype.buildGeometry = function () {
             this.subGeometry.numVertices = 8;
             //八个顶点，32个number
-            var vertexData = new  < Number > [
+            var vertexData = new  < number > [
                 -1, 1, -1, 1, 1, -1,
                 1, 1, 1, -1, 1, 1,
                 -1, -1, -1, 1, -1, -1,
@@ -12231,7 +11887,7 @@ var feng3d;
             ];
             this.subGeometry.updateVertexPositionData(vertexData);
             //6个面，12个三角形，36个顶点索引
-            var indexData = new  < uint > [
+            var indexData = new  < number > [
                 0, 1, 2, 2, 3, 0,
                 6, 5, 4, 4, 7, 6,
                 2, 6, 7, 7, 3, 2,
@@ -12277,12 +11933,9 @@ var feng3d;
      */
     var Sprite3D = (function (_super) {
         __extends(Sprite3D, _super);
-        function Sprite3D() {
-            _super.apply(this, arguments);
-            this._shadowCaster = false;
-        }
-        Sprite3D.prototype.Sprite3D = function (material, width, height) {
+        function Sprite3D(material, width, height) {
             _super.call(this);
+            this._shadowCaster = false;
             this.transform3D.addEventListener(feng3d.Transform3DEvent.TRANSFORM_UPDATED, this.onTransformUpdated);
             this.material = material;
             this._width = width;
@@ -12291,14 +11944,14 @@ var feng3d;
             if (!_sprite3DGeometry) {
                 _sprite3DGeometry = new feng3d.SubGeometry();
                 _sprite3DGeometry.numVertices = 4;
-                _sprite3DGeometry.updateVertexPositionData(Number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
-                _sprite3DGeometry.updateUVData(Number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
-                _sprite3DGeometry.updateIndexData(uint[]([0, 1, 2, 0, 2, 3]));
-                _sprite3DGeometry.updateVertexTangentData(Number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
-                _sprite3DGeometry.updateVertexNormalData(Number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
+                _sprite3DGeometry.updateVertexPositionData(number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
+                _sprite3DGeometry.updateUVData(number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
+                _sprite3DGeometry.updateIndexData(number[]([0, 1, 2, 0, 2, 3]));
+                _sprite3DGeometry.updateVertexTangentData(number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
+                _sprite3DGeometry.updateVertexNormalData(number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
             }
             this.geometry.addSubGeometry(_sprite3DGeometry);
-        };
+        }
         Object.defineProperty(Sprite3D.prototype, "pickingCollider", {
             set: function (value) {
                 _super.prototype.pickingCollider = value;
@@ -12400,8 +12053,11 @@ var feng3d;
      */
     var LightBase = (function (_super) {
         __extends(LightBase, _super);
+        /**
+         * 创建一个灯光
+         */
         function LightBase() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._color = 0xffffff;
             this._colorR = 1;
             this._colorG = 1;
@@ -12419,14 +12075,8 @@ var feng3d;
             this._diffuseR = 1;
             this._diffuseG = 1;
             this._diffuseB = 1;
-        }
-        /**
-         * 创建一个灯光
-         */
-        LightBase.prototype.LightBase = function () {
-            _super.call(this);
             _namedAsset._assetType = feng3d.AssetType.LIGHT;
-        };
+        }
         Object.defineProperty(LightBase.prototype, "castsShadows", {
             get: function () {
                 return _castsShadows;
@@ -12592,23 +12242,20 @@ var feng3d;
      */
     var DirectionalLight = (function (_super) {
         __extends(DirectionalLight, _super);
-        function DirectionalLight() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个方向灯光
          * @param xDir		方向X值
          * @param yDir		方向Y值
          * @param zDir		方向Z值
          */
-        DirectionalLight.prototype.DirectionalLight = function (xDir, yDir, zDir) {
+        function DirectionalLight(xDir, yDir, zDir) {
             if (xDir === void 0) { xDir = 0; }
             if (yDir === void 0) { yDir = -1; }
             if (zDir === void 0) { zDir = 1; }
             _super.call(this);
             direction = new Vector3D(xDir, yDir, zDir);
             _sceneDirection = new Vector3D();
-        };
+        }
         Object.defineProperty(DirectionalLight.prototype, "direction", {
             /**
              * 灯光方向
@@ -12683,14 +12330,11 @@ var feng3d;
     var PointLight = (function (_super) {
         __extends(PointLight, _super);
         function PointLight() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._radius = 90000;
             this._fallOff = 100000;
-        }
-        PointLight.prototype.PointLight = function () {
-            _super.call(this);
             this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);
-        };
+        }
         Object.defineProperty(PointLight.prototype, "radius", {
             /**
              * 灯光可照射的最小距离
@@ -12757,9 +12401,12 @@ var feng3d;
      */
     var VertexBufferOwner = (function (_super) {
         __extends(VertexBufferOwner, _super);
+        /**
+         * 创建顶点数据拥有者
+         */
         function VertexBufferOwner() {
-            _super.apply(this, arguments);
-            this._vaIdList = new String[]();
+            _super.call(this);
+            this._vaIdList = new string[]();
             /** 顶点属性数据缓存字典 */
             this.vaBufferDic = new Dictionary();
             /** 顶点数据长度字典 */
@@ -12768,14 +12415,8 @@ var feng3d;
             this.vertexDataDic = new Dictionary();
             /** 数据有效(与脏相反)标记字典 */
             this.dataValidDic = new Dictionary();
-        }
-        /**
-         * 创建顶点数据拥有者
-         */
-        VertexBufferOwner.prototype.VertexBufferOwner = function () {
-            _super.call(this);
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
-        };
+        }
         Object.defineProperty(VertexBufferOwner.prototype, "numVertices", {
             /**
              * 顶点个数
@@ -12804,7 +12445,7 @@ var feng3d;
          */
         VertexBufferOwner.prototype.mapVABuffer = function (dataTypeId, data32PerVertex) {
             this.data32PerVertexDic[dataTypeId] = data32PerVertex;
-            this.vertexDataDic[dataTypeId] = new Number[]();
+            this.vertexDataDic[dataTypeId] = new number[]();
             this._vaIdList.push(dataTypeId);
             this.vaBufferDic[dataTypeId] = this.context3DBufferOwner.mapContext3DBuffer(dataTypeId, this.updateVABuffer);
         };
@@ -12903,14 +12544,11 @@ var feng3d;
      */
     var AnimationSubGeometry = (function (_super) {
         __extends(AnimationSubGeometry, _super);
-        function AnimationSubGeometry() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个动画数据
          */
-        AnimationSubGeometry.prototype.AnimationSubGeometry = function () {
-        };
+        function AnimationSubGeometry() {
+        }
         return AnimationSubGeometry;
     }(feng3d.VertexBufferOwner));
     feng3d.AnimationSubGeometry = AnimationSubGeometry;
@@ -12926,16 +12564,13 @@ var feng3d;
      */
     var SubGeometry = (function (_super) {
         __extends(SubGeometry, _super);
-        function SubGeometry() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个新几何体
          */
-        SubGeometry.prototype.SubGeometry = function () {
+        function SubGeometry() {
             _super.call(this);
             this.initBuffers();
-        };
+        }
         SubGeometry.prototype.initBuffers = function () {
             this.context3DBufferOwner.mapContext3DBuffer(this._.index, this.updateIndexBuffer);
             this.mapVABuffer(this._.position_va_3, 3);
@@ -12972,7 +12607,7 @@ var feng3d;
              */
             get: function () {
                 if (_indices == null)
-                    _indices = new uint[]();
+                    _indices = new number[]();
                 return _indices;
             },
             enumerable: true,
@@ -13248,11 +12883,8 @@ var feng3d;
     var SegmentSubGeometry = (function (_super) {
         __extends(SegmentSubGeometry, _super);
         function SegmentSubGeometry() {
-            _super.apply(this, arguments);
-        }
-        SegmentSubGeometry.prototype.SegmentSubGeometry = function () {
             _super.call(this);
-        };
+        }
         SegmentSubGeometry.prototype.initBuffers = function () {
             _super.prototype.initBuffers.call(this);
             this.mapVABuffer(this._.segmentStart_va_3, 3);
@@ -13351,15 +12983,12 @@ var feng3d;
      */
     var AnimationShaderParams = (function (_super) {
         __extends(AnimationShaderParams, _super);
-        function AnimationShaderParams() {
-            _super.apply(this, arguments);
-        }
         /**
          * 动画渲染参数
          */
-        AnimationShaderParams.prototype.AnimationShaderParams = function () {
+        function AnimationShaderParams() {
             _super.call(this);
-        };
+        }
         AnimationShaderParams.prototype.init = function () {
             //
             this.numJoints = 0;
@@ -13378,16 +13007,13 @@ var feng3d;
      */
     var CommonShaderParams = (function (_super) {
         __extends(CommonShaderParams, _super);
-        function CommonShaderParams() {
-            _super.apply(this, arguments);
-            this.alphaThreshold = 0;
-        }
         /**
          * 通用渲染参数
          */
-        CommonShaderParams.prototype.CommonShaderParams = function () {
+        function CommonShaderParams() {
             _super.call(this);
-        };
+            this.alphaThreshold = 0;
+        }
         /**
          * 初始化
          */
@@ -13408,11 +13034,8 @@ var feng3d;
     var EnvShaderParams = (function (_super) {
         __extends(EnvShaderParams, _super);
         function EnvShaderParams() {
-            _super.apply(this, arguments);
-        }
-        EnvShaderParams.prototype.EnvShaderParams = function () {
             _super.call(this);
-        };
+        }
         return EnvShaderParams;
     }(feng3d.Component));
     feng3d.EnvShaderParams = EnvShaderParams;
@@ -13425,15 +13048,12 @@ var feng3d;
      */
     var FogShaderParams = (function (_super) {
         __extends(FogShaderParams, _super);
-        function FogShaderParams() {
-            _super.apply(this, arguments);
-        }
         /**
          * 雾渲染参数
          */
-        FogShaderParams.prototype.FogShaderParams = function () {
+        function FogShaderParams() {
             _super.call(this);
-        };
+        }
         /**
          * 初始化
          */
@@ -13452,8 +13072,11 @@ var feng3d;
      */
     var LightShaderParams = (function (_super) {
         __extends(LightShaderParams, _super);
+        /**
+         * 灯光渲染参数
+         */
         function LightShaderParams() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /** 是否使用灯光衰减 */
             this.useLightFallOff = true;
         }
@@ -13471,12 +13094,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 灯光渲染参数
-         */
-        LightShaderParams.prototype.LightShaderParams = function () {
-            _super.call(this);
-        };
         /**
          * 初始化
          */
@@ -13530,15 +13147,12 @@ var feng3d;
      */
     var ParticleShaderParams = (function (_super) {
         __extends(ParticleShaderParams, _super);
-        function ParticleShaderParams() {
-            _super.apply(this, arguments);
-        }
         /**
          * 粒子渲染参数
          */
-        ParticleShaderParams.prototype.ParticleShaderParams = function () {
+        function ParticleShaderParams() {
             _super.call(this);
-        };
+        }
         /**
          * 初始化
          */
@@ -13560,16 +13174,13 @@ var feng3d;
      */
     var ShaderParams = (function (_super) {
         __extends(ShaderParams, _super);
-        function ShaderParams() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个渲染参数
          */
-        ShaderParams.prototype.ShaderParams = function () {
+        function ShaderParams() {
             _super.call(this);
             this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONET, this.onAddedComponet);
-        };
+        }
         ShaderParams.prototype.onAddedComponet = function (event) {
             var shaderParam = event.data.child;
             if (shaderParam.hasOwnProperty("this.init")) {
@@ -13660,15 +13271,12 @@ var feng3d;
      */
     var ShadowShaderParams = (function (_super) {
         __extends(ShadowShaderParams, _super);
-        function ShadowShaderParams() {
-            _super.apply(this, arguments);
-        }
         /**
          * 阴影渲染参数
          */
-        ShadowShaderParams.prototype.ShadowShaderParams = function () {
+        function ShadowShaderParams() {
             _super.call(this);
-        };
+        }
         /**
          * 初始化
          */
@@ -13691,15 +13299,12 @@ var feng3d;
      */
     var TerrainShaderParams = (function (_super) {
         __extends(TerrainShaderParams, _super);
-        function TerrainShaderParams() {
-            _super.apply(this, arguments);
-        }
         /**
          * 地形渲染参数
          */
-        TerrainShaderParams.prototype.TerrainShaderParams = function () {
+        function TerrainShaderParams() {
             _super.call(this);
-        };
+        }
         /**
          * 初始化
          */
@@ -13720,12 +13325,9 @@ var feng3d;
     var LightPickerBase = (function (_super) {
         __extends(LightPickerBase, _super);
         function LightPickerBase() {
-            _super.apply(this, arguments);
-        }
-        LightPickerBase.prototype.LightPickerBase = function () {
             _super.call(this);
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.CONTAINER);
-        };
+        }
         Object.defineProperty(LightPickerBase.prototype, "assetType", {
             get: function () {
                 return feng3d.AssetType.LIGHT_PICKER;
@@ -13802,12 +13404,9 @@ var feng3d;
      */
     var StaticLightPicker = (function (_super) {
         __extends(StaticLightPicker, _super);
-        function StaticLightPicker() {
-            _super.apply(this, arguments);
-        }
-        StaticLightPicker.prototype.StaticLightPicker = function (lights) {
+        function StaticLightPicker(lights) {
             this.lights = lights;
-        };
+        }
         Object.defineProperty(StaticLightPicker.prototype, "lights", {
             /**
              * 需要渲染的灯光
@@ -13858,13 +13457,10 @@ var feng3d;
      */
     var ShaderMethodSetup = (function (_super) {
         __extends(ShaderMethodSetup, _super);
-        function ShaderMethodSetup() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个渲染函数设置
          */
-        ShaderMethodSetup.prototype.ShaderMethodSetup = function () {
+        function ShaderMethodSetup() {
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this.initBuffers();
             this.uniqueMethodDic = new Dictionary();
@@ -13873,7 +13469,7 @@ var feng3d;
             this.addMethod(new feng3d.BasicAmbientMethod());
             this.addMethod(new feng3d.BasicDiffuseMethod());
             this.addMethod(new feng3d.BasicSpecularMethod());
-        };
+        }
         /**
          * 初始化Context3d缓存
          */
@@ -14084,23 +13680,20 @@ var feng3d;
      */
     var ShadingMethodBase = (function (_super) {
         __extends(ShadingMethodBase, _super);
+        /**
+         * 创建渲染寄函数基类
+         */
         function ShadingMethodBase() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /**
              * 是否唯一
              * <p>值为true时一个pass只能包含一个该类型函数，否则允许多个</p>
              * @see #methodType
              */
             this.typeUnique = false;
-        }
-        /**
-         * 创建渲染寄函数基类
-         */
-        ShadingMethodBase.prototype.ShadingMethodBase = function () {
-            _super.call(this);
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this.initBuffers();
-        };
+        }
         /**
          * 初始化Context3d缓存
          */
@@ -14185,23 +13778,20 @@ var feng3d;
      */
     var BasicAmbientMethod = (function (_super) {
         __extends(BasicAmbientMethod, _super);
+        /**
+         * 创建一个基础环境光函数
+         */
         function BasicAmbientMethod() {
-            _super.apply(this, arguments);
             this._ambientColor = 0xffffff;
             this._ambient = 1;
             this._lightAmbientR = 0;
             this._lightAmbientG = 0;
             this._lightAmbientB = 0;
             /** 环境光分量数据 */
-            this.ambientColorData = new Number[](4);
-        }
-        /**
-         * 创建一个基础环境光函数
-         */
-        BasicAmbientMethod.prototype.BasicAmbientMethod = function () {
+            this.ambientColorData = new number[](4);
             this.methodType = METHOD_TYPE;
             this.typeUnique = true;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -14267,10 +13857,10 @@ var feng3d;
                 return _texture;
             },
             set: function (value) {
-                if (Boolean(value) != _useTexture || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
+                if (boolean(value) != _useTexture || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
                     invalidateShaderProgram();
                 }
-                _useTexture = Boolean(value);
+                _useTexture = boolean(value);
                 _texture = value;
                 context3DBufferOwner.markBufferDirty(_.ambientTexture_fs);
             },
@@ -14303,16 +13893,13 @@ var feng3d;
      */
     var BasicNormalMethod = (function (_super) {
         __extends(BasicNormalMethod, _super);
-        function BasicNormalMethod() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个基础法线函数
          */
-        BasicNormalMethod.prototype.BasicNormalMethod = function () {
+        function BasicNormalMethod() {
             this.methodType = METHOD_TYPE;
             this.typeUnique = true;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -14331,7 +13918,7 @@ var feng3d;
                 return _texture;
             },
             set: function (value) {
-                if (Boolean(value) != Boolean(_texture) ||
+                if (boolean(value) != boolean(_texture) ||
                     (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
                     invalidateShaderProgram();
                 }
@@ -14347,7 +13934,7 @@ var feng3d;
              * Override if subclasses are different.
              */
             get: function () {
-                return Boolean(_texture);
+                return boolean(_texture);
             },
             enumerable: true,
             configurable: true
@@ -14376,16 +13963,13 @@ var feng3d;
      */
     var EffectMethodBase = (function (_super) {
         __extends(EffectMethodBase, _super);
-        function EffectMethodBase() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建特效函数基类实例
          */
-        EffectMethodBase.prototype.EffectMethodBase = function () {
+        function EffectMethodBase() {
             _super.call(this);
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.EFFECTS_METHOD);
-        };
+        }
         Object.defineProperty(EffectMethodBase.prototype, "namedAsset", {
             get: function () {
                 return _namedAsset;
@@ -14405,9 +13989,15 @@ var feng3d;
      */
     var EnvMapMethod = (function (_super) {
         __extends(EnvMapMethod, _super);
-        function EnvMapMethod() {
-            _super.apply(this, arguments);
-            this._envMapData = Number[]([1, 0, 0, 0]);
+        /**
+         * 创建EnvMapMethod实例
+         * @param envMap		环境映射贴图
+         * @param alpha			反射率
+         */
+        function EnvMapMethod(envMap, alpha) {
+            if (alpha === void 0) { alpha = 1; }
+            _super.call(this);
+            this._envMapData = number[]([1, 0, 0, 0]);
             /**
              * @inheritDoc
              */
@@ -14429,18 +14019,9 @@ var feng3d;
                 //			if (this._mask)
                 //				context.setTextureAt(vo.texturesIndex + 1, this._mask.getTextureForStage3D(stage3DProxy));
             };
-        }
-        /**
-         * 创建EnvMapMethod实例
-         * @param envMap		环境映射贴图
-         * @param alpha			反射率
-         */
-        EnvMapMethod.prototype.EnvMapMethod = function (envMap, alpha) {
-            if (alpha === void 0) { alpha = 1; }
-            _super.call(this);
             this._cubeTexture = envMap;
             this.alpha = alpha;
-        };
+        }
         Object.defineProperty(EnvMapMethod.prototype, "mask", {
             /**
              * 用来调节反射率的纹理
@@ -14449,7 +14030,7 @@ var feng3d;
                 return _mask;
             },
             set: function (value) {
-                if (Boolean(value) != Boolean(_mask) || (value && _mask && (value.hasMipMaps != _mask.hasMipMaps || value.format != _mask.format))) {
+                if (boolean(value) != boolean(_mask) || (value && _mask && (value.hasMipMaps != _mask.hasMipMaps || value.format != _mask.format))) {
                     invalidateShaderProgram();
                 }
                 _mask = value;
@@ -14516,18 +14097,25 @@ var feng3d;
      */
     var FogMethod = (function (_super) {
         __extends(FogMethod, _super);
-        function FogMethod() {
-            _super.apply(this, arguments);
+        /**
+         * 创建FogMethod实例
+         * @param minDistance			出现雾效果的最近距离
+         * @param maxDistance			最远距离
+         * @param fogColor				雾的颜色
+         */
+        function FogMethod(minDistance, maxDistance, fogColor) {
+            if (fogColor === void 0) { fogColor = 0x808080; }
+            _super.call(this);
             this._minDistance = 0;
             this._maxDistance = 1000;
             /**
              * 雾颜色常量数据
              */
-            this.fogColorData = Number[]([0, 0, 0, 1]);
+            this.fogColorData = number[]([0, 0, 0, 1]);
             /**
              * 雾通用常量数据
              */
-            this.fogCommonData = Number[]([0, 0, 0, 0]);
+            this.fogCommonData = number[]([0, 0, 0, 0]);
             /**
              * @inheritDoc
              */
@@ -14539,6 +14127,9 @@ var feng3d;
                 var shadowShaderParams = shaderParams.getOrCreateComponentByClass(feng3d.ShadowShaderParams);
                 shadowShaderParams.needsProjection++;
             };
+            this.minDistance = minDistance;
+            this.maxDistance = maxDistance;
+            this.fogColor = fogColor;
         }
         Object.defineProperty(FogMethod.prototype, "minDistance", {
             /**
@@ -14582,19 +14173,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建FogMethod实例
-         * @param minDistance			出现雾效果的最近距离
-         * @param maxDistance			最远距离
-         * @param fogColor				雾的颜色
-         */
-        FogMethod.prototype.FogMethod = function (minDistance, maxDistance, fogColor) {
-            if (fogColor === void 0) { fogColor = 0x808080; }
-            _super.call(this);
-            this.minDistance = minDistance;
-            this.maxDistance = maxDistance;
-            this.fogColor = fogColor;
-        };
         /**
          * @inheritDoc
          */
@@ -14643,21 +14221,18 @@ var feng3d;
      */
     var BasicDiffuseMethod = (function (_super) {
         __extends(BasicDiffuseMethod, _super);
-        function BasicDiffuseMethod() {
-            _super.apply(this, arguments);
-            this._diffuseColor = 0xffffff;
-            /** 漫反射颜色数据RGBA */
-            this.diffuseInputData = new Number[](4);
-            this.alphaThresholdData = Number[]([0, 0, 0, 0]);
-            this._alphaThreshold = 0;
-        }
         /**
          * 创建一个基础漫反射函数
          */
-        BasicDiffuseMethod.prototype.BasicDiffuseMethod = function () {
+        function BasicDiffuseMethod() {
+            this._diffuseColor = 0xffffff;
+            /** 漫反射颜色数据RGBA */
+            this.diffuseInputData = new number[](4);
+            this.alphaThresholdData = number[]([0, 0, 0, 0]);
+            this._alphaThreshold = 0;
             this.methodType = METHOD_TYPE;
             this.typeUnique = true;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -14721,7 +14296,7 @@ var feng3d;
                 return _texture;
             },
             set: function (value) {
-                if (Boolean(value) != Boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
+                if (boolean(value) != boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
                     invalidateShaderProgram();
                 }
                 _texture = value;
@@ -14793,8 +14368,14 @@ var feng3d;
      */
     var CompositeDiffuseMethod = (function (_super) {
         __extends(CompositeDiffuseMethod, _super);
-        function CompositeDiffuseMethod() {
-            _super.apply(this, arguments);
+        /**
+         * Creates a new WrapDiffuseMethod object.
+         * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature clampDiffuse(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the diffuse strength.
+         * @param baseDiffuseMethod The base diffuse method on which this method's shading is based.
+         */
+        function CompositeDiffuseMethod(modulateMethod, baseDiffuseMethod) {
+            if (modulateMethod === void 0) { modulateMethod = null; }
+            if (baseDiffuseMethod === void 0) { baseDiffuseMethod = null; }
             /**
              * @inheritDoc
              */
@@ -14802,19 +14383,10 @@ var feng3d;
                 _super.cleanCompilationData.call(this);
                 this._baseMethod.cleanCompilationData();
             };
-        }
-        /**
-         * Creates a new WrapDiffuseMethod object.
-         * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature clampDiffuse(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the diffuse strength.
-         * @param baseDiffuseMethod The base diffuse method on which this method's shading is based.
-         */
-        CompositeDiffuseMethod.prototype.CompositeDiffuseMethod = function (modulateMethod, baseDiffuseMethod) {
-            if (modulateMethod === void 0) { modulateMethod = null; }
-            if (baseDiffuseMethod === void 0) { baseDiffuseMethod = null; }
             this._baseMethod = baseDiffuseMethod || new feng3d.BasicDiffuseMethod();
             this._baseMethod._modulateMethod = modulateMethod;
             this._baseMethod.addEventListener(feng3d.ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
-        };
+        }
         Object.defineProperty(CompositeDiffuseMethod.prototype, "baseMethod", {
             /**
              * The base diffuse method on which this method's shading is based.
@@ -14926,17 +14498,24 @@ var feng3d;
      */
     var SubsurfaceScatteringDiffuseMethod = (function (_super) {
         __extends(SubsurfaceScatteringDiffuseMethod, _super);
-        function SubsurfaceScatteringDiffuseMethod() {
-            _super.apply(this, arguments);
+        /**
+         * Creates a new SubsurfaceScatteringDiffuseMethod object.
+         * @param depthMapSize The size of the depth map used.
+         * @param depthMapOffset The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
+         */
+        function SubsurfaceScatteringDiffuseMethod(depthMapSize, depthMapOffset) {
+            if (depthMapSize === void 0) { depthMapSize = 512; }
+            if (depthMapOffset === void 0) { depthMapOffset = 15; }
+            _super.call(this, this.scatterLight);
             this._translucency = 1;
             this._scatterColor = 0xffffff;
             this._scatterR = 1.0;
             this._scatterG = 1.0;
             this._scatterB = 1.0;
-            this.vertexToTexData = Number[]([0.5, -0.5, 0, 1]);
-            this.f$ColorData = Number[]([1.0, 1.0, 1.0, 1.0]);
-            this.fragmentData0 = Number[]([1.0, 1.0 / 255, 1.0 / 65025, 1.0 / 16581375]);
-            this.fragmentData1 = Number[]([0.2, 1, 0.5, -0.1]);
+            this.vertexToTexData = number[]([0.5, -0.5, 0, 1]);
+            this.f$ColorData = number[]([1.0, 1.0, 1.0, 1.0]);
+            this.fragmentData0 = number[]([1.0, 1.0 / 255, 1.0 / 65025, 1.0 / 16581375]);
+            this.fragmentData1 = number[]([0.2, 1, 0.5, -0.1]);
             this.lightProjection = new Matrix3D();
             this.override = function cleanCompilationData() {
                 _super.cleanCompilationData.call(this);
@@ -14964,22 +14543,12 @@ var feng3d;
                 var projection = this._depthPass.getProjection(renderable);
                 this.lightProjection.copyFrom(projection);
             };
-        }
-        /**
-         * Creates a new SubsurfaceScatteringDiffuseMethod object.
-         * @param depthMapSize The size of the depth map used.
-         * @param depthMapOffset The amount by which the rendered object will be inflated, to prevent depth map rounding errors.
-         */
-        SubsurfaceScatteringDiffuseMethod.prototype.SubsurfaceScatteringDiffuseMethod = function (depthMapSize, depthMapOffset) {
-            if (depthMapSize === void 0) { depthMapSize = 512; }
-            if (depthMapOffset === void 0) { depthMapOffset = 15; }
-            _super.call(this, this.scatterLight);
             _passes = new feng3d.MaterialPassBase[]();
             this._depthPass = new feng3d.SingleObjectDepthPass(depthMapSize, depthMapOffset);
             _passes.push(this._depthPass);
             this._scattering = 0.2;
             this._translucency = 1;
-        };
+        }
         Object.defineProperty(SubsurfaceScatteringDiffuseMethod.prototype, "depthMap", {
             get: function () {
                 return _depthMap;
@@ -15164,12 +14733,9 @@ var feng3d;
      */
     var TerrainDiffuseMethod = (function (_super) {
         __extends(TerrainDiffuseMethod, _super);
-        function TerrainDiffuseMethod() {
-            _super.apply(this, arguments);
-            this.tileData = new Number[](4);
-        }
-        TerrainDiffuseMethod.prototype.TerrainDiffuseMethod = function (splatTextures, blendingTexture, tileData) {
+        function TerrainDiffuseMethod(splatTextures, blendingTexture, tileData) {
             _super.call(this);
+            this.tileData = new number[](4);
             this.splats = splatTextures;
             for (var i = 0; i < this.tileData.length && i < tileData.length; i++) {
                 this.tileData[i] = tileData[i];
@@ -15178,7 +14744,7 @@ var feng3d;
             this._numSplattingLayers = this.splats.length;
             if (this._numSplattingLayers > 4)
                 throw new Error("More than 4 splatting layers is not supported!");
-        };
+        }
         Object.defineProperty(TerrainDiffuseMethod.prototype, "splats", {
             get: function () {
                 return _splats;
@@ -15239,22 +14805,19 @@ var feng3d;
      */
     var BasicSpecularMethod = (function (_super) {
         __extends(BasicSpecularMethod, _super);
+        /**
+         * 创建镜面反射函数
+         */
         function BasicSpecularMethod() {
-            _super.apply(this, arguments);
             this._gloss = 50;
             this._specular = 1;
             this._specularColor = 0xffffff;
             /** 镜面反射数据 */
-            this._specularData = Number[]([1, 1, 1, 50]);
-        }
-        /**
-         * 创建镜面反射函数
-         */
-        BasicSpecularMethod.prototype.BasicSpecularMethod = function () {
+            this._specularData = number[]([1, 1, 1, 50]);
             this.methodType = METHOD_TYPE;
             this.typeUnique = true;
             _super.call(this);
-        };
+        }
         Object.defineProperty(BasicSpecularMethod.prototype, "specularColor", {
             /**
              * 镜面反射颜色
@@ -15281,7 +14844,7 @@ var feng3d;
                 return _texture;
             },
             set: function (value) {
-                if (Boolean(value) != Boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
+                if (boolean(value) != boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) {
                     invalidateShaderProgram();
                 }
                 _texture = value;
@@ -15370,8 +14933,14 @@ var feng3d;
      */
     var CompositeSpecularMethod = (function (_super) {
         __extends(CompositeSpecularMethod, _super);
-        function CompositeSpecularMethod() {
-            _super.apply(this, arguments);
+        /**
+         * Creates a new WrapSpecularMethod object.
+         * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature modSpecular(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the specular strength and t.xyz will contain the half-vector or the reflection vector.
+         * @param baseSpecularMethod The base specular method on which this method's shading is based.
+         */
+        function CompositeSpecularMethod(modulateMethod, baseSpecularMethod) {
+            if (baseSpecularMethod === void 0) { baseSpecularMethod = null; }
+            _super.call(this);
             /**
              * @inheritDoc
              */
@@ -15379,19 +14948,10 @@ var feng3d;
                 _super.cleanCompilationData.call(this);
                 this._baseMethod.cleanCompilationData();
             };
-        }
-        /**
-         * Creates a new WrapSpecularMethod object.
-         * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature modSpecular(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the specular strength and t.xyz will contain the half-vector or the reflection vector.
-         * @param baseSpecularMethod The base specular method on which this method's shading is based.
-         */
-        CompositeSpecularMethod.prototype.CompositeSpecularMethod = function (modulateMethod, baseSpecularMethod) {
-            if (baseSpecularMethod === void 0) { baseSpecularMethod = null; }
-            _super.call(this);
             this._baseMethod = baseSpecularMethod || new feng3d.BasicSpecularMethod();
             this._baseMethod._modulateMethod = modulateMethod;
             this._baseMethod.addEventListener(feng3d.ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
-        };
+        }
         Object.defineProperty(CompositeSpecularMethod.prototype, "baseMethod", {
             /**
              * The base specular method on which this method's shading is based.
@@ -15479,15 +15039,12 @@ var feng3d;
      */
     var PhongSpecularMethod = (function (_super) {
         __extends(PhongSpecularMethod, _super);
-        function PhongSpecularMethod() {
-            _super.apply(this, arguments);
-        }
         /**
          * Creates a new PhongSpecularMethod object.
          */
-        PhongSpecularMethod.prototype.PhongSpecularMethod = function () {
+        function PhongSpecularMethod() {
             _super.call(this);
-        };
+        }
         PhongSpecularMethod.prototype.activate = function (shaderParams) {
             _super.prototype.activate.call(this, shaderParams);
             shaderParams.specularModelType = feng3d.SpecularModelType.PHONG;
@@ -15504,23 +15061,20 @@ var feng3d;
      */
     var FresnelSpecularMethod = (function (_super) {
         __extends(FresnelSpecularMethod, _super);
-        function FresnelSpecularMethod() {
-            _super.apply(this, arguments);
-            this._fresnelPower = 5;
-            this._normalReflectance = .028; // default value for skin
-            this.data = Number[]([0, 0, 1, 0]);
-        }
         /**
          * Creates a new FresnelSpecularMethod object.
          * @param basedOnSurface Defines whether the fresnel effect should be based on the view angle on the surface (if true), or on the angle between the light and the view.
          * @param baseSpecularMethod The specular method to which the fresnel equation. Defaults to BasicSpecularMethod.
          */
-        FresnelSpecularMethod.prototype.FresnelSpecularMethod = function (basedOnSurface) {
+        function FresnelSpecularMethod(basedOnSurface) {
             if (basedOnSurface === void 0) { basedOnSurface = true; }
             // may want to offer diff speculars
             _super.call(this);
+            this._fresnelPower = 5;
+            this._normalReflectance = .028; // default value for skin
+            this.data = number[]([0, 0, 1, 0]);
             this._incidentLight = !basedOnSurface;
-        };
+        }
         Object.defineProperty(FresnelSpecularMethod.prototype, "basedOnSurface", {
             /**
              * Defines whether the fresnel effect should be based on the view angle on the surface (if true), or on the angle between the light and the view.
@@ -15592,16 +15146,13 @@ var feng3d;
      */
     var ShadowMapMethodBase = (function (_super) {
         __extends(ShadowMapMethodBase, _super);
-        function ShadowMapMethodBase() {
-            _super.apply(this, arguments);
-            this._epsilon = .02;
-            this._alpha = 1;
-        }
         /**
          * 创建阴影映射函数基类
          * @param castingLight		投射灯光
          */
-        ShadowMapMethodBase.prototype.ShadowMapMethodBase = function (castingLight) {
+        function ShadowMapMethodBase(castingLight) {
+            this._epsilon = .02;
+            this._alpha = 1;
             this.methodType = METHOD_TYPE;
             this.typeUnique = true;
             _super.call(this);
@@ -15609,7 +15160,7 @@ var feng3d;
             this._castingLight = castingLight;
             castingLight.castsShadows = true;
             this._shadowMapper = castingLight.shadowMapper;
-        };
+        }
         Object.defineProperty(ShadowMapMethodBase.prototype, "castingLight", {
             /**
              * 投射灯光
@@ -15675,39 +15226,36 @@ var feng3d;
      */
     var SimpleShadowMapMethodBase = (function (_super) {
         __extends(SimpleShadowMapMethodBase, _super);
-        function SimpleShadowMapMethodBase() {
-            _super.apply(this, arguments);
-            /**
-             * 顶点常量数据0
-             */
-            this.shadowCommonsVCData0 = Number[]([0.5, -0.5, 0.0, 1.0]);
-            /**
-             * 通用数据0
-             */
-            this.shadowCommonsData0 = Number[]([1.0, 1 / 255.0, 1 / 65025.0, 1 / 16581375.0]);
-            /**
-             * 通用数据1
-             */
-            this.shadowCommonsData1 = Number[]([0, 0, 0, 1]);
-            /**
-             * 通用数据2
-             */
-            this.shadowCommonsData2 = Number[]([0.5, 2048, 1.0 / 2048, 0]);
-            /**
-             * 深度投影矩阵
-             */
-            this.depthProjection = new Matrix3D();
-        }
         /**
          * 创建简单阴影映射方法基类
          * @param castingLight			投射阴影的灯光
          */
-        SimpleShadowMapMethodBase.prototype.SimpleShadowMapMethodBase = function (castingLight) {
+        function SimpleShadowMapMethodBase(castingLight) {
+            /**
+             * 顶点常量数据0
+             */
+            this.shadowCommonsVCData0 = number[]([0.5, -0.5, 0.0, 1.0]);
+            /**
+             * 通用数据0
+             */
+            this.shadowCommonsData0 = number[]([1.0, 1 / 255.0, 1 / 65025.0, 1 / 16581375.0]);
+            /**
+             * 通用数据1
+             */
+            this.shadowCommonsData1 = number[]([0, 0, 0, 1]);
+            /**
+             * 通用数据2
+             */
+            this.shadowCommonsData2 = number[]([0.5, 2048, 1.0 / 2048, 0]);
+            /**
+             * 深度投影矩阵
+             */
+            this.depthProjection = new Matrix3D();
             this._usePoint = castingLight;
             is;
             feng3d.PointLight;
             _super.call(this, castingLight);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -15784,16 +15332,13 @@ var feng3d;
      */
     var FilteredShadowMapMethod = (function (_super) {
         __extends(FilteredShadowMapMethod, _super);
-        function FilteredShadowMapMethod() {
-            _super.apply(this, arguments);
-        }
         /**
          * 过滤的阴影映射函数
          * @param castingLight		投射灯光
          */
-        FilteredShadowMapMethod.prototype.FilteredShadowMapMethod = function (castingLight) {
+        function FilteredShadowMapMethod(castingLight) {
             _super.call(this, castingLight);
-        };
+        }
         return FilteredShadowMapMethod;
     }(feng3d.SimpleShadowMapMethodBase));
     feng3d.FilteredShadowMapMethod = FilteredShadowMapMethod;
@@ -15806,25 +15351,22 @@ var feng3d;
      */
     var NearShadowMapMethod = (function (_super) {
         __extends(NearShadowMapMethod, _super);
-        function NearShadowMapMethod() {
-            _super.apply(this, arguments);
-            this.secondaryFragmentConstants = new Number[](4);
-        }
         /**
          * 创建近阴影映射函数
          * @param baseMethod		基础映射函数
          * @param fadeRatio			消退比率
          */
-        NearShadowMapMethod.prototype.NearShadowMapMethod = function (baseMethod, fadeRatio) {
+        function NearShadowMapMethod(baseMethod, fadeRatio) {
             if (fadeRatio === void 0) { fadeRatio = .1; }
             _super.call(this, baseMethod.castingLight);
+            this.secondaryFragmentConstants = new number[](4);
             this._baseMethod = baseMethod;
             this._fadeRatio = fadeRatio;
             this._nearShadowMapper = _castingLight.shadowMapper;
             if (!this._nearShadowMapper)
                 throw new Error("NearShadowMapMethod requires a light that has a NearDirectionalShadowMapper instance assigned to shadowMapper.");
             this._baseMethod.addEventListener(feng3d.ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
-        };
+        }
         Object.defineProperty(NearShadowMapMethod.prototype, "baseMethod", {
             /**
              * The base shadow map method on which this method's shading is based.
@@ -15906,16 +15448,13 @@ var feng3d;
      */
     var MaterialBase = (function (_super) {
         __extends(MaterialBase, _super);
-        function MaterialBase() {
-            _super.apply(this, arguments);
-            this._blendMode = BlendMode.NORMAL;
-            this._mipmap = true;
-            this._smooth = true;
-        }
         /**
          * 创建一个材质基类
          */
-        MaterialBase.prototype.MaterialBase = function () {
+        function MaterialBase() {
+            this._blendMode = BlendMode.NORMAL;
+            this._mipmap = true;
+            this._smooth = true;
             this._namedAsset = new feng3d.NamedAsset(this, feng3d.AssetType.MATERIAL);
             this._owners = new IMaterialOwner[]();
             this._passes = new feng3d.MaterialPassBase[]();
@@ -15923,7 +15462,7 @@ var feng3d;
             this._planarShadowPass = new feng3d.PlanarShadowPass();
             // Default to considering pre-multiplied textures while blending
             this.alphaPremultiplied = true;
-        };
+        }
         Object.defineProperty(MaterialBase.prototype, "depthPass", {
             /**
              * 深度渲染通道
@@ -16215,11 +15754,8 @@ var feng3d;
     var MultiPassMaterialBase = (function (_super) {
         __extends(MultiPassMaterialBase, _super);
         function MultiPassMaterialBase() {
-            _super.apply(this, arguments);
-        }
-        MultiPassMaterialBase.prototype.MultiPassMaterialBase = function () {
             _super.call(this);
-        };
+        }
         Object.defineProperty(MultiPassMaterialBase.prototype, "texture", {
             get: function () {
                 return null;
@@ -16241,16 +15777,13 @@ var feng3d;
      */
     var ColorMultiPassMaterial = (function (_super) {
         __extends(ColorMultiPassMaterial, _super);
-        function ColorMultiPassMaterial() {
-            _super.apply(this, arguments);
+        function ColorMultiPassMaterial(color) {
+            if (color === void 0) { color = 0xcccccc; }
+            _super.call(this);
             this._ambientColor = 0xffffff;
             this._specularColor = 0xffffff;
             this._specular = 1;
         }
-        ColorMultiPassMaterial.prototype.ColorMultiPassMaterial = function (color) {
-            if (color === void 0) { color = 0xcccccc; }
-            _super.call(this);
-        };
         Object.defineProperty(ColorMultiPassMaterial.prototype, "ambientColor", {
             get: function () {
                 return _ambientColor;
@@ -16293,20 +15826,17 @@ var feng3d;
      */
     var TextureMultiPassMaterial = (function (_super) {
         __extends(TextureMultiPassMaterial, _super);
-        function TextureMultiPassMaterial() {
-            _super.apply(this, arguments);
-            this._ambientColor = 0xffffff;
-            this._specularMethod = new feng3d.BasicSpecularMethod();
-            this._normalMethod = new feng3d.BasicNormalMethod();
-        }
-        TextureMultiPassMaterial.prototype.TextureMultiPassMaterial = function (texture, smooth, repeat, mipmap) {
+        function TextureMultiPassMaterial(texture, smooth, repeat, mipmap) {
             if (texture === void 0) { texture = null; }
             if (smooth === void 0) { smooth = true; }
             if (repeat === void 0) { repeat = false; }
             if (mipmap === void 0) { mipmap = true; }
             _super.call(this);
+            this._ambientColor = 0xffffff;
+            this._specularMethod = new feng3d.BasicSpecularMethod();
+            this._normalMethod = new feng3d.BasicNormalMethod();
             this.texture = texture;
-        };
+        }
         Object.defineProperty(TextureMultiPassMaterial.prototype, "ambientColor", {
             get: function () {
                 return _ambientColor;
@@ -16384,15 +15914,12 @@ var feng3d;
      */
     var SegmentMaterial = (function (_super) {
         __extends(SegmentMaterial, _super);
-        function SegmentMaterial() {
-            _super.apply(this, arguments);
-        }
-        SegmentMaterial.prototype.SegmentMaterial = function (thickness) {
+        function SegmentMaterial(thickness) {
             if (thickness === void 0) { thickness = 1.25; }
             _super.call(this);
             this.bothSides = true;
             addPass(this._screenPass = new feng3d.SegmentPass(thickness));
-        };
+        }
         return SegmentMaterial;
     }(feng3d.MaterialBase));
     feng3d.SegmentMaterial = SegmentMaterial;
@@ -16405,16 +15932,13 @@ var feng3d;
      */
     var SinglePassMaterialBase = (function (_super) {
         __extends(SinglePassMaterialBase, _super);
-        function SinglePassMaterialBase() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个单通道纹理
          */
-        SinglePassMaterialBase.prototype.SinglePassMaterialBase = function () {
+        function SinglePassMaterialBase() {
             _super.call(this);
             addPass(this._screenPass = new feng3d.SuperShaderPass());
-        };
+        }
         Object.defineProperty(SinglePassMaterialBase.prototype, "numMethods", {
             /**
              * The number of "effect" methods added to the material.
@@ -16667,17 +16191,14 @@ var feng3d;
      */
     var ColorMaterial = (function (_super) {
         __extends(ColorMaterial, _super);
-        function ColorMaterial() {
-            _super.apply(this, arguments);
-            this._diffuseAlpha = 1;
-        }
-        ColorMaterial.prototype.ColorMaterial = function (color, alpha) {
+        function ColorMaterial(color, alpha) {
             if (color === void 0) { color = 0xcccccc; }
             if (alpha === void 0) { alpha = 1; }
             _super.call(this);
+            this._diffuseAlpha = 1;
             this.color = color;
             this.alpha = alpha;
-        };
+        }
         Object.defineProperty(ColorMaterial.prototype, "alpha", {
             /**
              * 透明度
@@ -16728,9 +16249,6 @@ var feng3d;
      */
     var TextureMaterial = (function (_super) {
         __extends(TextureMaterial, _super);
-        function TextureMaterial() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建纹理材质
          * @param texture		纹理
@@ -16738,7 +16256,7 @@ var feng3d;
          * @param repeat		是否重复
          * @param mipmap		是否使用mipmap
          */
-        TextureMaterial.prototype.TextureMaterial = function (texture, smooth, repeat, mipmap) {
+        function TextureMaterial(texture, smooth, repeat, mipmap) {
             if (texture === void 0) { texture = null; }
             if (smooth === void 0) { smooth = true; }
             if (repeat === void 0) { repeat = false; }
@@ -16748,7 +16266,7 @@ var feng3d;
             this.smooth = smooth;
             this.repeat = repeat;
             this.mipmap = mipmap;
-        };
+        }
         Object.defineProperty(TextureMaterial.prototype, "texture", {
             /**
              * 纹理
@@ -16800,9 +16318,6 @@ var feng3d;
      */
     var SpriteSheetMaterial = (function (_super) {
         __extends(SpriteSheetMaterial, _super);
-        function SpriteSheetMaterial() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建SpriteSheetMaterial实例
          *
@@ -16813,7 +16328,7 @@ var feng3d;
          * @param repeat			是否重复
          * @param mipmap			是否使用mipmap
          */
-        SpriteSheetMaterial.prototype.SpriteSheetMaterial = function (diffuses, normals, speculars, smooth, repeat, mipmap) {
+        function SpriteSheetMaterial(diffuses, normals, speculars, smooth, repeat, mipmap) {
             if (normals === void 0) { normals = null; }
             if (speculars === void 0) { speculars = null; }
             if (smooth === void 0) { smooth = true; }
@@ -16828,7 +16343,7 @@ var feng3d;
                 this.normalMap = this._TBNormal;
             if (this._TBSpecular)
                 this.specularMap = this._TBSpecular;
-        };
+        }
         SpriteSheetMaterial.prototype.initTextures = function () {
             if (!this._diffuses || this._diffuses.length == 0)
                 throw new Error("you must pass at least one bitmapdata into diffuses param!");
@@ -16876,18 +16391,15 @@ var feng3d;
      */
     var SkyBoxMaterial = (function (_super) {
         __extends(SkyBoxMaterial, _super);
-        function SkyBoxMaterial() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建天空盒材质实例
          * @param cubeMap			立方体映射纹理
          */
-        SkyBoxMaterial.prototype.SkyBoxMaterial = function (cubeMap) {
+        function SkyBoxMaterial(cubeMap) {
             this._cubeMap = cubeMap;
             addPass(this._skyboxPass = new feng3d.SkyBoxPass());
             this._skyboxPass.cubeTexture = this._cubeMap;
-        };
+        }
         Object.defineProperty(SkyBoxMaterial.prototype, "cubeMap", {
             /**
              * 立方体映射纹理
@@ -16919,8 +16431,10 @@ var feng3d;
      */
     var MaterialPassBase = (function (_super) {
         __extends(MaterialPassBase, _super);
+        /**
+         * 创建一个纹理通道基类
+         */
         function MaterialPassBase() {
-            _super.apply(this, arguments);
             this._blendFactorSource = Context3DBlendFactor.ONE;
             this._blendFactorDest = Context3DBlendFactor.ZERO;
             this._depthCompareMode = Context3DCompareMode.LESS_EQUAL;
@@ -16929,15 +16443,10 @@ var feng3d;
             this._smooth = true;
             this._repeat = false;
             this._mipmap = true;
-        }
-        /**
-         * 创建一个纹理通道基类
-         */
-        MaterialPassBase.prototype.MaterialPassBase = function () {
             feng3d.AbstractClassError.check(this);
             this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             this.initBuffers();
-        };
+        }
         Object.defineProperty(MaterialPassBase.prototype, "_", {
             /**
              * Fagal编号中心
@@ -17310,8 +16819,10 @@ var feng3d;
      */
     var CompiledPass = (function (_super) {
         __extends(CompiledPass, _super);
+        /**
+         * 创建一个编译通道类
+         */
         function CompiledPass() {
-            _super.apply(this, arguments);
             /**
              * 物体投影变换矩阵（模型空间坐标-->GPU空间坐标）
              */
@@ -17331,22 +16842,17 @@ var feng3d;
             /**
              * 通用数据
              */
-            this.commonsData = Number[]([0.5, 0, 1 / 255, 1]);
+            this.commonsData = number[]([0.5, 0, 1 / 255, 1]);
             /**
              * 摄像机世界坐标
              */
-            this.cameraPosition = new Number[](4);
+            this.cameraPosition = new number[](4);
             /**
              * 是否开启灯光衰减
              */
             this._enableLightFallOff = true;
-        }
-        /**
-         * 创建一个编译通道类
-         */
-        CompiledPass.prototype.CompiledPass = function () {
             this.init();
-        };
+        }
         /**
          * 初始化
          */
@@ -17615,27 +17121,24 @@ var feng3d;
      */
     var SuperShaderPass = (function (_super) {
         __extends(SuperShaderPass, _super);
-        function SuperShaderPass() {
-            _super.apply(this, arguments);
-            /** 方向光源场景方向数据 */
-            this.dirLightSceneDirData = new Number[]();
-            /** 方向光源漫反射光颜色数据 */
-            this.dirLightDiffuseData = new Number[]();
-            /** 方向光源镜面反射颜色数据 */
-            this.dirLightSpecularData = new Number[]();
-            /** 点光源场景位置数据 */
-            this.pointLightScenePositionData = new Number[]();
-            /** 点光源漫反射光颜色数据 */
-            this.pointLightDiffuseData = new Number[]();
-            /** 点光源镜面反射颜色数据 */
-            this.pointLightSpecularData = new Number[]();
-        }
         /**
          * 创建超级渲染通道
          */
-        SuperShaderPass.prototype.SuperShaderPass = function () {
+        function SuperShaderPass() {
             _super.call(this);
-        };
+            /** 方向光源场景方向数据 */
+            this.dirLightSceneDirData = new number[]();
+            /** 方向光源漫反射光颜色数据 */
+            this.dirLightDiffuseData = new number[]();
+            /** 方向光源镜面反射颜色数据 */
+            this.dirLightSpecularData = new number[]();
+            /** 点光源场景位置数据 */
+            this.pointLightScenePositionData = new number[]();
+            /** 点光源漫反射光颜色数据 */
+            this.pointLightDiffuseData = new number[]();
+            /** 点光源镜面反射颜色数据 */
+            this.pointLightSpecularData = new number[]();
+        }
         Object.defineProperty(SuperShaderPass.prototype, "numMethods", {
             /**
              * The number of "effect" methods added to the material.
@@ -17767,8 +17270,11 @@ var feng3d;
      */
     var DepthMapPass = (function (_super) {
         __extends(DepthMapPass, _super);
+        /**
+         * 创建深度映射通道
+         */
         function DepthMapPass() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /**
              * 物体投影变换矩阵（模型空间坐标-->GPU空间坐标）
              */
@@ -17776,11 +17282,11 @@ var feng3d;
             /**
              * 通用数据
              */
-            this.depthCommonsData0 = Number[]([1.0, 255.0, 255.0 * 255.0, 255.0 * 255.0 * 255.0]);
+            this.depthCommonsData0 = number[]([1.0, 255.0, 255.0 * 255.0, 255.0 * 255.0 * 255.0]);
             /**
              * 通用数据
              */
-            this.depthCommonsData1 = Number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+            this.depthCommonsData1 = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
             /**
              * @inheritDoc
              */
@@ -17796,12 +17302,6 @@ var feng3d;
                 _super.render.call(this, renderable, stage3DProxy, camera, renderIndex);
             };
         }
-        /**
-         * 创建深度映射通道
-         */
-        DepthMapPass.prototype.DepthMapPass = function () {
-            _super.call(this);
-        };
         Object.defineProperty(DepthMapPass.prototype, "depthMap", {
             /**
              * 深度图纹理
@@ -17886,8 +17386,11 @@ var feng3d;
      */
     var PlanarShadowPass = (function (_super) {
         __extends(PlanarShadowPass, _super);
+        /**
+         * 创建深度映射通道
+         */
         function PlanarShadowPass() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /**
              * 物体投影变换矩阵（模型空间坐标-->GPU空间坐标）
              */
@@ -17895,7 +17398,7 @@ var feng3d;
             /**
              * 阴影颜色
              */
-            this.shadowColorCommonsData = new Number[](4);
+            this.shadowColorCommonsData = new number[](4);
             this.number = 50;
             /**
              * @inheritDoc
@@ -17913,14 +17416,8 @@ var feng3d;
                 this.modelViewProjection.append(projectionmatrix);
                 _super.render.call(this, renderable, stage3DProxy, camera, renderIndex);
             };
+            this.shadowColorCommonsData = number[]([1, 0, 0, 1]);
         }
-        /**
-         * 创建深度映射通道
-         */
-        PlanarShadowPass.prototype.PlanarShadowPass = function () {
-            _super.call(this);
-            this.shadowColorCommonsData = Number[]([1, 0, 0, 1]);
-        };
         /**
          * @inheritDoc
          */
@@ -17953,7 +17450,7 @@ var feng3d;
             var n = new Vector3D(0, 1, 0);
             var nl = n.dotProduct(l);
             var d = -groundY;
-            var mat1 = new Matrix3D(Number[](//
+            var mat1 = new Matrix3D(number[](//
             [nl + d - n.x * l.x, -n.y * l.x, -n.z * l.x, -d * l.x,
                 -n.x * l.y, nl + d - n.y * l.y, -n.z * l.y, -d * l.y,
                 -n.x * l.y, -n.y * l.z, nl + d - n.z * l.z, -d * l.z,
@@ -17985,12 +17482,11 @@ var feng3d;
      */
     var SegmentPass = (function (_super) {
         __extends(SegmentPass, _super);
-        function SegmentPass() {
-            _super.apply(this, arguments);
+        function SegmentPass(thickness) {
             /**
              * 常量数据
              */
-            this.constants = new Number[](4, true);
+            this.constants = new number[](4, true);
             /**
              * 摄像机坐标系到投影坐标系变换矩阵（c：camera，p：projection）
              */
@@ -17999,12 +17495,10 @@ var feng3d;
              * 模型坐标系到摄像机坐标系变换矩阵（m：model，c：camera）
              */
             this.m2cMatrix = new Matrix3D();
-        }
-        SegmentPass.prototype.SegmentPass = function (thickness) {
             this._thickness = thickness;
             this.constants[1] = 1 / 255;
             _super.call(this);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -18058,11 +17552,11 @@ var feng3d;
         /**
          * (1,1,1,1)向量
          */
-        SegmentPass.ONE_VECTOR = Number[]([1, 1, 1, 1]);
+        SegmentPass.ONE_VECTOR = number[]([1, 1, 1, 1]);
         /**
          * 正面向量（Z轴负方向）
          */
-        SegmentPass.FRONT_VECTOR = Number[]([0, 0, -1, 0]);
+        SegmentPass.FRONT_VECTOR = number[]([0, 0, -1, 0]);
         return SegmentPass;
     }(feng3d.MaterialPassBase));
     feng3d.SegmentPass = SegmentPass;
@@ -18075,20 +17569,6 @@ var feng3d;
      */
     var SingleObjectDepthPass = (function (_super) {
         __extends(SingleObjectDepthPass, _super);
-        function SingleObjectDepthPass() {
-            _super.apply(this, arguments);
-            this._projectionTexturesInvalid = true;
-            this._polyOffset = Number[]([15, 0, 0, 0]);
-            /**
-             * 通用数据
-             */
-            this.depthCommonsData0 = Number[]([1.0, 255.0, 65025.0, 16581375.0]);
-            /**
-             * 通用数据
-             */
-            this.depthCommonsData1 = Number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
-            this.objectProjectionMatrix = new Matrix3D();
-        }
         /**
          * Creates a new SingleObjectDepthPass object.
          * @param textureSize The size of the depth map texture to render to.
@@ -18096,20 +17576,31 @@ var feng3d;
          *
          * todo: provide custom vertex code to assembler
          */
-        SingleObjectDepthPass.prototype.SingleObjectDepthPass = function (textureSize, polyOffset) {
+        function SingleObjectDepthPass(textureSize, polyOffset) {
             if (textureSize === void 0) { textureSize = 512; }
             if (polyOffset === void 0) { polyOffset = 15; }
             _super.call(this);
+            this._projectionTexturesInvalid = true;
+            this._polyOffset = number[]([15, 0, 0, 0]);
+            /**
+             * 通用数据
+             */
+            this.depthCommonsData0 = number[]([1.0, 255.0, 65025.0, 16581375.0]);
+            /**
+             * 通用数据
+             */
+            this.depthCommonsData1 = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+            this.objectProjectionMatrix = new Matrix3D();
             this._textureSize = textureSize;
             this._polyOffset[0] = polyOffset;
             this._textures = new Dictionary();
             this._projections = new Dictionary();
-            //			_enc = Number[]([1.0, 255.0, 65025.0, 16581375.0, 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
-            //			this.depthCommonsData0 = Number[]([1.0, 255.0, 65025.0, 16581375.0]);
-            //			this.depthCommonsData1 = Number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
-            //			_animatableAttributes = String[](["va0", "va1"]);
-            //			_animationTargetRegisters = String[](["vt0", "vt1"]);
-        };
+            //			_enc = number[]([1.0, 255.0, 65025.0, 16581375.0, 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+            //			this.depthCommonsData0 = number[]([1.0, 255.0, 65025.0, 16581375.0]);
+            //			this.depthCommonsData1 = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+            //			_animatableAttributes = string[](["va0", "va1"]);
+            //			_animationTargetRegisters = string[](["vt0", "vt1"]);
+        }
         SingleObjectDepthPass.prototype.initBuffers = function () {
             _super.prototype.initBuffers.call(this);
             this.context3DBufferOwner.mapContext3DBuffer(this._.SODP$polyOffset_vc_vector, this.updatePolyOffsetBuffer);
@@ -18242,18 +17733,15 @@ var feng3d;
      */
     var SkyBoxPass = (function (_super) {
         __extends(SkyBoxPass, _super);
-        function SkyBoxPass() {
-            _super.apply(this, arguments);
-            this.cameraPos = new Number[](4);
-            this.scaleSkybox = new Number[](4);
-            this.modelViewProjection = new Matrix3D();
-        }
         /**
          * 创建一个天空盒通道
          */
-        SkyBoxPass.prototype.SkyBoxPass = function () {
+        function SkyBoxPass() {
             _super.call(this);
-        };
+            this.cameraPos = new number[](4);
+            this.scaleSkybox = new number[](4);
+            this.modelViewProjection = new Matrix3D();
+        }
         /**
          * @inheritDoc
          */
@@ -18343,8 +17831,10 @@ var feng3d;
      */
     var TextureProxyBase = (function (_super) {
         __extends(TextureProxyBase, _super);
+        /**
+         * 创建一个纹理代理基类
+         */
         function TextureProxyBase() {
-            _super.apply(this, arguments);
             /**
              * 纹理格式
              */
@@ -18353,13 +17843,8 @@ var feng3d;
              * 是否有miplevel
              */
             this._hasMipmaps = true;
-        }
-        /**
-         * 创建一个纹理代理基类
-         */
-        TextureProxyBase.prototype.TextureProxyBase = function () {
             //			_namedAsset = new NamedAsset(this, AssetType.TEXTURE);
-        };
+        }
         Object.defineProperty(TextureProxyBase.prototype, "hasMipMaps", {
             /**
              * 是否有miplevel
@@ -18434,16 +17919,13 @@ var feng3d;
      */
     var CubeTextureBase = (function (_super) {
         __extends(CubeTextureBase, _super);
-        function CubeTextureBase() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个立方体纹理代理基类
          */
-        CubeTextureBase.prototype.CubeTextureBase = function () {
+        function CubeTextureBase() {
             _super.call(this);
             this.type = feng3d.TextureType.TYPE_CUBE;
-        };
+        }
         Object.defineProperty(CubeTextureBase.prototype, "size", {
             /**
              * 获取纹理尺寸
@@ -18466,11 +17948,6 @@ var feng3d;
      */
     var BitmapCubeTexture = (function (_super) {
         __extends(BitmapCubeTexture, _super);
-        function BitmapCubeTexture() {
-            _super.apply(this, arguments);
-            this.optimizeForRenderToTexture = false;
-            this.streamingLevels = 0;
-        }
         /**
          * 创建位图立方体纹理代理
          * @param posX			X正方向位图
@@ -18480,8 +17957,10 @@ var feng3d;
          * @param posZ			Z正方向位图
          * @param negZ			Z负方向位图
          */
-        BitmapCubeTexture.prototype.BitmapCubeTexture = function (posX, negX, posY, negY, posZ, negZ) {
+        function BitmapCubeTexture(posX, negX, posY, negY, posZ, negZ) {
             _super.call(this);
+            this.optimizeForRenderToTexture = false;
+            this.streamingLevels = 0;
             this._bitmapDatas = new BitmapData[](6, true);
             this.testSize(this._bitmapDatas[0] = posX);
             this.testSize(this._bitmapDatas[1] = negX);
@@ -18490,7 +17969,7 @@ var feng3d;
             this.testSize(this._bitmapDatas[4] = posZ);
             this.testSize(this._bitmapDatas[5] = negZ);
             setSize(posX.width, posX.height);
-        };
+        }
         Object.defineProperty(BitmapCubeTexture.prototype, "bitmapDatas", {
             /**
              * 位图列表
@@ -18620,12 +18099,9 @@ var feng3d;
     var Texture2DBase = (function (_super) {
         __extends(Texture2DBase, _super);
         function Texture2DBase() {
-            _super.apply(this, arguments);
-        }
-        Texture2DBase.prototype.Texture2DBase = function () {
             _super.call(this);
             this.type = feng3d.TextureType.TYPE_2D;
-        };
+        }
         return Texture2DBase;
     }(feng3d.TextureProxyBase));
     feng3d.Texture2DBase = Texture2DBase;
@@ -18638,15 +18114,12 @@ var feng3d;
      */
     var BitmapTexture = (function (_super) {
         __extends(BitmapTexture, _super);
-        function BitmapTexture() {
-            _super.apply(this, arguments);
-        }
-        BitmapTexture.prototype.BitmapTexture = function (bitmapData, generateMipmaps) {
+        function BitmapTexture(bitmapData, generateMipmaps) {
             if (generateMipmaps === void 0) { generateMipmaps = true; }
             _super.call(this);
             this.bitmapData = bitmapData;
             this._generateMipmaps = generateMipmaps;
-        };
+        }
         Object.defineProperty(BitmapTexture.prototype, "bitmapData", {
             get: function () {
                 return _bitmapData;
@@ -18695,18 +18168,15 @@ var feng3d;
      */
     var RenderTexture = (function (_super) {
         __extends(RenderTexture, _super);
-        function RenderTexture() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个渲染纹理
          * @param width			纹理宽度
          * @param height		纹理高度
          */
-        RenderTexture.prototype.RenderTexture = function (width, height) {
+        function RenderTexture(width, height) {
             _super.call(this);
             setSize(width, height);
-        };
+        }
         return RenderTexture;
     }(feng3d.Texture2DBase));
     feng3d.RenderTexture = RenderTexture;
@@ -18719,18 +18189,16 @@ var feng3d;
      */
     var GlobalDispatcher = (function (_super) {
         __extends(GlobalDispatcher, _super);
-        function GlobalDispatcher() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个全局事件适配器
          * <p>此类为单例，只能构造一次，使用时请使用GlobalDispatcher.instance获取实例</p>
          */
-        GlobalDispatcher.prototype.GlobalDispatcher = function () {
+        function GlobalDispatcher() {
+            _super.call(this);
             if (GlobalDispatcher._instance)
                 throw new Error("此类不允许外部创建，请用instance属性！");
             GlobalDispatcher._instance = this;
-        };
+        }
         Object.defineProperty(GlobalDispatcher, "instance", {
             /**
              * 适配器实例
@@ -18758,20 +18226,17 @@ var feng3d;
      */
     var LoadModuleEventData = (function (_super) {
         __extends(LoadModuleEventData, _super);
-        function LoadModuleEventData() {
-            _super.apply(this, arguments);
-        }
         /**
          * 加载事件数据
          * @param urls		加载路径列表
          * @param data		自定义数据，可用于保存数据在加载资源后处理
          */
-        LoadModuleEventData.prototype.LoadModuleEventData = function (urls, data) {
+        function LoadModuleEventData(urls, data) {
             if (urls === void 0) { urls = null; }
             if (data === void 0) { data = null; }
             this.urls = urls;
             this.data = data;
-        };
+        }
         Object.defineProperty(LoadModuleEventData.prototype, "urls", {
             /**
              * 加载路径列表
@@ -18861,7 +18326,6 @@ var feng3d;
              */
             this.params =  * ;
         }
-        TaskModuleEventDispatchTaskData.prototype.TaskModuleEventDispatchTaskData = ;
         return TaskModuleEventDispatchTaskData;
     }(feng3d.FEventDispatcher));
     feng3d.TaskModuleEventDispatchTaskData = TaskModuleEventDispatchTaskData;
@@ -18885,9 +18349,12 @@ var feng3d;
      */
     var TaskItem = (function (_super) {
         __extends(TaskItem, _super);
+        /**
+         * 创建一个任务单元数据
+         */
         function TaskItem() {
-            _super.apply(this, arguments);
             /** 任务状态 */
+            this._state = feng3d.TaskStateType.STATE_INIT;
             this._state = feng3d.TaskStateType.STATE_INIT;
         }
         Object.defineProperty(TaskItem.prototype, "state", {
@@ -18900,12 +18367,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个任务单元数据
-         */
-        TaskItem.prototype.TaskItem = function () {
-            this._state = feng3d.TaskStateType.STATE_INIT;
-        };
         /**
          * 执行任务
          * @param params	执行参数
@@ -18935,24 +18396,21 @@ var feng3d;
      */
     var LoadTaskItem = (function (_super) {
         __extends(LoadTaskItem, _super);
-        function LoadTaskItem() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个加载单元数据
          * @param url		加载路径信息
          */
-        LoadTaskItem.prototype.LoadTaskItem = function (url) {
+        function LoadTaskItem(url) {
             if (url === void 0) { url =  * ; }
             this._url = null;
             this._type = null;
             if (url)
                 is;
-            String;
+            string;
             {
                 this._url = url;
             }
-        };
+        }
         return LoadTaskItem;
     }(feng3d.TaskItem));
     feng3d.LoadTaskItem = LoadTaskItem;
@@ -19017,8 +18475,16 @@ var feng3d;
      */
     var TaskCollection = (function (_super) {
         __extends(TaskCollection, _super);
+        /**
+         * 创建一个任务集合
+         * <p>该类为抽象类，无法直接被实例化，请使用其子类</p>
+         */
         function TaskCollection() {
-            _super.apply(this, arguments);
+            feng3d.AbstractClassError.check(this);
+            this.allItemList = new feng3d.TaskItem[]();
+            this.executingItemList = new feng3d.TaskItem[]();
+            this.completedItemList = new feng3d.TaskItem[]();
+            _super.call(this);
         }
         Object.defineProperty(TaskCollection.prototype, "isComplete", {
             /**
@@ -19030,17 +18496,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个任务集合
-         * <p>该类为抽象类，无法直接被实例化，请使用其子类</p>
-         */
-        TaskCollection.prototype.TaskCollection = function () {
-            feng3d.AbstractClassError.check(this);
-            this.allItemList = new feng3d.TaskItem[]();
-            this.executingItemList = new feng3d.TaskItem[]();
-            this.completedItemList = new feng3d.TaskItem[]();
-            _super.call(this);
-        };
         /**
          * @inheritDoc
          */
@@ -19156,15 +18611,12 @@ var feng3d;
      */
     var TaskList = (function (_super) {
         __extends(TaskList, _super);
-        function TaskList() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个任务队列
          */
-        TaskList.prototype.TaskList = function () {
+        function TaskList() {
             _super.call(this);
-        };
+        }
         /**
          * 执行任务
          * @param params	执行参数
@@ -19193,19 +18645,16 @@ var feng3d;
      */
     var TaskQueue = (function (_super) {
         __extends(TaskQueue, _super);
+        /**
+         * 创建任务队列
+         */
         function TaskQueue() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /**
              * 执行参数
              */
             this.executeParams =  * ;
         }
-        /**
-         * 创建任务队列
-         */
-        TaskQueue.prototype.TaskQueue = function () {
-            _super.call(this);
-        };
         /**
          * @inheritDoc
          */
@@ -19273,7 +18722,7 @@ var TryConnectURLTaskItem = (function (_super) {
     function TryConnectURLTaskItem() {
         _super.apply(this, arguments);
     }
-    TryConnectURLTaskItem.prototype.TryConnectURLTaskItem = function (url) {
+    TryConnectURLTaskItem.prototype.constructorTaskItem = function (url) {
         this.url = url;
     };
     /**
@@ -19343,24 +18792,21 @@ var feng3d;
      */
     var LensBase = (function (_super) {
         __extends(LensBase, _super);
+        /**
+         * 创建一个摄像机镜头
+         */
         function LensBase() {
-            _super.apply(this, arguments);
             this._scissorRect = new Rectangle();
             this._viewPort = new Rectangle();
             this._near = 20;
             this._far = 3000;
             this._aspectRatio = 1;
             this._matrixInvalid = true;
-            this._frustumCorners = new Number[](8 * 3, true);
+            this._frustumCorners = new number[](8 * 3, true);
             this._unprojectionInvalid = true;
-        }
-        /**
-         * 创建一个摄像机镜头
-         */
-        LensBase.prototype.LensBase = function () {
             this._matrix = new Matrix3D();
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(LensBase.prototype, "frustumCorners", {
             /**
              * Retrieves the corner points of the lens frustum.
@@ -19516,11 +18962,8 @@ var feng3d;
     var FreeMatrixLens = (function (_super) {
         __extends(FreeMatrixLens, _super);
         function FreeMatrixLens() {
-            _super.apply(this, arguments);
-        }
-        FreeMatrixLens.prototype.FreeMatrixLens = function () {
             _super.call(this);
-        };
+        }
         FreeMatrixLens.prototype.updateMatrix = function () {
             _matrixInvalid = false;
         };
@@ -19536,21 +18979,18 @@ var feng3d;
      */
     var PerspectiveLens = (function (_super) {
         __extends(PerspectiveLens, _super);
-        function PerspectiveLens() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个透视摄像机镜头
          * @param fieldOfView 视野
          * @param coordinateSystem 坐标系统类型
          */
-        PerspectiveLens.prototype.PerspectiveLens = function (fieldOfView, coordinateSystem) {
+        function PerspectiveLens(fieldOfView, coordinateSystem) {
             if (fieldOfView === void 0) { fieldOfView = 60; }
             if (coordinateSystem === void 0) { coordinateSystem = feng3d.CoordinateSystem.LEFT_HANDED; }
             _super.call(this);
             this.fieldOfView = fieldOfView;
             this.coordinateSystem = coordinateSystem;
-        };
+        }
         Object.defineProperty(PerspectiveLens.prototype, "fieldOfView", {
             /**
              * 视野
@@ -19630,12 +19070,12 @@ var feng3d;
                 top = -this._yMax;
                 bottom = this._yMax;
                 // assume unscissored frustum
-                raw[uint(0)] = _near / this._xMax;
-                raw[uint(5)] = _near / this._yMax;
-                raw[uint(10)] = _far / (_far - _near);
-                raw[uint(11)] = 1;
-                raw[uint(1)] = raw[uint(2)] = raw[uint(3)] = raw[uint(4)] = raw[uint(6)] = raw[uint(7)] = raw[uint(8)] = raw[uint(9)] = raw[uint(12)] = raw[uint(13)] = raw[uint(15)] = 0;
-                raw[uint(14)] = -_near * raw[uint(10)];
+                raw[number(0)] = _near / this._xMax;
+                raw[number(5)] = _near / this._yMax;
+                raw[number(10)] = _far / (_far - _near);
+                raw[number(11)] = 1;
+                raw[number(1)] = raw[number(2)] = raw[number(3)] = raw[number(4)] = raw[number(6)] = raw[number(7)] = raw[number(8)] = raw[number(9)] = raw[number(12)] = raw[number(13)] = raw[number(15)] = 0;
+                raw[number(14)] = -_near * raw[number(10)];
             }
             else {
                 // assume scissored frustum
@@ -19647,18 +19087,18 @@ var feng3d;
                 right = center + xWidth;
                 top = middle - yHgt;
                 bottom = middle + yHgt;
-                raw[uint(0)] = 2 * _near / (right - left);
-                raw[uint(5)] = 2 * _near / (bottom - top);
-                raw[uint(8)] = (right + left) / (right - left);
-                raw[uint(9)] = (bottom + top) / (bottom - top);
-                raw[uint(10)] = (_far + _near) / (_far - _near);
-                raw[uint(11)] = 1;
-                raw[uint(1)] = raw[uint(2)] = raw[uint(3)] = raw[uint(4)] = raw[uint(6)] = raw[uint(7)] = raw[uint(12)] = raw[uint(13)] = raw[uint(15)] = 0;
-                raw[uint(14)] = -2 * _far * _near / (_far - _near);
+                raw[number(0)] = 2 * _near / (right - left);
+                raw[number(5)] = 2 * _near / (bottom - top);
+                raw[number(8)] = (right + left) / (right - left);
+                raw[number(9)] = (bottom + top) / (bottom - top);
+                raw[number(10)] = (_far + _near) / (_far - _near);
+                raw[number(11)] = 1;
+                raw[number(1)] = raw[number(2)] = raw[number(3)] = raw[number(4)] = raw[number(6)] = raw[number(7)] = raw[number(12)] = raw[number(13)] = raw[number(15)] = 0;
+                raw[number(14)] = -2 * _far * _near / (_far - _near);
             }
             // Switch projection transform from left to right handed.
             if (this._coordinateSystem == feng3d.CoordinateSystem.RIGHT_HANDED)
-                raw[uint(5)] = -raw[uint(5)];
+                raw[number(5)] = -raw[number(5)];
             _matrix.copyRawDataFrom(raw);
             var yMaxFar = _far * this._focalLengthInv;
             var xMaxFar = yMaxFar * _aspectRatio;
@@ -20006,16 +19446,13 @@ var feng3d;
      */
     var ParserBase = (function (_super) {
         __extends(ParserBase, _super);
-        function ParserBase() {
-            _super.apply(this, arguments);
+        function ParserBase(format) {
             this._data =  * ;
-        }
-        ParserBase.prototype.ParserBase = function (format) {
             this._materialMode = 0;
             this._dataFormat = format;
             this._dependencies = new feng3d.ResourceDependency[]();
             feng3d.AbstractClassError.check(this);
-        };
+        }
         ParserBase.prototype.getTextData = function () {
             return feng3d.ParserUtil.toString(this._data);
         };
@@ -20294,17 +19731,14 @@ var feng3d;
      */
     var ImageParser = (function (_super) {
         __extends(ImageParser, _super);
-        function ImageParser() {
-            _super.apply(this, arguments);
-        }
         /**
          * Creates a new ImageParser object.
          * @param uri The url or id of the data or file to be parsed.
          * @param extra The holder for extra contextual data that the parser might need.
          */
-        ImageParser.prototype.ImageParser = function () {
+        function ImageParser() {
             _super.call(this, feng3d.ParserDataFormat.BINARY);
-        };
+        }
         /**
          * Indicates whether or not a given file extension is supported by the parser.
          * @param extension The file extension of a potential file to be parsed.
@@ -20385,15 +19819,12 @@ var feng3d;
      */
     var MD5AnimParser = (function (_super) {
         __extends(MD5AnimParser, _super);
-        function MD5AnimParser() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个MD5动画解析类
          * @param additionalRotationAxis 附加旋转轴
          * @param additionalRotationRadians 附加旋转角度
          */
-        MD5AnimParser.prototype.MD5AnimParser = function (additionalRotationAxis, additionalRotationRadians) {
+        function MD5AnimParser(additionalRotationAxis, additionalRotationRadians) {
             if (additionalRotationAxis === void 0) { additionalRotationAxis = null; }
             if (additionalRotationRadians === void 0) { additionalRotationRadians = 0; }
             _super.call(this, feng3d.ParserDataFormat.PLAIN_TEXT);
@@ -20409,7 +19840,7 @@ var feng3d;
                 t1.fromAxisAngle(additionalRotationAxis, additionalRotationRadians);
                 this._rotationQuat.multiply(t1, this._rotationQuat);
             }
-        };
+        }
         //md5anim文件关键字
         MD5AnimParser.VERSION_TOKEN = "MD5Version";
         MD5AnimParser.COMMAND_LINE_TOKEN = "commandline";
@@ -20680,7 +20111,7 @@ var feng3d;
             if (this._reachedEOF)
                 this.sendEOFError();
             data = new FrameData();
-            data.components = new Number[](this._numAnimatedComponents, true);
+            data.components = new number[](this._numAnimatedComponents, true);
             for (var i = 0; i < this._numAnimatedComponents; ++i)
                 data.components[i] = this.getNextNumber();
             this._frameData[frameIndex] = data;
@@ -20755,7 +20186,7 @@ var feng3d;
     {
         var i = parseInt(this.getNextToken());
         if (isNaN(i))
-            this.sendParseError("int type");
+            this.sendParseError("number type");
         return i;
     }
     getNextNumber();
@@ -20879,13 +20310,10 @@ var feng3d;
      */
     var MD5MeshParser = (function (_super) {
         __extends(MD5MeshParser, _super);
-        function MD5MeshParser() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个MD5Mesh解析对象
          */
-        MD5MeshParser.prototype.MD5MeshParser = function (additionalRotationAxis, additionalRotationRadians) {
+        function MD5MeshParser(additionalRotationAxis, additionalRotationRadians) {
             if (additionalRotationAxis === void 0) { additionalRotationAxis = null; }
             if (additionalRotationRadians === void 0) { additionalRotationRadians = 0; }
             _super.call(this, feng3d.ParserDataFormat.PLAIN_TEXT);
@@ -20897,7 +20325,7 @@ var feng3d;
                 quat.fromAxisAngle(additionalRotationAxis, additionalRotationRadians);
                 this._rotationQuat.multiply(this._rotationQuat, quat);
             }
-        };
+        }
         MD5MeshParser.VERSION_TOKEN = "MD5Version";
         MD5MeshParser.COMMAND_LINE_TOKEN = "commandline";
         MD5MeshParser.NUM_JOINTS_TOKEN = "numJoints";
@@ -21084,7 +20512,7 @@ var feng3d;
         if (token != "{")
             this.sendUnknownKeywordError();
         this._shaders || ;
-        new String[]();
+        new string[]();
         while (ch != "}") {
             ch = this.getNextToken();
             switch (ch) {
@@ -21101,7 +20529,7 @@ var feng3d;
                     break;
                 case MESH_NUM_TRIS_TOKEN:
                     //根据三角形个数 创建顶点数组
-                    indices = new uint[](this.getNextInt() * 3, true);
+                    indices = new number[](this.getNextInt() * 3, true);
                     break;
                 case MESH_NUM_WEIGHTS_TOKEN:
                     //创建关节数据
@@ -21128,7 +20556,7 @@ var feng3d;
         this._meshData[i].weightData = weights;
         this._meshData[i].indices = indices;
     }
-    translateGeom(vertexData, VertexData[], weights, WeightData[], indices, uint[]);
+    translateGeom(vertexData, VertexData[], weights, WeightData[], indices, number[]);
     feng3d.SubGeometry;
     {
         var len = vertexData.length;
@@ -21141,13 +20569,13 @@ var feng3d;
         var skinnedsubGeom = new feng3d.SkinnedSubGeometry(this._maxJointCount);
         subGeom.addComponent(skinnedsubGeom);
         //uv数据
-        var uvs = new Number[](len * 2, true);
+        var uvs = new number[](len * 2, true);
         //顶点位置数据
-        var vertices = new Number[](len * 3, true);
+        var vertices = new number[](len * 3, true);
         //关节索引数据
-        var jointIndices = new Number[](len * this._maxJointCount, true);
+        var jointIndices = new number[](len * this._maxJointCount, true);
         //关节权重数据
-        var jointWeights = new Number[](len * this._maxJointCount, true);
+        var jointWeights = new number[](len * this._maxJointCount, true);
         var l;
         //0权重个数
         var nonZeroWeights;
@@ -21203,7 +20631,7 @@ var feng3d;
         skinnedsubGeom.updateJointWeightsData(jointWeights);
         return subGeom;
     }
-    parseTri(indices, uint[]);
+    parseTri(indices, number[]);
     {
         var index = this.getNextInt() * 3;
         indices[index] = this.getNextInt();
@@ -21291,7 +20719,7 @@ var feng3d;
     {
         var i = parseInt(this.getNextToken());
         if (isNaN(i))
-            this.sendParseError("int type");
+            this.sendParseError("number type");
         return i;
     }
     getNextNumber();
@@ -21407,19 +20835,16 @@ var feng3d;
      */
     var Max3DSParser = (function (_super) {
         __extends(Max3DSParser, _super);
-        function Max3DSParser() {
-            _super.apply(this, arguments);
-        }
         /**
          * Creates a new <code>Max3DSParser</code> object.
          *
          * @param useSmoothingGroups Determines whether the parser looks for smoothing groups in the 3ds file or assumes uniform smoothing. Defaults to true.
          */
-        Max3DSParser.prototype.Max3DSParser = function (useSmoothingGroups) {
+        function Max3DSParser(useSmoothingGroups) {
             if (useSmoothingGroups === void 0) { useSmoothingGroups = true; }
             _super.call(this, feng3d.ParserDataFormat.BINARY);
             this._useSmoothingGroups = useSmoothingGroups;
-        };
+        }
         /**
          * Indicates whether or not a given file extension is supported by the parser.
          * @param extension The file extension of a potential file to be parsed.
@@ -21491,7 +20916,7 @@ var feng3d;
                 // Can't finalize at this point, because we have to wait until the full
                 // animation section has been parsed for any potential pivot definitions
                 this._unfinalized_objects[this._cur_obj.name] = this._cur_obj;
-                this._cur_obj_end = uint.MAX_VALUE;
+                this._cur_obj_end = number.MAX_VALUE;
                 this._cur_obj = null;
             }
             if (this._byteData.bytesAvailable) {
@@ -21520,7 +20945,7 @@ var feng3d;
                         this._cur_obj_end = end;
                         this._cur_obj = new ObjectVO();
                         this._cur_obj.name = this.readNulTermString();
-                        this._cur_obj.materials = new String[]();
+                        this._cur_obj.materials = new string[]();
                         this._cur_obj.materialFaces = {};
                         break;
                     case 0x4100:
@@ -21642,7 +21067,7 @@ var feng3d;
         var len;
         var count;
         count = this._byteData.readUnsignedShort();
-        this._cur_obj.verts = new Number[](count * 3, true);
+        this._cur_obj.verts = new number[](count * 3, true);
         i = 0;
         len = this._cur_obj.verts.length;
         while (i < len) {
@@ -21664,7 +21089,7 @@ var feng3d;
         var len;
         var count;
         count = this._byteData.readUnsignedShort();
-        this._cur_obj.indices = new uint[](count * 3, true);
+        this._cur_obj.indices = new number[](count * 3, true);
         i = 0;
         len = this._cur_obj.indices.length;
         while (i < len) {
@@ -21678,7 +21103,7 @@ var feng3d;
             // Skip "face info", irrelevant in Away3D
             this._byteData.position += 2;
         }
-        this._cur_obj.smoothingGroups = new uint[](count, true);
+        this._cur_obj.smoothingGroups = new number[](count, true);
     }
     parseSmoothingGroups();
     {
@@ -21695,7 +21120,7 @@ var feng3d;
         var len;
         var count;
         count = this._byteData.readUnsignedShort();
-        this._cur_obj.uvs = new Number[](count * 2, true);
+        this._cur_obj.uvs = new number[](count * 2, true);
         i = 0;
         len = this._cur_obj.uvs.length;
         while (i < len) {
@@ -21711,7 +21136,7 @@ var feng3d;
         var faces;
         mat = this.readNulTermString();
         count = this._byteData.readUnsignedShort();
-        faces = new uint[](count, true);
+        faces = new number[](count, true);
         i = 0;
         while (i < faces.length)
             faces[i++] = this._byteData.readUnsignedShort();
@@ -21781,13 +21206,13 @@ var feng3d;
             this.prepareData(vertices, faces, obj);
             if (this._useSmoothingGroups)
                 this.applySmoothGroups(vertices, faces);
-            obj.verts = new Number[](vertices.length * 3, true);
+            obj.verts = new number[](vertices.length * 3, true);
             for (i = 0; i < vertices.length; i++) {
                 obj.verts[i * 3] = vertices[i].x;
                 obj.verts[i * 3 + 1] = vertices[i].y;
                 obj.verts[i * 3 + 2] = vertices[i].z;
             }
-            obj.indices = new uint[](faces.length * 3, true);
+            obj.indices = new number[](faces.length * 3, true);
             for (i = 0; i < faces.length; i++) {
                 obj.indices[i * 3] = faces[i].a;
                 obj.indices[i * 3 + 1] = faces[i].b;
@@ -21797,7 +21222,7 @@ var feng3d;
                 // If the object had UVs to start with, use UVs generated by
                 // smoothing group splitting algorithm. Otherwise those UVs
                 // will be nonsense and should be skipped.
-                obj.uvs = new Number[](vertices.length * 2, true);
+                obj.uvs = new number[](vertices.length * 2, true);
                 for (i = 0; i < vertices.length; i++) {
                     obj.uvs[i * 2] = vertices[i].u;
                     obj.uvs[i * 2 + 1] = vertices[i].v;
@@ -21893,7 +21318,7 @@ var feng3d;
         // extract groups data for vertices
         var vGroups = new Vector.(numVerts, true);
         for (i = 0; i < numVerts; i++)
-            vGroups[i] = new uint[];
+            vGroups[i] = new number[];
         for (i = 0; i < numFaces; i++) {
             var face = FaceVO(faces[i]);
             for (j = 0; j < 3; j++) {
@@ -21914,7 +21339,7 @@ var feng3d;
         for (i = 0; i < numVerts; i++) {
             if ((len = vGroups[i].length) < 1)
                 continue;
-            var clones = new uint[](len, true);
+            var clones = new number[](len, true);
             vClones[i] = clones;
             clones[0] = i;
             var v0 = vertices[i];
@@ -21985,16 +21410,16 @@ var feng3d;
     string;
     {
         var chr;
-        var str = new String();
+        var str = new string();
         while ((chr = this._byteData.readUnsignedByte()) > 0)
-            str += String.fromCharCode(chr);
+            str += string.fromCharCode(chr);
         return str;
     }
     readTransform();
-    Number[];
+    number[];
     {
         var data;
-        data = new Number[](16, true);
+        data = new number[](16, true);
         // X axis
         data[0] = this._byteData.readFloat(); // X
         data[2] = this._byteData.readFloat(); // Z
@@ -22092,22 +21517,19 @@ var feng3d;
      */
     var OBJParser = (function (_super) {
         __extends(OBJParser, _super);
-        function OBJParser() {
-            _super.apply(this, arguments);
-            /** 材质库是否已加载 */
-            this._mtlLibLoaded = true;
-            /** 活动材质编号 */
-            this._activeMaterialID = "";
-        }
         /**
          * 创建Obj模型解析对象
          * @param scale 缩放比例
          */
-        OBJParser.prototype.OBJParser = function (scale) {
+        function OBJParser(scale) {
             if (scale === void 0) { scale = 1; }
             _super.call(this, feng3d.ParserDataFormat.PLAIN_TEXT);
+            /** 材质库是否已加载 */
+            this._mtlLibLoaded = true;
+            /** 活动材质编号 */
+            this._activeMaterialID = "";
             this._scale = scale;
-        };
+        }
         /**
          * 判断是否支持解析
          * @param extension 文件类型
@@ -22178,7 +21600,7 @@ var feng3d;
         //单行数据
         var line;
         //换行符
-        var creturn = String.fromCharCode(10);
+        var creturn = string.fromCharCode(10);
         var trunk;
         if (!this._startedParsing) {
             this._textData = getTextData();
@@ -22187,13 +21609,13 @@ var feng3d;
             this._textData = this._textData.replace(/\\[\r\n]+\s*/gm, ' ');
         }
         if (this._textData.indexOf(creturn) == -1)
-            creturn = String.fromCharCode(13);
+            creturn = string.fromCharCode(13);
         //初始化数据
         if (!this._startedParsing) {
             this._startedParsing = true;
             this._vertices = new feng3d.Vertex[]();
             this._vertexNormals = new feng3d.Vertex[]();
-            this._materialIDs = new String[]();
+            this._materialIDs = new string[]();
             this._materialLoaded = new LoadedMaterial[]();
             this._meshes = new feng3d.Mesh[]();
             this._uvs = new feng3d.UV[]();
@@ -22331,10 +21753,10 @@ var feng3d;
         var numFaces = faces.length;
         var numVerts;
         var subs;
-        var vertices = new Number[]();
-        var uvs = new Number[]();
-        var normals = new Number[]();
-        var indices = new uint[]();
+        var vertices = new number[]();
+        var uvs = new number[]();
+        var normals = new number[]();
+        var indices = new number[]();
         this._realIndices = [];
         this._vertexIndex = 0;
         //解析面数据
@@ -22356,7 +21778,7 @@ var feng3d;
                 geometry.addSubGeometry(subs[i]);
         }
     }
-    translateVertexData(face, FaceData, vertexIndex, number, vertices, Number[], uvs, Number[], indices, uint[], normals, Number[]);
+    translateVertexData(face, FaceData, vertexIndex, number, vertices, number[], uvs, number[], indices, number[], normals, number[]);
     {
         var index;
         var vertex;
@@ -22480,9 +21902,9 @@ var feng3d;
             //解析单个面数据，分离出顶点坐标左右、uv索引、法线索引
             indices = trunk[i].split("/");
             face.vertexIndices.push(this.parseIndex(parseInt(indices[0]), this._vertices.length));
-            if (indices[1] && String(indices[1]).length > 0)
+            if (indices[1] && string(indices[1]).length > 0)
                 face.uvIndices.push(this.parseIndex(parseInt(indices[1]), this._uvs.length));
-            if (indices[2] && String(indices[2]).length > 0)
+            if (indices[2] && string(indices[2]).length > 0)
                 face.normalIndices.push(this.parseIndex(parseInt(indices[2]), this._vertexNormals.length));
             face.indexIds.push(trunk[i]);
         }
@@ -22514,7 +21936,7 @@ var feng3d;
         for (var i = 0; i < materialDefinitions.length; ++i) {
             lines = materialDefinitions[i].split('\r').join("").split('\n');
             if (lines.length == 1)
-                lines = materialDefinitions[i].split(String.fromCharCode(13));
+                lines = materialDefinitions[i].split(string.fromCharCode(13));
             diffuseColor = ambientColor = specularColor = 0xFFFFFF;
             specular = 0;
             useSpecular = false;
@@ -22525,7 +21947,7 @@ var feng3d;
                 lines[j] = lines[j].replace(/\s+$/, "");
                 if (lines[j].substring(0, 1) != "#" && (j == 0 || lines[j] != "")) {
                     trunk = lines[j].split(" ");
-                    if (String(trunk[0]).charCodeAt(0) == 9 || String(trunk[0]).charCodeAt(0) == 32)
+                    if (string(trunk[0]).charCodeAt(0) == 9 || string(trunk[0]).charCodeAt(0) == 32)
                         trunk[0] = trunk[0].substring(1, trunk[0].length);
                     if (j == 0) {
                         this._lastMtlID = trunk.join("");
@@ -22534,31 +21956,31 @@ var feng3d;
                     else {
                         switch (trunk[0]) {
                             case "Ka":
-                                if (trunk[1] && !isNaN(Number(trunk[1])) && trunk[2] && !isNaN(Number(trunk[2])) && trunk[3] && !isNaN(Number(trunk[3])))
+                                if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3])))
                                     ambientColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
                                 break;
                             case "Ks":
-                                if (trunk[1] && !isNaN(Number(trunk[1])) && trunk[2] && !isNaN(Number(trunk[2])) && trunk[3] && !isNaN(Number(trunk[3]))) {
+                                if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3]))) {
                                     specularColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
                                     useSpecular = true;
                                 }
                                 break;
                             case "Ns":
-                                if (trunk[1] && !isNaN(Number(trunk[1])))
-                                    specular = Number(trunk[1]) * 0.001;
+                                if (trunk[1] && !isNaN(number(trunk[1])))
+                                    specular = number(trunk[1]) * 0.001;
                                 if (specular == 0)
                                     useSpecular = false;
                                 break;
                             case "Kd":
-                                if (trunk[1] && !isNaN(Number(trunk[1])) && trunk[2] && !isNaN(Number(trunk[2])) && trunk[3] && !isNaN(Number(trunk[3]))) {
+                                if (trunk[1] && !isNaN(number(trunk[1])) && trunk[2] && !isNaN(number(trunk[2])) && trunk[3] && !isNaN(number(trunk[3]))) {
                                     diffuseColor = trunk[1] * 255 << 16 | trunk[2] * 255 << 8 | trunk[3] * 255;
                                     useColor = true;
                                 }
                                 break;
                             case "tr":
                             case "d":
-                                if (trunk[1] && !isNaN(Number(trunk[1])))
-                                    alpha = Number(trunk[1]);
+                                if (trunk[1] && !isNaN(number(trunk[1])))
+                                    alpha = number(trunk[1]);
                                 break;
                             case "map_Kd":
                                 mapkd = this.parseMapKdString(trunk);
@@ -22802,13 +22224,13 @@ var LoadedMaterial = (function () {
 var FaceData = (function () {
     function FaceData() {
         /** 顶点坐标索引数组 */
-        this.vertexIndices = new uint[]();
+        this.vertexIndices = new number[]();
         /** 顶点uv索引数组 */
-        this.uvIndices = new uint[]();
+        this.uvIndices = new number[]();
         /** 顶点法线索引数组 */
-        this.normalIndices = new uint[]();
+        this.normalIndices = new number[]();
         /** 顶点Id(原本该值存放了顶点索引、uv索引、发现索引，已经被解析为上面3个数组，剩下的就当做ID使用) */
-        this.indexIds = new String[](); // 
+        this.indexIds = new string[](); // 
     }
     FaceData.prototype.FaceData = function () {
     };
@@ -22996,7 +22418,7 @@ var feng3d;
         /**
          * 基础类型列表
          */
-        ClassUtils.BASETYPES = ["int", "Boolean", "Number", "uint", "String", "null"];
+        ClassUtils.BASETYPES = ["number", "boolean", "number", "number", "string", "null"];
         /**
          * 获取类定义
          * @param obj
@@ -23009,7 +22431,7 @@ var feng3d;
     {
         if (obj)
             is;
-        String;
+        string;
         {
             try {
                 return getDefinitionByName(obj);
@@ -23034,7 +22456,7 @@ var feng3d;
                 if (obj === void 0) { obj = is; }
                 return new obj();
             },
-            if: function (obj, String) {
+            if: function (obj, string) {
                 if (obj === void 0) { obj = is; }
                 var cla = getClass(obj);
                 return new cla;
@@ -23115,7 +22537,7 @@ function decodeParams(params) {
         if (item.hasOwnProperty("paramType") && item.hasOwnProperty("paramValue")) {
             var obj;
             if (item.paramType == "flash.geom::Matrix3D") {
-                obj = new Matrix3D(Number[](item.paramValue.rawData));
+                obj = new Matrix3D(number[](item.paramValue.rawData));
             }
             else {
                 obj = ClassUtils.getInstance(item.paramType);
@@ -23181,7 +22603,21 @@ function isSameClass(obj1, obj2) {
 }
 var feng3d;
 (function (feng3d) {
-    formatString.apply(void 0, [format, string].concat(args));
+    /**
+     * 格式化输出字符串
+     * @param format		需要格式化的字符串
+     * @param ...args		传入一个或多个需要替换的参数
+     *
+     * @example
+     * <pre>
+        trace(formatString("[{0} type=\"{1}\" bubbles={2}  cancelable={3}]", "MouseEvent", "click", true, false));
+
+         // trace output
+         [MouseEvent type="click" bubbles=true  cancelable=false]
+     * </pre>
+     * @author feng 2014-5-7
+     */
+    constructor.apply(void 0, [format, string].concat(args));
     string;
     {
         for (var i = 0; i < args.length; ++i)
@@ -23775,23 +23211,20 @@ var feng3d;
      */
     var ParticleStateBase = (function (_super) {
         __extends(ParticleStateBase, _super);
-        function ParticleStateBase() {
-            _super.apply(this, arguments);
-            this._dynamicProperties = new Vector3D[]();
-            this._dynamicPropertiesDirty = new Dictionary(true);
-        }
         /**
          * 创建粒子状态基类
          * @param animator				粒子动画
          * @param particleNode			粒子节点
          * @param needUpdateTime		是否需要更新时间
          */
-        ParticleStateBase.prototype.ParticleStateBase = function (animator, particleNode, needUpdateTime) {
+        function ParticleStateBase(animator, particleNode, needUpdateTime) {
             if (needUpdateTime === void 0) { needUpdateTime = false; }
             _super.call(this, animator, particleNode);
+            this._dynamicProperties = new Vector3D[]();
+            this._dynamicPropertiesDirty = new Dictionary(true);
             this._particleNode = particleNode;
             this._needUpdateTime = needUpdateTime;
-        };
+        }
         Object.defineProperty(ParticleStateBase.prototype, "needUpdateTime", {
             /**
              * 是否需要更新时间
@@ -23955,9 +23388,7 @@ var feng3d;
      * ...
      */
     var ParticleAnimationData = (function () {
-        function ParticleAnimationData() {
-        }
-        ParticleAnimationData.prototype.ParticleAnimationData = function (index, startTime, duration, delay, particle) {
+        function ParticleAnimationData(index, startTime, duration, delay, particle) {
             this.index = index;
             this.startTime = startTime;
             this.totalTime = duration + delay;
@@ -23965,7 +23396,7 @@ var feng3d;
             this.delay = delay;
             this.startVertexIndex = particle.startVertexIndex;
             this.numVertices = particle.numVertices;
-        };
+        }
         return ParticleAnimationData;
     }());
     feng3d.ParticleAnimationData = ParticleAnimationData;
@@ -24018,8 +23449,6 @@ var feng3d;
             /** 位移信息 */
             this.translation = new Vector3D();
         }
-        JointPose.prototype.JointPose = function () {
-        };
         /**
          * Converts the transformation to a Matrix3D representation.
          *
@@ -24049,8 +23478,6 @@ var feng3d;
             /** 父关节索引 （-1说明本身是总父节点，这个序号其实就是行号了，譬如上面”origin“节点的序号就是0，无父节点； "body"节点序号是1，父节点序号是0，也就是说父节点是”origin“）*/
             this.parentIndex = -1;
         }
-        SkeletonJoint.prototype.SkeletonJoint = function () {
-        };
         return SkeletonJoint;
     }());
     feng3d.SkeletonJoint = SkeletonJoint;
@@ -24073,8 +23500,6 @@ var feng3dSheet;
      * @see me.feng3d.animators.uv.UVAnimationFrame
      */
     var SpriteSheetAnimationFrame = (function () {
-        function SpriteSheetAnimationFrame() {
-        }
         /**
          * 创建<code>SpriteSheetAnimationFrame</code>实例
          *
@@ -24084,7 +23509,7 @@ var feng3dSheet;
          * @param scaleV			V元素缩放
          * @param mapID				映射编号
          */
-        SpriteSheetAnimationFrame.prototype.SpriteSheetAnimationFrame = function (offsetU, offsetV, scaleU, scaleV, mapID) {
+        function SpriteSheetAnimationFrame(offsetU, offsetV, scaleU, scaleV, mapID) {
             if (offsetU === void 0) { offsetU = 0; }
             if (offsetV === void 0) { offsetV = 0; }
             if (scaleU === void 0) { scaleU = 1; }
@@ -24095,7 +23520,7 @@ var feng3dSheet;
             this.scaleU = scaleU;
             this.scaleV = scaleV;
             this.mapID = mapID;
-        };
+        }
         return SpriteSheetAnimationFrame;
     }());
     feng3dSheet.SpriteSheetAnimationFrame = SpriteSheetAnimationFrame;
@@ -24107,16 +23532,14 @@ var feng3d;
      * @author feng 2015-9-18
      */
     var CrossfadeTransition = (function () {
-        function CrossfadeTransition() {
-            this.blendSpeed = 0.5;
-        }
         /**
          * 创建淡入淡出变换实例
          * @param blendSpeed			混合速度
          */
-        CrossfadeTransition.prototype.CrossfadeTransition = function (blendSpeed) {
+        function CrossfadeTransition(blendSpeed) {
+            this.blendSpeed = 0.5;
             this.blendSpeed = blendSpeed;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -24149,8 +23572,6 @@ var feng3d;
      * @see me.feng3d.animators.spriteSheet.SpriteSheetAnimationFrame
      */
     var UVAnimationFrame = (function () {
-        function UVAnimationFrame() {
-        }
         /**
          * 创建<code>UVAnimationFrame</code>实例
          *
@@ -24160,7 +23581,7 @@ var feng3d;
          * @param scaleV			V元素缩放
          * @param rotation			旋转角度（度数）
          */
-        UVAnimationFrame.prototype.UVAnimationFrame = function (offsetU, offsetV, scaleU, scaleV, rotation) {
+        function UVAnimationFrame(offsetU, offsetV, scaleU, scaleV, rotation) {
             if (offsetU === void 0) { offsetU = 0; }
             if (offsetV === void 0) { offsetV = 0; }
             if (scaleU === void 0) { scaleU = 1; }
@@ -24171,7 +23592,7 @@ var feng3d;
             this.scaleU = scaleU;
             this.scaleV = scaleV;
             this.rotation = rotation;
-        };
+        }
         return UVAnimationFrame;
     }());
     feng3d.UVAnimationFrame = UVAnimationFrame;
@@ -24197,8 +23618,14 @@ var feng3d;
      * @author feng 2014-4-27
      */
     var BoundingVolumeBase = (function () {
+        /**
+         * 创建包围盒
+         */
         function BoundingVolumeBase() {
             this._aabbPointsDirty = true;
+            this._min = new Vector3D();
+            this._max = new Vector3D();
+            feng3d.AbstractClassError.check(this);
         }
         Object.defineProperty(BoundingVolumeBase.prototype, "max", {
             /**
@@ -24220,14 +23647,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建包围盒
-         */
-        BoundingVolumeBase.prototype.BoundingVolumeBase = function () {
-            this._min = new Vector3D();
-            this._max = new Vector3D();
-            feng3d.AbstractClassError.check(this);
-        };
         Object.defineProperty(BoundingVolumeBase.prototype, "boundingRenderable", {
             /**
              * 渲染实体
@@ -24379,8 +23798,11 @@ var feng3d;
      */
     var AxisAlignedBoundingBox = (function (_super) {
         __extends(AxisAlignedBoundingBox, _super);
+        /**
+         * 创建轴对其包围盒
+         */
         function AxisAlignedBoundingBox() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this._centerX = 0;
             this._centerY = 0;
             this._centerZ = 0;
@@ -24388,12 +23810,6 @@ var feng3d;
             this._halfExtentsY = 0;
             this._halfExtentsZ = 0;
         }
-        /**
-         * 创建轴对其包围盒
-         */
-        AxisAlignedBoundingBox.prototype.AxisAlignedBoundingBox = function () {
-            _super.call(this);
-        };
         /**
          * 创建渲染边界
          */
@@ -24612,23 +24028,20 @@ var feng3d;
      */
     var NullBounds = (function (_super) {
         __extends(NullBounds, _super);
-        function NullBounds() {
-            _super.apply(this, arguments);
-        }
         /**
          * 构建空无空间包围盒
          * @param alwaysIn				是否总在视锥体内
          * @param renderable			渲染实体
          */
-        NullBounds.prototype.NullBounds = function (alwaysIn, renderable) {
+        function NullBounds(alwaysIn, renderable) {
             if (alwaysIn === void 0) { alwaysIn = true; }
             if (renderable === void 0) { renderable = null; }
             _super.call(this);
             this._alwaysIn = alwaysIn;
             this._renderable = renderable;
-            _max.x = _max.y = _max.z = Number.POSITIVE_INFINITY;
-            _min.x = _min.y = _min.z = this._alwaysIn ? Number.NEGATIVE_INFINITY : number.POSITIVE_INFINITY;
-        };
+            _max.x = _max.y = _max.z = number.POSITIVE_INFINITY;
+            _min.x = _min.y = _min.z = this._alwaysIn ? number.NEGATIVE_INFINITY : number.POSITIVE_INFINITY;
+        }
         /**
          * @inheritDoc
          */
@@ -24852,8 +24265,20 @@ var feng3d;
      */
     var View3D = (function (_super) {
         __extends(View3D, _super);
-        function View3D() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个3D视图
+         * @param scene 				场景
+         * @param camera 				摄像机
+         * @param renderer				渲染器
+         * @param forceSoftware			是否强行使用软件渲染
+         * @param profile				指定 Flash Player 支持低级别 GPU 的范围
+         */
+        function View3D(scene, camera, renderer, forceSoftware, profile) {
+            if (scene === void 0) { scene = null; }
+            if (camera === void 0) { camera = null; }
+            if (renderer === void 0) { renderer = null; }
+            if (forceSoftware === void 0) { forceSoftware = false; }
+            if (profile === void 0) { profile = Context3DProfile.STANDARD; }
             this._width = 0;
             this._height = 0;
             this._localPos = new Point();
@@ -24864,21 +24289,6 @@ var feng3d;
             this._scissorRectDirty = true;
             this._viewportDirty = true;
             this._shareContext = false;
-        }
-        /**
-         * 创建一个3D视图
-         * @param scene 				场景
-         * @param camera 				摄像机
-         * @param renderer				渲染器
-         * @param forceSoftware			是否强行使用软件渲染
-         * @param profile				指定 Flash Player 支持低级别 GPU 的范围
-         */
-        View3D.prototype.View3D = function (scene, camera, renderer, forceSoftware, profile) {
-            if (scene === void 0) { scene = null; }
-            if (camera === void 0) { camera = null; }
-            if (renderer === void 0) { renderer = null; }
-            if (forceSoftware === void 0) { forceSoftware = false; }
-            if (profile === void 0) { profile = Context3DProfile.STANDARD; }
             this._scene = scene || new feng3d.Scene3D();
             this._camera = camera || new feng3d.Camera3D();
             this._renderer = renderer || new feng3d.DefaultRenderer();
@@ -24893,7 +24303,7 @@ var feng3d;
             this.addEventListener(Event.ADDED, this.onAdded, false, 0, true);
             this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemoveFromeStage, false, 0, true);
             this._camera.partition = this._scene.partition;
-        };
+        }
         Object.defineProperty(View3D.prototype, "x", {
             set: function (value) {
                 if (x == value)
@@ -25302,18 +24712,16 @@ var feng3d;
      * @author feng 2014-10-10
      */
     var ControllerBase = (function () {
-        function ControllerBase() {
-            this._autoUpdate = true;
-        }
         /**
          * 创建控制器
          * @param targetObject 被控制对象
          */
-        ControllerBase.prototype.ControllerBase = function (targetObject) {
+        function ControllerBase(targetObject) {
             if (targetObject === void 0) { targetObject = null; }
+            this._autoUpdate = true;
             this.targetObject = targetObject;
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(ControllerBase.prototype, "targetObject", {
             /**
              * 被控制对象
@@ -25361,25 +24769,22 @@ var feng3d;
      */
     var LookAtController = (function (_super) {
         __extends(LookAtController, _super);
-        function LookAtController() {
-            _super.apply(this, arguments);
-            this._upAxis = Vector3D.Y_AXIS;
-            this._pos = new Vector3D();
-        }
         /**
          * 创建注视点控制器
          * @param targetObject 控制对象
          * @param lookAtObject 被注视对象
          */
-        LookAtController.prototype.LookAtController = function (targetObject, lookAtObject) {
+        function LookAtController(targetObject, lookAtObject) {
             if (targetObject === void 0) { targetObject = null; }
             if (lookAtObject === void 0) { lookAtObject = null; }
             _super.call(this, targetObject);
+            this._upAxis = Vector3D.Y_AXIS;
+            this._pos = new Vector3D();
             if (lookAtObject)
                 this.lookAtObject = lookAtObject;
             else
                 this.lookAtPosition = new Vector3D();
-        };
+        }
         Object.defineProperty(LookAtController.prototype, "upAxis", {
             /**
              * 目标对象的上朝向
@@ -25485,8 +24890,33 @@ var feng3d;
      */
     var HoverController = (function (_super) {
         __extends(HoverController, _super);
-        function HoverController() {
-            _super.apply(this, arguments);
+        /**
+         * 创建盘旋控制器
+         * @param targetObject 控制对象
+         * @param lookAtObject 被注视对象
+         * @param panAngle 摄像机以Y轴旋转的角度
+         * @param tiltAngle 摄像机以X轴旋转的角度
+         * @param distance 与注视对象的距离
+         * @param minTiltAngle 以X轴旋转的最小角度。
+         * @param maxTiltAngle 以X轴旋转的最大角度。
+         * @param minPanAngle 以Y轴旋转的最小角度。
+         * @param maxPanAngle 以Y轴旋转的最大角度。
+         * @param yFactor
+         * @param wrapPanAngle 是否把角度约束在0到360度
+         */
+        function HoverController(targetObject, lookAtObject, panAngle, tiltAngle, distance, minTiltAngle, maxTiltAngle, minPanAngle, maxPanAngle, yFactor, wrapPanAngle) {
+            if (targetObject === void 0) { targetObject = null; }
+            if (lookAtObject === void 0) { lookAtObject = null; }
+            if (panAngle === void 0) { panAngle = 0; }
+            if (tiltAngle === void 0) { tiltAngle = 90; }
+            if (distance === void 0) { distance = 1000; }
+            if (minTiltAngle === void 0) { minTiltAngle = -90; }
+            if (maxTiltAngle === void 0) { maxTiltAngle = 90; }
+            if (minPanAngle === void 0) { minPanAngle = NaN; }
+            if (maxPanAngle === void 0) { maxPanAngle = NaN; }
+            if (yFactor === void 0) { yFactor = 2; }
+            if (wrapPanAngle === void 0) { wrapPanAngle = false; }
+            _super.call(this, targetObject, lookAtObject);
             this._currentPanAngle = 0;
             this._currentTiltAngle = 90;
             this._origin = new Vector3D(0.0, 0.0, 0.0);
@@ -25568,34 +24998,6 @@ var feng3d;
                 _targetObject.transform3D.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * feng3d.MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
                 _super.update.call(this);
             };
-        }
-        /**
-         * 创建盘旋控制器
-         * @param targetObject 控制对象
-         * @param lookAtObject 被注视对象
-         * @param panAngle 摄像机以Y轴旋转的角度
-         * @param tiltAngle 摄像机以X轴旋转的角度
-         * @param distance 与注视对象的距离
-         * @param minTiltAngle 以X轴旋转的最小角度。
-         * @param maxTiltAngle 以X轴旋转的最大角度。
-         * @param minPanAngle 以Y轴旋转的最小角度。
-         * @param maxPanAngle 以Y轴旋转的最大角度。
-         * @param yFactor
-         * @param wrapPanAngle 是否把角度约束在0到360度
-         */
-        HoverController.prototype.HoverController = function (targetObject, lookAtObject, panAngle, tiltAngle, distance, minTiltAngle, maxTiltAngle, minPanAngle, maxPanAngle, yFactor, wrapPanAngle) {
-            if (targetObject === void 0) { targetObject = null; }
-            if (lookAtObject === void 0) { lookAtObject = null; }
-            if (panAngle === void 0) { panAngle = 0; }
-            if (tiltAngle === void 0) { tiltAngle = 90; }
-            if (distance === void 0) { distance = 1000; }
-            if (minTiltAngle === void 0) { minTiltAngle = -90; }
-            if (maxTiltAngle === void 0) { maxTiltAngle = 90; }
-            if (minPanAngle === void 0) { minPanAngle = NaN; }
-            if (maxPanAngle === void 0) { maxPanAngle = NaN; }
-            if (yFactor === void 0) { yFactor = 2; }
-            if (wrapPanAngle === void 0) { wrapPanAngle = false; }
-            _super.call(this, targetObject, lookAtObject);
             this.distance = distance;
             this.panAngle = panAngle;
             this.tiltAngle = tiltAngle;
@@ -25608,7 +25010,7 @@ var feng3d;
             //values passed in contrustor are applied immediately
             _currentPanAngle = _panAngle;
             _currentTiltAngle = _tiltAngle;
-        };
+        }
         Object.defineProperty(HoverController.prototype, "distance", {
             /**
              * 与注视目标的距离
@@ -25775,14 +25177,14 @@ var feng3d;
     /**
      * Creates a new <code>Face</code> value object.
      *
-     * @param    vertices        [optional] 9 entries long Vector.&lt;Number&gt; representing the x, y and z of v0, v1, and v2 of a face
-     * @param    uvs            [optional] 6 entries long Vector.&lt;Number&gt; representing the u and v of uv0, uv1, and uv2 of a face
+     * @param    vertices        [optional] 9 entries long Vector.&lt;number&gt; representing the x, y and z of v0, v1, and v2 of a face
+     * @param    uvs            [optional] 6 entries long Vector.&lt;number&gt; representing the u and v of uv0, uv1, and uv2 of a face
      */
     function Face(vertices, uvs) {
         if (vertices === void 0) { vertices = null; }
         if (uvs === void 0) { uvs = null; }
-        _vertices = vertices || Number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
-        _uvs = uvs || Number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
+        _vertices = vertices || number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
+        _uvs = uvs || number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
     }
     setUVat(index, number, u, number, v, number);
     {
@@ -25905,9 +25307,9 @@ var feng3d;
     }
     get;
     v0();
-    Number[];
+    number[];
     {
-        return Number[]([_vertices[0], _vertices[1], _vertices[2]]);
+        return number[]([_vertices[0], _vertices[1], _vertices[2]]);
     }
     get;
     v0x();
@@ -25940,9 +25342,9 @@ var feng3d;
     }
     get;
     v1();
-    Number[];
+    number[];
     {
-        return Number[]([_vertices[3], _vertices[4], _vertices[5]]);
+        return number[]([_vertices[3], _vertices[4], _vertices[5]]);
     }
     get;
     v1x();
@@ -25975,9 +25377,9 @@ var feng3d;
     }
     get;
     v2();
-    Number[];
+    number[];
     {
-        return Number[]([_vertices[6], _vertices[7], _vertices[8]]);
+        return number[]([_vertices[6], _vertices[7], _vertices[8]]);
     }
     get;
     v2x();
@@ -26000,10 +25402,10 @@ var feng3d;
     clone();
     Face;
     {
-        var nVertices = Number[]([this._vertices[0], this._vertices[1], this._vertices[2],
+        var nVertices = number[]([this._vertices[0], this._vertices[1], this._vertices[2],
             this._vertices[3], this._vertices[4], this._vertices[5],
             this._vertices[6], this._vertices[7], this._vertices[8]]);
-        var nUvs = Number[]([this._uvs[0], this._uvs[1],
+        var nUvs = number[]([this._uvs[0], this._uvs[1],
             this._uvs[2], this._uvs[3],
             this._uvs[4], this._uvs[5]]);
         return new Face(nVertices, nUvs);
@@ -26096,8 +25498,6 @@ var feng3d;
     var ParticleData = (function () {
         function ParticleData() {
         }
-        ParticleData.prototype.ParticleData = function () {
-        };
         return ParticleData;
     }());
     feng3d.ParticleData = ParticleData;
@@ -26108,20 +25508,18 @@ var feng3d;
      * Texture coordinates value object.
      */
     var UV = (function () {
-        function UV() {
-        }
         /**
          * Creates a new <code>UV</code> object.
          *
          * @param    u        [optional]    The horizontal coordinate of the texture value. Defaults to 0.
          * @param    v        [optional]    The vertical coordinate of the texture value. Defaults to 0.
          */
-        UV.prototype.UV = function (u, v) {
+        function UV(u, v) {
             if (u === void 0) { u = 0; }
             if (v === void 0) { v = 0; }
             this._u = u;
             this._v = v;
-        };
+        }
         Object.defineProperty(UV.prototype, "v", {
             /**
              * Defines the vertical coordinate of the texture value.
@@ -26170,8 +25568,6 @@ var feng3d;
      * 顶点
      */
     var Vertex = (function () {
-        function Vertex() {
-        }
         /**
          *
          * @param x X轴坐标
@@ -26179,7 +25575,7 @@ var feng3d;
          * @param z Z轴坐标
          * @param index 顶点索引
          */
-        Vertex.prototype.Vertex = function (x, y, z, index) {
+        function Vertex(x, y, z, index) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
@@ -26188,7 +25584,7 @@ var feng3d;
             this._y = y;
             this._z = z;
             this._index = index;
-        };
+        }
         Object.defineProperty(Vertex.prototype, "index", {
             get: function () {
                 return _index;
@@ -26260,13 +25656,11 @@ var feng3d;
 (function (feng3d) {
     dynamic;
     var Context3DBufferID = (function () {
-        function Context3DBufferID() {
-        }
         /**
          * 创建3D环境缓冲编号集合
          */
-        Context3DBufferID.prototype.Context3DBufferID = function () {
-        };
+        function Context3DBufferID() {
+        }
         Context3DBufferID.prototype.instance = function () {
             return _instance || ;
             new Context3DBufferID();
@@ -26290,15 +25684,13 @@ var feng3d;
      * @author feng 2014-8-26
      */
     var IndexBufferItem = (function () {
-        function IndexBufferItem() {
+        function IndexBufferItem(context3D, numIndices) {
             /** 是否无效 */
             this.invalid = true;
-        }
-        IndexBufferItem.prototype.IndexBufferItem = function (context3D, numIndices) {
             this.context3D = context3D;
             this.indexBuffer3D = context3D.createIndexBuffer(numIndices);
             this.invalid = true;
-        };
+        }
         IndexBufferItem.prototype.uploadFromVector = function (data, startOffset, count) {
             this.indexBuffer3D.uploadFromVector(data, startOffset, count);
             this.invalid = false;
@@ -26319,6 +25711,9 @@ var feng3d;
      * @author feng 2014-8-28
      */
     var VADataBuffer = (function () {
+        /**
+         * 创建顶点VA数据缓冲
+         */
         function VADataBuffer() {
             /** 缓存字典 可在多个寄存器共享数据缓存时使用同一个 */
             this.bufferItemDic = new Dictionary();
@@ -26327,11 +25722,6 @@ var feng3d;
             /** 缓存是否无效 */
             this.bufferInvalid = true;
         }
-        /**
-         * 创建顶点VA数据缓冲
-         */
-        VADataBuffer.prototype.VADataBuffer = function () {
-        };
         /**
          * 获取顶点缓冲项
          * @param context3D		3d环境
@@ -26392,21 +25782,19 @@ var feng3d;
      * @author feng 2014-8-26
      */
     var VertexBufferItem = (function () {
-        function VertexBufferItem() {
-            /** 是否无效 */
-            this.invalid = true;
-        }
         /**
          * 创建顶点缓冲项
          * @param context3D
          * @param numVertices			要在缓冲区中存储的顶点数量。单个缓冲区中的最大顶点数为 65535。
          * @param data32PerVertex		与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓冲区内选择属性。
          */
-        VertexBufferItem.prototype.VertexBufferItem = function (context3D, numVertices, data32PerVertex) {
+        function VertexBufferItem(context3D, numVertices, data32PerVertex) {
+            /** 是否无效 */
+            this.invalid = true;
             this.context3D = context3D;
             this.vertexBuffer3D = context3D.createVertexBuffer(numVertices, data32PerVertex);
             this.invalid = true;
-        };
+        }
         /**
          * 从矢量数组上载一组顶点的数据到渲染上下文。
          * @param data					位值的矢量。单个顶点由许多按顺序存储在矢量中的值组成。顶点中的值数量在创建缓冲区时使用 Context3D createVertexBuffer3D() 方法的 data32PerVertex 参数指定。矢量的长度必须为每个顶点的值数量乘以顶点数量。
@@ -26455,20 +25843,18 @@ var feng3d;
      * @author feng 2014-6-9
      */
     var Context3DBuffer = (function () {
-        function Context3DBuffer() {
-            /** 数据脏了 */
-            this._dataDirty = true;
-        }
         /**
          * 创建一个Context3D可执行的数据缓存
          * @param dataTypeId 		数据缓存编号
          * @param updateFunc 		更新回调函数
          */
-        Context3DBuffer.prototype.Context3DBuffer = function (dataTypeId, updateFunc) {
+        function Context3DBuffer(dataTypeId, updateFunc) {
+            /** 数据脏了 */
+            this._dataDirty = true;
             this._dataTypeId = dataTypeId;
             this._updateFunc = updateFunc;
             feng3d.AbstractClassError.check(this);
-        };
+        }
         /**
          * 使缓存无效
          */
@@ -26523,17 +25909,14 @@ var feng3d;
      */
     var BlendFactorsBuffer = (function (_super) {
         __extends(BlendFactorsBuffer, _super);
-        function BlendFactorsBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建混合因素缓存
          * @param dataTypeId	数据缓存编号
          * @param updateFunc	更新回调函数
          */
-        BlendFactorsBuffer.prototype.BlendFactorsBuffer = function (dataTypeId, updateFunc) {
+        function BlendFactorsBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * 更新混合因素缓存
          * @param sourceFactor 用于与源颜色相乘的系数。默认为 Context3DBlendFactor.ONE。
@@ -26565,17 +25948,14 @@ var feng3d;
      */
     var CullingBuffer = (function (_super) {
         __extends(CullingBuffer, _super);
-        function CullingBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个三角形剔除模式缓存
          * @param dataTypeId 		数据缓存编号
          * @param updateFunc 		更新回调函数
          */
-        CullingBuffer.prototype.CullingBuffer = function (dataTypeId, updateFunc) {
+        function CullingBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -26602,17 +25982,14 @@ var feng3d;
      */
     var DepthTestBuffer = (function (_super) {
         __extends(DepthTestBuffer, _super);
-        function DepthTestBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个深度测试缓存
          * @param dataTypeId 		数据缓存编号
          * @param updateFunc 		更新回调函数
          */
-        DepthTestBuffer.prototype.DepthTestBuffer = function (dataTypeId, updateFunc) {
+        function DepthTestBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -26641,8 +26018,13 @@ var feng3d;
      */
     var IndexBuffer = (function (_super) {
         __extends(IndexBuffer, _super);
-        function IndexBuffer() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个索引缓存
+         * @param dataTypeId 		数据缓存编号
+         * @param updateFunc 		更新回调函数
+         */
+        function IndexBuffer(dataTypeId, updateFunc) {
+            _super.call(this, dataTypeId, updateFunc);
             this._bufferItemDic = new Dictionary();
             this.firstIndex = 0;
             this.numTriangles = -1;
@@ -26651,14 +26033,6 @@ var feng3d;
             /** 缓存无效 */
             this.bufferInvalid = true;
         }
-        /**
-         * 创建一个索引缓存
-         * @param dataTypeId 		数据缓存编号
-         * @param updateFunc 		更新回调函数
-         */
-        IndexBuffer.prototype.IndexBuffer = function (dataTypeId, updateFunc) {
-            _super.call(this, dataTypeId, updateFunc);
-        };
         /**
          * @inheritDoc
          */
@@ -26730,20 +26104,17 @@ var feng3d;
      */
     var ProgramBuffer = (function (_super) {
         __extends(ProgramBuffer, _super);
-        function ProgramBuffer() {
-            _super.apply(this, arguments);
-            this.bufferItemDic = new Dictionary();
-            /** 是否无效 */
-            this.bufferInvalid = true;
-        }
         /**
          * 创建一个渲染程序缓存
          * @param dataTypeId 		数据缓存编号
          * @param updateFunc 		更新回调函数
          */
-        ProgramBuffer.prototype.ProgramBuffer = function (dataTypeId, updateFunc) {
+        function ProgramBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+            this.bufferItemDic = new Dictionary();
+            /** 是否无效 */
+            this.bufferInvalid = true;
+        }
         /**
          * @inheritDoc
          */
@@ -26787,19 +26158,16 @@ var feng3d;
      */
     var RegisterBuffer = (function (_super) {
         __extends(RegisterBuffer, _super);
-        function RegisterBuffer() {
-            _super.apply(this, arguments);
-            /** 需要寄存器的个数 */
-            this.numRegisters = 1;
-        }
         /**
          * 创建寄存器数据缓存
          * @param dataTypeId 		数据编号
          * @param updateFunc 		数据更新回调函数
          */
-        RegisterBuffer.prototype.RegisterBuffer = function (dataTypeId, updateFunc) {
+        function RegisterBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+            /** 需要寄存器的个数 */
+            this.numRegisters = 1;
+        }
         return RegisterBuffer;
     }(feng3d.Context3DBuffer));
     feng3d.RegisterBuffer = RegisterBuffer;
@@ -26812,17 +26180,14 @@ var feng3d;
      */
     var ConstantsBuffer = (function (_super) {
         __extends(ConstantsBuffer, _super);
-        function ConstantsBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建3d环境常量数据缓存
          * @param dataTypeId 		数据编号
          * @param updateFunc 		数据更新回调函数
          */
-        ConstantsBuffer.prototype.ConstantsBuffer = function (dataTypeId, updateFunc) {
+        function ConstantsBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         return ConstantsBuffer;
     }(feng3d.RegisterBuffer));
     feng3d.ConstantsBuffer = ConstantsBuffer;
@@ -26835,17 +26200,14 @@ var feng3d;
      */
     var FCByteArrayBuffer = (function (_super) {
         __extends(FCByteArrayBuffer, _super);
-        function FCByteArrayBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个片段字节数组常量数据缓存
          * @param dataTypeId		数据编号
          * @param updateFunc		数据更新回调函数
          */
-        FCByteArrayBuffer.prototype.FCByteArrayBuffer = function (dataTypeId, updateFunc) {
+        function FCByteArrayBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -26865,17 +26227,14 @@ var feng3d;
      */
     var FCMatrixBuffer = (function (_super) {
         __extends(FCMatrixBuffer, _super);
-        function FCMatrixBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建片段矩阵常量数据缓存
          * @param dataTypeId 		数据编号
          * @param updateFunc 		数据更新回调函数
          */
-        FCMatrixBuffer.prototype.FCMatrixBuffer = function (dataTypeId, updateFunc) {
+        function FCMatrixBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -26905,17 +26264,14 @@ var feng3d;
      */
     var FCVectorBuffer = (function (_super) {
         __extends(FCVectorBuffer, _super);
-        function FCVectorBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建片段向量常量数据缓存
          * @param dataTypeId 		数据编号
          * @param updateFunc 		数据更新回调函数
          */
-        FCVectorBuffer.prototype.FCVectorBuffer = function (dataTypeId, updateFunc) {
+        function FCVectorBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -26947,17 +26303,14 @@ var feng3d;
      */
     var VCByteArrayBuffer = (function (_super) {
         __extends(VCByteArrayBuffer, _super);
-        function VCByteArrayBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个顶点字节数组常量数据缓存
          * @param dataTypeId		数据编号
          * @param updateFunc		数据更新回调函数
          */
-        VCByteArrayBuffer.prototype.VCByteArrayBuffer = function (dataTypeId, updateFunc) {
+        function VCByteArrayBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -26977,17 +26330,14 @@ var feng3d;
      */
     var VCMatrixBuffer = (function (_super) {
         __extends(VCMatrixBuffer, _super);
-        function VCMatrixBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建顶点矩阵常量数据缓存
          * @param dataTypeId 		数据编号
          * @param updateFunc 		数据更新回调函数
          */
-        VCMatrixBuffer.prototype.VCMatrixBuffer = function (dataTypeId, updateFunc) {
+        function VCMatrixBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -27017,17 +26367,14 @@ var feng3d;
      */
     var VCVectorBuffer = (function (_super) {
         __extends(VCVectorBuffer, _super);
-        function VCVectorBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个顶点向量常量数据缓存
          * @param dataTypeId		数据编号
          * @param updateFunc		数据更新回调函数
          */
-        VCVectorBuffer.prototype.VCVectorBuffer = function (dataTypeId, updateFunc) {
+        function VCVectorBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -27058,18 +26405,15 @@ var feng3d;
      */
     var FSArrayBuffer = (function (_super) {
         __extends(FSArrayBuffer, _super);
-        function FSArrayBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建纹理数组缓存
          * @param dataTypeId 数据编号
          * @param updateFunc 数据更新回调函数
          * @param textureFlags	取样参数回调函数
          */
-        FSArrayBuffer.prototype.FSArrayBuffer = function (dataTypeId, updateFunc) {
+        function FSArrayBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -27100,18 +26444,15 @@ var feng3d;
      */
     var FSBuffer = (function (_super) {
         __extends(FSBuffer, _super);
-        function FSBuffer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建纹理数据缓存
          * @param dataTypeId 	数据编号
          * @param updateFunc 	数据更新回调函数
          * @param textureFlags	取样参数回调函数
          */
-        FSBuffer.prototype.FSBuffer = function (dataTypeId, updateFunc) {
+        function FSBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -27140,20 +26481,17 @@ var feng3d;
      */
     var OCBuffer = (function (_super) {
         __extends(OCBuffer, _super);
-        function OCBuffer() {
-            _super.apply(this, arguments);
-            this.enableDepthAndStencil = true;
-            this.surfaceSelector = 0;
-            this._antiAlias = 0;
-        }
         /**
          * 创建一个输出纹理缓冲
          * @param dataTypeId 		数据缓存编号
          * @param updateFunc 		更新回调函数
          */
-        OCBuffer.prototype.OCBuffer = function (dataTypeId, updateFunc) {
+        function OCBuffer(dataTypeId, updateFunc) {
             _super.call(this, dataTypeId, updateFunc);
-        };
+            this.enableDepthAndStencil = true;
+            this.surfaceSelector = 0;
+            this._antiAlias = 0;
+        }
         /**
          * @inheritDoc
          */
@@ -27182,8 +26520,13 @@ var feng3d;
      */
     var VABuffer = (function (_super) {
         __extends(VABuffer, _super);
-        function VABuffer() {
-            _super.apply(this, arguments);
+        /**
+         * 创建顶点数据缓存
+         * @param dataTypeId 数据编号
+         * @param updateFunc 数据更新回调函数
+         */
+        function VABuffer(dataTypeId, updateFunc) {
+            _super.call(this, dataTypeId, updateFunc);
             /** 顶点数据缓存(真正的数据缓存) */
             this.dataBuffer = new feng3d.VADataBuffer();
         }
@@ -27197,14 +26540,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建顶点数据缓存
-         * @param dataTypeId 数据编号
-         * @param updateFunc 数据更新回调函数
-         */
-        VABuffer.prototype.VABuffer = function (dataTypeId, updateFunc) {
-            _super.call(this, dataTypeId, updateFunc);
-        };
         /**
          * @inheritDoc
          */
@@ -27227,14 +26562,18 @@ var feng3d;
         /**
          * 顶点数据缓冲格式数组
          */
-        VABuffer.bufferFormats = String[]([null, Context3DVertexBufferFormat.FLOAT_1, Context3DVertexBufferFormat.FLOAT_2, Context3DVertexBufferFormat.FLOAT_3, Context3DVertexBufferFormat.FLOAT_4]);
+        VABuffer.bufferFormats = string[]([null, Context3DVertexBufferFormat.FLOAT_1, Context3DVertexBufferFormat.FLOAT_2, Context3DVertexBufferFormat.FLOAT_3, Context3DVertexBufferFormat.FLOAT_4]);
         return VABuffer;
     }(feng3d.RegisterBuffer));
     feng3d.VABuffer = VABuffer;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    _bId();
+    /**
+     * 3D环境缓冲编号集合实例
+     * @author feng 2015-7-21
+     */
+    constructor();
     Context3DBufferID;
     {
         return Context3DBufferID.instance;
@@ -27260,15 +26599,13 @@ var feng3d;
      * @author feng 2014-8-20
      */
     var AGALProgram3DCache = (function () {
-        function AGALProgram3DCache() {
-            this.Dictionary = new Dictionary();
-            this.Dictionary = new Dictionary();
-        }
         /**
          * 创建AGAL程序缓冲
          * @param context3D			3D环境
          */
-        AGALProgram3DCache.prototype.AGALProgram3DCache = function (context3D) {
+        function AGALProgram3DCache(context3D) {
+            this.Dictionary = new Dictionary();
+            this.Dictionary = new Dictionary();
             if (_instanceDic[context3D])
                 throw new Error("已经存在对应的实例，请使用GetInstance方法获取。");
             _instanceDic[context3D] = this;
@@ -27276,7 +26613,7 @@ var feng3d;
             this._program3Ds = new Dictionary();
             this._usages = new Dictionary();
             this._keys = new Dictionary();
-        };
+        }
         /**
          * 实例字典
          */
@@ -27383,16 +26720,14 @@ var feng3d;
      * @author feng 2015-7-18
      */
     var Context3DBufferCollector = (function () {
-        function Context3DBufferCollector() {
-            /** 所有数据缓存 */
-            this.bufferDic = new Dictionary();
-        }
         /**
          * 创建3D环境缓冲收集器
          * @bufferOwner		缓冲拥有者
          */
-        Context3DBufferCollector.prototype.Context3DBufferCollector = function () {
-        };
+        function Context3DBufferCollector() {
+            /** 所有数据缓存 */
+            this.bufferDic = new Dictionary();
+        }
         Object.defineProperty(Context3DBufferCollector.prototype, "rootBufferOwner", {
             /**
              * 根3D环境缓冲拥有者
@@ -27514,8 +26849,11 @@ var feng3d;
      */
     var Context3DCache = (function (_super) {
         __extends(Context3DCache, _super);
+        /**
+         * 创建3D环境缓存类
+         */
         function Context3DCache() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /** 寄存器数据缓存 */
             this.regBufferDic = new Dictionary();
             /** 其他数据缓存 */
@@ -27540,12 +26878,6 @@ var feng3d;
                 this.indexBuffer = context3DDataBuffer;
             };
         }
-        /**
-         * 创建3D环境缓存类
-         */
-        Context3DCache.prototype.Context3DCache = function () {
-            _super.call(this);
-        };
         return Context3DCache;
     }(feng3d.Context3DBufferCollector));
     feng3d.Context3DCache = Context3DCache;
@@ -27663,18 +26995,16 @@ var feng3d;
      * @author feng 2014-9-3
      */
     var Context3DBufferTypeManager = (function () {
-        function Context3DBufferTypeManager() {
-        }
         /**
          * 创建3d环境缓存类型管理者
          */
-        Context3DBufferTypeManager.prototype.Context3DBufferTypeManager = function () {
+        function Context3DBufferTypeManager() {
             if (_instance)
                 throw new Error("单例模式");
             _instance = this;
             this.bufferTypeDic = new Dictionary();
             this.typeClassDic = new Dictionary();
-        };
+        }
         Context3DBufferTypeManager.prototype.instance = function () {
             return _instance || new Context3DBufferTypeManager();
         };
@@ -27779,14 +27109,12 @@ var feng3d;
      * @author feng 2014-8-14
      */
     var TextureCenter = (function () {
-        function TextureCenter() {
-            this.Dictionary = new Dictionary();
-        }
         /**
          * 创建一个纹理缓存中心
          */
-        TextureCenter.prototype.TextureCenter = function () {
-        };
+        function TextureCenter() {
+            this.Dictionary = new Dictionary();
+        }
         /** 纹理字典 */
         TextureCenter.var = textureDic;
         /**
@@ -27892,13 +27220,11 @@ var feng3d;
      * @author feng 2015-3-6
      */
     var EntityListItemPool = (function () {
-        function EntityListItemPool() {
-        }
         /**
          * 创建一个实体列表元素池
          */
-        EntityListItemPool.prototype.EntityListItemPool = function () {
-        };
+        function EntityListItemPool() {
+        }
         /**
          * 释放所有
          */
@@ -27916,13 +27242,11 @@ var feng3d;
      * @author feng 2015-3-6
      */
     var RenderableListItem = (function () {
-        function RenderableListItem() {
-        }
         /**
          * 创建一个可渲染列表
          */
-        RenderableListItem.prototype.RenderableListItem = function () {
-        };
+        function RenderableListItem() {
+        }
         return RenderableListItem;
     }());
     feng3d.RenderableListItem = RenderableListItem;
@@ -27934,14 +27258,12 @@ var feng3d;
      * @author feng 2015-3-6
      */
     var RenderableListItemPool = (function () {
-        function RenderableListItemPool() {
-        }
         /**
          * 创建可渲染列表元素池
          */
-        RenderableListItemPool.prototype.RenderableListItemPool = function () {
+        function RenderableListItemPool() {
             this._pool = new feng3d.RenderableListItem[]();
-        };
+        }
         /**
          * 获取 可渲染列表元
          */
@@ -27976,11 +27298,9 @@ var feng3d;
             /** 射线采集器(采集射线穿过场景中物体的列表) */
             this._mousePicker = new feng3d.RaycastPicker(false);
             /** 收集的鼠标事件列表 */
-            this.mouseEventList = new String[]();
+            this.mouseEventList = new string[]();
             /** 是否开启鼠标事件检测 */
             this.mouseEventOpen = false;
-        }
-        Mouse3DManager.prototype.Mouse3DManager = function () {
             if (eventMap == null) {
                 eventMap = new Dictionary();
                 eventMap[MouseEvent.CLICK] = feng3d.MouseEvent3D.CLICK;
@@ -27992,7 +27312,7 @@ var feng3d;
                 eventMap[MouseEvent.MOUSE_UP] = feng3d.MouseEvent3D.MOUSE_UP;
                 eventMap[MouseEvent.MOUSE_WHEEL] = feng3d.MouseEvent3D.MOUSE_WHEEL;
             }
-        };
+        }
         /**
          * 开启鼠标事件
          */
@@ -28105,22 +27425,20 @@ var feng3d;
      * @see away3d.core.managers.Stage3DProxy
      */
     var Stage3DManager = (function () {
-        function Stage3DManager() {
-            this.Stage3DProxy = [];
-            this.number = 0;
-        }
         /**
          * Creates a new Stage3DManager class.
          * @param stage The Stage object that contains the Stage3D objects to be managed.
          * @private
          */
-        Stage3DManager.prototype.Stage3DManager = function (stage, Stage3DManagerSingletonEnforcer) {
+        function Stage3DManager(stage, Stage3DManagerSingletonEnforcer) {
+            this.Stage3DProxy = [];
+            this.number = 0;
             if (!Stage3DManagerSingletonEnforcer)
                 throw new Error("This class is a multiton and cannot be instantiated manually. Use Stage3DManager.getInstance instead.");
             this._stage = stage;
             if (!_stageProxies)
                 _stageProxies = new feng3d.Stage3DProxy[](this._stage.stage3Ds.length, true);
-        };
+        }
         Stage3DManager.var = _instances;
         Stage3DManager.var = _stageProxies;
         Stage3DManager.var = _numStageProxies;
@@ -28206,14 +27524,12 @@ var feng3d;
      * @author feng 2015-3-8
      */
     var NodeBase = (function () {
-        function NodeBase() {
-        }
         /**
          * 创建一个分区节点基类
          */
-        NodeBase.prototype.NodeBase = function () {
+        function NodeBase() {
             this._childNodes = new NodeBase[]();
-        };
+        }
         Object.defineProperty(NodeBase.prototype, "parent", {
             /**
              * 父分区节点
@@ -28235,7 +27551,7 @@ var feng3d;
              * @private
              */
             set: function (value) {
-                if (Boolean(_debugPrimitive) == value)
+                if (boolean(_debugPrimitive) == value)
                     return;
                 if (value)
                     _debugPrimitive = createDebugBounds();
@@ -28340,18 +27656,15 @@ var feng3d;
      */
     var EntityNode = (function (_super) {
         __extends(EntityNode, _super);
-        function EntityNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个实体分区节点
          * @param entity		实体
          */
-        EntityNode.prototype.EntityNode = function (entity) {
+        function EntityNode(entity) {
             _super.call(this);
             this._entity = entity;
             this._numEntities = 1;
-        };
+        }
         /**
          * 从父节点中移除
          */
@@ -28390,16 +27703,13 @@ var feng3d;
      */
     var CameraNode = (function (_super) {
         __extends(CameraNode, _super);
-        function CameraNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个摄像机分区节点
          * @param camera		摄像机
          */
-        CameraNode.prototype.CameraNode = function (camera) {
+        function CameraNode(camera) {
             _super.call(this, camera);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -28417,17 +27727,14 @@ var feng3d;
      */
     var DirectionalLightNode = (function (_super) {
         __extends(DirectionalLightNode, _super);
-        function DirectionalLightNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个方向光分区节点
          * @param light 		方向光
          */
-        DirectionalLightNode.prototype.DirectionalLightNode = function (light) {
+        function DirectionalLightNode(light) {
             _super.call(this, light);
             this._light = light;
-        };
+        }
         Object.defineProperty(DirectionalLightNode.prototype, "light", {
             /**
              * 方向光
@@ -28459,17 +27766,14 @@ var feng3d;
      */
     var MeshNode = (function (_super) {
         __extends(MeshNode, _super);
-        function MeshNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个网格分区节点
          * @param mesh		网格
          */
-        MeshNode.prototype.MeshNode = function (mesh) {
+        function MeshNode(mesh) {
             _super.call(this, mesh);
             this._mesh = mesh;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -28495,17 +27799,14 @@ var feng3d;
      */
     var PointLightNode = (function (_super) {
         __extends(PointLightNode, _super);
-        function PointLightNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个点光源分区节点
          * @param light		点光源
          */
-        PointLightNode.prototype.PointLightNode = function (light) {
+        function PointLightNode(light) {
             _super.call(this, light);
             this._light = light;
-        };
+        }
         Object.defineProperty(PointLightNode.prototype, "light", {
             /**
              * 点光源
@@ -28537,17 +27838,14 @@ var feng3d;
      */
     var RenderableNode = (function (_super) {
         __extends(RenderableNode, _super);
-        function RenderableNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * Creates a new RenderableNode object.
          * @param mesh The mesh to be contained in the node.
          */
-        RenderableNode.prototype.RenderableNode = function (renderable) {
+        function RenderableNode(renderable) {
             _super.call(this, feng3d.Entity(renderable));
             this._renderable = renderable; // also keep a stronger typed reference
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -28569,17 +27867,14 @@ var feng3d;
      */
     var SkyBoxNode = (function (_super) {
         __extends(SkyBoxNode, _super);
-        function SkyBoxNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建SkyBoxNode实例
          * @param skyBox		天空盒实例
          */
-        SkyBoxNode.prototype.SkyBoxNode = function (skyBox) {
+        function SkyBoxNode(skyBox) {
             _super.call(this, skyBox);
             this._skyBox = skyBox;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -28609,15 +27904,12 @@ var feng3d;
      */
     var NullNode = (function (_super) {
         __extends(NullNode, _super);
-        function NullNode() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个空分区节点
          */
-        NullNode.prototype.NullNode = function () {
+        function NullNode() {
             _super.call(this);
-        };
+        }
         return NullNode;
     }(feng3d.NodeBase));
     feng3d.NullNode = NullNode;
@@ -28630,15 +27922,13 @@ var feng3d;
      * @author feng 2015-3-5
      */
     var Partition3D = (function () {
-        function Partition3D() {
-        }
         /**
          * 创建一个3D空间分区
          * @param rootNode	根节点
          */
-        Partition3D.prototype.Partition3D = function (rootNode) {
+        function Partition3D(rootNode) {
             this._rootNode = rootNode || new feng3d.NullNode();
-        };
+        }
         /**
          * 发送一个横越者穿过分区
          * @param traverser		横越者
@@ -28737,8 +28027,6 @@ var feng3d;
     var PickingColliderBase = (function () {
         function PickingColliderBase() {
         }
-        PickingColliderBase.prototype.PickingColliderBase = function () {
-        };
         /**
          * 获取碰撞法线
          * @param indexData 顶点索引数据
@@ -28815,17 +28103,14 @@ var feng3d;
      */
     var AS3PickingCollider = (function (_super) {
         __extends(AS3PickingCollider, _super);
-        function AS3PickingCollider() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个AS碰撞检测器
          * @param findClosestCollision 是否查找最短距离碰撞
          */
-        AS3PickingCollider.prototype.AS3PickingCollider = function (findClosestCollision) {
+        function AS3PickingCollider(findClosestCollision) {
             if (findClosestCollision === void 0) { findClosestCollision = false; }
             this._findClosestCollision = findClosestCollision;
-        };
+        }
         AS3PickingCollider.prototype.testSubMeshCollision = function (subMesh, pickingCollisionVO, shortestCollisionDistance, bothSides) {
             if (bothSides === void 0) { bothSides = true; }
             var t;
@@ -28854,18 +28139,18 @@ var feng3d;
             for (var index = 0; index < numIndices; index += 3) {
                 //三角形三个顶点索引
                 i0 = vertexOffset + indexData[index] * vertexStride;
-                i1 = vertexOffset + indexData[uint(index + 1)] * vertexStride;
-                i2 = vertexOffset + indexData[uint(index + 2)] * vertexStride;
+                i1 = vertexOffset + indexData[number(index + 1)] * vertexStride;
+                i2 = vertexOffset + indexData[number(index + 2)] * vertexStride;
                 //三角形三个顶点数据
                 p0x = vertexData[i0];
-                p0y = vertexData[uint(i0 + 1)];
-                p0z = vertexData[uint(i0 + 2)];
+                p0y = vertexData[number(i0 + 1)];
+                p0z = vertexData[number(i0 + 2)];
                 p1x = vertexData[i1];
-                p1y = vertexData[uint(i1 + 1)];
-                p1z = vertexData[uint(i1 + 2)];
+                p1y = vertexData[number(i1 + 1)];
+                p1z = vertexData[number(i1 + 2)];
                 p2x = vertexData[i2];
-                p2y = vertexData[uint(i2 + 1)];
-                p2z = vertexData[uint(i2 + 2)];
+                p2y = vertexData[number(i2 + 1)];
+                p2z = vertexData[number(i2 + 2)];
                 //计算出三角面的法线
                 s0x = p1x - p0x; // s0 = p1 - p0
                 s0y = p1y - p0y;
@@ -28943,21 +28228,18 @@ var feng3d;
      */
     var PBPickingCollider = (function (_super) {
         __extends(PBPickingCollider, _super);
-        function PBPickingCollider() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个 PBPickingCollider
          * @param findClosestCollision 是否查找最短距离碰撞
          */
-        PBPickingCollider.prototype.PBPickingCollider = function (findClosestCollision) {
+        function PBPickingCollider(findClosestCollision) {
             if (findClosestCollision === void 0) { findClosestCollision = false; }
             this._findClosestCollision = findClosestCollision;
             //初始化出入缓存
-            this._kernelOutputBuffer = new Number[]();
+            this._kernelOutputBuffer = new number[]();
             //初始化渲染器
             this._rayTriangleKernel = new Shader(new this.RayTriangleKernelClass());
-        };
+        }
         PBPickingCollider.prototype.setLocalRay = function (ray3D) {
             _super.prototype.setLocalRay.call(this, ray3D);
             //上传射线信息到渲染器
@@ -28972,7 +28254,7 @@ var feng3d;
             var indexData = subGeom.indexData;
             var vertexData = subGeom.vertexPositionData;
             var uvData = subGeom.UVData;
-            var numericIndexData = Number[](indexData);
+            var numericIndexData = number[](indexData);
             var indexBufferDims = this.evaluateArrayAsGrid(numericIndexData);
             //更新几何体数据到渲染器
             if (!this._lastSubMeshUploaded || this._lastSubMeshUploaded !== subMesh) {
@@ -29074,7 +28356,11 @@ var feng3d;
      * @author feng 2014-4-29
      */
     var PickingCollisionVO = (function () {
-        function PickingCollisionVO() {
+        /**
+         * 创建射线拾取碰撞数据
+         * @param entity
+         */
+        function PickingCollisionVO(entity) {
             /**
              * 本地坐标系射线
              */
@@ -29083,14 +28369,8 @@ var feng3d;
              * 场景中碰撞射线
              */
             this.ray3D = new feng3d.Ray3D();
-        }
-        /**
-         * 创建射线拾取碰撞数据
-         * @param entity
-         */
-        PickingCollisionVO.prototype.PickingCollisionVO = function (entity) {
             this.firstEntity = entity;
-        };
+        }
         Object.defineProperty(PickingCollisionVO.prototype, "scenePosition", {
             /**
              * 实体上碰撞世界坐标
@@ -29112,15 +28392,13 @@ var feng3d;
      * @author feng 2014-4-29
      */
     var RaycastPicker = (function () {
-        function RaycastPicker() {
-        }
         /**
          *
          * @param findClosestCollision 是否需要寻找最接近的
          */
-        RaycastPicker.prototype.RaycastPicker = function (findClosestCollision) {
+        function RaycastPicker(findClosestCollision) {
             this._findClosestCollision = findClosestCollision;
-        };
+        }
         /**
          * 获取射线穿过的实体
          * @param ray3D 射线
@@ -29152,7 +28430,7 @@ var feng3d;
             // Evaluate triangle collisions when needed.
             // Replaces collision data provided by bounds collider with more precise data.
             // ---------------------------------------------------------------------
-            var shortestCollisionDistance = Number.MAX_VALUE;
+            var shortestCollisionDistance = number.MAX_VALUE;
             var bestCollisionVO;
             var pickingCollisionVO;
             var entity;
@@ -29209,8 +28487,17 @@ var feng3d;
      */
     var Stage3DProxy = (function (_super) {
         __extends(Stage3DProxy, _super);
-        function Stage3DProxy() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个3D舞台代理
+         * @param stage3DIndex		被代理3D舞台编号
+         * @param stage3D			被代理的3D舞台
+         * @param stage3DManager	3D舞台管理类
+         * @param forceSoftware		是否强制软件渲染
+         * @param profile
+         */
+        function Stage3DProxy(stage3DIndex, stage3D, stage3DManager, forceSoftware, profile) {
+            if (forceSoftware === void 0) { forceSoftware = false; }
+            if (profile === void 0) { profile = "baseline"; }
             this._frameEventDriver = new Shape();
             this._stage3DIndex = -1;
             this._backBufferEnableDepthAndStencil = true;
@@ -29243,18 +28530,6 @@ var feng3d;
                 if (!this.hasEventListener(Event.ENTER_FRAME) && !this.hasEventListener(Event.EXIT_FRAME) && this._frameEventDriver.hasEventListener(Event.ENTER_FRAME))
                     this._frameEventDriver.removeEventListener(Event.ENTER_FRAME, this.onEnterFrame, useCapture);
             };
-        }
-        /**
-         * 创建一个3D舞台代理
-         * @param stage3DIndex		被代理3D舞台编号
-         * @param stage3D			被代理的3D舞台
-         * @param stage3DManager	3D舞台管理类
-         * @param forceSoftware		是否强制软件渲染
-         * @param profile
-         */
-        Stage3DProxy.prototype.Stage3DProxy = function (stage3DIndex, stage3D, stage3DManager, forceSoftware, profile) {
-            if (forceSoftware === void 0) { forceSoftware = false; }
-            if (profile === void 0) { profile = "baseline"; }
             this._stage3DIndex = stage3DIndex;
             this._stage3D = stage3D;
             this._stage3D.x = 0;
@@ -29264,7 +28539,7 @@ var feng3d;
             this._viewPort = new Rectangle();
             this._stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.onContext3DUpdate, false, 1000, false);
             this.requestContext(forceSoftware, profile);
-        };
+        }
         Object.defineProperty(Stage3DProxy.prototype, "color", {
             /**
              * The background color of the Stage3D.
@@ -29644,8 +28919,11 @@ var feng3d;
     dynamic;
     var Register = (function (_super) {
         __extends(Register, _super);
-        function Register() {
-            _super.apply(this, arguments);
+        /**
+         * 创建一个寄存器
+         * @param regId			寄存器id
+         */
+        function Register(regId) {
             this.string = NAME;
             this._index = -1;
             /**
@@ -29654,6 +28932,8 @@ var feng3d;
              * @return
              */
             this.override = flash_proxy;
+            this._regId = regId;
+            this.init();
         }
         Object.defineProperty(Register.prototype, "valueString", {
             get: function () {
@@ -29699,14 +28979,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个寄存器
-         * @param regId			寄存器id
-         */
-        Register.prototype.Register = function (regId) {
-            this._regId = regId;
-            this.init();
-        };
         /**
          * 初始化
          */
@@ -29805,18 +29077,15 @@ var feng3d;
      */
     var RegisterArray = (function (_super) {
         __extends(RegisterArray, _super);
-        function RegisterArray() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个寄存器数组
          * @param regId		寄存器id
          */
-        RegisterArray.prototype.RegisterArray = function (regId) {
+        function RegisterArray(regId) {
             this._regs = new Register[]();
             this._regs.length = 1;
             _super.call(this, regId);
-        };
+        }
         Object.defineProperty(RegisterArray.prototype, "first", {
             /**
              * 第一个寄存器
@@ -29867,7 +29136,7 @@ var feng3d;
             for (var i = 0; i < args.length; i++) {
                 if (args[i])
                     is;
-                uint;
+                number;
                 {
                     index += args[i];
                 }
@@ -29907,17 +29176,14 @@ var feng3d;
      */
     var RegisterMatrix = (function (_super) {
         __extends(RegisterMatrix, _super);
-        function RegisterMatrix() {
-            _super.apply(this, arguments);
-        }
         /**
          *
          * @param regId
          */
-        RegisterMatrix.prototype.RegisterMatrix = function (regId) {
+        function RegisterMatrix(regId) {
             _super.call(this, regId);
             this.regLen = 4;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -29937,19 +29203,16 @@ var feng3d;
      */
     var RegisterArrayItem = (function (_super) {
         __extends(RegisterArrayItem, _super);
-        function RegisterArrayItem() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个寄存器数组元素
          * @param registerArray			所属寄存器数组
          * @param arrayIndex			所在寄存器数组中的索引
          */
-        RegisterArrayItem.prototype.RegisterArrayItem = function (registerArray, arrayIndex) {
+        function RegisterArrayItem(registerArray, arrayIndex) {
             _super.call(this, registerArray.regId);
             this._registerArray = registerArray;
             this._arrayIndex = arrayIndex;
-        };
+        }
         RegisterArrayItem.prototype.toString = function () {
             if (Register.TO_STRING == Register.NAME)
                 return this.regId + "[" + this._arrayIndex + "]";
@@ -29969,19 +29232,16 @@ var feng3d;
      */
     var RegisterArrayComplexItem = (function (_super) {
         __extends(RegisterArrayComplexItem, _super);
-        function RegisterArrayComplexItem() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个寄存器数组复杂元素
          * @param registerArray			所属寄存器数组
          * @param complexArgs			复杂参数（用来计算所在寄存器数组中的索引值）
          * @param arrayIndex			起始索引值
          */
-        RegisterArrayComplexItem.prototype.RegisterArrayComplexItem = function (registerArray, complexArgs, startIndex) {
+        function RegisterArrayComplexItem(registerArray, complexArgs, startIndex) {
             this._complexArgs = complexArgs;
             _super.call(this, registerArray, startIndex);
-        };
+        }
         Object.defineProperty(RegisterArrayComplexItem.prototype, "complexArgs", {
             /**
              * 复杂参数（用来计算所在寄存器数组中的索引值）
@@ -30014,18 +29274,16 @@ var feng3d;
      * @author feng 2014-6-9
      */
     var RegisterPool = (function () {
-        function RegisterPool() {
-        }
         /**
          * 创建寄存器池
          * @param regType 寄存器类型
          * @param regCount 寄存器总数
          */
-        RegisterPool.prototype.RegisterPool = function (regType, regCount) {
+        function RegisterPool(regType, regCount) {
             this._regType = regType;
             this._regCount = regCount;
             this.init();
-        };
+        }
         Object.defineProperty(RegisterPool.prototype, "regCount", {
             /**
              * 寄存器总数
@@ -30305,18 +29563,16 @@ var feng3d;
      * @author feng 2014-6-5
      */
     var ShaderRegisterCache = (function () {
-        function ShaderRegisterCache() {
-            this.boolean = true;
-        }
         /**
          * 创建渲染寄存器缓存
          */
-        ShaderRegisterCache.prototype.ShaderRegisterCache = function () {
+        function ShaderRegisterCache() {
+            this.boolean = true;
             if (_instance)
                 throw new Error("ShaderRegisterCache 单例");
             _instance = this;
             this.init();
-        };
+        }
         /**
          * 初始化
          */
@@ -30455,7 +29711,12 @@ var feng3d;
      * @author feng 2015-3-1
      */
     var RendererBase = (function () {
-        function RendererBase() {
+        /**
+         * 创建一个渲染创新基类
+         * @param renderToTexture		释放渲染到纹理
+         */
+        function RendererBase(renderToTexture) {
+            if (renderToTexture === void 0) { renderToTexture = false; }
             //背景颜色
             this._backgroundR = 0;
             this._backgroundG = 0;
@@ -30465,15 +29726,8 @@ var feng3d;
             this._textureRatioX = 1;
             this._textureRatioY = 1;
             this._shareContext = false;
-        }
-        /**
-         * 创建一个渲染创新基类
-         * @param renderToTexture		释放渲染到纹理
-         */
-        RendererBase.prototype.RendererBase = function (renderToTexture) {
-            if (renderToTexture === void 0) { renderToTexture = false; }
             this._renderableSorter = new feng3d.RenderableMergeSort();
-        };
+        }
         /**
          * 创建一个实体收集器
          */
@@ -30615,8 +29869,11 @@ var feng3d;
      */
     var DefaultRenderer = (function (_super) {
         __extends(DefaultRenderer, _super);
+        /**
+         * 创建一个默认渲染器
+         */
         function DefaultRenderer() {
-            _super.apply(this, arguments);
+            _super.call(this);
             this.number = 2;
             this.number = 3;
             /**
@@ -30632,15 +29889,9 @@ var feng3d;
                     this._planarShadowRenderer.render(stage3DProxy, entityCollector, target);
                 }
             };
-        }
-        /**
-         * 创建一个默认渲染器
-         */
-        DefaultRenderer.prototype.DefaultRenderer = function () {
-            _super.call(this);
             this._depthRenderer = new feng3d.DepthRenderer();
             this._planarShadowRenderer = new feng3d.PlanarShadowRenderer();
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -30752,18 +30003,15 @@ var feng3d;
      */
     var DepthRenderer = (function (_super) {
         __extends(DepthRenderer, _super);
-        function DepthRenderer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个深度渲染器
          */
-        DepthRenderer.prototype.DepthRenderer = function () {
+        function DepthRenderer() {
             _super.call(this);
             _backgroundR = 1;
             _backgroundG = 1;
             _backgroundB = 1;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -30812,15 +30060,12 @@ var feng3d;
      */
     var PlanarShadowRenderer = (function (_super) {
         __extends(PlanarShadowRenderer, _super);
-        function PlanarShadowRenderer() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个深度渲染器
          */
-        PlanarShadowRenderer.prototype.PlanarShadowRenderer = function () {
+        function PlanarShadowRenderer() {
             _super.call(this);
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -30887,13 +30132,11 @@ var feng3d;
      * @author feng 2015-3-9
      */
     var RenderableMergeSort = (function () {
-        function RenderableMergeSort() {
-        }
         /**
          * 创建一个可渲染合并排序对象
          */
-        RenderableMergeSort.prototype.RenderableMergeSort = function () {
-        };
+        function RenderableMergeSort() {
+        }
         /**
          * @inheritDoc
          */
@@ -31047,13 +30290,11 @@ var feng3d;
      * @author feng 2015-3-1
      */
     var PartitionTraverser = (function () {
-        function PartitionTraverser() {
-        }
         /**
          * 构建一个分区横越者
          */
-        PartitionTraverser.prototype.PartitionTraverser = function () {
-        };
+        function PartitionTraverser() {
+        }
         /**
          * 进入节点
          * <p>正在穿过节点，或者正在与该节点进行检测</p>
@@ -31113,15 +30354,12 @@ var feng3d;
      */
     var EntityCollector = (function (_super) {
         __extends(EntityCollector, _super);
-        function EntityCollector() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建一个实体收集器
          */
-        EntityCollector.prototype.EntityCollector = function () {
+        function EntityCollector() {
             this.init();
-        };
+        }
         /**
          * 初始化
          */
@@ -31304,15 +30542,12 @@ var feng3d;
      */
     var ShadowCasterCollector = (function (_super) {
         __extends(ShadowCasterCollector, _super);
-        function ShadowCasterCollector() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建阴影投射者集合
          */
-        ShadowCasterCollector.prototype.ShadowCasterCollector = function () {
+        function ShadowCasterCollector() {
             _super.call(this);
-        };
+        }
         /**
          * 应用可渲染对象
          * @param renderable		可渲染对象
@@ -31354,8 +30589,8 @@ var feng3d;
      *   <li>Min/Max FPS (only on frame rate bar in minimized mode)</li>
      *   <li>Current RAM usage (pink in graph)</li>
      *   <li>Maximum RAM usage</li>
-     *   <li>Number of polygons in scene</li>
-     *   <li>Number of polygons last rendered (yellow in graph)</li>
+     *   <li>number of polygons in scene</li>
+     *   <li>number of polygons last rendered (yellow in graph)</li>
      * </ul>
      *
      * <p>There are two display modes; standard and minimized, which are alternated by clicking
@@ -31377,9 +30612,6 @@ var feng3d;
      */
     var AwayStats = (function (_super) {
         __extends(AwayStats, _super);
-        function AwayStats() {
-            _super.apply(this, arguments);
-        }
         /**
          * <p>Create an Away3D stats widget. The widget can be added to the stage
          * and positioned like any other display object. Once on the stage, you
@@ -31413,7 +30645,7 @@ var feng3d;
          * and lower parts of the graph area to increase and decrease SWF frame rate
          * respectively.
          */
-        AwayStats.prototype.AwayStats = function (view3d, minimized, transparent, meanDataLength, enableClickToReset, enableModifyFrameRate) {
+        function AwayStats(view3d, minimized, transparent, meanDataLength, enableClickToReset, enableModifyFrameRate) {
             if (view3d === void 0) { view3d = null; }
             if (minimized === void 0) { minimized = false; }
             if (transparent === void 0) { transparent = false; }
@@ -31442,7 +30674,7 @@ var feng3d;
             this._tfaces = 0;
             this._rfaces = 0;
             this._init();
-        };
+        }
         Object.defineProperty(AwayStats.prototype, "max_ram", {
             get: function () {
                 return _max_ram;
@@ -31780,7 +31012,7 @@ var feng3d;
         AwayStats.prototype._redrawStats = function () {
             var dia_y;
             // Redraw counters
-            this._fps_tf.text = this._fps.toString().concat('/', int(this.stage.frameRate));
+            this._fps_tf.text = this._fps.toString().concat('/', number(this.stage.frameRate));
             this._afps_tf.text = Math.round(this._avg_fps).toString();
             this._ram_tf.text = this._getRamString(this._ram).concat(' / ', this._getRamString(this._max_ram));
             // Move entire diagram
@@ -31864,7 +31096,7 @@ var feng3d;
             // Reset all values
             this._updates = 0;
             this._num_frames = 0;
-            this._min_fps = int.MAX_VALUE;
+            this._min_fps = number.MAX_VALUE;
             this._max_fps = 0;
             this._avg_fps = 0;
             this._fps_sum = 0;
@@ -31945,7 +31177,7 @@ var feng3d;
             // the sum reflecting the log entries.
             if (this._mean_data) {
                 this._mean_data.push(this._fps);
-                this._fps_sum -= Number(this._mean_data.shift());
+                this._fps_sum -= number(this._mean_data.shift());
                 // Average = sum of all log entries over
                 // number of log entries.
                 this._avg_fps = this._fps_sum / this._mean_data_length;
@@ -32027,13 +31259,11 @@ var feng3d;
      * @author feng 2014-9-9
      */
     var Context3DBufferDebug = (function () {
-        function Context3DBufferDebug() {
-        }
         /**
          * 创建3d环境缓存调试工具类
          */
-        Context3DBufferDebug.prototype.Context3DBufferDebug = function () {
-        };
+        function Context3DBufferDebug() {
+        }
         /**
          * 调试Context3DCache
          * @param context3DCache			3D环境缓冲
@@ -32190,8 +31420,6 @@ var feng3d;
         function SegmentUtils() {
             this.LIMIT = 3 * 0xFFFF;
         }
-        SegmentUtils.prototype.SegmentUtils = function () {
-        };
         SegmentUtils.function = getSegmentSubGeometrys(_segments, feng3d.Segment[]);
         return SegmentUtils;
     }());
@@ -32205,11 +31433,11 @@ var feng3d;
     feng3d.SegmentSubGeometry;
     {
         this._segmentSubGeometry = new feng3d.SegmentSubGeometry();
-        this._indices = new uint[]();
-        this._pointData0 = new Number[]();
-        this._pointData1 = new Number[]();
-        this._thicknessData = new Number[]();
-        this._colorData = new Number[]();
+        this._indices = new number[]();
+        this._pointData0 = new number[]();
+        this._pointData1 = new number[]();
+        this._thicknessData = new number[]();
+        this._colorData = new number[]();
         for (var i = 0; i < _segments.length; i++) {
             this.computeSegment(_segments[i], i);
         }
@@ -32290,12 +31518,9 @@ var feng3d;
 (function (feng3d) {
     var AnimationSetError = (function (_super) {
         __extends(AnimationSetError, _super);
-        function AnimationSetError() {
-            _super.apply(this, arguments);
-        }
-        AnimationSetError.prototype.AnimationSetError = function (message) {
+        function AnimationSetError(message) {
             _super.call(this, message);
-        };
+        }
         return AnimationSetError;
     }(Error));
     feng3d.AnimationSetError = AnimationSetError;
@@ -32308,18 +31533,15 @@ var feng3d;
      */
     var Stage3DEvent = (function (_super) {
         __extends(Stage3DEvent, _super);
-        function Stage3DEvent() {
-            _super.apply(this, arguments);
-        }
         /**
          * 构建一个3D舞台事件
          * @param type			事件的类型，可以作为 Event.type 访问。
          * @param bubbles		确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
          */
-        Stage3DEvent.prototype.Stage3DEvent = function (type, bubbles) {
+        function Stage3DEvent(type, bubbles) {
             if (bubbles === void 0) { bubbles = false; }
             _super.call(this, type, bubbles);
-        };
+        }
         /** 3D环境被创建事件 */
         Stage3DEvent.CONTEXT3D_CREATED = "Context3DCreated";
         /** 3D环境被摧毁事件 */
@@ -32334,7 +31556,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_AlphaPremultiplied();
+    /**
+     *
+     * @author feng 2015-9-25
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.add(_.finalColor_ft_4.w, _.finalColor_ft_4.w, _.commonsData_fc_vector.z); //
@@ -32345,7 +31571,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_Ambient();
+    /**
+     * 环境光片段渲染程序
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32364,7 +31594,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_Blinn_Phong(singleSpecularColorReg, Register, lightDirReg, Register);
+    /**
+     * blinn-phong half vector model
+     * @author feng 2015-9-24
+     */
+    constructor(singleSpecularColorReg, Register, lightDirReg, Register);
     {
         var _ =  * , FagalRE, instance, space;
         //入射光与视线方向的和 = 光照场景方向 add 标准视线方向
@@ -32381,7 +31615,11 @@ var feng3d;
 (function (feng3d) {
     _DiffuseColor;
     _DiffuseTexure;
-    F_DiffusePostLighting();
+    /**
+     * 发布漫反射光
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
         var commonShaderParams = shaderParams.getOrCreateComponentByClass(feng3d.CommonShaderParams);
@@ -32423,7 +31661,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_DirectionalLight();
+    /**
+     * 方向光渲染函数
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32451,7 +31693,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_Phong(singleSpecularColorReg, Register, lightDirReg, Register);
+    /**
+     * phong model
+     * @author feng 2015-9-24
+     */
+    constructor(singleSpecularColorReg, Register, lightDirReg, Register);
     {
         var _ =  * , FagalRE, instance, space;
         // phong model
@@ -32471,7 +31717,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_PointLight();
+    /**
+     * 点光源渲染
+     * @author feng 2014-11-8
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32522,7 +31772,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_SpecularPostLighting();
+    /**
+     * 结算镜面反射光
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32558,7 +31812,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    getDiffCodePerLight(lightDirReg, Register, diffuseColorReg, Register);
+    /**
+     * 处理
+     * @author feng 2015-4-24
+     */
+    constructor(lightDirReg, Register, diffuseColorReg, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32591,7 +31849,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    getSpecCodePerLight(lightDirReg, Register, specularColorReg, Register);
+    /**
+     * 计算单个镜面反射光
+     * @author feng 2015-4-24
+     */
+    constructor(lightDirReg, Register, specularColorReg, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32644,7 +31906,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_FresnelSpecular(target, Register);
+    /**
+     *
+     * @author feng 2015-9-24
+     */
+    constructor(target, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32661,7 +31927,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_ParticleColorCombination();
+    /**
+     *
+     * @author feng 2015-1-21
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //			if (hasColorMulNode)
@@ -32672,7 +31942,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_Particles();
+    /**
+     * 粒子片段渲染程序
+     * @author feng 2015-1-21
+     */
+    constructor();
     {
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
         var particleShaderParams = shaderParams.getOrCreateComponentByClass(feng3d.ParticleShaderParams);
@@ -32684,7 +31958,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3dMap;
 (function (feng3dMap) {
-    F_ShadowMap();
+    /**
+     * 编译阴影映射片段程序
+     * @author feng 2015-6-23
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32708,7 +31986,11 @@ var feng3dMap;
 })(feng3dMap || (feng3dMap = {}));
 var feng3dMap;
 (function (feng3dMap) {
-    F_ShadowMapSample();
+    /**
+     * 阴影图采样比较计算阴影值
+     * @author feng 2015-7-17
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var depthCol = _.getFreeTemp("深度值临时寄存器");
@@ -32747,7 +32029,11 @@ var feng3dMap;
 })(feng3dMap || (feng3dMap = {}));
 var feng3d;
 (function (feng3d) {
-    F_DiffuseColor();
+    /**
+     * 漫反射材质颜色
+     * @author feng 2014-11-6
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //漫射输入静态数据 
@@ -32756,7 +32042,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_DiffuseTexure();
+    /**
+     * 漫反射纹理取样
+     * @author feng 2014-11-6
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32772,7 +32062,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_EnvMapMethod();
+    /**
+     *
+     * @author feng 2015-9-5
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32802,7 +32096,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_FinalOut();
+    /**
+     * 最终颜色输出函数
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.mov(_._oc, _.finalColor_ft_4);
@@ -32810,7 +32108,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_Fog();
+    /**
+     * 雾片段着色器
+     * @author feng 2015-8-27
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var temp2 = _.getFreeTemp("");
@@ -32829,7 +32131,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_NormalSample();
+    /**
+     * 法线取样函数
+     * @author feng 2014-10-23
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //获取纹理数据
@@ -32842,7 +32148,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_SpecularSample();
+    /**
+     * 光泽图取样函数
+     * @author feng 2014-10-23
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //获取纹理数据
@@ -32851,7 +32161,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_TangentNormalMap();
+    /**
+     * 编译切线法线贴图片段程序
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //此处必须三个寄存器申请为寄存器数组来确保三个临时寄存器连续与同时销毁
@@ -32876,7 +32190,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_TangentNormalNoMap();
+    /**
+     * 编译切线片段程序(无法线图)
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //标准化法线
@@ -32887,7 +32205,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_TerrainDiffusePostLighting();
+    /**
+     * 地形渲染函数
+     * @author feng 2014-11-6
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -32911,7 +32233,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    F_ViewDir();
+    /**
+     * 视线片段渲染函数
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //标准化视线
@@ -32927,14 +32253,12 @@ var feng3d;
      * @author feng 2014-10-23
      */
     var FagalMethod = (function () {
-        function FagalMethod() {
-        }
         /**
          * 构建一个Fagal函数
          */
-        FagalMethod.prototype.FagalMethod = function () {
+        function FagalMethod() {
             feng3d.AbstractClassError.check(this);
-        };
+        }
         Object.defineProperty(FagalMethod.prototype, "shaderParams", {
             /**
              * 渲染参数
@@ -32973,15 +32297,12 @@ var feng3dMap;
      */
     var F_Main_DepthMap = (function (_super) {
         __extends(F_Main_DepthMap, _super);
-        function F_Main_DepthMap() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建深度图片段主程序
          */
-        F_Main_DepthMap.prototype.F_Main_DepthMap = function () {
+        function F_Main_DepthMap() {
             _shaderType = Context3DProgramType.FRAGMENT;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -33037,15 +32358,12 @@ var feng3dMap;
      */
     var F_Main_PlanarShadow = (function (_super) {
         __extends(F_Main_PlanarShadow, _super);
-        function F_Main_PlanarShadow() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建深度图片段主程序
          */
-        F_Main_PlanarShadow.prototype.F_Main_PlanarShadow = function () {
+        function F_Main_PlanarShadow() {
             _shaderType = Context3DProgramType.FRAGMENT;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -33072,15 +32390,12 @@ var feng3d;
      */
     var F_Main = (function (_super) {
         __extends(F_Main, _super);
-        function F_Main() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建片段渲染程序主入口
          */
-        F_Main.prototype.F_Main = function () {
+        function F_Main() {
             _shaderType = Context3DProgramType.FRAGMENT;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -33157,11 +32472,8 @@ var feng3d;
     var F_Segment = (function (_super) {
         __extends(F_Segment, _super);
         function F_Segment() {
-            _super.apply(this, arguments);
-        }
-        F_Segment.prototype.F_Segment = function () {
             _shaderType = Context3DProgramType.FRAGMENT;
-        };
+        }
         F_Segment.prototype.runFunc = function () {
             var _ =  * , FagalRE, instance, space;
             _.comment("传递顶点颜色数据" + _.color_v + "到片段寄存器" + _._oc);
@@ -33180,11 +32492,8 @@ var feng3d;
     var F_SkyBox = (function (_super) {
         __extends(F_SkyBox, _super);
         function F_SkyBox() {
-            _super.apply(this, arguments);
-        }
-        F_SkyBox.prototype.F_SkyBox = function () {
             _shaderType = Context3DProgramType.FRAGMENT;
-        };
+        }
         F_SkyBox.prototype.runFunc = function () {
             var _ =  * , FagalRE, instance, space;
             //获取纹理数据
@@ -33208,15 +32517,12 @@ var feng3dMap;
      */
     var V_Main_DepthMap = (function (_super) {
         __extends(V_Main_DepthMap, _super);
-        function V_Main_DepthMap() {
-            _super.apply(this, arguments);
-        }
         /**
          * 构建 深度图顶点主程序
          */
-        V_Main_DepthMap.prototype.V_Main_DepthMap = function () {
+        function V_Main_DepthMap() {
             _shaderType = Context3DProgramType.VERTEX;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -33280,15 +32586,12 @@ var feng3dMap;
      */
     var V_Main_PlanarShadow = (function (_super) {
         __extends(V_Main_PlanarShadow, _super);
-        function V_Main_PlanarShadow() {
-            _super.apply(this, arguments);
-        }
         /**
          * 构建 深度图顶点主程序
          */
-        V_Main_PlanarShadow.prototype.V_Main_PlanarShadow = function () {
+        function V_Main_PlanarShadow() {
             _shaderType = Context3DProgramType.VERTEX;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -33352,16 +32655,13 @@ var feng3d;
      */
     var V_Main = (function (_super) {
         __extends(V_Main, _super);
-        function V_Main() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建顶点渲染程序主入口
          *
          */
-        V_Main.prototype.V_Main = function () {
+        function V_Main() {
             _shaderType = Context3DProgramType.VERTEX;
-        };
+        }
         /**
          * @inheritDoc
          */
@@ -33453,11 +32753,8 @@ var feng3d;
     var V_Segment = (function (_super) {
         __extends(V_Segment, _super);
         function V_Segment() {
-            _super.apply(this, arguments);
-        }
-        V_Segment.prototype.V_Segment = function () {
             _shaderType = Context3DProgramType.VERTEX;
-        };
+        }
         V_Segment.prototype.runFunc = function () {
             var _ =  * , FagalRE, instance, space;
             var cStartPosReg = _.getFreeTemp("摄像机空间起点坐标");
@@ -33527,11 +32824,8 @@ var feng3d;
     var V_SkyBox = (function (_super) {
         __extends(V_SkyBox, _super);
         function V_SkyBox() {
-            _super.apply(this, arguments);
-        }
-        V_SkyBox.prototype.V_SkyBox = function () {
             _shaderType = Context3DProgramType.VERTEX;
-        };
+        }
         V_SkyBox.prototype.runFunc = function () {
             var _ =  * , FagalRE, instance, space;
             var vt0 = _.getFreeTemp("缩放后的顶点坐标");
@@ -33550,7 +32844,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_SkeletonAnimationCPU();
+    /**
+     * 骨骼动画渲染程序(CPU)
+     * @author feng 2014-11-3
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.mov(_.animatedPosition_vt_4, _.animated_va_3);
@@ -33558,7 +32856,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_SkeletonAnimationGPU();
+    /**
+     * 骨骼动画渲染程序(GPU)
+     * @author feng 2014-11-3
+     */
+    constructor();
     Register;
     {
         var _ =  * , FagalRE, instance, space;
@@ -33587,7 +32889,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_SpriteSheetAnimation(UVSource, Register, UVTarget, Register);
+    /**
+     * Sprite动画顶点渲染程序
+     * @author feng 2015-9-5
+     */
+    constructor(UVSource, Register, UVTarget, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var tempUV = _.getFreeTemp();
@@ -33601,7 +32907,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_UVAnimation(UVSource, Register, UVTarget, Register);
+    /**
+     * UV动画顶点渲染程序
+     * @author feng 2015-9-5
+     */
+    constructor(UVSource, Register, UVTarget, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var tempUV = _.getFreeTemp();
@@ -33622,7 +32932,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_VertexAnimationCPU();
+    /**
+     * 顶点动画渲染程序(CPU)
+     * @author feng 2014-11-3
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.mov(_.animatedPosition_vt_4, _.position_va_3);
@@ -33630,7 +32944,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_VertexAnimationGPU();
+    /**
+     * 顶点动画渲染程序(GPU)
+     * @author feng 2014-11-3
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         //		
@@ -33646,7 +32964,13 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticleBillboard(particleBillboardMtx, Register, animatedPosition, Register);
+    /**
+     * 粒子广告牌节点顶点渲染程序
+     * @param particleBillboardMtx			广告牌旋转矩阵(3个长度向量形式)
+     * @param animatedPosition				动画后的顶点坐标数据
+     * @author feng 2014-12-26
+     */
+    constructor(particleBillboardMtx, Register, animatedPosition, Register);
     {
         var _ =  * , FagalRE, instance, space;
         //使用广告牌 朝向摄像机
@@ -33655,7 +32979,15 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticleColorEnd(colorMulTarget, Register, colorAddTarget, Register, colorMulVary, Register, colorAddVary, Register);
+    /**
+     * 粒子颜色变化结算顶点渲染程序
+     * @param colorMulTarget			粒子颜色乘数因子，用于乘以纹理上的颜色值
+     * @param colorAddTarget			粒子颜色偏移值，在片段渲染的最终颜色值上偏移
+     * @param colorMulVary				粒子颜色乘数因子，用于乘以纹理上的颜色值
+     * @param colorAddVary				粒子颜色偏移值，在片段渲染的最终颜色值上偏移
+     * @author feng 2015-1-20
+     */
+    constructor(colorMulTarget, Register, colorAddTarget, Register, colorMulVary, Register, colorAddVary, Register);
     {
         var _ =  * , FagalRE, instance, space;
         //			if (hasColorMulNode)
@@ -33666,7 +32998,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticleColorGlobal(startMultiplierValue, Register, deltaMultiplierValue, Register, startOffsetValue, Register, deltaOffsetValue, Register, inCycleTimeTemp, Register, colorMulTarget, Register, colorAddTarget, Register);
+    /**
+     * 粒子颜色节点顶点渲染程序
+     * @author feng 2015-1-20
+     */
+    constructor(startMultiplierValue, Register, deltaMultiplierValue, Register, startOffsetValue, Register, deltaOffsetValue, Register, inCycleTimeTemp, Register, colorMulTarget, Register, colorAddTarget, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var temp = _.getFreeTemp();
@@ -33710,7 +33046,13 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticlePositionEnd(animatedPosition, Register, positionTemp, Register);
+    /**
+     * 粒子结算偏移坐标渲染程序
+     * @param animatedPosition			动画后的顶点坐标数据
+     * @param positionTemp				偏移坐标临时寄存器
+     * @author feng 2014-12-26
+     */
+    constructor(animatedPosition, Register, positionTemp, Register);
     {
         var _ =  * , FagalRE, instance, space;
         //得到最终坐标
@@ -33719,7 +33061,14 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticleScaleGlobal(scaleRegister, Register, inCycleTimeTemp, Register, animatedPosition, Register);
+    /**
+     * 粒子缩放节点顶点渲染程序
+     * @param scaleRegister				粒子缩放常数数据
+     * @param inCycleTimeTemp			粒子周期内时间临时寄存器
+     * @param animatedPosition			动画后的顶点坐标数据
+     * @author feng 2014-12-26
+     */
+    constructor(scaleRegister, Register, inCycleTimeTemp, Register, animatedPosition, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var temp = _.getFreeTemp();
@@ -33738,7 +33087,14 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticleVelocity(particleVelocity, Register, positionTemp, Register, inCycleTimeTemp, Register);
+    /**
+     * 粒子速度节点顶点渲染程序
+     * @param particleVelocity			粒子速度数据
+     * @param positionTemp				偏移坐标临时寄存器
+     * @param inCycleTimeTemp			粒子周期内时间临时寄存器
+     * @author feng 2014-12-26
+     */
+    constructor(particleVelocity, Register, positionTemp, Register, inCycleTimeTemp, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var vt3 = _.getFreeTemp();
@@ -33749,7 +33105,14 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticleVelocityGlobal(particleVelocity, Register, positionTemp, Register, inCycleTimeTemp, Register);
+    /**
+     * 粒子速度节点顶点渲染程序
+     * @param particleVelocity			粒子速度数据
+     * @param positionTemp				偏移坐标临时寄存器
+     * @param inCycleTimeTemp			粒子周期内时间临时寄存器
+     * @author feng 2014-12-26
+     */
+    constructor(particleVelocity, Register, positionTemp, Register, inCycleTimeTemp, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var vt3 = _.getFreeTemp();
@@ -33760,7 +33123,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_Particles();
+    /**
+     * 粒子顶点渲染程序
+     * @author feng 2014-11-14
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -33809,7 +33176,15 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticlesInit(positionTemp, Register, animatedPosition, Register, positionReg, Register, particleCommon, Register);
+    /**
+     * 粒子初始化顶点渲染程序
+     * @param positionTemp			偏移坐标临时寄存器
+     * @param animatedPosition		动画后的顶点坐标数据
+     * @param positionReg			顶点坐标数据
+     * @param particleCommon		粒子常数数据[0,1,2,0]
+     * @author feng 2014-12-26
+     */
+    constructor(positionTemp, Register, animatedPosition, Register, positionReg, Register, particleCommon, Register);
     {
         var _ =  * , FagalRE, instance, space;
         _.comment("初始化粒子");
@@ -33819,7 +33194,14 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticlesInitColor(particleCommon, Register, colorMulTarget, Register, colorAddTarget, Register);
+    /**
+     * 粒子颜色初始化
+     * @param particleCommon		粒子常数数据[0,1,2,0]
+     * @param colorMulTarget		粒子颜色乘数因子，用于乘以纹理上的颜色值
+     * @param colorAddTarget		粒子颜色偏移值，在片段渲染的最终颜色值上偏移
+     * @author feng 2015-1-20
+     */
+    constructor(particleCommon, Register, colorMulTarget, Register, colorAddTarget, Register);
     {
         var _ =  * , FagalRE, instance, space;
         //初始化  粒子颜色乘数因子 为(1,1,1,1)
@@ -33830,7 +33212,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ParticlesTime(particleCommon, Register, animatedPosition, Register, particleTimeVA, Register, particleTimeVC, Register, inCycleTimeTemp, Register);
+    /**
+     * 粒子时间节点顶点渲染程序
+     * @author feng 2014-12-26
+     */
+    constructor(particleCommon, Register, animatedPosition, Register, particleTimeVA, Register, particleTimeVC, Register, inCycleTimeTemp, Register);
     {
         var _ =  * , FagalRE, instance, space;
         var vt3 = _.getFreeTemp();
@@ -33848,7 +33234,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3dMap;
 (function (feng3dMap) {
-    V_ShadowMap();
+    /**
+     * 编译阴影映射顶点程序
+     * @author feng 2015-6-23
+     */
+    constructor();
     {
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
         var shadowShaderParams = shaderParams.getOrCreateComponentByClass(ShadowShaderParams);
@@ -33857,7 +33247,11 @@ var feng3dMap;
 })(feng3dMap || (feng3dMap = {}));
 var feng3dMap;
 (function (feng3dMap) {
-    V_ShadowMapPlanar();
+    /**
+     * 方向光阴影映射
+     * @author feng 2015-7-17
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var temp = _.getFreeTemp();
@@ -33873,13 +33267,21 @@ var feng3dMap;
 })(feng3dMap || (feng3dMap = {}));
 var feng3dMap;
 (function (feng3dMap) {
-    V_ShadowMapPoint();
+    /**
+     * 点光源阴影映射
+     * @author feng 2015-7-17
+     */
+    constructor();
     {
     }
 })(feng3dMap || (feng3dMap = {}));
 var feng3d;
 (function (feng3d) {
-    V_BaseAnimation();
+    /**
+     * 基础动画顶点渲染函数(无动画)
+     * @author feng 2014-11-3
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.mov(_.animatedPosition_vt_4, _.position_va_3);
@@ -33887,7 +33289,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_BaseOut();
+    /**
+     * 基本顶点投影渲染
+     * @author feng 2014-10-30
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var shaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -33907,7 +33313,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_TangentNormalMap();
+    /**
+     * 编译切线顶点程序
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         var animatedNormal = _.getFreeTemp("动画后顶点法线临时寄存器");
@@ -33955,7 +33365,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_TangentNormalNoMap();
+    /**
+     * 编译切线顶点程序(无法线图)
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.comment("转换法线到全局");
@@ -33966,7 +33380,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_ViewDir();
+    /**
+     * 视线顶点渲染函数
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.comment("计算视线方向");
@@ -33975,7 +33393,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_WorldPosition();
+    /**
+     * 顶点世界坐标渲染函数
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.comment("场景坐标转换");
@@ -33984,7 +33406,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    V_WorldPositionOut();
+    /**
+     * 世界坐标输出函数
+     * @author feng 2014-11-7
+     */
+    constructor();
     {
         var _ =  * , FagalRE, instance, space;
         _.mov(_.globalPos_v, _.globalPosition_vt_4);
@@ -34028,7 +33454,18 @@ var feng3d;
      * @author feng 2014-10-22
      */
     var RegisterComponent = (function () {
-        function RegisterComponent() {
+        /**
+         * 创建一个寄存器单元
+         * @param register 寄存器类型
+         * @param prop 单元名称
+         */
+        function RegisterComponent(register, prop) {
+            this._prop = prop;
+            this._register = register;
+            this._regType = register.regType;
+            this._regId = register.regId;
+            if (!this.valid(prop))
+                throw new Error("无效寄存器分量: " + this._register);
         }
         Object.defineProperty(RegisterComponent.prototype, "regId", {
             /** 寄存器id */
@@ -34044,19 +33481,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个寄存器单元
-         * @param register 寄存器类型
-         * @param prop 单元名称
-         */
-        RegisterComponent.prototype.RegisterComponent = function (register, prop) {
-            this._prop = prop;
-            this._register = register;
-            this._regType = register.regType;
-            this._regId = register.regId;
-            if (!this.valid(prop))
-                throw new Error("无效寄存器分量: " + this._register);
-        };
         Object.defineProperty(RegisterComponent.prototype, "regType", {
             /**
              * @inheritDoc
@@ -34107,7 +33531,23 @@ var feng3d;
      * @author feng 2014-10-22
      */
     var RegisterComponentSelection = (function () {
-        function RegisterComponentSelection() {
+        /**
+         * 创建一个寄存器单元组合
+         * @param register 		寄存器类型
+         * @param prop 			组合名称
+         */
+        function RegisterComponentSelection(register, prop) {
+            this._register = register;
+            this._prop = prop;
+            this._regType = register.regType;
+            this._regId = register.regId;
+            // Validate components
+            if (prop.length > 4)
+                throw new Error("无效寄存器分量: " + this._register);
+            for (var i = 0; i < prop.length; i++) {
+                if (!feng3d.RegisterComponent.valid(prop.substr(i, 1)))
+                    throw new Error("无效寄存器分量: " + this._register);
+            }
         }
         Object.defineProperty(RegisterComponentSelection.prototype, "regId", {
             /** 寄存器id */
@@ -34123,24 +33563,6 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建一个寄存器单元组合
-         * @param register 		寄存器类型
-         * @param prop 			组合名称
-         */
-        RegisterComponentSelection.prototype.RegisterComponentSelection = function (register, prop) {
-            this._register = register;
-            this._prop = prop;
-            this._regType = register.regType;
-            this._regId = register.regId;
-            // Validate components
-            if (prop.length > 4)
-                throw new Error("无效寄存器分量: " + this._register);
-            for (var i = 0; i < prop.length; i++) {
-                if (!feng3d.RegisterComponent.valid(prop.substr(i, 1)))
-                    throw new Error("无效寄存器分量: " + this._register);
-            }
-        };
         Object.defineProperty(RegisterComponentSelection.prototype, "regType", {
             /**
              * @inheritDoc
@@ -34196,21 +33618,18 @@ var feng3dRE;
     dynamic;
     var FagalIdCenter = (function (_super) {
         __extends(FagalIdCenter, _super);
+        /**
+         * 创建Fagal编号中心
+         */
         function FagalIdCenter() {
-            _super.apply(this, arguments);
             /**
              * @inheritDoc
              */
             this.override = AS3;
-        }
-        /**
-         * 创建Fagal编号中心
-         */
-        FagalIdCenter.prototype.FagalIdCenter = function () {
             if (_instance)
                 throw new Error("该类为单例");
             _instance = this;
-        };
+        }
         FagalIdCenter.var = _instance;
         return FagalIdCenter;
     }(Proxy));
@@ -34243,17 +33662,15 @@ var feng3dRE;
      * @author feng 2015-8-8
      */
     var FagalItem = (function () {
-        function FagalItem() {
-        }
         /**
          * 创建一个fagal函数单元
          * @param funcName			函数名称
          * @param parameters		参数
          */
-        FagalItem.prototype.FagalItem = function (funcName, parameters) {
+        function FagalItem(funcName, parameters) {
             this.funcName = funcName;
             this.parameters = parameters;
-        };
+        }
         /**
          * 获取参数中出现的寄存器id以及次数
          * @param parameters			拥有寄存器的参数
@@ -34270,7 +33687,7 @@ var feng3dRE;
                 var reg;
              in list;
             {
-                dic[reg.regId] = int(dic[reg.regId]) + 1;
+                dic[reg.regId] = number(dic[reg.regId]) + 1;
             }
             return dic;
         };
@@ -34330,7 +33747,10 @@ var feng3dRE;
             idDic[configs[i][0]] = configs[i];
         }
     }
-    FagalRE();
+    /**
+     * 创建一个Fagal函数运行环境
+     */
+    constructor();
     {
         if (_instance)
             throw new Error("该类为单例");
@@ -34412,8 +33832,11 @@ var feng3dRE;
     dynamic;
     var FagalRESpace = (function (_super) {
         __extends(FagalRESpace, _super);
+        /**
+         * 创建Fagal运行环境空间
+         */
         function FagalRESpace() {
-            _super.apply(this, arguments);
+            _super.call(this);
             /**
              * @inheritDoc
              */
@@ -34440,12 +33863,6 @@ var feng3dRE;
             enumerable: true,
             configurable: true
         });
-        /**
-         * 创建Fagal运行环境空间
-         */
-        FagalRESpace.prototype.FagalRESpace = function () {
-            _super.call(this);
-        };
         return FagalRESpace;
     }(Proxy));
      *
@@ -34503,21 +33920,18 @@ var feng3dRE;
     dynamic;
     var FagalRegisterCenter = (function (_super) {
         __extends(FagalRegisterCenter, _super);
+        /**
+         * 构建Fagal寄存器中心
+         */
         function FagalRegisterCenter() {
-            _super.apply(this, arguments);
             /**
              * @inheritDoc
              */
             this.override = AS3;
-        }
-        /**
-         * 构建Fagal寄存器中心
-         */
-        FagalRegisterCenter.prototype.FagalRegisterCenter = function () {
             if (_instance)
                 throw new Error("该类为单例");
             _instance = this;
-        };
+        }
         FagalRegisterCenter.prototype.dataRegisterDic = function () {
             return _dataRegisterDic || ;
             new Dictionary();
@@ -34655,14 +34069,12 @@ var feng3dRE;
      * @author feng 2015-8-8
      */
     var FagalShaderResult = (function () {
-        function FagalShaderResult() {
-            this.agalCode = "";
-        }
         /**
          * 创建一个Fagal渲染结果
          */
-        FagalShaderResult.prototype.FagalShaderResult = function () {
-        };
+        function FagalShaderResult() {
+            this.agalCode = "";
+        }
         /**
          * 打印输出结果
          */
@@ -34708,7 +34120,7 @@ var feng3dRE;
                 regCountDic = fagalItem.getRegCountDic();
                 for (regId in regCountDic) {
                     //记录寄存器使用次数
-                    useRegDic[regId] = int(useRegDic[regId]) + int(regCountDic[regId]);
+                    useRegDic[regId] = number(useRegDic[regId]) + number(regCountDic[regId]);
                 }
             }
             for (i = 0; i < callLog.length; i++) {
@@ -34722,7 +34134,7 @@ var feng3dRE;
                 //计算使用计数，释放计数为0的临时寄存器
                 for (regId in regCountDic) {
                     //记录寄存器使用次数
-                    useRegDic[regId] = int(useRegDic[regId]) - int(regCountDic[regId]);
+                    useRegDic[regId] = number(useRegDic[regId]) - number(regCountDic[regId]);
                     //移除临时寄存器
                     if (useRegDic[regId] == 0) {
                         this.regCache.removeTempUsage(regId);
@@ -34849,16 +34261,14 @@ var feng3d;
      * @author feng 2014-5-7
      */
     var NamedAsset = (function () {
-        function NamedAsset() {
-        }
         /**
          * 创建一个拥有名字的对象
          */
-        NamedAsset.prototype.NamedAsset = function (asset, assetType) {
+        function NamedAsset(asset, assetType) {
             _super.call(this);
             this._asset = asset;
             this._assetType = assetType;
-        };
+        }
         Object.defineProperty(NamedAsset.prototype, "name", {
             /**
              * 名称
@@ -34866,8 +34276,8 @@ var feng3d;
             get: function () {
                 if (!_name) {
                     var defaultName = feng3d.ClassUtils.getDefaultName(this);
-                    _name = defaultName + int(nameDic[defaultName]);
-                    nameDic[defaultName] = int(nameDic[defaultName]) + 1;
+                    _name = defaultName + number(nameDic[defaultName]);
+                    nameDic[defaultName] = number(nameDic[defaultName]) + 1;
                 }
                 return _name;
             },
@@ -34901,16 +34311,14 @@ var feng3d;
      * @author feng 2015-5-28
      */
     var ShadowMapperBase = (function () {
-        function ShadowMapperBase() {
-            this._depthMapSize = 2048;
-            this._autoUpdateShadows = true;
-        }
         /**
          * 创建阴影映射
          */
-        ShadowMapperBase.prototype.ShadowMapperBase = function () {
+        function ShadowMapperBase() {
+            this._depthMapSize = 2048;
+            this._autoUpdateShadows = true;
             this._casterCollector = this.createCasterCollector();
-        };
+        }
         /**
          * 创建阴影投射者集合
          */
@@ -35019,22 +34427,19 @@ var feng3d;
      */
     var DirectionalShadowMapper = (function (_super) {
         __extends(DirectionalShadowMapper, _super);
-        function DirectionalShadowMapper() {
-            _super.apply(this, arguments);
-            this._lightOffset = 10000;
-            this._snap = 64;
-        }
         /**
          * 创建方向光阴影映射
          */
-        DirectionalShadowMapper.prototype.DirectionalShadowMapper = function () {
+        function DirectionalShadowMapper() {
             _super.call(this);
+            this._lightOffset = 10000;
+            this._snap = 64;
             this._cullPlanes = new feng3d.Plane3D[]();
             this._overallDepthLens = new feng3d.FreeMatrixLens();
             this._overallDepthCamera = new feng3d.Camera3D(this._overallDepthLens);
-            this._localFrustum = new Number[](8 * 3);
+            this._localFrustum = new number[](8 * 3);
             this._matrix = new Matrix3D();
-        };
+        }
         Object.defineProperty(DirectionalShadowMapper.prototype, "depthProjection", {
             /**
              * 深度投影矩阵
@@ -35106,9 +34511,9 @@ var feng3d;
             var i;
             dir = feng3d.DirectionalLight(_light).sceneDirection;
             this._overallDepthCamera.transform3D.transform = _light.sceneTransform;
-            x = int((viewCamera.transform3D.x - dir.x * this._lightOffset) / this._snap) * this._snap;
-            y = int((viewCamera.transform3D.y - dir.y * this._lightOffset) / this._snap) * this._snap;
-            z = int((viewCamera.transform3D.z - dir.z * this._lightOffset) / this._snap) * this._snap;
+            x = number((viewCamera.transform3D.x - dir.x * this._lightOffset) / this._snap) * this._snap;
+            y = number((viewCamera.transform3D.y - dir.y * this._lightOffset) / this._snap) * this._snap;
+            z = number((viewCamera.transform3D.z - dir.z * this._lightOffset) / this._snap) * this._snap;
             this._overallDepthCamera.transform3D.x = x;
             this._overallDepthCamera.transform3D.y = y;
             this._overallDepthCamera.transform3D.z = z;
@@ -35121,8 +34526,8 @@ var feng3d;
             i = 3;
             while (i < 24) {
                 x = this._localFrustum[i];
-                y = this._localFrustum[uint(i + 1)];
-                z = this._localFrustum[uint(i + 2)];
+                y = this._localFrustum[number(i + 1)];
+                z = this._localFrustum[number(i + 2)];
                 if (x < minX)
                     minX = x;
                 if (x > maxX)
@@ -35140,14 +34545,14 @@ var feng3d;
             var h = maxY - minY;
             var d = 1 / (this._maxZ - this._minZ);
             if (minX < 0)
-                minX -= this._snap; // because int() rounds up for < 0
+                minX -= this._snap; // because number() rounds up for < 0
             if (minY < 0)
                 minY -= this._snap;
-            minX = int(minX / this._snap) * this._snap;
-            minY = int(minY / this._snap) * this._snap;
+            minX = number(minX / this._snap) * this._snap;
+            minY = number(minY / this._snap) * this._snap;
             var snap2 = 2 * this._snap;
-            w = int(w / snap2 + 2) * snap2;
-            h = int(h / snap2 + 2) * snap2;
+            w = number(w / snap2 + 2) * snap2;
+            h = number(h / snap2 + 2) * snap2;
             maxX = minX + w;
             maxY = minY + h;
             w = 1 / w;
@@ -35174,18 +34579,15 @@ var feng3d;
      */
     var NearDirectionalShadowMapper = (function (_super) {
         __extends(NearDirectionalShadowMapper, _super);
-        function NearDirectionalShadowMapper() {
-            _super.apply(this, arguments);
-        }
         /**
          * 创建近方向光阴影映射
          * @param coverageRatio		覆盖比例
          */
-        NearDirectionalShadowMapper.prototype.NearDirectionalShadowMapper = function (coverageRatio) {
+        function NearDirectionalShadowMapper(coverageRatio) {
             if (coverageRatio === void 0) { coverageRatio = .5; }
             _super.call(this);
             this.coverageRatio = coverageRatio;
-        };
+        }
         Object.defineProperty(NearDirectionalShadowMapper.prototype, "coverageRatio", {
             /**
              * 阴影的覆盖视椎体的比例
@@ -35213,7 +34615,7 @@ var feng3d;
             for (var i = 0; i < 12; ++i) {
                 var v = corners[i];
                 _localFrustum[i] = v;
-                _localFrustum[uint(i + 12)] = v + (corners[uint(i + 12)] - v) * this._coverageRatio;
+                _localFrustum[number(i + 12)] = v + (corners[number(i + 12)] - v) * this._coverageRatio;
             }
             updateProjectionFromFrustumCorners(viewCamera, _localFrustum, _matrix);
             _overallDepthLens.matrix = _matrix;
@@ -35229,19 +34631,17 @@ var feng3d;
      * @author feng 2013-6-13
      */
     var Line3D = (function () {
-        function Line3D() {
-        }
         /**
          * 根据直线某点与方向创建直线
          * @param position 直线上某点
          * @param direction 直线的方向
          */
-        Line3D.prototype.Line3D = function (position, direction) {
+        function Line3D(position, direction) {
             if (position === void 0) { position = null; }
             if (direction === void 0) { direction = null; }
             this.position = position ? position : new Vector3D();
             this.direction = direction ? direction : new Vector3D(0, 0, 1);
-        };
+        }
         /**
          * 根据直线上两点初始化直线
          * @param p0 Vector3D
@@ -35283,14 +34683,11 @@ var feng3d;
      */
     var Ray3D = (function (_super) {
         __extends(Ray3D, _super);
-        function Ray3D() {
-            _super.apply(this, arguments);
-        }
-        Ray3D.prototype.Ray3D = function (position, direction) {
+        function Ray3D(position, direction) {
             if (position === void 0) { position = null; }
             if (direction === void 0) { direction = null; }
             _super.call(this, position, direction);
-        };
+        }
         return Ray3D;
     }(feng3d.Line3D));
     feng3d.Ray3D = Ray3D;
@@ -35328,7 +34725,7 @@ var feng3d;
         /**
          * A reference to a Vector to be used as a temporary raw data container, to prevent object creation.
          */
-        Matrix3DUtils.RAW_DATA_CONTAINER = new Number[](16);
+        Matrix3DUtils.RAW_DATA_CONTAINER = new number[](16);
         Matrix3DUtils.CALCULATION_MATRIX = new Matrix3D();
         Matrix3DUtils.CALCULATION_VECTOR3D = new Vector3D();
         Matrix3DUtils.CALCULATION_DECOMPOSE = Vector3D[]([new Vector3D(), new Vector3D(), new Vector3D()]);
@@ -35686,8 +35083,6 @@ var feng3d;
      * 3d面
      */
     var Plane3D = (function () {
-        function Plane3D() {
-        }
         /**
          * 创建一个平面
          * @param a		A系数
@@ -35695,7 +35090,7 @@ var feng3d;
          * @param c		C系数
          * @param d		D系数
          */
-        Plane3D.prototype.Plane3D = function (a, b, c, d) {
+        function Plane3D(a, b, c, d) {
             if (a === void 0) { a = 0; }
             if (b === void 0) { b = 0; }
             if (c === void 0) { c = 0; }
@@ -35712,7 +35107,7 @@ var feng3d;
                 this._alignment = ALIGN_XZ_AXIS;
             else
                 this._alignment = ALIGN_ANY;
-        };
+        }
         /**
          * 通过3顶点定义一个平面
          * @param p0		点0
@@ -35817,7 +35212,8 @@ var feng3d;
                 return feng3d.PlaneClassification.FRONT;
             else
                 return feng3d.PlaneClassification.INTERSECT;
-        };
+        }
+        feng3d.classifyPoint = classifyPoint;;
         /**
          * 输出字符串
          */
@@ -35893,7 +35289,18 @@ var feng3d;
 (function (feng3d) {
     final;
     var Quaternion = (function () {
-        function Quaternion() {
+        /**
+         * Creates a new Quaternion object.
+         * @param x The x value of the quaternion.
+         * @param y The y value of the quaternion.
+         * @param z The z value of the quaternion.
+         * @param w The w value of the quaternion.
+         */
+        function Quaternion(x, y, z, w) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (z === void 0) { z = 0; }
+            if (w === void 0) { w = 1; }
             /**
              * The x value of the quaternion.
              */
@@ -35910,24 +35317,11 @@ var feng3d;
              * The w value of the quaternion.
              */
             this.w = 1;
-        }
-        /**
-         * Creates a new Quaternion object.
-         * @param x The x value of the quaternion.
-         * @param y The y value of the quaternion.
-         * @param z The z value of the quaternion.
-         * @param w The w value of the quaternion.
-         */
-        Quaternion.prototype.Quaternion = function (x, y, z, w) {
-            if (x === void 0) { x = 0; }
-            if (y === void 0) { y = 0; }
-            if (z === void 0) { z = 0; }
-            if (w === void 0) { w = 1; }
             this.x = x;
             this.y = y;
             this.z = z;
             this.w = w;
-        };
+        }
         Object.defineProperty(Quaternion.prototype, "magnitude", {
             /**
              * Returns the magnitude of the quaternion object.
@@ -36143,8 +35537,8 @@ var feng3d;
             this.w = v.w;
         };
         /**
-         * Converts the quaternion to a Vector.&lt;Number&gt; matrix representation of a rotation equivalent to this quaternion.
-         * @param target The Vector.&lt;Number&gt; to contain the raw matrix data.
+         * Converts the quaternion to a Vector.&lt;number&gt; matrix representation of a rotation equivalent to this quaternion.
+         * @param target The Vector.&lt;number&gt; to contain the raw matrix data.
          * @param exclude4thRow If true, the last row will be omitted, and a 4x3 matrix will be generated instead of a 4x4.
          */
         Quaternion.prototype.toRawData = function (target, exclude4thRow) {
@@ -36216,13 +35610,11 @@ var feng3d;
      * @author feng 2014-5-4
      */
     var Triangle3D = (function () {
-        function Triangle3D() {
-        }
-        Triangle3D.prototype.Triangle3D = function (p0, p1, p2) {
+        function Triangle3D(p0, p1, p2) {
             this.p0 = p0;
             this.p1 = p1;
             this.p2 = p2;
-        };
+        }
         /**
          * 测试是否与直线相交
          * @param line3D 直线
@@ -36329,11 +35721,11 @@ var feng3d;
         if (length === void 0) { length = 0; }
         var ba;
         length || ;
-        uint.MAX_VALUE;
+        number.MAX_VALUE;
         if (data)
             is;
-        String;
-        return String(data).substr(0, length);
+        string;
+        return string(data).substr(0, length);
         ba = toByteArray(data);
         if (ba) {
             ba.position = 0;
@@ -36369,9 +35761,6 @@ var feng3d;
      * @author feng 2014-5-19
      */
     var ResourceDependency = (function () {
-        function ResourceDependency() {
-            this._data =  * ;
-        }
         /**
          * 创建资源依赖
          * @param id 编号
@@ -36381,10 +35770,11 @@ var feng3d;
          * @param retrieveAsRawData
          * @param suppressAssetEvents
          */
-        ResourceDependency.prototype.ResourceDependency = function (id, req, data, parentParser, retrieveAsRawData, suppressAssetEvents) {
+        function ResourceDependency(id, req, data, parentParser, retrieveAsRawData, suppressAssetEvents) {
             if (data === void 0) { data =  * ; }
             if (retrieveAsRawData === void 0) { retrieveAsRawData = false; }
             if (suppressAssetEvents === void 0) { suppressAssetEvents = false; }
+            this._data =  * ;
             this._id = id;
             this._req = req;
             this._parentParser = parentParser;
@@ -36393,7 +35783,7 @@ var feng3d;
             this._suppressAssetEvents = suppressAssetEvents;
             this._assets = new IAsset[]();
             this._dependencies = new ResourceDependency[]();
-        };
+        }
         Object.defineProperty(ResourceDependency.prototype, "id", {
             get: function () {
                 return _id;
@@ -36491,8 +35881,6 @@ var feng3d;
      * @author feng 2014-4-9
      */
     var Segment = (function () {
-        function Segment() {
-        }
         /**
          * 创建一条线段数据
          * @param start 起点坐标
@@ -36501,7 +35889,7 @@ var feng3d;
          * @param colorEnd 终点颜色
          * @param thickness 线段厚度
          */
-        Segment.prototype.Segment = function (start, end, colorStart, colorEnd, thickness) {
+        function Segment(start, end, colorStart, colorEnd, thickness) {
             if (colorStart === void 0) { colorStart = 0x333333; }
             if (colorEnd === void 0) { colorEnd = 0x333333; }
             if (thickness === void 0) { thickness = 1; }
@@ -36510,7 +35898,7 @@ var feng3d;
             this._end = end;
             this.startColor = colorStart;
             this.endColor = colorEnd;
-        };
+        }
         /**
          * 更新线段信息
          * @param start 起点坐标
@@ -36659,10 +36047,6 @@ var feng3d;
      */
     var LineSegment = (function (_super) {
         __extends(LineSegment, _super);
-        function LineSegment() {
-            _super.apply(this, arguments);
-            this.TYPE = "line";
-        }
         /**
          * Create a line segment
          * @param v0 Start position of the line segment
@@ -36671,12 +36055,13 @@ var feng3d;
          * @param color1 Ending colour of the line segment
          * @param thickness Thickness of the line
          */
-        LineSegment.prototype.LineSegment = function (v0, v1, color0, color1, thickness) {
+        function LineSegment(v0, v1, color0, color1, thickness) {
             if (color0 === void 0) { color0 = 0x333333; }
             if (color1 === void 0) { color1 = 0x333333; }
             if (thickness === void 0) { thickness = 1; }
             _super.call(this, v0, v1, color0, color1, thickness);
-        };
+            this.TYPE = "line";
+        }
         return LineSegment;
     }(feng3d.Segment));
     feng3d.LineSegment = LineSegment;
@@ -36690,18 +36075,15 @@ var feng3d;
     var TestBase = (function (_super) {
         __extends(TestBase, _super);
         function TestBase() {
-            _super.apply(this, arguments);
             this.rootPaths = [
                 "http://127.0.0.1:9080/",
                 "http://images.feng3d.me/feng3dDemo/assets/",
             ];
             //资源根路径
             this.rootPath = "http://127.0.0.1:9080/";
-        }
-        TestBase.prototype.TestBase = function () {
             this.initModules();
             this.tryConnect();
-        };
+        }
         TestBase.prototype.initModules = function () {
             feng3d.Task.init();
             feng3d.Load.init();
@@ -36734,7 +36116,7 @@ var feng3d;
             for (var i = 0; this.resourceList != null && i < this.resourceList.length; i++) {
                 if (this.resourceList[i])
                     is;
-                String;
+                string;
                 {
                     loadObj.urls.push(this.rootPath + this.resourceList[i]);
                 }
@@ -36835,7 +36217,7 @@ var feng3d;
     function createParticleSubGeometry() {
         /** 当前粒子子几何体 */
         var particleSubGeometry = new feng3d.SubGeometry();
-        particleSubGeometry.updateIndexData(new uint[]());
+        particleSubGeometry.updateIndexData(new number[]());
         return particleSubGeometry;
     }
 })(feng3d || (feng3d = {}));
@@ -37001,7 +36383,7 @@ var feng3d;
         }
         // Transform min/max values to the scene if required
         if (worldBased) {
-            var b = Number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+            var b = number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
             var c = getBoundsCorners(_minX, _minY, _minZ, _maxX, _maxY, _maxZ);
             transformContainer(b, c, container.sceneTransform);
             _minX = b[0];
@@ -37014,7 +36396,7 @@ var feng3d;
     }
     /**
      * Calculate the bounds from a vector of number representing the vertices. &lt;x,y,z,x,y,z.....&gt;
-     * @param vertices        Vector.&lt;Number&gt;. The vertices to get the bounds from.
+     * @param vertices        Vector.&lt;number&gt;. The vertices to get the bounds from.
      * Use the getters of this class to retrieve the results
      */
     function getVerticesVectorBounds(vertices) {
@@ -37112,7 +36494,7 @@ var feng3d;
         if (parentTransform === void 0) { parentTransform = null; }
         if (!obj.visible)
             return;
-        var containerBounds = _containers[obj] || , Number = []([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+        var containerBounds = _containers[obj] || , number = []([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
         var child;
         var isEntity = obj;
         var containerTransform = new Matrix3D();
@@ -37152,7 +36534,7 @@ var feng3d;
         }
     }
     function isInfinite(value) {
-        return value == Number.POSITIVE_INFINITY || value == Number.NEGATIVE_INFINITY;
+        return value == number.POSITIVE_INFINITY || value == number.NEGATIVE_INFINITY;
     }
     function parseObjectBounds(oC, parentTransform, resetBounds) {
         if (parentTransform === void 0) { parentTransform = null; }
@@ -37185,7 +36567,7 @@ var feng3d;
         transformContainer(cB, corners, mat);
     }
     function getBoundsCorners(minX, minY, minZ, maxX, maxY, maxZ) {
-        return Number[]([minX, minY, minZ, minX, minY, maxZ, minX, maxY, minZ, minX, maxY, maxZ, maxX, minY, minZ, maxX, minY, maxZ, maxX, maxY, minZ, maxX, maxY, maxZ]);
+        return number[]([minX, minY, minZ, minX, minY, maxZ, minX, maxY, minZ, minX, maxY, maxZ, maxX, minY, minZ, maxX, minY, maxZ, maxX, maxY, minZ, maxX, maxY, maxZ]);
     }
     function transformContainer(bounds, corners, matrix) {
         matrix.transformVectors(corners, corners);
@@ -37261,7 +36643,7 @@ var feng3d;
             return null;
         if (data)
             is;
-        String;
+        string;
         data = tryClass(data);
         if (data)
             is;
@@ -37310,7 +36692,7 @@ var feng3d;
             return null;
         if (data)
             is;
-        String;
+        string;
         data = tryClass(data);
         if (data)
             is;
@@ -37345,8 +36727,6 @@ var feng3d;
     var ColliderUtils = (function () {
         function ColliderUtils() {
         }
-        ColliderUtils.prototype.ColliderUtils = function () {
-        };
         /**
          * 射线与三角形碰撞
          * @param rayPosition		射线顶点
@@ -37502,7 +36882,7 @@ var feng3d;
          * @param triangleOffset
          * @return
          */
-        GeomUtil.function = fromVectors(verts, Number[], indices, uint[], uvs, Number[], weights, Number[], jointIndices, Number[], triangleOffset, number = 0);
+        GeomUtil.function = fromVectors(verts, number[], indices, number[], uvs, number[], weights, number[], jointIndices, number[], triangleOffset, number = 0);
         return GeomUtil;
     }());
     feng3d.GeomUtil = GeomUtil;
@@ -37518,12 +36898,12 @@ var feng3d;
             jointIndices = null;
         if ((indices.length >= LIMIT_INDICES) || (verts.length >= LIMIT_VERTS)) {
             var i, len, outIndex, j;
-            var splitVerts = new Number[]();
-            var splitIndices = new uint[]();
-            var splitUvs = (uvs != null) ? new Number[]() : null;
-            var splitWeights = (weights != null) ? new Number[]() : null;
-            var splitJointIndices = (jointIndices != null) ? new Number[]() : null;
-            var mappings = new int[](verts.length / 3, true);
+            var splitVerts = new number[]();
+            var splitIndices = new number[]();
+            var splitUvs = (uvs != null) ? new number[]() : null;
+            var splitWeights = (weights != null) ? new number[]() : null;
+            var splitJointIndices = (jointIndices != null) ? new number[]() : null;
+            var mappings = new number[](verts.length / 3, true);
             i = mappings.length;
             while (i-- > 0)
                 mappings[i] = -1;
@@ -37537,11 +36917,11 @@ var feng3d;
                 splitIndex = splitVerts.length + 6;
                 if (((outIndex + 2) >= LIMIT_INDICES) || (splitIndex >= LIMIT_VERTS)) {
                     subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
-                    splitVerts = new Number[]();
-                    splitIndices = new uint[]();
-                    splitUvs = (uvs != null) ? new Number[]() : null;
-                    splitWeights = (weights != null) ? new Number[]() : null;
-                    splitJointIndices = (jointIndices != null) ? new Number[]() : null;
+                    splitVerts = new number[]();
+                    splitIndices = new number[]();
+                    splitUvs = (uvs != null) ? new number[]() : null;
+                    splitWeights = (weights != null) ? new number[]() : null;
+                    splitJointIndices = (jointIndices != null) ? new number[]() : null;
                     splitIndex = 0;
                     j = mappings.length;
                     while (j-- > 0)
@@ -37767,7 +37147,7 @@ var feng3d;
      */
     var SubGeomUtil = (function () {
         function SubGeomUtil() {
-            this.Number = [];
+            this.number = [];
         }
         /**
          * 更新面法线数据
@@ -37778,7 +37158,7 @@ var feng3d;
          * @param _useFaceWeights
          * @return
          */
-        SubGeomUtil.function = updateFaceNormals(_faceNormals, Number[], vertices, Number[], _indices, uint[]);
+        SubGeomUtil.function = updateFaceNormals(_faceNormals, number[], vertices, number[], _indices, number[]);
         return SubGeomUtil;
     }());
     feng3d.SubGeomUtil = SubGeomUtil;
@@ -37796,7 +37176,7 @@ var feng3d;
         var posStride = 3;
         var posOffset = 0;
         _faceNormals || ;
-        new Number[](len, true);
+        new number[](len, true);
         while (i < len) {
             index = posOffset + _indices[i++] * posStride;
             x1 = vertices[index];
@@ -37852,7 +37232,7 @@ var feng3d;
         var posStride = 3;
         var texStride = 2;
         _faceTangents || ;
-        new Number[](_indices.length, true);
+        new number[](_indices.length, true);
         while (i < len) {
             index1 = _indices[i];
             index2 = _indices[i + 1];
@@ -37865,16 +37245,16 @@ var feng3d;
             dv2 = uvs[ui] - v0;
             vi = index1 * posStride;
             x0 = vertices[vi];
-            y0 = vertices[uint(vi + 1)];
-            z0 = vertices[uint(vi + 2)];
+            y0 = vertices[number(vi + 1)];
+            z0 = vertices[number(vi + 2)];
             vi = index2 * posStride;
-            dx1 = vertices[uint(vi)] - x0;
-            dy1 = vertices[uint(vi + 1)] - y0;
-            dz1 = vertices[uint(vi + 2)] - z0;
+            dx1 = vertices[number(vi)] - x0;
+            dy1 = vertices[number(vi + 1)] - y0;
+            dz1 = vertices[number(vi + 2)] - z0;
             vi = index3 * posStride;
-            dx2 = vertices[uint(vi)] - x0;
-            dy2 = vertices[uint(vi + 1)] - y0;
-            dz2 = vertices[uint(vi + 2)] - z0;
+            dx2 = vertices[number(vi)] - x0;
+            dy2 = vertices[number(vi + 1)] - y0;
+            dz2 = vertices[number(vi + 2)] - z0;
             cx = dv2 * dx1 - dv1 * dx2;
             cy = dv2 * dy1 - dv1 * dy2;
             cz = dv2 * dz1 - dv1 * dz2;
@@ -37901,7 +37281,7 @@ var feng3d;
         var lenV = numVertices * 3;
         var normalStride = 3;
         target || ;
-        new Number[](lenV, true);
+        new number[](lenV, true);
         v1 = 0;
         while (v1 < lenV) {
             target[v1] = 0.0;
@@ -37957,7 +37337,7 @@ var feng3d;
         var lenV = numVertices * 3;
         var tangentStride = 3;
         target || ;
-        new Number[](lenV, true);
+        new number[](lenV, true);
         i = 0;
         while (i < lenV) {
             target[i] = 0.0;
@@ -38107,14 +37487,14 @@ var feng3d;
      */
     var VectorUtils = (function () {
         function VectorUtils() {
-            this.Number = [];
+            this.number = [];
         }
         /**
          * 把source添加到target中
          * @param source 源向量
          * @param target 目标向量
          */
-        VectorUtils.function = add(source, Number[], target, Number[]);
+        VectorUtils.function = add(source, number[], target, number[]);
         return VectorUtils;
     }());
     feng3d.VectorUtils = VectorUtils;
