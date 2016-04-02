@@ -10,6 +10,6 @@ module feng3d
 		/**
 		 * 是否开启AGAL调试
 		 */
-		public static var agalDebug:boolean = true;
+		public static agalDebug:boolean = true;
 	}
 }

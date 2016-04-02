@@ -24,8 +24,8 @@ module feng3d
 	export class Sprite3D extends Mesh
 	{
 		// TODO: Replace with CompactSubGeometry
-		private static var _sprite3DGeometry:SubGeometry;
-		//private static var _pickingSubMesh:SubGeometry;
+		private static _sprite3DGeometry:SubGeometry;
+		//private static _pickingSubMesh:SubGeometry;
 
 		private _spriteMatrix:Matrix3D;
 

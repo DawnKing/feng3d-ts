@@ -11,7 +11,7 @@ module feng3d
 		/** 添加pass */
 		public static PASS_ADDED:string = "passAdded";
 		/** 移除pass */
-		public static var PASS_REMOVED:string = "passRemoved";
+		public static PASS_REMOVED:string = "passRemoved";
 
 		constructor(type:string, data:* = null, bubbles:boolean = false)
 		{

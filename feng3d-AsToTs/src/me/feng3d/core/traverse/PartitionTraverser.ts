@@ -32,7 +32,7 @@ module feng3d
 		/**
 		 * 碰撞标记，避免多次检测
 		 */
-		public static var _collectionMark:number;
+		public static _collectionMark:number;
 
 		/**
 		 * 构建一个分区横越者

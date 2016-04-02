@@ -7,7 +7,7 @@ module feng3d
 	 */
 	public dynamic class Context3DBufferID
 	{
-		private static var _instance:Context3DBufferID;
+		private static _instance:Context3DBufferID;
 
 		/**
 		 * 创建3D环境缓冲编号集合

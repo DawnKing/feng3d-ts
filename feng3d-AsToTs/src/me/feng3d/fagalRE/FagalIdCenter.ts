@@ -9,7 +9,7 @@ module feng3dRE
 	 */
 	public dynamic class FagalIdCenter extends Proxy
 	{
-		private static var _instance:FagalIdCenter;
+		private static _instance:FagalIdCenter;
 
 		/**
 		 * 创建Fagal编号中心

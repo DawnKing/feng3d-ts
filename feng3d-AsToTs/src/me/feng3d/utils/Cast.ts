@@ -16,8 +16,8 @@ module feng3d
 	 */
 	export class Cast
 	{
-		private static var _notClasses:Dictionary = new Dictionary();
-		private static var _classes:Dictionary = new Dictionary();
+		private static _notClasses:Dictionary = new Dictionary();
+		private static _classes:Dictionary = new Dictionary();
 
 		/**
 		 * 获取类定义

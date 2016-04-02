@@ -9,9 +9,9 @@ module feng3d
 	 */
 	export class Task
 	{
-		private static var _isInit:boolean = false;
+		private static _isInit:boolean = false;
 
-		private static var taskManager:TaskManager;
+		private static taskManager:TaskManager;
 
 		/**
 		 * 模块是否初始化

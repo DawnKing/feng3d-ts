@@ -33,7 +33,7 @@ module feng3d
 		private typeClassDic:Dictionary;
 
 		/** 实例 */
-		private static var _instance:Context3DBufferTypeManager;
+		private static _instance:Context3DBufferTypeManager;
 
 		private static config:Array = [ //
 			["blendFactors", BlendFactorsBuffer], //

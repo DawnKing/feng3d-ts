@@ -25,8 +25,8 @@ module feng3d
 	 */
 	export class DefaultRenderer extends RendererBase
 	{
-		private static var SCREEN_PASSES:number = 2;
-		private static var ALL_PASSES:number = 3;
+		private static SCREEN_PASSES:number = 2;
+		private static ALL_PASSES:number = 3;
 		private _activeMaterial:MaterialBase;
 
 		private _depthRenderer:DepthRenderer;
@@ -35,7 +35,7 @@ module feng3d
 		/**
 		 * 是否使用平面阴影
 		 */
-		public static var usePlanarShadow:boolean;
+		public static usePlanarShadow:boolean;
 
 		/**
 		 * 创建一个默认渲染器

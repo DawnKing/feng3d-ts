@@ -17,9 +17,9 @@ module feng3d
 	 */
 	export class Stage3DManager
 	{
-		private static var _instances:Dictionary;
-		private static var _stageProxies:Stage3DProxy[];
-		private static var _numStageProxies:number = 0;
+		private static _instances:Dictionary;
+		private static _stageProxies:Stage3DProxy[];
+		private static _numStageProxies:number = 0;
 
 		private _stage:Stage;
 

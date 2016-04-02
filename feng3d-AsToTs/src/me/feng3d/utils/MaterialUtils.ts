@@ -15,7 +15,7 @@ module feng3d
 	 */
 	export class MaterialUtils
 	{
-		private static var dispatcher:GlobalDispatcher = GlobalDispatcher.instance;
+		private static dispatcher:GlobalDispatcher = GlobalDispatcher.instance;
 
 		/**
 		 * 创建纹理材质

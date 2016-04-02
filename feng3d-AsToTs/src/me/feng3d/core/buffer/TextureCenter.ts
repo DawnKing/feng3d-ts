@@ -20,7 +20,7 @@ module feng3d
 	export class TextureCenter
 	{
 		/** 纹理字典 */
-		private static var textureDic:Dictionary = new Dictionary();
+		private static textureDic:Dictionary = new Dictionary();
 
 		/**
 		 * 创建一个纹理缓存中心

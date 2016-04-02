@@ -14,9 +14,9 @@ module feng3d
 	export class ShaderRegisterCache
 	{
 		/* 实例 */
-		private static var _instance:ShaderRegisterCache;
+		private static _instance:ShaderRegisterCache;
 		/** 脏标记 */
-		private static var _dirty:boolean = true;
+		private static _dirty:boolean = true;
 
 		/** 数据寄存器缓存 */
 		private _dataRegisterDic:Dictionary;

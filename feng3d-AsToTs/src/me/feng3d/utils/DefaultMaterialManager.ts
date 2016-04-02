@@ -7,9 +7,9 @@ module feng3d
 	
 	export class DefaultMaterialManager
 	{
-		private static var _defaultTextureBitmapData:BitmapData;
-		private static var _defaultMaterial:TextureMaterial;
-		private static var _defaultTexture:BitmapTexture;
+		private static _defaultTextureBitmapData:BitmapData;
+		private static _defaultMaterial:TextureMaterial;
+		private static _defaultTexture:BitmapTexture;
 		
 		public static getDefaultMaterial():TextureMaterial
 		{

@@ -33,7 +33,7 @@ module feng3d
 		 */
 		private shadowColorCommonsData:number[] = new number[](4);
 
-		public static var groundY:number = 50;
+		public static groundY:number = 50;
 
 		/**
 		 * 创建深度映射通道

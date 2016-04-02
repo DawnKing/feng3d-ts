@@ -18,16 +18,16 @@ module feng3d
 	export class ParticleNodeBase extends AnimationNodeBase
 	{
 		/** 模式列表 */
-		private static var MODES:Object = { //
+		private static MODES:Object = { //
 				0: GLOBAL, //
 				1: LOCAL_STATIC, //
 				2: LOCAL_DYNAMIC //
 			};
 
 		//模式名称
-		private static var GLOBAL:string = 'Global';
-		private static var LOCAL_STATIC:string = 'LocalStatic';
-		private static var LOCAL_DYNAMIC:string = 'LocalDynamic';
+		private static GLOBAL:string = 'Global';
+		private static LOCAL_STATIC:string = 'LocalStatic';
+		private static LOCAL_DYNAMIC:string = 'LocalDynamic';
 
 		protected _mode:number;
 		private _priority:number;

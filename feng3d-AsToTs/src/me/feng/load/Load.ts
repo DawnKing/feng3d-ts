@@ -13,7 +13,7 @@ module feng3d
 	 */
 	export class Load
 	{
-		private static var loadManager:LoadManager;
+		private static loadManager:LoadManager;
 
 		/**
 		 * 初始化加载模块

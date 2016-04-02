@@ -8,7 +8,7 @@ module feng3dBeat
 	 */
 	export class HeartBeat
 	{
-		private static var heartBeatManager:HeartBeatManager;
+		private static heartBeatManager:HeartBeatManager;
 
 		/**
 		 * 初始化模块

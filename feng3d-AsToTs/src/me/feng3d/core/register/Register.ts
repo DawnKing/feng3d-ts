@@ -28,7 +28,7 @@ module feng3d
 		/**
 		 * 寄存器输出方式
 		 */
-		public static var TO_STRING:string = NAME;
+		public static TO_STRING:string = NAME;
 
 		/**
 		 * 寄存器中元素数组

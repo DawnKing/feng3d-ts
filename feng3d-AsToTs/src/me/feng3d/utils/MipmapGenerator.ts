@@ -12,8 +12,8 @@ module feng3d
 	 */
 	export class MipmapGenerator
 	{
-		private static var _matrix:Matrix = new Matrix();
-		private static var _rect:Rectangle = new Rectangle();
+		private static _matrix:Matrix = new Matrix();
+		private static _rect:Rectangle = new Rectangle();
 		
 		/**
 		 * Uploads a BitmapData with mip maps to a target Texture object.

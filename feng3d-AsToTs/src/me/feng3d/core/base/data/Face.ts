@@ -8,7 +8,7 @@ module feng3d
 	 */
 	export class Face
 	{
-		private static var _calcPoint:Point;
+		private static _calcPoint:Point;
 		
 		private _vertices:number[];
 		private _uvs:number[];

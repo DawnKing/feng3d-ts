@@ -20,12 +20,12 @@ module feng3d
 		/**
 		 * 实例字典
 		 */
-		private static var _instanceDic:Dictionary = new Dictionary();
+		private static _instanceDic:Dictionary = new Dictionary();
 
 		/**
 		 * 字符串与二进制字典
 		 */
-		private static var shaderByteCodeDic:Dictionary = new Dictionary();
+		private static shaderByteCodeDic:Dictionary = new Dictionary();
 
 		/**
 		 * 当前3D环境

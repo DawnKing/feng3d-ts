@@ -16,7 +16,7 @@ module feng3dRE
 	 */
 	export class FagalRE
 	{
-		private static var _instance:FagalRE;
+		private static _instance:FagalRE;
 
 		private _context3DCache:Context3DCache;
 

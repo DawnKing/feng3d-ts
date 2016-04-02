@@ -125,7 +125,7 @@ module feng3d
 		private static _MEM_COL:number = 0xff00cc;
 
 		// Singleton instance reference
-		private static var _INSTANCE:AwayStats;
+		private static _INSTANCE:AwayStats;
 
 		/**
 		 * <p>Create an Away3D stats widget. The widget can be added to the stage

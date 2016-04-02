@@ -19,14 +19,14 @@ module feng3d
 	export class Bounds
 	{
 
-		private static var _minX:number;
-		private static var _minY:number;
-		private static var _minZ:number;
-		private static var _maxX:number;
-		private static var _maxY:number;
-		private static var _maxZ:number;
-		private static var _defaultPosition:Vector3D = new Vector3D(0.0, 0.0, 0.0);
-		private static var _containers:Dictionary;
+		private static _minX:number;
+		private static _minY:number;
+		private static _minZ:number;
+		private static _maxX:number;
+		private static _maxY:number;
+		private static _maxZ:number;
+		private static _defaultPosition:Vector3D = new Vector3D(0.0, 0.0, 0.0);
+		private static _containers:Dictionary;
 
 		/**
 		 * Calculate the bounds of a Mesh object

@@ -21,14 +21,14 @@ module feng3dRE
 	 */
 	public dynamic class FagalRegisterCenter extends Proxy
 	{
-		private static var _instance:FagalRegisterCenter;
+		private static _instance:FagalRegisterCenter;
 
-		private static var _dataRegisterDic:Dictionary;
+		private static _dataRegisterDic:Dictionary;
 
 		/**
 		 * 临时寄存器递增索引（目的是为了获取唯一的临时寄存器名称，顶点与片段临时寄存器公用一个递增索引）
 		 */
-		private static var tempIndex:number;
+		private static tempIndex:number;
 
 		/**
 		 * 构建Fagal寄存器中心

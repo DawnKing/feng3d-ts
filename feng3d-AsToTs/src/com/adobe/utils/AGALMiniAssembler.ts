@@ -55,7 +55,7 @@ module feng3d
 		
 		private debugEnabled:boolean						= false;
 		
-		private static var initialized:boolean					= false;
+		private static initialized:boolean					= false;
 		public verbose:boolean								= false;
 		
 		// ======================================================================

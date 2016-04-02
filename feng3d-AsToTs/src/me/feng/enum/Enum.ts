@@ -18,7 +18,7 @@ module feng3d
 		/**
 		 * 枚举计数字典
 		 */
-		private static var autoIndexDic:Dictionary = new Dictionary();
+		private static autoIndexDic:Dictionary = new Dictionary();
 		/**
 		 * 枚举值
 		 */

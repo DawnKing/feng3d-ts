@@ -33,7 +33,7 @@ module feng3d
 		private _previousCollidingObject:PickingCollisionVO;
 
 		/** 普通鼠标事件与3d鼠标事件对应关系 */
-		private static var eventMap:Dictionary;
+		private static eventMap:Dictionary;
 
 		constructor()
 		{
