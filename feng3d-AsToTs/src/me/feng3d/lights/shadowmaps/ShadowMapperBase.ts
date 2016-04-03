@@ -51,12 +51,12 @@ module feng3d
 		 */
 		public get light():LightBase
 		{
-			return _light;
+			return this._light;
 		}
 
 		public set light(value:LightBase)
 		{
-			_light = value;
+			this._light = value;
 		}
 
 		/**
@@ -64,7 +64,7 @@ module feng3d
 		 */
 		public get depthMap():TextureProxyBase
 		{
-			return _depthMap ||= createDepthTexture();
+			return this._depthMap ||= this.createDepthTexture();
 		}
 
 		/**
@@ -72,7 +72,7 @@ module feng3d
 		 */
 		public get autoUpdateShadows():boolean
 		{
-			return _autoUpdateShadows;
+			return this._autoUpdateShadows;
 		}
 
 		/**
@@ -123,14 +123,14 @@ module feng3d
 		 */
 		public get depthMapSize():number
 		{
-			return _depthMapSize;
+			return this._depthMapSize;
 		}
 
 		public set depthMapSize(value:number)
 		{
-			if (value == _depthMapSize)
+			if (value == this._depthMapSize)
 				return;
-			_depthMapSize = value;
+			this._depthMapSize = value;
 		}
 
 		/**

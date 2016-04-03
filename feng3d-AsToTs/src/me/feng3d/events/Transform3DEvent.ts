@@ -54,7 +54,7 @@ module feng3d
 		 */
 		public get element3D():Element3D
 		{
-			return data as Element3D;
+			return this.data as Element3D;
 		}
 	}
 }

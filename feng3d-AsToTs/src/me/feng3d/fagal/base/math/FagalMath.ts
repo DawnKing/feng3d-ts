@@ -13,7 +13,7 @@ module feng3d
 	/**
 	 * Fagal函数追加代码事件
 	 */
-	[Event(name = "fagalMathEventAppend", type = "me.feng3d.events.FagalMathEvent")]
+	//[Event(name = "fagalMathEventAppend", type = "me.feng3d.events.FagalMathEvent")]
 
 	/**
 	 * Fagal数学运算
@@ -340,7 +340,7 @@ module feng3d
 			var code:string = "this.tex " + colorReg + ", " + uvReg + ", " + textureReg;
 
 			//获取法线纹理采样参数
-			var flags:Array = getSampleFlags(textureReg);
+			var flags = getSampleFlags(textureReg);
 			if (flags && flags.length > 0)
 			{
 				code += " <" + flags.join(",") + ">";
@@ -352,13 +352,13 @@ module feng3d
 			 * @param textureReg 纹理寄存器
 			 * @return 取样参数
 			 */
-			function getSampleFlags(textureReg:Register):Array
+			function getSampleFlags(textureReg:Register)
 			{
 				//抛出 获取取样标记 事件
 				var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 
 				//提取 渲染标记
-				var flags:Array = shaderParams.getFlags(textureReg.regId);
+				var flags = shaderParams.getFlags(textureReg.regId);
 				return flags;
 			}
 		}

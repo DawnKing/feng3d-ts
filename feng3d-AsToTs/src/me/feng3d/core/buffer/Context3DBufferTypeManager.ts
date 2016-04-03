@@ -35,7 +35,7 @@ module feng3d
 		/** 实例 */
 		private static _instance:Context3DBufferTypeManager;
 
-		private static config:Array = [ //
+		private static config = [ //
 			["blendFactors", BlendFactorsBuffer], //
 			["culling", CullingBuffer], //
 			["depthTest", DepthTestBuffer], //
@@ -58,9 +58,9 @@ module feng3d
 		 */
 		constructor()
 		{
-			if (_instance)
+			if (Context3DBufferTypeManager._instance)
 				throw new Error("单例模式");
-			_instance = this;
+			Context3DBufferTypeManager._instance = this;
 			this.bufferTypeDic = {};
 			this.typeClassDic = {};
 		}
@@ -70,7 +70,7 @@ module feng3d
 		 */
 		private static function get instance():Context3DBufferTypeManager
 		{
-			return _instance || new Context3DBufferTypeManager();
+			return Context3DBufferTypeManager._instance || new Context3DBufferTypeManager();
 		}
 
 		/**
@@ -80,7 +80,7 @@ module feng3d
 		 */
 		public static getBufferType(typeId:string):Context3DBufferType
 		{
-			return instance.getBufferType(typeId);
+			return Context3DBufferTypeManager.instance.getBufferType(typeId);
 		}
 
 		/**
@@ -88,9 +88,9 @@ module feng3d
 		 * @param typeId 		3d缓存类型编号
 		 * @return				3d缓存类定义
 		 */
-		public static getBufferClass(typeId:string):Class
+		public static getBufferClass(typeId:string)
 		{
-			return instance.getBufferClass(typeId);
+			return Context3DBufferTypeManager.instance.getBufferClass(typeId);
 		}
 
 		/**
@@ -107,7 +107,7 @@ module feng3d
 
 			this.bufferTypeDic[typeId] = bufferType = new Context3DBufferType();
 
-			var types:Array = typeId.split("_");
+			var types = typeId.split("_");
 			bufferType.registerType = types[1];
 			bufferType.dataType = types[2];
 
@@ -119,17 +119,17 @@ module feng3d
 		 * @param typeId 		3d缓存类型编号
 		 * @return				3d缓存类定义
 		 */
-		public getBufferClass(typeId:string):Class
+		public getBufferClass(typeId:string)
 		{
-			var cls:Class = this.typeClassDic[typeId];
+			var cls = this.typeClassDic[typeId];
 			if (cls == null)
 			{
-				for (var i:number = 0; i < config.length; i++)
+				for (var i:number = 0; i < Context3DBufferTypeManager.config.length; i++)
 				{
-					var result:Array = typeId.match(config[i][0]);
+					var result = typeId.match(Context3DBufferTypeManager.config[i][0]);
 					if (result != null && result.input == result[0])
 					{
-						return config[i][1];
+						return Context3DBufferTypeManager.config[i][1];
 					}
 				}
 			}

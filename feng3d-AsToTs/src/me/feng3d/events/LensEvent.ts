@@ -18,7 +18,7 @@ module feng3d
 
 		public get lens():LensBase
 		{
-			return data as LensBase;
+			return this.data as LensBase;
 		}
 	}
 }

@@ -31,7 +31,7 @@ module feng3d
 		 */
 		public get format():string
 		{
-			return _format;
+			return this._format;
 		}
 
 		/**
@@ -49,7 +49,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			doUpdateFunc();
+			this.doUpdateFunc();
 
 			var vertexBufferItem:VertexBufferItem = this.dataBuffer.getBufferItem(context3D);
 			vertexBufferItem.setVertexBufferAt(this.firstRegister, 0, this.format);
@@ -65,7 +65,7 @@ module feng3d
 		{
 			assert(1 <= data32PerVertex && data32PerVertex <= 4);
 
-			this._format = bufferFormats[data32PerVertex];
+			this._format = VABuffer.bufferFormats[data32PerVertex];
 			this.dataBuffer.update(data, numVertices, data32PerVertex);
 		}
 	}

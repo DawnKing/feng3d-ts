@@ -40,7 +40,7 @@ module feng3d
 		 */
 		public get context3dCache():Context3DCache
 		{
-			return _context3dCache;
+			return this._context3dCache;
 		}
 
 		/**

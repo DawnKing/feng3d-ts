@@ -27,10 +27,10 @@ module feng3d
 		 */
 		public get currentPose():SkeletonPose
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _currentPose;
+			return this._currentPose;
 		}
 
 		/**
@@ -38,10 +38,10 @@ module feng3d
 		 */
 		public get nextPose():SkeletonPose
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _nextPose;
+			return this._nextPose;
 		}
 
 		/**
@@ -49,7 +49,7 @@ module feng3d
 		 * @param animator				动画
 		 * @param skeletonClipNode		骨骼剪辑节点
 		 */
-		function SkeletonClipState(animator:AnimatorBase, skeletonClipNode:SkeletonClipNode)
+		constructor(animator:AnimatorBase, skeletonClipNode:SkeletonClipNode)
 		{
 			super(animator, skeletonClipNode);
 
@@ -85,15 +85,15 @@ module feng3d
 		{
 			super.updateFrames();
 
-			this._currentPose = this._frames[_currentFrame];
+			this._currentPose = this._frames[this._currentFrame];
 
-			if (this._skeletonClipNode.looping && _nextFrame >= this._skeletonClipNode.lastFrame)
+			if (this._skeletonClipNode.looping && this._nextFrame >= this._skeletonClipNode.lastFrame)
 			{
 				this._nextPose = this._frames[0];
-				SkeletonAnimator(_animator).dispatchCycleEvent();
+				SkeletonAnimator(this._animator).dispatchCycleEvent();
 			}
 			else
-				this._nextPose = this._frames[_nextFrame];
+				this._nextPose = this._frames[this._nextFrame];
 		}
 
 		/**
@@ -107,7 +107,7 @@ module feng3d
 			if (!this._skeletonClipNode.totalDuration)
 				return;
 
-			if (_framesDirty)
+			if (this._framesDirty)
 				this.updateFrames();
 
 			var currentPose:JointPose[] = this._currentPose.jointPoses;
@@ -135,15 +135,15 @@ module feng3d
 				p2 = pose2.translation;
 
 				//根据前后两个关节姿势计算出当前显示关节姿势
-				showPose.orientation.lerp(pose1.orientation, pose2.orientation, _blendWeight);
+				showPose.orientation.lerp(pose1.orientation, pose2.orientation, this._blendWeight);
 
 				//计算显示的关节位置
 				if (i > 0)
 				{
 					tr = showPose.translation;
-					tr.x = p1.x + _blendWeight * (p2.x - p1.x);
-					tr.y = p1.y + _blendWeight * (p2.y - p1.y);
-					tr.z = p1.z + _blendWeight * (p2.z - p1.z);
+					tr.x = p1.x + this._blendWeight * (p2.x - p1.x);
+					tr.y = p1.y + this._blendWeight * (p2.y - p1.y);
+					tr.z = p1.z + this._blendWeight * (p2.z - p1.z);
 				}
 			}
 		}
@@ -153,20 +153,20 @@ module feng3d
 		 */
 		protected updatePositionDelta()
 		{
-			_positionDeltaDirty = false;
+			this._positionDeltaDirty = false;
 
-			if (_framesDirty)
+			if (this._framesDirty)
 				this.updateFrames();
 
 			var p1:Vector3D, p2:Vector3D, p3:Vector3D;
 			var totalDelta:Vector3D = this._skeletonClipNode.totalDelta;
 
 			//跳过最后，重置位置
-			if ((_timeDir > 0 && _nextFrame < _oldFrame) || (_timeDir < 0 && _nextFrame > _oldFrame))
+			if ((this._timeDir > 0 && this._nextFrame < this._oldFrame) || (this._timeDir < 0 && this._nextFrame > this._oldFrame))
 			{
-				this._rootPos.x -= totalDelta.x * _timeDir;
-				this._rootPos.y -= totalDelta.y * _timeDir;
-				this._rootPos.z -= totalDelta.z * _timeDir;
+				this._rootPos.x -= totalDelta.x * this._timeDir;
+				this._rootPos.y -= totalDelta.y * this._timeDir;
+				this._rootPos.z -= totalDelta.z * this._timeDir;
 			}
 
 			/** 保存骨骼根节点原位置 */
@@ -175,32 +175,32 @@ module feng3d
 			var dz:number = this._rootPos.z;
 
 			//计算骨骼根节点位置
-			if (this._skeletonClipNode.stitchFinalFrame && _nextFrame == this._skeletonClipNode.lastFrame)
+			if (this._skeletonClipNode.stitchFinalFrame && this._nextFrame == this._skeletonClipNode.lastFrame)
 			{
 				p1 = this._frames[0].jointPoses[0].translation;
 				p2 = this._frames[1].jointPoses[0].translation;
 				p3 = this._currentPose.jointPoses[0].translation;
 
-				this._rootPos.x = p3.x + p1.x + _blendWeight * (p2.x - p1.x);
-				this._rootPos.y = p3.y + p1.y + _blendWeight * (p2.y - p1.y);
-				this._rootPos.z = p3.z + p1.z + _blendWeight * (p2.z - p1.z);
+				this._rootPos.x = p3.x + p1.x + this._blendWeight * (p2.x - p1.x);
+				this._rootPos.y = p3.y + p1.y + this._blendWeight * (p2.y - p1.y);
+				this._rootPos.z = p3.z + p1.z + this._blendWeight * (p2.z - p1.z);
 			}
 			else
 			{
 				p1 = this._currentPose.jointPoses[0].translation;
-				p2 = this._frames[_nextFrame].jointPoses[0].translation; //cover the instances where we wrap the pose but still want the final frame translation values
-				this._rootPos.x = p1.x + _blendWeight * (p2.x - p1.x);
-				this._rootPos.y = p1.y + _blendWeight * (p2.y - p1.y);
-				this._rootPos.z = p1.z + _blendWeight * (p2.z - p1.z);
+				p2 = this._frames[this._nextFrame].jointPoses[0].translation; //cover the instances where we wrap the pose but still want the final frame translation values
+				this._rootPos.x = p1.x + this._blendWeight * (p2.x - p1.x);
+				this._rootPos.y = p1.y + this._blendWeight * (p2.y - p1.y);
+				this._rootPos.z = p1.z + this._blendWeight * (p2.z - p1.z);
 			}
 
 			//计算骨骼根节点偏移量
-			_rootDelta.x = this._rootPos.x - dx;
-			_rootDelta.y = this._rootPos.y - dy;
-			_rootDelta.z = this._rootPos.z - dz;
+			this._rootDelta.x = this._rootPos.x - dx;
+			this._rootDelta.y = this._rootPos.y - dy;
+			this._rootDelta.z = this._rootPos.z - dz;
 
 			//保存旧帧编号
-			_oldFrame = _nextFrame;
+			this._oldFrame = this._nextFrame;
 		}
 	}
 }

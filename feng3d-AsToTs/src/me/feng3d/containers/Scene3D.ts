@@ -36,9 +36,9 @@ module feng3d
 
 			this._entityDic = {};
 			this._displayEntityDic = {};
-			this._mouseCollisionEntitys = new Entity[]();
+			this._mouseCollisionEntitys = [];
 
-			this._partitions = new Partition3D[]();
+			this._partitions = [];
 
 			this.partition = new Partition3D(new NodeBase());
 		}
@@ -46,7 +46,7 @@ module feng3d
 		/** 显示实体字典 */
 		public get displayEntityDic()
 		{
-			return _displayEntityDic;
+			return this._displayEntityDic;
 		}
 
 		/**
@@ -83,7 +83,7 @@ module feng3d
 			this._mouseCollisionEntitys.length = 0;
 
 			//3d对象堆栈
-			var mouseCollisionStack:Object3D[] = new Object3D[]();
+			var mouseCollisionStack:Object3D[] = [];
 			mouseCollisionStack.push(this);
 
 			var object3D:Object3D;
@@ -119,7 +119,7 @@ module feng3d
 		 */
 		public get mouseCollisionEntitys():Entity[]
 		{
-			return _mouseCollisionEntitys;
+			return this._mouseCollisionEntitys;
 		}
 
 		/**

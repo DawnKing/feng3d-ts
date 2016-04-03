@@ -24,7 +24,7 @@ module feng3dSheet
 		 * @param animator			动画
 		 * @param clipNode			动画剪辑节点
 		 */
-		function SpriteSheetAnimationState(animator:AnimatorBase, clipNode:SpriteSheetClipNode)
+		constructor(animator:AnimatorBase, clipNode:SpriteSheetClipNode)
 		{
 			super(animator, clipNode);
 
@@ -37,7 +37,7 @@ module feng3dSheet
 		 */
 		public set reverse(b:boolean)
 		{
-			_reverse = b;
+			this._reverse = b;
 		}
 
 		/**
@@ -46,8 +46,8 @@ module feng3dSheet
 		public set backAndForth(b:boolean)
 		{
 			if (b)
-				_reverse = false;
-			_backAndForth = b;
+				this._reverse = false;
+			this._backAndForth = b;
 		}
 
 		/**
@@ -55,10 +55,10 @@ module feng3dSheet
 		 */
 		public get currentFrameData():SpriteSheetAnimationFrame
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _frames[_currentFrameID];
+			return this._frames[this._currentFrameID];
 		}
 
 		/**
@@ -66,13 +66,13 @@ module feng3dSheet
 		 */
 		public get currentFrameNumber():number
 		{
-			return _currentFrameID;
+			return this._currentFrameID;
 		}
 
 		public set currentFrameNumber(frameNumber:number)
 		{
-			_currentFrameID = (frameNumber > _frames.length - 1) ? _frames.length - 1 : frameNumber;
-			_forcedFrame = true;
+			this._currentFrameID = (frameNumber > this._frames.length - 1) ? this._frames.length - 1 : frameNumber;
+			this._forcedFrame = true;
 		}
 
 		/**
@@ -80,7 +80,7 @@ module feng3dSheet
 		 */
 		public get totalFrames():number
 		{
-			return (!_frames) ? 0 : _frames.length;
+			return (!this._frames) ? 0 : this._frames.length;
 		}
 
 		/**
@@ -117,7 +117,7 @@ module feng3dSheet
 							this._currentFrameID = this._frames.length - 1;
 					}
 
-					SpriteSheetAnimator(_animator).dispatchCycleEvent();
+					SpriteSheetAnimator(this._animator).dispatchCycleEvent();
 				}
 
 			}
@@ -142,7 +142,7 @@ module feng3dSheet
 							this._currentFrameID = 0;
 					}
 
-					SpriteSheetAnimator(_animator).dispatchCycleEvent();
+					SpriteSheetAnimator(this._animator).dispatchCycleEvent();
 				}
 			}
 

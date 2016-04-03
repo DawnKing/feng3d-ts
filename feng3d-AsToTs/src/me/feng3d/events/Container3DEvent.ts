@@ -9,7 +9,7 @@ module feng3d
 	 */
 	export class Container3DEvent extends Event
 	{
-		constructor(type:string, data:*=null, bubbles:boolean=false)
+		constructor(type:string, data=null, bubbles:boolean=false)
 		{
 			super(type, data, bubbles);
 		}

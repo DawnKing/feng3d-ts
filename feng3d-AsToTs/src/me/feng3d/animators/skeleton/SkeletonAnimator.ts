@@ -27,7 +27,7 @@ module feng3d
 	 */
 	export class SkeletonAnimator extends AnimatorBase
 	{
-		private _globalMatrices:number[] = new number[]();
+		private _globalMatrices:number[] = [];
 		private _globalPose:SkeletonPose = new SkeletonPose();
 		private _globalPropertiesDirty:boolean;
 		private _numJoints:number;
@@ -44,10 +44,10 @@ module feng3d
 		 */
 		public get globalMatrices():number[]
 		{
-			if (_globalPropertiesDirty)
-				updateGlobalProperties();
+			if (this._globalPropertiesDirty)
+				this.updateGlobalProperties();
 
-			return _globalMatrices;
+			return this._globalMatrices;
 		}
 
 		/**
@@ -55,10 +55,10 @@ module feng3d
 		 */
 		public get globalPose():SkeletonPose
 		{
-			if (_globalPropertiesDirty)
-				updateGlobalProperties();
+			if (this._globalPropertiesDirty)
+				this.updateGlobalProperties();
 
-			return _globalPose;
+			return this._globalPose;
 		}
 
 		/**
@@ -66,7 +66,7 @@ module feng3d
 		 */
 		public get skeleton():Skeleton
 		{
-			return _skeleton;
+			return this._skeleton;
 		}
 
 		/**
@@ -74,7 +74,7 @@ module feng3d
 		 */
 		public get forceCPU():boolean
 		{
-			return _forceCPU;
+			return this._forceCPU;
 		}
 
 		/**
@@ -92,7 +92,7 @@ module feng3d
 			this._jointsPerVertex = animationSet.jointsPerVertex;
 
 			if (this._forceCPU || this._jointsPerVertex > 4)
-				_animationSet.cancelGPUCompatibility();
+				this._animationSet.cancelGPUCompatibility();
 
 			animationSet.numJoints = this._skeleton.numJoints;
 			this._numJoints = this._skeleton.numJoints;
@@ -140,32 +140,32 @@ module feng3d
 		 */
 		public play(name:string, transition:IAnimationTransition = null, offset:number = NaN)
 		{
-			if (_activeAnimationName != name)
+			if (this._activeAnimationName != name)
 			{
-				_activeAnimationName = name;
+				this._activeAnimationName = name;
 
-				if (!_animationSet.hasAnimation(name))
+				if (!this._animationSet.hasAnimation(name))
 					throw new Error("Animation root node " + name + " not found!");
 
-				if (transition && _activeNode)
+				if (transition && this._activeNode)
 				{
 					//setup the transition
-					_activeNode = transition.getAnimationNode(this, _activeNode, _animationSet.getAnimation(name), _absoluteTime);
-					_activeNode.addEventListener(AnimationStateEvent.TRANSITION_COMPLETE, this.onTransitionComplete);
+					this._activeNode = transition.getAnimationNode(this, this._activeNode, this._animationSet.getAnimation(name), this._absoluteTime);
+					this._activeNode.addEventListener(AnimationStateEvent.TRANSITION_COMPLETE, this.onTransitionComplete);
 				}
 				else
-					_activeNode = _animationSet.getAnimation(name);
+					this._activeNode = this._animationSet.getAnimation(name);
 
-				_activeState = this.getAnimationState(_activeNode);
+				this._activeState = this.getAnimationState(this._activeNode);
 
 				if (this.updatePosition)
 				{
 					//this.update straight away to this.reset position deltas
-					_activeState.update(_absoluteTime);
-					_activeState.positionDelta;
+					this._activeState.update(this._absoluteTime);
+					this._activeState.positionDelta;
 				}
 
-				this._activeSkeletonState = _activeState as ISkeletonAnimationState;
+				this._activeSkeletonState = this._activeState as ISkeletonAnimationState;
 			}
 
 			this.start();
@@ -186,7 +186,7 @@ module feng3d
 
 			var subGeometry:SubGeometry = MeshRenderable(renderable).subMesh.subGeometry;
 
-			if (_animationSet.usesCPU)
+			if (this._animationSet.usesCPU)
 			{
 				var subGeomAnimState:SubGeomAnimationState = this._animationStates[subGeometry] ||= new SubGeomAnimationState(subGeometry);
 
@@ -517,11 +517,11 @@ module feng3d
 			if (event.type == AnimationStateEvent.TRANSITION_COMPLETE)
 			{
 				event.animationNode.removeEventListener(AnimationStateEvent.TRANSITION_COMPLETE, this.onTransitionComplete);
-				if (_activeState == event.animationState)
+				if (this._activeState == event.animationState)
 				{
-					_activeNode = _animationSet.getAnimation(_activeAnimationName);
-					_activeState = this.getAnimationState(_activeNode);
-					this._activeSkeletonState = _activeState as ISkeletonAnimationState;
+					this._activeNode = this._animationSet.getAnimation(this._activeAnimationName);
+					this._activeState = this.getAnimationState(this._activeNode);
+					this._activeSkeletonState = this._activeState as ISkeletonAnimationState;
 				}
 			}
 		}

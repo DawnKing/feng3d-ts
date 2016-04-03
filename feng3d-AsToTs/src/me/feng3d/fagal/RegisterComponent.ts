@@ -20,7 +20,7 @@ module feng3d
 		/** 寄存器id */
 		public get regId():string
 		{
-			return _regId;
+			return this._regId;
 		}
 
 		/**
@@ -28,7 +28,7 @@ module feng3d
 		 */
 		public set regId(value:string)
 		{
-			_regId = value;
+			this._regId = value;
 		}
 
 		/**
@@ -43,7 +43,7 @@ module feng3d
 			this._regType = register.regType;
 			this._regId = register.regId;
 
-			if (!this.valid(prop))
+			if (!RegisterComponent.valid(prop))
 				throw new Error("无效寄存器分量: " + this._register);
 		}
 
@@ -52,7 +52,7 @@ module feng3d
 		 */
 		public get regType():string
 		{
-			return _regType;
+			return this._regType;
 		}
 
 		public toString():string
@@ -87,7 +87,7 @@ module feng3d
 		 */
 		public get desc():string
 		{
-			return toString();
+			return this.toString();
 		}
 	}
 }

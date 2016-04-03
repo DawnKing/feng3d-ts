@@ -32,42 +32,42 @@ module feng3d
 		 */
 		public set index(ind:number)
 		{
-			_index = ind;
+			this._index = ind;
 		}
 
 		public get index():number
 		{
-			return _index;
+			return this._index;
 		}
 
 		public get x():number
 		{
-			return _x;
+			return this._x;
 		}
 
 		public set x(value:number)
 		{
-			_x = value;
+			this._x = value;
 		}
 
 		public get y():number
 		{
-			return _y;
+			return this._y;
 		}
 
 		public set y(value:number)
 		{
-			_y = value;
+			this._y = value;
 		}
 
 		public get z():number
 		{
-			return _z;
+			return this._z;
 		}
 
 		public set z(value:number)
 		{
-			_z = value;
+			this._z = value;
 		}
 
 		public clone():Vertex

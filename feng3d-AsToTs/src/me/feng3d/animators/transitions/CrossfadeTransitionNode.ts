@@ -23,7 +23,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			_stateClass = CrossfadeTransitionState;
+			this._stateClass = CrossfadeTransitionState;
 		}
 	}
 }

@@ -61,8 +61,8 @@ module feng3d
 		constructor()
 		{
 			this._namedAsset = new NamedAsset(this,AssetType.MATERIAL);
-			this._owners = new IMaterialOwner[]();
-			this._passes = new MaterialPassBase[]();
+			this._owners = [];
+			this._passes = [];
 			this._depthPass = new DepthMapPass();
 			this._planarShadowPass = new PlanarShadowPass();
 
@@ -75,7 +75,7 @@ module feng3d
 		 */
 		public get depthPass():DepthMapPass
 		{
-			return _depthPass;
+			return this._depthPass;
 		}
 
 		/**
@@ -83,7 +83,7 @@ module feng3d
 		 */
 		public get planarShadowPass():PlanarShadowPass
 		{
-			return _planarShadowPass;
+			return this._planarShadowPass;
 		}
 
 		/**
@@ -91,15 +91,15 @@ module feng3d
 		 */
 		public get bothSides():boolean
 		{
-			return _bothSides;
+			return this._bothSides;
 		}
 
 		public set bothSides(value:boolean)
 		{
-			_bothSides = value;
+			this._bothSides = value;
 
-			for (var i:number = 0; i < _numPasses; ++i)
-				_passes[i].bothSides = value;
+			for (var i:number = 0; i < this._numPasses; ++i)
+				this._passes[i].bothSides = value;
 		}
 
 		/**
@@ -107,7 +107,7 @@ module feng3d
 		 */
 		public get requiresBlending():boolean
 		{
-			return _blendMode != BlendMode.NORMAL;
+			return this._blendMode != BlendMode.NORMAL;
 		}
 
 		/**
@@ -115,12 +115,12 @@ module feng3d
 		 */
 		public get blendMode():string
 		{
-			return _blendMode;
+			return this._blendMode;
 		}
 
 		public set blendMode(value:string)
 		{
-			_blendMode = value;
+			this._blendMode = value;
 		}
 
 		/**
@@ -130,15 +130,15 @@ module feng3d
 		 */
 		public get alphaPremultiplied():boolean
 		{
-			return _alphaPremultiplied;
+			return this._alphaPremultiplied;
 		}
 
 		public set alphaPremultiplied(value:boolean)
 		{
-			_alphaPremultiplied = value;
+			this._alphaPremultiplied = value;
 
-			for (var i:number = 0; i < _numPasses; ++i)
-				_passes[i].alphaPremultiplied = value;
+			for (var i:number = 0; i < this._numPasses; ++i)
+				this._passes[i].alphaPremultiplied = value;
 		}
 
 		/**
@@ -146,13 +146,13 @@ module feng3d
 		 */
 		public get mipmap():boolean
 		{
-			return _mipmap;
+			return this._mipmap;
 		}
 
 		public set mipmap(value:boolean)
 		{
-			_mipmap = value;
-			for each (var pass:MaterialPassBase in _passes)
+			this._mipmap = value;
+			for each (var pass:MaterialPassBase in this._passes)
 			{
 				pass.mipmap = value;
 			}
@@ -163,13 +163,13 @@ module feng3d
 		 */
 		public get repeat():boolean
 		{
-			return _repeat;
+			return this._repeat;
 		}
 
 		public set repeat(value:boolean)
 		{
-			_repeat = value;
-			for each (var pass:MaterialPassBase in _passes)
+			this._repeat = value;
+			for each (var pass:MaterialPassBase in this._passes)
 			{
 				pass.repeat = value;
 			}
@@ -180,13 +180,13 @@ module feng3d
 		 */
 		public get smooth():boolean
 		{
-			return _smooth;
+			return this._smooth;
 		}
 
 		public set smooth(value:boolean)
 		{
-			_smooth = value;
-			for each (var pass:MaterialPassBase in _passes)
+			this._smooth = value;
+			for each (var pass:MaterialPassBase in this._passes)
 			{
 				pass.smooth = value;
 			}
@@ -243,12 +243,12 @@ module feng3d
 		 */
 		public set animationSet(value:IAnimationSet)
 		{
-			for each (var pass:MaterialPassBase in _passes)
+			for each (var pass:MaterialPassBase in this._passes)
 			{
 				pass.animationSet = value;
 			}
-			depthPass.animationSet = value;
-			planarShadowPass.animationSet = value;
+			this.depthPass.animationSet = value;
+			this.planarShadowPass.animationSet = value;
 		}
 
 		/**
@@ -256,17 +256,17 @@ module feng3d
 		 */
 		public get lightPicker():LightPickerBase
 		{
-			return _lightPicker;
+			return this._lightPicker;
 		}
 
 		public set lightPicker(value:LightPickerBase)
 		{
-			if (value != _lightPicker)
+			if (value != this._lightPicker)
 			{
-				_lightPicker = value;
-				var len:number = _passes.length;
+				this._lightPicker = value;
+				var len:number = this._passes.length;
 				for (var i:number = 0; i < len; ++i)
-					_passes[i].lightPicker = _lightPicker;
+					this._passes[i].lightPicker = this._lightPicker;
 			}
 		}
 
@@ -287,7 +287,7 @@ module feng3d
 		 */
 		public get numPasses():number
 		{
-			return _numPasses;
+			return this._numPasses;
 		}
 
 		/**
@@ -355,7 +355,7 @@ module feng3d
 		
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 	}
 }

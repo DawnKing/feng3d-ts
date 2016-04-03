@@ -33,12 +33,12 @@ module feng3d
 		 */
 		public get minDistance():number
 		{
-			return _minDistance;
+			return this._minDistance;
 		}
 
 		public set minDistance(value:number)
 		{
-			_minDistance = value;
+			this._minDistance = value;
 		}
 
 		/**
@@ -46,12 +46,12 @@ module feng3d
 		 */
 		public get maxDistance():number
 		{
-			return _maxDistance;
+			return this._maxDistance;
 		}
 
 		public set maxDistance(value:number)
 		{
-			_maxDistance = value;
+			this._maxDistance = value;
 		}
 
 		/**
@@ -59,15 +59,15 @@ module feng3d
 		 */
 		public get fogColor():number
 		{
-			return _fogColor;
+			return this._fogColor;
 		}
 
 		public set fogColor(value:number)
 		{
-			_fogColor = value;
-			fogColorData[0] = ((value >> 16) & 0xff) / 0xff;
-			fogColorData[1] = ((value >> 8) & 0xff) / 0xff;
-			fogColorData[2] = (value & 0xff) / 0xff;
+			this._fogColor = value;
+			this.fogColorData[0] = ((value >> 16) & 0xff) / 0xff;
+			this.fogColorData[1] = ((value >> 8) & 0xff) / 0xff;
+			this.fogColorData[2] = (value & 0xff) / 0xff;
 		}
 
 		/**
@@ -113,7 +113,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function activate(shaderParams:ShaderParams)
+		public activate(shaderParams:ShaderParams)
 		{
 			this.fogCommonData[0] = this._minDistance;
 			this.fogCommonData[1] = 1 / (this._maxDistance - this._minDistance);

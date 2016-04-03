@@ -66,12 +66,12 @@ module feng3d
 		 */
 		public get viewWidth():number
 		{
-			return _viewWidth;
+			return this._viewWidth;
 		}
 
 		public set viewWidth(value:number)
 		{
-			_viewWidth = value;
+			this._viewWidth = value;
 		}
 
 		/**
@@ -79,12 +79,12 @@ module feng3d
 		 */
 		public get viewHeight():number
 		{
-			return _viewHeight;
+			return this._viewHeight;
 		}
 
 		public set viewHeight(value:number)
 		{
-			_viewHeight = value;
+			this._viewHeight = value;
 		}
 
 		/**
@@ -92,12 +92,12 @@ module feng3d
 		 */
 		public get backgroundAlpha():number
 		{
-			return _backgroundAlpha;
+			return this._backgroundAlpha;
 		}
 
 		public set backgroundAlpha(value:number)
 		{
-			_backgroundAlpha = value;
+			this._backgroundAlpha = value;
 		}
 
 		/**
@@ -105,16 +105,16 @@ module feng3d
 		 */
 		public get backgroundColor():number
 		{
-			return _backgroundColor;
+			return this._backgroundColor;
 		}
 
 		public set backgroundColor(value:number)
 		{
-			_backgroundR = ((value >> 16) & 0xff) / 0xff;
-			_backgroundG = ((value >> 8) & 0xff) / 0xff;
-			_backgroundB = (value & 0xff) / 0xff;
+			this._backgroundR = ((value >> 16) & 0xff) / 0xff;
+			this._backgroundG = ((value >> 8) & 0xff) / 0xff;
+			this._backgroundB = (value & 0xff) / 0xff;
 
-			_backgroundColor = value;
+			this._backgroundColor = value;
 		}
 
 		/**
@@ -125,12 +125,12 @@ module feng3d
 		 */
 		public get shareContext():boolean
 		{
-			return _shareContext;
+			return this._shareContext;
 		}
 
 		public set shareContext(value:boolean)
 		{
-			_shareContext = value;
+			this._shareContext = value;
 		}
 
 		/**

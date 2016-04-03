@@ -48,8 +48,8 @@ module feng3dSheet
 
 		public set fps(val:number)
 		{
-			_ms = 1000 / val;
-			_fps = val;
+			this._ms = 1000 / val;
+			this._fps = val;
 		}
 
 		/**
@@ -57,13 +57,13 @@ module feng3dSheet
 		 */
 		public get fps():number
 		{
-			return _fps;
+			return this._fps;
 		}
 
 		public set reverse(b:boolean)
 		{
-			_reverse = b;
-			_specsDirty = true;
+			this._reverse = b;
+			this._specsDirty = true;
 		}
 
 		/**
@@ -71,13 +71,13 @@ module feng3dSheet
 		 */
 		public get reverse():boolean
 		{
-			return _reverse;
+			return this._reverse;
 		}
 
 		public set backAndForth(b:boolean)
 		{
-			_backAndForth = b;
-			_specsDirty = true;
+			this._backAndForth = b;
+			this._specsDirty = true;
 		}
 
 		/**
@@ -85,7 +85,7 @@ module feng3dSheet
 		 */
 		public get backAndForth():boolean
 		{
-			return _backAndForth;
+			return this._backAndForth;
 		}
 
 		/**
@@ -111,7 +111,7 @@ module feng3dSheet
 		 */
 		public get currentFrameNumber():number
 		{
-			return SpriteSheetAnimationState(_activeState).currentFrameNumber;
+			return SpriteSheetAnimationState(this._activeState).currentFrameNumber;
 		}
 
 		/**
@@ -119,7 +119,7 @@ module feng3dSheet
 		 */
 		public get totalFrames():number
 		{
-			return SpriteSheetAnimationState(_activeState).totalFrames;
+			return SpriteSheetAnimationState(this._activeState).totalFrames;
 		}
 
 		/**
@@ -171,18 +171,18 @@ module feng3dSheet
 		{
 			transition = transition;
 			offset = offset;
-			if (_activeAnimationName == name)
+			if (this._activeAnimationName == name)
 				return;
 
-			_activeAnimationName = name;
+			this._activeAnimationName = name;
 
-			if (!_animationSet.hasAnimation(name))
+			if (!this._animationSet.hasAnimation(name))
 				throw new Error("Animation root node " + name + " not found!");
 
-			_activeNode = _animationSet.getAnimation(name);
-			_activeState = this.getAnimationState(_activeNode);
-			this._frame = SpriteSheetAnimationState(_activeState).currentFrameData;
-			this._activeSpriteSheetState = _activeState as ISpriteSheetAnimationState;
+			this._activeNode = this._animationSet.getAnimation(name);
+			this._activeState = this.getAnimationState(this._activeNode);
+			this._frame = SpriteSheetAnimationState(this._activeState).currentFrameData;
+			this._activeSpriteSheetState = this._activeState as ISpriteSheetAnimationState;
 
 			this.start();
 		}
@@ -199,13 +199,13 @@ module feng3dSheet
 				this._specsDirty = false;
 			}
 
-			_absoluteTime += dt;
+			this._absoluteTime += dt;
 			var now:number = getTimer();
 
 			if ((now - this._lastTime) > this._ms)
 			{
 				this._mapDirty = true;
-				this._activeSpriteSheetState.update(_absoluteTime);
+				this._activeSpriteSheetState.update(this._absoluteTime);
 				this._frame = SpriteSheetAnimationState(this._activeSpriteSheetState).currentFrameData;
 				this._lastTime = now;
 
@@ -230,9 +230,9 @@ module feng3dSheet
 		 */
 		private gotoFrame(frameNumber:number, doPlay:boolean)
 		{
-			if (!_activeState)
+			if (!this._activeState)
 				return;
-			SpriteSheetAnimationState(_activeState).currentFrameNumber = (frameNumber == 0) ? frameNumber : frameNumber - 1;
+			SpriteSheetAnimationState(this._activeState).currentFrameNumber = (frameNumber == 0) ? frameNumber : frameNumber - 1;
 			var currentMapID:number = this._frame.mapID;
 			this._frame = SpriteSheetAnimationState(this._activeSpriteSheetState).currentFrameData;
 

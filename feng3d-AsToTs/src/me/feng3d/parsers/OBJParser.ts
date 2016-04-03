@@ -59,7 +59,7 @@ module feng3d
 		/** object索引 */
 		private _objectIndex:number;
 		/** 真实索引列表 */
-		private _realIndices:Array;
+		private _realIndices;
 		/** 顶点索引 */
 		private _vertexIndex:number;
 		/** 顶点坐标数据 */
@@ -103,7 +103,7 @@ module feng3d
 		 * @param data 需要解析的数据
 		 * @return
 		 */
-		public static supportsData(data:*):boolean
+		public static supportsData(data):boolean
 		{
 			var content:string = ParserUtil.toString(data);
 			var hasV:boolean;
@@ -173,11 +173,11 @@ module feng3d
 			var line:string;
 			//换行符
 			var creturn:string = string.fromCharCode(10);
-			var trunk:Array;
+			var trunk;
 
 			if (!this._startedParsing)
 			{
-				this._textData = getTextData();
+				this._textData = this.getTextData();
 				// Merge linebreaks that are immediately preceeded by
 				// the "escape" backward slash into single lines.
 				this._textData = this._textData.replace(/\\[\r\n]+\s*/gm, ' ');
@@ -190,21 +190,21 @@ module feng3d
 			if (!this._startedParsing)
 			{
 				this._startedParsing = true;
-				this._vertices = new Vertex[]();
-				this._vertexNormals = new Vertex[]();
-				this._materialIDs = new string[]();
-				this._materialLoaded = new LoadedMaterial[]();
-				this._meshes = new Mesh[]();
-				this._uvs = new UV[]();
+				this._vertices = [];
+				this._vertexNormals = [];
+				this._materialIDs = [];
+				this._materialLoaded = [];
+				this._meshes = [];
+				this._uvs = [];
 				this._stringLength = this._textData.length;
 				this._charIndex = this._textData.indexOf(creturn, 0);
 				this._oldIndex = 0;
-				this._objects = new ObjectGroup[]();
+				this._objects = [];
 				this._objectIndex = 0;
 			}
 
 			//判断是否解析完毕与是否还有时间
-			while (this._charIndex < this._stringLength && hasTime())
+			while (this._charIndex < this._stringLength && this.hasTime())
 			{
 				this._charIndex = this._textData.indexOf(creturn, this._oldIndex);
 
@@ -245,7 +245,7 @@ module feng3d
 		/**
 		 * 解析行
 		 */
-		private parseLine(trunk:Array)
+		private parseLine(trunk)
 		{
 			switch (trunk[0])
 			{
@@ -317,7 +317,7 @@ module feng3d
 						continue;
 
 					//完成几何体资源解析
-					finalizeAsset(geometry, "");
+					this.finalizeAsset(geometry, "");
 					if (this.materialMode < 2)
 						bmMaterial = new TextureMaterial(DefaultMaterialManager.getDefaultTexture());
 					else
@@ -356,7 +356,7 @@ module feng3d
 							mesh.subMeshes[sm].material = bmMaterial;
 					}
 
-					finalizeAsset(mesh);
+					this.finalizeAsset(mesh);
 				}
 			}
 		}
@@ -374,10 +374,10 @@ module feng3d
 			var numVerts:number;
 			var subs:SubGeometry[];
 
-			var vertices:number[] = new number[]();
-			var uvs:number[] = new number[]();
-			var normals:number[] = new number[]();
-			var indices:number[] = new number[]();
+			var vertices:number[] = [];
+			var uvs:number[] = [];
+			var normals:number[] = [];
+			var indices:number[] = [];
 
 			this._realIndices = [];
 			this._vertexIndex = 0;
@@ -472,7 +472,7 @@ module feng3d
 		 * 创建对象组
 		 * @param trunk 包含材料标记的数据块和它的参数
 		 */
-		private createObject(trunk:Array)
+		private createObject(trunk)
 		{
 			this._currentGroup = null;
 			this._currentMaterialGroup = null;
@@ -486,7 +486,7 @@ module feng3d
 		 * 创建一个组
 		 * @param trunk 包含材料标记的数据块和它的参数
 		 */
-		private createGroup(trunk:Array)
+		private createGroup(trunk)
 		{
 			if (!this._currentObject)
 				this.createObject(null);
@@ -505,7 +505,7 @@ module feng3d
 		 * 创建材质组
 		 * @param trunk 包含材料标记的数据块和它的参数
 		 */
-		private createMaterialGroup(trunk:Array)
+		private createMaterialGroup(trunk)
 		{
 			this._currentMaterialGroup = new MaterialGroup();
 			if (trunk)
@@ -517,11 +517,11 @@ module feng3d
 		 * 解析顶点坐标数据
 		 * @param trunk 坐标数据
 		 */
-		private parseVertex(trunk:Array)
+		private parseVertex(trunk)
 		{
 			if (trunk.length > 4)
 			{
-				var nTrunk:Array = [];
+				var nTrunk = [];
 				var val:number;
 				for (var i:number = 1; i < trunk.length; ++i)
 				{
@@ -540,11 +540,11 @@ module feng3d
 		 * 解析uv
 		 * @param trunk uv数据
 		 */
-		private parseUV(trunk:Array)
+		private parseUV(trunk)
 		{
 			if (trunk.length > 3)
 			{
-				var nTrunk:Array = [];
+				var nTrunk = [];
 				var val:number;
 				//获取有效数字
 				for (var i:number = 1; i < trunk.length; ++i)
@@ -565,11 +565,11 @@ module feng3d
 		 * 解析顶点法线
 		 * @param trunk 法线数据
 		 */
-		private parseVertexNormal(trunk:Array)
+		private parseVertexNormal(trunk)
 		{
 			if (trunk.length > 4)
 			{
-				var nTrunk:Array = [];
+				var nTrunk = [];
 				var val:number;
 				//获取有效数字
 				for (var i:number = 1; i < trunk.length; ++i)
@@ -589,7 +589,7 @@ module feng3d
 		 * 解析面
 		 * @param trunk 面数据
 		 */
-		private parseFace(trunk:Array)
+		private parseFace(trunk)
 		{
 			var len:number = trunk.length;
 			var face:FaceData = new FaceData();
@@ -597,7 +597,7 @@ module feng3d
 			if (!this._currentGroup)
 				this.createGroup(null);
 
-			var indices:Array;
+			var indices;
 			for (var i:number = 1; i < len; ++i)
 			{
 				if (trunk[i] == "")
@@ -632,9 +632,9 @@ module feng3d
 		 */
 		private parseMtl(data:string)
 		{
-			var materialDefinitions:Array = data.split('newmtl');
-			var lines:Array;
-			var trunk:Array;
+			var materialDefinitions = data.split('newmtl');
+			var lines;
+			var trunk;
 			var j:number;
 
 			var basicSpecularMethod:BasicSpecularMethod;
@@ -743,13 +743,13 @@ module feng3d
 						specularData.materialID = this._lastMtlID;
 
 						if (!this._materialSpecularData)
-							this._materialSpecularData = new SpecularData[]();
+							this._materialSpecularData = [];
 
 						this._materialSpecularData.push(specularData);
 					}
 
 					//添加材质依赖性
-					addDependency(this._lastMtlID, new URLRequest(mapkd));
+					this.addDependency(this._lastMtlID, new URLRequest(mapkd));
 
 				}
 				else if (useColor && !isNaN(diffuseColor))
@@ -798,7 +798,7 @@ module feng3d
 			this._mtlLibLoaded = true;
 		}
 
-		private parseMapKdString(trunk:Array):string
+		private parseMapKdString(trunk):string
 		{
 			var url:string = "";
 			var i:number;
@@ -852,8 +852,8 @@ module feng3d
 		private loadMtl(mtlurl:string)
 		{
 			//添加 材质 资源依赖，暂停解析
-			addDependency('mtl', new URLRequest(mtlurl), true);
-			pauseAndRetrieveDependencies();
+			this.addDependency('mtl', new URLRequest(mtlurl), true);
+			this.pauseAndRetrieveDependencies();
 		}
 
 		/**
@@ -862,7 +862,7 @@ module feng3d
 		 */
 		private applyMaterial(lm:LoadedMaterial)
 		{
-			var decomposeID:Array;
+			var decomposeID;
 			var mesh:Mesh;
 			var mat:MaterialBase;
 			var j:number;
@@ -958,7 +958,7 @@ module feng3d
 			}
 
 			if (lm.cm || mat)
-				finalizeAsset(lm.cm || mat);
+				this.finalizeAsset(lm.cm || mat);
 		}
 
 		/**
@@ -984,7 +984,7 @@ class ObjectGroup
 	/** 对象名 */
 	public name:string;
 	/** 组列表（子网格列表） */
-	public groups:Group[] = new Group[]();
+	public groups:Group[] = [];
 
 	public ObjectGroup()
 	{
@@ -995,7 +995,7 @@ class Group
 {
 	public name:string;
 	public materialID:string;
-	public materialGroups:MaterialGroup[] = new MaterialGroup[]();
+	public materialGroups:MaterialGroup[] = [];
 
 	public Group()
 	{
@@ -1008,7 +1008,7 @@ class Group
 class MaterialGroup
 {
 	public url:string;
-	public faces:FaceData[] = new FaceData[]();
+	public faces:FaceData[] = [];
 
 	public MaterialGroup()
 	{
@@ -1050,13 +1050,13 @@ class LoadedMaterial
 class FaceData
 {
 	/** 顶点坐标索引数组 */
-	public vertexIndices:number[] = new number[]();
+	public vertexIndices:number[] = [];
 	/** 顶点uv索引数组 */
-	public uvIndices:number[] = new number[]();
+	public uvIndices:number[] = [];
 	/** 顶点法线索引数组 */
-	public normalIndices:number[] = new number[]();
+	public normalIndices:number[] = [];
 	/** 顶点Id(原本该值存放了顶点索引、uv索引、发现索引，已经被解析为上面3个数组，剩下的就当做ID使用) */
-	public indexIds:string[] = new string[](); // 
+	public indexIds:string[] = []; // 
 
 	public FaceData()
 	{

@@ -30,7 +30,7 @@ module feng3d
 		 */
 		public get code():string
 		{
-			return data;
+			return this.data;
 		}
 	}
 }

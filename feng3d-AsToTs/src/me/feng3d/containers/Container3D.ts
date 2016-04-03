@@ -18,7 +18,7 @@ module feng3d
 	{
 		protected _namedAsset:NamedAsset;
 		/** 容器内对象列表 */
-		protected _children:Object3D[] = new Object3D[]();
+		protected _children:Object3D[] = [];
 
 		private _mouseChildren:boolean = true;
 
@@ -41,7 +41,7 @@ module feng3d
 		public addChild(child:Object3D):Object3D
 		{
 			if (!child._explicitPartition)
-				child.implicitPartition = _implicitPartition;
+				child.implicitPartition = this._implicitPartition;
 
 			child.parent = this;
 			child.scene = this.scene;
@@ -102,10 +102,10 @@ module feng3d
 		{
 			super.scene = scene;
 
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			for (var i:number = 0; i < len; i++)
 			{
-				_children[i].scene = scene;
+				this._children[i].scene = scene;
 			}
 		}
 
@@ -114,7 +114,7 @@ module feng3d
 		 */
 		public get numChildren():number
 		{
-			return _children.length;
+			return this._children.length;
 		}
 
 		/**
@@ -142,12 +142,12 @@ module feng3d
 		 */
 		public get mouseChildren():boolean
 		{
-			return _mouseChildren;
+			return this._mouseChildren;
 		}
 
 		public set mouseChildren(value:boolean)
 		{
-			_mouseChildren = value;
+			this._mouseChildren = value;
 		}
 
 		/**
@@ -155,7 +155,7 @@ module feng3d
 		 */
 		public get ancestorsAllowMouseEnabled():boolean
 		{
-			return mouseChildren && (parent ? parent.ancestorsAllowMouseEnabled : true);
+			return this.mouseChildren && (this.parent ? this.parent.ancestorsAllowMouseEnabled : true);
 		}
 
 		/**
@@ -163,18 +163,18 @@ module feng3d
 		 */
 		public set implicitPartition(value:Partition3D)
 		{
-			if (value == _implicitPartition)
+			if (value == this._implicitPartition)
 				return;
 
-			_implicitPartition = value;
+			this._implicitPartition = value;
 
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var child:Object3D;
 
 			while (i < len)
 			{
-				child = _children[i];
+				child = this._children[i];
 				i++;
 
 				if (!child._explicitPartition)
@@ -188,13 +188,13 @@ module feng3d
 		public get minX():number
 		{
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var min:number = number.POSITIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
 			{
-				var child:Object3D = _children[i++];
+				var child:Object3D = this._children[i++];
 				m = child.minX + child.transform3D.x;
 				if (m < min)
 					min = m;
@@ -209,13 +209,13 @@ module feng3d
 		public get minY():number
 		{
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var min:number = number.POSITIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
 			{
-				var child:Object3D = _children[i++];
+				var child:Object3D = this._children[i++];
 				m = child.minY + child.transform3D.y;
 				if (m < min)
 					min = m;
@@ -230,13 +230,13 @@ module feng3d
 		public get minZ():number
 		{
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var min:number = number.POSITIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
 			{
-				var child:Object3D = _children[i++];
+				var child:Object3D = this._children[i++];
 				m = child.minZ + child.transform3D.z;
 				if (m < min)
 					min = m;
@@ -252,13 +252,13 @@ module feng3d
 		{
 			// todo: this isn't right, doesn't take into account transforms
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var max:number = number.NEGATIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
 			{
-				var child:Object3D = _children[i++];
+				var child:Object3D = this._children[i++];
 				m = child.maxX + child.transform3D.x;
 				if (m > max)
 					max = m;
@@ -273,13 +273,13 @@ module feng3d
 		public get maxY():number
 		{
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var max:number = number.NEGATIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
 			{
-				var child:Object3D = _children[i++];
+				var child:Object3D = this._children[i++];
 				m = child.maxY + child.transform3D.y;
 				if (m > max)
 					max = m;
@@ -294,13 +294,13 @@ module feng3d
 		public get maxZ():number
 		{
 			var i:number;
-			var len:number = _children.length;
+			var len:number = this._children.length;
 			var max:number = number.NEGATIVE_INFINITY;
 			var m:number;
 
 			while (i < len)
 			{
-				var child:Object3D = _children[i++];
+				var child:Object3D = this._children[i++];
 				m = child.maxZ + child.transform3D.z;
 				if (m > max)
 					max = m;
@@ -320,7 +320,7 @@ module feng3d
 
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 	}
 }

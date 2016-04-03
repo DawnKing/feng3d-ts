@@ -48,7 +48,7 @@ module feng3d
 		 */
 		public get hasMipMaps():boolean
 		{
-			return _hasMipmaps;
+			return this._hasMipmaps;
 		}
 
 		/**
@@ -57,7 +57,7 @@ module feng3d
 		 */
 		public get format():string
 		{
-			return _format;
+			return this._format;
 		}
 
 		/**
@@ -65,7 +65,7 @@ module feng3d
 		 */
 		public get width():number
 		{
-			return _width;
+			return this._width;
 		}
 
 		/**
@@ -73,7 +73,7 @@ module feng3d
 		 */
 		public get height():number
 		{
-			return _height;
+			return this._height;
 		}
 
 		/**

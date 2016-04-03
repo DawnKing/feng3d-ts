@@ -22,7 +22,7 @@ module feng3d
 	 */
 	export class TestBase extends Sprite
 	{
-		protected rootPaths:Array = [ //
+		protected rootPaths = [ //
 			"http://127.0.0.1:9080/", //
 			"http://images.feng3d.me/feng3dDemo/assets/", //
 			];
@@ -33,7 +33,7 @@ module feng3d
 		/**
 		 * 资源列表
 		 */
-		protected resourceList:Array;
+		protected resourceList;
 
 		/** 资源字典 */
 		protected resourceDic;

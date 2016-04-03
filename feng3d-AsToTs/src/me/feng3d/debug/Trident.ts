@@ -27,7 +27,7 @@ module feng3d
 			var scl4:number = scaleH * 3.4;
 			var cross:number = length + (scl3) + (((length + scl4) - (length + scl3)) / 3 * 2);
 
-			var arr:Array = [ //
+			var arr = [ //
 				[new Vector3D(), new Vector3D(length, 0, 0), 0x880000, 0xff0000, 1], //X轴
 				//X
 				[new Vector3D(length + scl2, scl1, 0), new Vector3D(length + scl3, -scl1, 0), 0xff0000, 0xff0000, 1], //
@@ -50,7 +50,7 @@ module feng3d
 			for (var i:number = 0; i < arr.length; i++)
 			{
 				segmentX = new Segment(arr[i][0], arr[i][1], arr[i][2], arr[i][3], arr[i][4]);
-				segmentGeometry.addSegment(segmentX);
+				this.segmentGeometry.addSegment(segmentX);
 			}
 
 		}

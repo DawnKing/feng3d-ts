@@ -15,7 +15,7 @@ module feng3dSheet
 		/**
 		 * 创建sprite动画集合
 		 */
-		function SpriteSheetAnimationSet()
+		constructor()
 		{
 		}
 

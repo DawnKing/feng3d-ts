@@ -35,16 +35,16 @@ module feng3d
 			//收集可投射阴影的可渲染对象
 			if (renderable.castsShadows && material)
 			{
-				var item:RenderableListItem = _renderableListItemPool.getItem();
+				var item:RenderableListItem = this._renderableListItemPool.getItem();
 				item.renderable = renderable;
-				item.next = _opaqueRenderableHead;
+				item.next = this._opaqueRenderableHead;
 				var entityScenePos:Vector3D = entity.scenePosition;
 				var dx:number = this._entryPoint.x - entityScenePos.x;
 				var dy:number = this._entryPoint.y - entityScenePos.y;
 				var dz:number = this._entryPoint.z - entityScenePos.z;
-				item.zIndex = dx * _cameraForward.x + dy * _cameraForward.y + dz * _cameraForward.z;
-				item.renderSceneTransform = renderable.sourceEntity.getRenderSceneTransform(_camera);
-				_opaqueRenderableHead = item;
+				item.zIndex = dx * this._cameraForward.x + dy * this._cameraForward.y + dz * this._cameraForward.z;
+				item.renderSceneTransform = renderable.sourceEntity.getRenderSceneTransform(this._camera);
+				this._opaqueRenderableHead = item;
 			}
 		}
 	}

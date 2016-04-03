@@ -89,13 +89,13 @@ module feng3d
 		 */
 		public get cubeTexture():CubeTextureBase
 		{
-			return _cubeTexture;
+			return this._cubeTexture;
 		}
 
 		public set cubeTexture(value:CubeTextureBase)
 		{
-			_cubeTexture = value;
-			context3DBufferOwner.markBufferDirty(_.skyboxTexture_fs);
+			this._cubeTexture = value;
+			this.context3DBufferOwner.markBufferDirty(this._.skyboxTexture_fs);
 		}
 
 		/**

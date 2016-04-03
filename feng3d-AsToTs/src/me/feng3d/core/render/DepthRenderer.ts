@@ -29,9 +29,9 @@ module feng3d
 		constructor()
 		{
 			super();
-			_backgroundR = 1;
-			_backgroundG = 1;
-			_backgroundB = 1;
+			this._backgroundR = 1;
+			this._backgroundG = 1;
+			this._backgroundB = 1;
 		}
 
 		/**
@@ -73,7 +73,7 @@ module feng3d
 				item2 = item;
 				do
 				{
-					depthPass.render(item2.renderable, stage3DProxy, camera, _renderIndex++);
+					depthPass.render(item2.renderable, stage3DProxy, camera, this._renderIndex++);
 
 					item2 = item2.next;
 				} while (item2 && item2.renderable.material == this._activeMaterial);

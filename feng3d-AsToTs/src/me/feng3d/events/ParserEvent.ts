@@ -40,7 +40,7 @@ module feng3d
 		 */
 		public get message():string
 		{
-			return _message;
+			return this._message;
 		}
 	}
 }

@@ -87,7 +87,7 @@ module feng3d
 		private _diagram:Sprite;
 		private _dia_bmp:BitmapData;
 
-		private _mem_points:Array;
+		private _mem_points;
 		private _mem_graph:Shape;
 		private _updates:number;
 
@@ -103,7 +103,7 @@ module feng3d
 		private _drag_dy:number;
 		private _dragging:boolean;
 
-		private _mean_data:Array;
+		private _mean_data;
 		private _mean_data_length:number;
 
 		private _enable_reset:boolean;
@@ -170,15 +170,15 @@ module feng3d
 			this._enable_mod_fr = enableModifyFrameRate;
 			this._mean_data_length = meanDataLength;
 
-			this._views = new View3D[]();
+			this._views = [];
 			if (view3d)
 				this._views.push(view3d);
 
-			// Store instance for singleton access. Singleton status
+			// Store AwayStats.instance for singleton access. Singleton status
 			// is not enforced, since the widget will work anyway.
-			if (_INSTANCE)
+			if (AwayStats._INSTANCE)
 				trace('Creating several statistics windows in one project. Is this intentional?');
-			_INSTANCE = this;
+			AwayStats._INSTANCE = this;
 
 			this._fps = 0;
 			this._num_frames = 0;
@@ -193,27 +193,27 @@ module feng3d
 
 		public get max_ram():number
 		{
-			return _max_ram;
+			return this._max_ram;
 		}
 
 		public get ram():number
 		{
-			return _ram;
+			return this._ram;
 		}
 
 		public get avg_fps():number
 		{
-			return _avg_fps;
+			return this._avg_fps;
 		}
 
 		public get max_fps():number
 		{
-			return _max_fps;
+			return this._max_fps;
 		}
 
 		public get fps():number
 		{
-			return _fps;
+			return this._fps;
 		}
 
 		private _init()
@@ -238,7 +238,7 @@ module feng3d
 		 */
 		public static get instance():AwayStats
 		{
-			return _INSTANCE ? _INSTANCE : _INSTANCE = new AwayStats();
+			return AwayStats._INSTANCE ? AwayStats._INSTANCE : AwayStats._INSTANCE = new AwayStats();
 		}
 
 		/**
@@ -302,7 +302,7 @@ module feng3d
 
 			this._top_bar = new Sprite;
 			this._top_bar.graphics.beginFill(0, 0);
-			this._top_bar.graphics.drawRect(0, 0, _WIDTH, 20);
+			this._top_bar.graphics.drawRect(0, 0, AwayStats._WIDTH, 20);
 			this.addChild(this._top_bar);
 
 			logo = new Shape;
@@ -380,7 +380,7 @@ module feng3d
 
 			// Minimize / maximize button
 			this._min_max_btn = new Sprite;
-			this._min_max_btn.x = _WIDTH - 8;
+			this._min_max_btn.x = AwayStats._WIDTH - 8;
 			this._min_max_btn.y = 7;
 			this._min_max_btn.graphics.beginFill(0, 0);
 			this._min_max_btn.graphics.lineStyle(1, 0xefefef, 1, true);
@@ -401,21 +401,21 @@ module feng3d
 
 			this._btm_bar = new Sprite();
 			this._btm_bar.graphics.beginFill(0, 0.2);
-			this._btm_bar.graphics.drawRect(0, 0, _WIDTH, _BOTTOM_BAR_HEIGHT);
+			this._btm_bar.graphics.drawRect(0, 0, AwayStats._WIDTH, AwayStats._BOTTOM_BAR_HEIGHT);
 			this.addChild(this._btm_bar);
 
 			// Hit area for bottom bar (to avoid having textfields
 			// affect interaction badly.)
 			this._btm_bar_hit = new Sprite;
 			this._btm_bar_hit.graphics.beginFill(0xffcc00, 0);
-			this._btm_bar_hit.graphics.drawRect(0, 1, _WIDTH, _BOTTOM_BAR_HEIGHT - 1);
+			this._btm_bar_hit.graphics.drawRect(0, 1, AwayStats._WIDTH, AwayStats._BOTTOM_BAR_HEIGHT - 1);
 			this.addChild(this._btm_bar_hit);
 
 			// Color markers
 			markers = new Shape;
-			markers.graphics.beginFill(_MEM_COL);
+			markers.graphics.beginFill(AwayStats._MEM_COL);
 			markers.graphics.drawRect(5, 4, 4, 4);
-			markers.graphics.beginFill(_POLY_COL);
+			markers.graphics.beginFill(AwayStats._POLY_COL);
 			markers.graphics.drawRect(5, 14, 4, 4);
 			this._btm_bar.addChild(markers);
 
@@ -425,7 +425,7 @@ module feng3d
 			ram_label_tf.autoSize = TextFieldAutoSize.LEFT;
 			ram_label_tf.text = 'RAM:';
 			ram_label_tf.x = 10;
-			ram_label_tf.y = _UPPER_Y;
+			ram_label_tf.y = AwayStats._UPPER_Y;
 			ram_label_tf.selectable = false;
 			ram_label_tf.mouseEnabled = false;
 			this._btm_bar.addChild(ram_label_tf);
@@ -445,7 +445,7 @@ module feng3d
 			poly_label_tf.autoSize = TextFieldAutoSize.LEFT;
 			poly_label_tf.text = 'POLY:';
 			poly_label_tf.x = 10;
-			poly_label_tf.y = _MID_Y;
+			poly_label_tf.y = AwayStats._MID_Y;
 			poly_label_tf.selectable = false;
 			poly_label_tf.mouseEnabled = false;
 			this._btm_bar.addChild(poly_label_tf);
@@ -465,7 +465,7 @@ module feng3d
 			swhw_label_tf.autoSize = TextFieldAutoSize.LEFT;
 			swhw_label_tf.text = 'DRIV:';
 			swhw_label_tf.x = 10;
-			swhw_label_tf.y = _LOWER_Y;
+			swhw_label_tf.y = AwayStats._LOWER_Y;
 			swhw_label_tf.selectable = false;
 			swhw_label_tf.mouseEnabled = false;
 			this._btm_bar.addChild(swhw_label_tf);
@@ -483,7 +483,7 @@ module feng3d
 		private _initDiagrams()
 		{
 
-			this._dia_bmp = new BitmapData(_WIDTH, _DIAG_HEIGHT, true, 0);
+			this._dia_bmp = new BitmapData(AwayStats._WIDTH, AwayStats._DIAG_HEIGHT, true, 0);
 			this._diagram = new Sprite;
 			this._diagram.graphics.beginBitmapFill(this._dia_bmp);
 			this._diagram.graphics.drawRect(0, 0, this._dia_bmp.width, this._dia_bmp.height);
@@ -493,14 +493,14 @@ module feng3d
 
 			this._diagram.graphics.lineStyle(1, 0xffffff, 0.03);
 			this._diagram.graphics.moveTo(0, 0);
-			this._diagram.graphics.lineTo(_WIDTH, 0);
+			this._diagram.graphics.lineTo(AwayStats._WIDTH, 0);
 			this._diagram.graphics.moveTo(0, Math.floor(this._dia_bmp.height / 2));
-			this._diagram.graphics.lineTo(_WIDTH, Math.floor(this._dia_bmp.height / 2));
+			this._diagram.graphics.lineTo(AwayStats._WIDTH, Math.floor(this._dia_bmp.height / 2));
 
 			// FRAME RATE BAR
 			this._fps_bar = new Shape;
 			this._fps_bar.graphics.beginFill(0xffffff);
-			this._fps_bar.graphics.drawRect(0, 0, _WIDTH, 4);
+			this._fps_bar.graphics.drawRect(0, 0, AwayStats._WIDTH, 4);
 			this._fps_bar.x = 0;
 			this._fps_bar.y = 16;
 			this.addChild(this._fps_bar);
@@ -554,21 +554,21 @@ module feng3d
 		{
 			var plate_height:number;
 
-			plate_height = this._minimized ? _MIN_HEIGHT : _MAX_HEIGHT;
+			plate_height = this._minimized ? AwayStats._MIN_HEIGHT : AwayStats._MAX_HEIGHT;
 
 			// Main plate
 			if (!this._transparent)
 			{
 				this.graphics.clear();
 				this.graphics.beginFill(0, 0.6);
-				this.graphics.drawRect(0, 0, _WIDTH, plate_height);
+				this.graphics.drawRect(0, 0, AwayStats._WIDTH, plate_height);
 			}
 
 			// Minimize/maximize button
 			this._min_max_btn.rotation = this._minimized ? 180 : 0;
 
 			// Position counters
-			this._btm_bar.y = plate_height - _BOTTOM_BAR_HEIGHT;
+			this._btm_bar.y = plate_height - AwayStats._BOTTOM_BAR_HEIGHT;
 			this._btm_bar_hit.y = this._btm_bar.y;
 
 			// Hide/show diagram for minimized/maximized view respectively
@@ -605,7 +605,7 @@ module feng3d
 
 				// Plot rendered faces
 				dia_y = this._dia_bmp.height - Math.floor(this._rfaces / this._tfaces * this._dia_bmp.height);
-				this._dia_bmp.setPixel32(1, dia_y, _POLY_COL + 0xff000000);
+				this._dia_bmp.setPixel32(1, dia_y, AwayStats._POLY_COL + 0xff000000);
 			}
 			else
 				this._poly_tf.text = 'n/a (no view)';
@@ -635,9 +635,9 @@ module feng3d
 			if (this._minimized)
 			{
 				this._fps_bar.scaleX = Math.min(1, this._fps / this.stage.frameRate);
-				this._afps_bar.x = Math.min(1, this._avg_fps / this.stage.frameRate) * _WIDTH;
-				this._lfps_bar.x = Math.min(1, this._min_fps / this.stage.frameRate) * _WIDTH;
-				this._hfps_bar.x = Math.min(1, this._max_fps / this.stage.frameRate) * _WIDTH;
+				this._afps_bar.x = Math.min(1, this._avg_fps / this.stage.frameRate) * AwayStats._WIDTH;
+				this._lfps_bar.x = Math.min(1, this._min_fps / this.stage.frameRate) * AwayStats._WIDTH;
+				this._hfps_bar.x = Math.min(1, this._max_fps / this.stage.frameRate) * AwayStats._WIDTH;
 			}
 			else if (this._updates % 5 == 0)
 				this._redrawMemGraph();
@@ -659,7 +659,7 @@ module feng3d
 			this._mem_graph.scaleY = 1;
 			g = this._mem_graph.graphics;
 			g.clear();
-			g.lineStyle(.5, _MEM_COL, 1, true, LineScaleMode.NONE);
+			g.lineStyle(.5, AwayStats._MEM_COL, 1, true, LineScaleMode.NONE);
 			g.moveTo(5 * (this._mem_points.length - 1), -this._mem_points[this._mem_points.length - 1]);
 			for (i = this._mem_points.length - 1; i >= 0; --i)
 			{
@@ -709,7 +709,7 @@ module feng3d
 			this._max_ram = 0;
 
 			// Reset RAM usage log
-			for (i = 0; i < _WIDTH / 5; i++)
+			for (i = 0; i < AwayStats._WIDTH / 5; i++)
 				this._mem_points[i] = 0;
 
 			// Reset FPS log if any
@@ -726,8 +726,8 @@ module feng3d
 
 		private _endDrag()
 		{
-			if (this.x < -_WIDTH)
-				this.x = -(_WIDTH - 20);
+			if (this.x < -AwayStats._WIDTH)
+				this.x = -(AwayStats._WIDTH - 20);
 			else if (this.x > this.stage.stageWidth)
 				this.x = this.stage.stageWidth - 20;
 

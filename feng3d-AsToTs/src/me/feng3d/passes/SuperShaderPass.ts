@@ -22,22 +22,22 @@ module feng3d
 	export class SuperShaderPass extends CompiledPass
 	{
 		/** 方向光源场景方向数据 */
-		private dirLightSceneDirData:number[] = new number[]();
+		private dirLightSceneDirData:number[] = [];
 
 		/** 方向光源漫反射光颜色数据 */
-		private dirLightDiffuseData:number[] = new number[]();
+		private dirLightDiffuseData:number[] = [];
 
 		/** 方向光源镜面反射颜色数据 */
-		private dirLightSpecularData:number[] = new number[]();
+		private dirLightSpecularData:number[] = [];
 
 		/** 点光源场景位置数据 */
-		private pointLightScenePositionData:number[] = new number[]();
+		private pointLightScenePositionData:number[] = [];
 
 		/** 点光源漫反射光颜色数据 */
-		private pointLightDiffuseData:number[] = new number[]();
+		private pointLightDiffuseData:number[] = [];
 
 		/** 点光源镜面反射颜色数据 */
-		private pointLightSpecularData:number[] = new number[]();
+		private pointLightSpecularData:number[] = [];
 
 		/**
 		 * 创建超级渲染通道
@@ -52,7 +52,7 @@ module feng3d
 		 */
 		public get numMethods():number
 		{
-			return _methodSetup.numMethods;
+			return this._methodSetup.numMethods;
 		}
 
 		/**
@@ -105,7 +105,7 @@ module feng3d
 		 */
 		public addMethod(method:EffectMethodBase)
 		{
-			_methodSetup.addMethod(method);
+			this._methodSetup.addMethod(method);
 		}
 
 		/**
@@ -113,14 +113,14 @@ module feng3d
 		 */
 		public activate(camera:Camera3D, target:TextureProxyBase = null)
 		{
-			if (_lightPicker)
+			if (this._lightPicker)
 			{
 				var lightShaderParams:LightShaderParams = this.shaderParams.getOrCreateComponentByClass(LightShaderParams);
-				lightShaderParams.numPointLights = _lightPicker.numPointLights;
-				lightShaderParams.numDirectionalLights = _lightPicker.numDirectionalLights;
+				lightShaderParams.numPointLights = this._lightPicker.numPointLights;
+				lightShaderParams.numDirectionalLights = this._lightPicker.numDirectionalLights;
 			}
 
-			var methods:ShadingMethodBase[] = _methodSetup.methods;
+			var methods:ShadingMethodBase[] = this._methodSetup.methods;
 			var len:number = methods.length;
 			for (var i:number = 0; i < len; ++i)
 			{
@@ -142,16 +142,16 @@ module feng3d
 			var len:number;
 			var i:number, k:number;
 
-			var dirLights:DirectionalLight[] = _lightPicker.directionalLights;
+			var dirLights:DirectionalLight[] = this._lightPicker.directionalLights;
 			len = dirLights.length;
 			for (i = 0; i < len; ++i)
 			{
 				dirLight = dirLights[i];
 				sceneDirection = dirLight.sceneDirection;
 
-				_ambientLightR += dirLight._ambientR;
-				_ambientLightG += dirLight._ambientG;
-				_ambientLightB += dirLight._ambientB;
+				this._ambientLightR += dirLight._ambientR;
+				this._ambientLightG += dirLight._ambientG;
+				this._ambientLightB += dirLight._ambientB;
 
 				this.dirLightSceneDirData[i * 4 + 0] = -sceneDirection.x;
 				this.dirLightSceneDirData[i * 4 + 1] = -sceneDirection.y;
@@ -169,16 +169,16 @@ module feng3d
 				this.dirLightSpecularData[i * 4 + 3] = 1;
 			}
 
-			var pointLights:PointLight[] = _lightPicker.pointLights;
+			var pointLights:PointLight[] = this._lightPicker.pointLights;
 			len = pointLights.length;
 			for (i = 0; i < len; ++i)
 			{
 				pointLight = pointLights[i];
 				scenePosition = pointLight.scenePosition;
 
-				_ambientLightR += pointLight._ambientR;
-				_ambientLightG += pointLight._ambientG;
-				_ambientLightB += pointLight._ambientB;
+				this._ambientLightR += pointLight._ambientR;
+				this._ambientLightG += pointLight._ambientG;
+				this._ambientLightB += pointLight._ambientB;
 
 				this.pointLightScenePositionData[i * 4 + 0] = scenePosition.x;
 				this.pointLightScenePositionData[i * 4 + 1] = scenePosition.y;

@@ -28,7 +28,7 @@ module feng3d
 
 		public get subGeometry():SubGeometry
 		{
-			return _subGeometry;
+			return this._subGeometry;
 		}
 	}
 }

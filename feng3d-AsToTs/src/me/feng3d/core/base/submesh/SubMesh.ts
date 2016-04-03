@@ -60,9 +60,9 @@ module feng3d
 		 */
 		public get material():MaterialBase
 		{
-			if (_materialDirty)
-				updateMaterial();
-			return _material;
+			if (this._materialDirty)
+				this.updateMaterial();
+			return this._material;
 		}
 
 		/**
@@ -70,13 +70,13 @@ module feng3d
 		 */
 		public get materialSelf():MaterialBase
 		{
-			return _materialSelf;
+			return this._materialSelf;
 		}
 
 		public set material(value:MaterialBase)
 		{
-			_materialSelf = value;
-			_materialDirty = true;
+			this._materialSelf = value;
+			this._materialDirty = true;
 		}
 
 		/**
@@ -104,7 +104,7 @@ module feng3d
 		 */
 		public get sourceEntity():Entity
 		{
-			return _parentMesh;
+			return this._parentMesh;
 		}
 
 		/**
@@ -112,19 +112,19 @@ module feng3d
 		 */
 		public get subGeometry():SubGeometry
 		{
-			return _subGeometry;
+			return this._subGeometry;
 		}
 
 		public set subGeometry(value:SubGeometry)
 		{
-			if (_subGeometry)
+			if (this._subGeometry)
 			{
-				context3DBufferOwner.removeChildBufferOwner(_subGeometry.context3DBufferOwner);
+				this.context3DBufferOwner.removeChildBufferOwner(this._subGeometry.context3DBufferOwner);
 			}
-			_subGeometry = value;
-			if (_subGeometry)
+			this._subGeometry = value;
+			if (this._subGeometry)
 			{
-				context3DBufferOwner.addChildBufferOwner(_subGeometry.context3DBufferOwner);
+				this.context3DBufferOwner.addChildBufferOwner(this._subGeometry.context3DBufferOwner);
 			}
 		}
 
@@ -133,19 +133,19 @@ module feng3d
 		 */
 		public get animationSubGeometry():AnimationSubGeometry
 		{
-			return _animationSubGeometry;
+			return this._animationSubGeometry;
 		}
 
 		public set animationSubGeometry(value:AnimationSubGeometry)
 		{
-			if (_animationSubGeometry)
+			if (this._animationSubGeometry)
 			{
-				context3DBufferOwner.removeChildBufferOwner(_animationSubGeometry.context3DBufferOwner);
+				this.context3DBufferOwner.removeChildBufferOwner(this._animationSubGeometry.context3DBufferOwner);
 			}
-			_animationSubGeometry = value;
-			if (_animationSubGeometry)
+			this._animationSubGeometry = value;
+			if (this._animationSubGeometry)
 			{
-				context3DBufferOwner.addChildBufferOwner(_animationSubGeometry.context3DBufferOwner);
+				this.context3DBufferOwner.addChildBufferOwner(this._animationSubGeometry.context3DBufferOwner);
 			}
 		}
 
@@ -154,21 +154,21 @@ module feng3d
 		 */
 		public get animator():AnimatorBase
 		{
-			return _animator;
+			return this._animator;
 		}
 
 		public set animator(value:AnimatorBase)
 		{
-			if (_animator)
+			if (this._animator)
 			{
-				context3DBufferOwner.removeChildBufferOwner(_animator.context3DBufferOwner);
-				material.animationSet = null;
+				this.context3DBufferOwner.removeChildBufferOwner(this._animator.context3DBufferOwner);
+				this.material.animationSet = null;
 			}
-			_animator = value;
-			if (_animator)
+			this._animator = value;
+			if (this._animator)
 			{
-				context3DBufferOwner.addChildBufferOwner(_animator.context3DBufferOwner);
-				material.animationSet = _animator.animationSet;
+				this.context3DBufferOwner.addChildBufferOwner(this._animator.context3DBufferOwner);
+				this.material.animationSet = this._animator.animationSet;
 			}
 		}
 
@@ -177,12 +177,12 @@ module feng3d
 		 */
 		public get parentMesh():Mesh
 		{
-			return _parentMesh;
+			return this._parentMesh;
 		}
 
 		public get castsShadows():boolean
 		{
-			return _parentMesh.castsShadows;
+			return this._parentMesh.castsShadows;
 		}
 
 		/**
@@ -190,7 +190,7 @@ module feng3d
 		 */
 		public get mouseEnabled():boolean
 		{
-			return _parentMesh.mouseEnabled || _parentMesh.ancestorsAllowMouseEnabled;
+			return this._parentMesh.mouseEnabled || this._parentMesh.ancestorsAllowMouseEnabled;
 		}
 
 		/**
@@ -198,7 +198,7 @@ module feng3d
 		 */
 		public get numTriangles():number
 		{
-			return _subGeometry.numTriangles;
+			return this._subGeometry.numTriangles;
 		}
 
 		/**

@@ -36,7 +36,7 @@ module feng3d
 			this.testSize(this._bitmapDatas[4] = posZ);
 			this.testSize(this._bitmapDatas[5] = negZ);
 
-			setSize(posX.width, posX.height);
+			this.setSize(posX.width, posX.height);
 		}
 
 		/**
@@ -44,7 +44,7 @@ module feng3d
 		 */
 		public get bitmapDatas():BitmapData[]
 		{
-			return _bitmapDatas;
+			return this._bitmapDatas;
 		}
 
 		/**
@@ -52,15 +52,15 @@ module feng3d
 		 */
 		public get positiveX():BitmapData
 		{
-			return _bitmapDatas[0];
+			return this._bitmapDatas[0];
 		}
 
 		public set positiveX(value:BitmapData)
 		{
-			testSize(value);
-			invalidateContent();
-			setSize(value.width, value.height);
-			_bitmapDatas[0] = value;
+			this.testSize(value);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
+			this._bitmapDatas[0] = value;
 		}
 
 		/**
@@ -68,15 +68,15 @@ module feng3d
 		 */
 		public get negativeX():BitmapData
 		{
-			return _bitmapDatas[1];
+			return this._bitmapDatas[1];
 		}
 
 		public set negativeX(value:BitmapData)
 		{
-			testSize(value);
-			invalidateContent();
-			setSize(value.width, value.height);
-			_bitmapDatas[1] = value;
+			this.testSize(value);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
+			this._bitmapDatas[1] = value;
 		}
 
 		/**
@@ -84,15 +84,15 @@ module feng3d
 		 */
 		public get positiveY():BitmapData
 		{
-			return _bitmapDatas[2];
+			return this._bitmapDatas[2];
 		}
 
 		public set positiveY(value:BitmapData)
 		{
-			testSize(value);
-			invalidateContent();
-			setSize(value.width, value.height);
-			_bitmapDatas[2] = value;
+			this.testSize(value);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
+			this._bitmapDatas[2] = value;
 		}
 
 		/**
@@ -100,15 +100,15 @@ module feng3d
 		 */
 		public get negativeY():BitmapData
 		{
-			return _bitmapDatas[3];
+			return this._bitmapDatas[3];
 		}
 
 		public set negativeY(value:BitmapData)
 		{
-			testSize(value);
-			invalidateContent();
-			setSize(value.width, value.height);
-			_bitmapDatas[3] = value;
+			this.testSize(value);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
+			this._bitmapDatas[3] = value;
 		}
 
 		/**
@@ -116,15 +116,15 @@ module feng3d
 		 */
 		public get positiveZ():BitmapData
 		{
-			return _bitmapDatas[4];
+			return this._bitmapDatas[4];
 		}
 
 		public set positiveZ(value:BitmapData)
 		{
-			testSize(value);
-			invalidateContent();
-			setSize(value.width, value.height);
-			_bitmapDatas[4] = value;
+			this.testSize(value);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
+			this._bitmapDatas[4] = value;
 		}
 
 		/**
@@ -132,15 +132,15 @@ module feng3d
 		 */
 		public get negativeZ():BitmapData
 		{
-			return _bitmapDatas[5];
+			return this._bitmapDatas[5];
 		}
 
 		public set negativeZ(value:BitmapData)
 		{
-			testSize(value);
-			invalidateContent();
-			setSize(value.width, value.height);
-			_bitmapDatas[5] = value;
+			this.testSize(value);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
+			this._bitmapDatas[5] = value;
 		}
 
 		/**

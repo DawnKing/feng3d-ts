@@ -122,7 +122,7 @@ module feng3d
 		 */
 		public getVertexCode()
 		{
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 			var vt7:Object;
 			var vt1:Object;
 			var vc4:Object;
@@ -150,7 +150,7 @@ module feng3d
 		public getFragmentCode(animationCode:string)
 		{
 			// encode float -> rgba
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 			var ft0:Object;
 			var fc0:Object;
 			var v0:Object;
@@ -192,7 +192,7 @@ module feng3d
 		public getProjection(renderable:IRenderable):Matrix3D
 		{
 			var light:LightBase;
-			var lights:LightBase[] = _lightPicker.allPickedLights;
+			var lights:LightBase[] = this._lightPicker.allPickedLights;
 
 			var matrix:Matrix3D = this._projections[renderable] ||= new Matrix3D();
 

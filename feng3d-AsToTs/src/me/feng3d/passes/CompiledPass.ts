@@ -83,9 +83,9 @@ module feng3d
 		 */
 		private init()
 		{
-			_methodSetup = new ShaderMethodSetup();
-			_methodSetup.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
-			this.context3DBufferOwner.addChildBufferOwner(_methodSetup.context3DBufferOwner);
+			this._methodSetup = new ShaderMethodSetup();
+			this._methodSetup.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
+			this.context3DBufferOwner.addChildBufferOwner(this._methodSetup.context3DBufferOwner);
 		}
 
 		/**
@@ -112,13 +112,13 @@ module feng3d
 			var lightShaderParams:LightShaderParams = this.shaderParams.getOrCreateComponentByClass(LightShaderParams);
 			lightShaderParams.useLightFallOff = this._enableLightFallOff;
 
-			_methodSetup.activate(this.shaderParams);
+			this._methodSetup.activate(this.shaderParams);
 
 			this._ambientLightR = this._ambientLightG = this._ambientLightB = 0;
-			if (usesLights())
+			if (this.usesLights())
 				this.updateLightConstants();
 
-			var ambientMethod:BasicAmbientMethod = _methodSetup.ambientMethod;
+			var ambientMethod:BasicAmbientMethod = this._methodSetup.ambientMethod;
 			ambientMethod._lightAmbientR = this._ambientLightR;
 			ambientMethod._lightAmbientG = this._ambientLightG;
 			ambientMethod._lightAmbientB = this._ambientLightB;
@@ -156,7 +156,7 @@ module feng3d
 			this.cameraPosition[2] = camera.scenePosition.z;
 			this.cameraPosition[3] = 1;
 
-			_methodSetup.setRenderState(renderable, camera);
+			this._methodSetup.setRenderState(renderable, camera);
 		}
 
 		/**
@@ -243,7 +243,7 @@ module feng3d
 		 */
 		protected updateMethodConstants()
 		{
-			_methodSetup.initConstants();
+			this._methodSetup.initConstants();
 		}
 
 		/**
@@ -251,12 +251,12 @@ module feng3d
 		 */
 		public get diffuseMethod():BasicDiffuseMethod
 		{
-			return _methodSetup.diffuseMethod;
+			return this._methodSetup.diffuseMethod;
 		}
 
 		public set diffuseMethod(value:BasicDiffuseMethod)
 		{
-			_methodSetup.diffuseMethod = value;
+			this._methodSetup.diffuseMethod = value;
 		}
 
 		/**
@@ -264,12 +264,12 @@ module feng3d
 		 */
 		public get specularMethod():BasicSpecularMethod
 		{
-			return _methodSetup.specularMethod;
+			return this._methodSetup.specularMethod;
 		}
 
 		public set specularMethod(value:BasicSpecularMethod)
 		{
-			_methodSetup.specularMethod = value;
+			this._methodSetup.specularMethod = value;
 		}
 
 		/**
@@ -277,12 +277,12 @@ module feng3d
 		 */
 		public get ambientMethod():BasicAmbientMethod
 		{
-			return _methodSetup.ambientMethod;
+			return this._methodSetup.ambientMethod;
 		}
 
 		public set ambientMethod(value:BasicAmbientMethod)
 		{
-			_methodSetup.ambientMethod = value;
+			this._methodSetup.ambientMethod = value;
 		}
 
 		/**
@@ -290,12 +290,12 @@ module feng3d
 		 */
 		public get normalMethod():BasicNormalMethod
 		{
-			return _methodSetup.normalMethod;
+			return this._methodSetup.normalMethod;
 		}
 
 		public set normalMethod(value:BasicNormalMethod)
 		{
-			_methodSetup.normalMethod = value;
+			this._methodSetup.normalMethod = value;
 		}
 
 		/**
@@ -303,14 +303,14 @@ module feng3d
 		 */
 		public get enableLightFallOff():boolean
 		{
-			return _enableLightFallOff;
+			return this._enableLightFallOff;
 		}
 
 		public set enableLightFallOff(value:boolean)
 		{
-			if (value != _enableLightFallOff)
-				invalidateShaderProgram();
-			_enableLightFallOff = value;
+			if (value != this._enableLightFallOff)
+				this.invalidateShaderProgram();
+			this._enableLightFallOff = value;
 		}
 
 		/**
@@ -319,9 +319,9 @@ module feng3d
 		private onShaderInvalidated(event:ShadingMethodEvent)
 		{
 			var oldPasses:MaterialPassBase[] = this._passes;
-			this._passes = new MaterialPassBase[]();
+			this._passes = [];
 
-			if (_methodSetup)
+			if (this._methodSetup)
 				this.addPassesFromMethods();
 
 
@@ -334,16 +334,16 @@ module feng3d
 		 */
 		protected addPassesFromMethods()
 		{
-			if (_methodSetup.normalMethod && _methodSetup.normalMethod.hasOutput)
-				this.addPasses(_methodSetup.normalMethod.passes);
-			if (_methodSetup.ambientMethod)
-				this.addPasses(_methodSetup.ambientMethod.passes);
-			if (_methodSetup.shadowMethod)
-				this.addPasses(_methodSetup.shadowMethod.passes);
-			if (_methodSetup.diffuseMethod)
-				this.addPasses(_methodSetup.diffuseMethod.passes);
-			if (_methodSetup.specularMethod)
-				this.addPasses(_methodSetup.specularMethod.passes);
+			if (this._methodSetup.normalMethod && this._methodSetup.normalMethod.hasOutput)
+				this.addPasses(this._methodSetup.normalMethod.passes);
+			if (this._methodSetup.ambientMethod)
+				this.addPasses(this._methodSetup.ambientMethod.passes);
+			if (this._methodSetup.shadowMethod)
+				this.addPasses(this._methodSetup.shadowMethod.passes);
+			if (this._methodSetup.diffuseMethod)
+				this.addPasses(this._methodSetup.diffuseMethod.passes);
+			if (this._methodSetup.specularMethod)
+				this.addPasses(this._methodSetup.specularMethod.passes);
 		}
 
 		/**
@@ -361,7 +361,7 @@ module feng3d
 			for (var i:number = 0; i < len; ++i)
 			{
 				passes[i].material = this.material;
-				passes[i].lightPicker = _lightPicker;
+				passes[i].lightPicker = this._lightPicker;
 				this._passes.push(passes[i]);
 			}
 		}
@@ -378,12 +378,12 @@ module feng3d
 		 */
 		public get shadowMethod():ShadowMapMethodBase
 		{
-			return _methodSetup.shadowMethod;
+			return this._methodSetup.shadowMethod;
 		}
 
 		public set shadowMethod(value:ShadowMapMethodBase)
 		{
-			_methodSetup.shadowMethod = value;
+			this._methodSetup.shadowMethod = value;
 		}
 	}
 }

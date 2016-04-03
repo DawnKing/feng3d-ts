@@ -9,9 +9,9 @@ module feng3d
 	 * 处理
 	 * @author feng 2015-4-24
 	 */
-	constructor(lightDirReg:Register, diffuseColorReg:Register)
+	public getDiffCodePerLight(lightDirReg:Register, diffuseColorReg:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var lightShaderParams:LightShaderParams = shaderParams.getOrCreateComponentByClass(LightShaderParams);

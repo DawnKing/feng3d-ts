@@ -24,7 +24,7 @@ module feng3d
 		private _weights:number[] = number[]([1, 0, 0, 0]);
 
 		private _vertexAnimationSet:VertexAnimationSet;
-		private _poses:Geometry[] = new Geometry[]();
+		private _poses:Geometry[] = [];
 		private _numPoses:number;
 
 		private _activeVertexState:IVertexAnimationState;
@@ -62,26 +62,26 @@ module feng3d
 		 */
 		public play(name:string, transition:IAnimationTransition = null, offset:number = NaN)
 		{
-			if (_activeAnimationName != name)
+			if (this._activeAnimationName != name)
 			{
-				_activeAnimationName = name;
+				this._activeAnimationName = name;
 
 				if (!this._vertexAnimationSet.hasAnimation(name))
 					throw new Error("Animation root node " + name + " not found!");
 
 				//获取活动的骨骼状态
-				_activeNode = this._vertexAnimationSet.getAnimation(name) as VertexClipNode;
+				this._activeNode = this._vertexAnimationSet.getAnimation(name) as VertexClipNode;
 
-				_activeState = this.getAnimationState(_activeNode);
+				this._activeState = this.getAnimationState(this._activeNode);
 
 				if (this.updatePosition)
 				{
 					//this.update straight away to this.reset position deltas
-					_activeState.update(_absoluteTime);
-					_activeState.positionDelta;
+					this._activeState.update(this._absoluteTime);
+					this._activeState.positionDelta;
 				}
 
-				this._activeVertexState = _activeState as IVertexAnimationState;
+				this._activeVertexState = this._activeState as IVertexAnimationState;
 			}
 
 			this.start();
@@ -98,9 +98,9 @@ module feng3d
 		{
 			super.updateDeltaTime(dt);
 
-			this._poses[number(0)] = this._activeVertexState.currentGeometry;
-			this._poses[number(1)] = this._activeVertexState.nextGeometry;
-			this._weights[number(0)] = 1 - (this._weights[number(1)] = this._activeVertexState.blendWeight);
+			this._poses[0] = this._activeVertexState.currentGeometry;
+			this._poses[1] = this._activeVertexState.nextGeometry;
+			this._weights[0] = 1 - (this._weights[1] = this._activeVertexState.blendWeight);
 		}
 
 		/**

@@ -34,7 +34,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			doUpdateFunc();
+			this.doUpdateFunc();
 
 			//从纹理缓存中获取纹理
 			var textureBase:TextureBase = TextureCenter.getTexture(context3D, this.texture);

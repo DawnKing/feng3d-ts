@@ -34,7 +34,7 @@ module feng3d
 			this.initBuffers();
 
 			this.uniqueMethodDic = {};
-			this.methods = new ShadingMethodBase[]();
+			this.methods = [];
 
 			this.addMethod(new BasicNormalMethod());
 			this.addMethod(new BasicAmbientMethod());
@@ -63,7 +63,7 @@ module feng3d
 		 */
 		public get numMethods():number
 		{
-			return methods.length;
+			return this.methods.length;
 		}
 
 		/**
@@ -71,12 +71,12 @@ module feng3d
 		 */
 		public get diffuseMethod():BasicDiffuseMethod
 		{
-			return uniqueMethodDic[BasicDiffuseMethod.METHOD_TYPE];
+			return this.uniqueMethodDic[BasicDiffuseMethod.METHOD_TYPE];
 		}
 
 		public set diffuseMethod(value:BasicDiffuseMethod)
 		{
-			addUniqueMethod(value);
+			this.addUniqueMethod(value);
 		}
 
 		/**
@@ -84,12 +84,12 @@ module feng3d
 		 */
 		public get specularMethod():BasicSpecularMethod
 		{
-			return uniqueMethodDic[BasicSpecularMethod.METHOD_TYPE];
+			return this.uniqueMethodDic[BasicSpecularMethod.METHOD_TYPE];
 		}
 
 		public set specularMethod(value:BasicSpecularMethod)
 		{
-			addUniqueMethod(value);
+			this.addUniqueMethod(value);
 		}
 
 		/**
@@ -97,12 +97,12 @@ module feng3d
 		 */
 		public get normalMethod():BasicNormalMethod
 		{
-			return uniqueMethodDic[BasicNormalMethod.METHOD_TYPE];
+			return this.uniqueMethodDic[BasicNormalMethod.METHOD_TYPE];
 		}
 
 		public set normalMethod(value:BasicNormalMethod)
 		{
-			addUniqueMethod(value);
+			this.addUniqueMethod(value);
 		}
 
 		/**
@@ -110,12 +110,12 @@ module feng3d
 		 */
 		public get ambientMethod():BasicAmbientMethod
 		{
-			return uniqueMethodDic[BasicAmbientMethod.METHOD_TYPE];
+			return this.uniqueMethodDic[BasicAmbientMethod.METHOD_TYPE];
 		}
 
 		public set ambientMethod(value:BasicAmbientMethod)
 		{
-			addUniqueMethod(value);
+			this.addUniqueMethod(value);
 		}
 
 		/**
@@ -123,12 +123,12 @@ module feng3d
 		 */
 		public get shadowMethod():ShadowMapMethodBase
 		{
-			return uniqueMethodDic[ShadowMapMethodBase.METHOD_TYPE];
+			return this.uniqueMethodDic[ShadowMapMethodBase.METHOD_TYPE];
 		}
 
 		public set shadowMethod(value:ShadowMapMethodBase)
 		{
-			addUniqueMethod(value);
+			this.addUniqueMethod(value);
 		}
 
 		/**

@@ -19,17 +19,17 @@ module feng3d
 		constructor()
 		{
 			this._namedAsset = new NamedAsset(this,AssetType.SKELETON);
-			this.joints = new SkeletonJoint[]();
+			this.joints = [];
 		}
 
 		public get numJoints():number
 		{
-			return joints.length;
+			return this.joints.length;
 		}
 		
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 	}
 }

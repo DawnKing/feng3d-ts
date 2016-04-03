@@ -78,7 +78,7 @@ module feng3d
 		 */
 		public get scenePosition():Vector3D
 		{
-			return Matrix3DUtils.transformVector(firstEntity.sceneTransform, localPosition);
+			return Matrix3DUtils.transformVector(this.firstEntity.sceneTransform, this.localPosition);
 		}
 	}
 }

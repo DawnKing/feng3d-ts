@@ -8,7 +8,7 @@ module feng3dMap
 	 * 编译阴影映射顶点程序
 	 * @author feng 2015-6-23
 	 */
-	constructor()
+	public V_ShadowMap()
 	{
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var shadowShaderParams:ShadowShaderParams = shaderParams.getOrCreateComponentByClass(ShadowShaderParams);

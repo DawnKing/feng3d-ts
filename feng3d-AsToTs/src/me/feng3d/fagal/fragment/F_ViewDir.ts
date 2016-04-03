@@ -6,9 +6,9 @@ module feng3d
 	 * 视线片段渲染函数
 	 * @author feng 2014-11-7
 	 */
-	constructor()
+	public F_ViewDir()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		//标准化视线
 		_.nrm(_.viewDir_ft_4.xyz, _.viewDir_v);

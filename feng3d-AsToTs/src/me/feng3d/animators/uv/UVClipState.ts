@@ -19,10 +19,10 @@ module feng3d
 		 */
 		public get currentUVFrame():UVAnimationFrame
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _currentUVFrame;
+			return this._currentUVFrame;
 		}
 
 		/**
@@ -30,10 +30,10 @@ module feng3d
 		 */
 		public get nextUVFrame():UVAnimationFrame
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _nextUVFrame;
+			return this._nextUVFrame;
 		}
 
 		/**
@@ -41,7 +41,7 @@ module feng3d
 		 * @param animator				动画
 		 * @param uvClipNode			UV动画剪辑节点
 		 */
-		function UVClipState(animator:AnimatorBase, uvClipNode:UVClipNode)
+		constructor(animator:AnimatorBase, uvClipNode:UVClipNode)
 		{
 			super(animator, uvClipNode);
 
@@ -59,7 +59,7 @@ module feng3d
 			if (this._frames.length > 0)
 			{
 
-				if (this._frames.length == 2 && _currentFrame == 0)
+				if (this._frames.length == 2 && this._currentFrame == 0)
 				{
 
 					this._currentUVFrame = this._frames[1];
@@ -69,12 +69,12 @@ module feng3d
 				else
 				{
 
-					this._currentUVFrame = this._frames[_currentFrame];
+					this._currentUVFrame = this._frames[this._currentFrame];
 
-					if (this._uvClipNode.looping && _nextFrame >= this._uvClipNode.lastFrame)
+					if (this._uvClipNode.looping && this._nextFrame >= this._uvClipNode.lastFrame)
 						this._nextUVFrame = this._frames[0];
 					else
-						this._nextUVFrame = this._frames[_nextFrame];
+						this._nextUVFrame = this._frames[this._nextFrame];
 
 				}
 

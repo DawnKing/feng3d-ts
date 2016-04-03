@@ -70,17 +70,17 @@ module feng3d
 		 */
 		public get distance():number
 		{
-			return _distance;
+			return this._distance;
 		}
 
 		public set distance(val:number)
 		{
-			if (_distance == val)
+			if (this._distance == val)
 				return;
 
-			_distance = val;
+			this._distance = val;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -88,17 +88,17 @@ module feng3d
 		 */
 		public get minPanAngle():number
 		{
-			return _minPanAngle;
+			return this._minPanAngle;
 		}
 
 		public set minPanAngle(val:number)
 		{
-			if (_minPanAngle == val)
+			if (this._minPanAngle == val)
 				return;
 
-			_minPanAngle = val;
+			this._minPanAngle = val;
 
-			panAngle = Math.max(_minPanAngle, Math.min(_maxPanAngle, _panAngle));
+			this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
 		}
 
 		/**
@@ -106,17 +106,17 @@ module feng3d
 		 */
 		public get maxPanAngle():number
 		{
-			return _maxPanAngle;
+			return this._maxPanAngle;
 		}
 
 		public set maxPanAngle(val:number)
 		{
-			if (_maxPanAngle == val)
+			if (this._maxPanAngle == val)
 				return;
 
-			_maxPanAngle = val;
+			this._maxPanAngle = val;
 
-			panAngle = Math.max(_minPanAngle, Math.min(_maxPanAngle, _panAngle));
+			this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
 		}
 
 		/**
@@ -124,19 +124,19 @@ module feng3d
 		 */
 		public get tiltAngle():number
 		{
-			return _tiltAngle;
+			return this._tiltAngle;
 		}
 
 		public set tiltAngle(val:number)
 		{
-			val = Math.max(_minTiltAngle, Math.min(_maxTiltAngle, val));
+			val = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, val));
 
-			if (_tiltAngle == val)
+			if (this._tiltAngle == val)
 				return;
 
-			_tiltAngle = val;
+			this._tiltAngle = val;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -144,17 +144,17 @@ module feng3d
 		 */
 		public get minTiltAngle():number
 		{
-			return _minTiltAngle;
+			return this._minTiltAngle;
 		}
 
 		public set minTiltAngle(val:number)
 		{
-			if (_minTiltAngle == val)
+			if (this._minTiltAngle == val)
 				return;
 
-			_minTiltAngle = val;
+			this._minTiltAngle = val;
 
-			tiltAngle = Math.max(_minTiltAngle, Math.min(_maxTiltAngle, _tiltAngle));
+			this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
 		}
 
 		/**
@@ -162,17 +162,17 @@ module feng3d
 		 */
 		public get maxTiltAngle():number
 		{
-			return _maxTiltAngle;
+			return this._maxTiltAngle;
 		}
 
 		public set maxTiltAngle(val:number)
 		{
-			if (_maxTiltAngle == val)
+			if (this._maxTiltAngle == val)
 				return;
 
-			_maxTiltAngle = val;
+			this._maxTiltAngle = val;
 
-			tiltAngle = Math.max(_minTiltAngle, Math.min(_maxTiltAngle, _tiltAngle));
+			this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
 		}
 
 		/**
@@ -181,17 +181,17 @@ module feng3d
 		 */
 		public get yFactor():number
 		{
-			return _yFactor;
+			return this._yFactor;
 		}
 
 		public set yFactor(val:number)
 		{
-			if (_yFactor == val)
+			if (this._yFactor == val)
 				return;
 
-			_yFactor = val;
+			this._yFactor = val;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -199,17 +199,17 @@ module feng3d
 		 */
 		public get wrapPanAngle():boolean
 		{
-			return _wrapPanAngle;
+			return this._wrapPanAngle;
 		}
 
 		public set wrapPanAngle(val:boolean)
 		{
-			if (_wrapPanAngle == val)
+			if (this._wrapPanAngle == val)
 				return;
 
-			_wrapPanAngle = val;
+			this._wrapPanAngle = val;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -217,19 +217,19 @@ module feng3d
 		 */
 		public get panAngle():number
 		{
-			return _panAngle;
+			return this._panAngle;
 		}
 
 		public set panAngle(val:number)
 		{
-			val = Math.max(_minPanAngle, Math.min(_maxPanAngle, val));
+			val = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, val));
 
-			if (_panAngle == val)
+			if (this._panAngle == val)
 				return;
 
-			_panAngle = val;
+			this._panAngle = val;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -238,7 +238,7 @@ module feng3d
 		 * @see    #panAngle
 		 * @see    #steps
 		 */
-		public override function update()
+		public update()
 		{
 			if (this._tiltAngle != this._currentTiltAngle || this._panAngle != this._currentPanAngle)
 			{
@@ -273,40 +273,40 @@ module feng3d
 				}
 			}
 
-			if (!_targetObject)
+			if (!this._targetObject)
 				return;
 
-			if (_lookAtPosition)
+			if (this._lookAtPosition)
 			{
-				this._pos.x = _lookAtPosition.x;
-				this._pos.y = _lookAtPosition.y;
-				this._pos.z = _lookAtPosition.z;
+				this._pos.x = this._lookAtPosition.x;
+				this._pos.y = this._lookAtPosition.y;
+				this._pos.z = this._lookAtPosition.z;
 			}
-			else if (_lookAtObject)
+			else if (this._lookAtObject)
 			{
-				if (_targetObject.parent && _lookAtObject.parent)
+				if (this._targetObject.parent && this._lookAtObject.parent)
 				{
-					if (_targetObject.parent != _lookAtObject.parent)
+					if (this._targetObject.parent != this._lookAtObject.parent)
 					{ // different spaces
-						this._pos.x = _lookAtObject.scenePosition.x;
-						this._pos.y = _lookAtObject.scenePosition.y;
-						this._pos.z = _lookAtObject.scenePosition.z;
-						Matrix3DUtils.transformVector(_targetObject.parent.inverseSceneTransform, this._pos, this._pos);
+						this._pos.x = this._lookAtObject.scenePosition.x;
+						this._pos.y = this._lookAtObject.scenePosition.y;
+						this._pos.z = this._lookAtObject.scenePosition.z;
+						Matrix3DUtils.transformVector(this._targetObject.parent.inverseSceneTransform, this._pos, this._pos);
 					}
 					else
 					{ //one parent
-						Matrix3DUtils.getTranslation(_lookAtObject.transform3D.transform, this._pos);
+						Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos);
 					}
 				}
-				else if (_lookAtObject.scene)
+				else if (this._lookAtObject.scene)
 				{
-					this._pos.x = _lookAtObject.scenePosition.x;
-					this._pos.y = _lookAtObject.scenePosition.y;
-					this._pos.z = _lookAtObject.scenePosition.z;
+					this._pos.x = this._lookAtObject.scenePosition.x;
+					this._pos.y = this._lookAtObject.scenePosition.y;
+					this._pos.z = this._lookAtObject.scenePosition.z;
 				}
 				else
 				{
-					Matrix3DUtils.getTranslation(_lookAtObject.transform3D.transform, this._pos);
+					Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos);
 				}
 			}
 			else
@@ -316,9 +316,9 @@ module feng3d
 				this._pos.z = this._origin.z;
 			}
 
-			_targetObject.transform3D.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
-			_targetObject.transform3D.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
-			_targetObject.transform3D.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
+			this._targetObject.transform3D.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
+			this._targetObject.transform3D.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
+			this._targetObject.transform3D.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
 			super.update();
 		}
 	}

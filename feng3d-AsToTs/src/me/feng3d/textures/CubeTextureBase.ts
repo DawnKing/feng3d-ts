@@ -22,7 +22,7 @@ module feng3d
 		 */
 		public get size():number
 		{
-			return _width;
+			return this._width;
 		}
 	}
 }

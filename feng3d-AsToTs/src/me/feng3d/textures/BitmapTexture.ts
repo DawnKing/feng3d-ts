@@ -23,41 +23,41 @@ module feng3d
 
 		public get bitmapData():BitmapData
 		{
-			return _bitmapData;
+			return this._bitmapData;
 		}
 
 		public set bitmapData(value:BitmapData)
 		{
-			if (value == _bitmapData)
+			if (value == this._bitmapData)
 				return;
 			
 			if (!TextureUtils.isBitmapDataValid(value))
-				throw new Error("Invalid bitmapData: Width and height must be power of 2 and cannot exceed 2048");
+				throw new Error("Invalid this.bitmapData: Width and this.height must be power of 2 and cannot exceed 2048");
 			
-			invalidateContent();
-			setSize(value.width, value.height);
+			this.invalidateContent();
+			this.setSize(value.width, value.height);
 			
-			_bitmapData = value;
+			this._bitmapData = value;
 		}
 
 		public get generateMipmaps():boolean
 		{
-			return _generateMipmaps;
+			return this._generateMipmaps;
 		}
 
 		public set generateMipmaps(value:boolean)
 		{
-			_generateMipmaps = value;
+			this._generateMipmaps = value;
 		}
 
 		public get mipMapHolder():BitmapData
 		{
-			return _mipMapHolder;
+			return this._mipMapHolder;
 		}
 
 		public set mipMapHolder(value:BitmapData)
 		{
-			_mipMapHolder = value;
+			this._mipMapHolder = value;
 		}
 
 

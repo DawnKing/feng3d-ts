@@ -38,8 +38,8 @@ module feng3d
 		{
 			var _context:Context3D = stage3DProxy.context3D;
 
-			if (_renderableSorter)
-				_renderableSorter.sort(entityCollector);
+			if (this._renderableSorter)
+				this._renderableSorter.sort(entityCollector);
 
 			_context.setDepthTest(false, Context3DCompareMode.ALWAYS);
 
@@ -89,7 +89,7 @@ module feng3d
 				{
 					if (item2.renderable.castsShadows)
 					{
-						planarShadowPass.render(item2.renderable, stage3DProxy, camera, _renderIndex++);
+						planarShadowPass.render(item2.renderable, stage3DProxy, camera, this._renderIndex++);
 					}
 					item2 = item2.next;
 				} while (item2 && item2.renderable.material == this._activeMaterial);

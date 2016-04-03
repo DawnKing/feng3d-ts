@@ -35,14 +35,14 @@ module feng3d
 		 */
 		public get cubeWidth():number
 		{
-			return _cubeWidth;
+			return this._cubeWidth;
 		}
 
 		public set cubeWidth(value:number)
 		{
-			_cubeWidth = value;
+			this._cubeWidth = value;
 
-			buildGeometry();
+			this.buildGeometry();
 		}
 
 		/**
@@ -50,16 +50,16 @@ module feng3d
 		 */
 		public get cubeHeight():number
 		{
-			return _cubeHeight;
+			return this._cubeHeight;
 		}
 
 		public set cubeHeight(value:number)
 		{
 			if (value <= 0)
 				throw new Error("Value needs to be greater than 0");
-			_cubeHeight = value;
+			this._cubeHeight = value;
 
-			buildGeometry();
+			this.buildGeometry();
 		}
 
 		/**
@@ -67,14 +67,14 @@ module feng3d
 		 */
 		public get cubeDepth():number
 		{
-			return _cubeDepth;
+			return this._cubeDepth;
 		}
 
 		public set cubeDepth(value:number)
 		{
-			_cubeDepth = value;
+			this._cubeDepth = value;
 
-			buildGeometry();
+			this.buildGeometry();
 		}
 
 		/**
@@ -82,7 +82,7 @@ module feng3d
 		 */
 		protected buildGeometry()
 		{
-			segmentGeometry.removeAllSegments();
+			this.segmentGeometry.removeAllSegments();
 
 			var v0:Vector3D = new Vector3D();
 			var v1:Vector3D = new Vector3D();
@@ -97,16 +97,16 @@ module feng3d
 			v1.y = -hh;
 			v1.z = -hd;
 
-			updateOrAddSegment(0, v0, v1);
+			this.updateOrAddSegment(0, v0, v1);
 			v0.z = hd;
 			v1.z = hd;
-			updateOrAddSegment(1, v0, v1);
+			this.updateOrAddSegment(1, v0, v1);
 			v0.x = hw;
 			v1.x = hw;
-			updateOrAddSegment(2, v0, v1);
+			this.updateOrAddSegment(2, v0, v1);
 			v0.z = -hd;
 			v1.z = -hd;
-			updateOrAddSegment(3, v0, v1);
+			this.updateOrAddSegment(3, v0, v1);
 
 			v0.x = -hw;
 			v0.y = -hh;
@@ -114,16 +114,16 @@ module feng3d
 			v1.x = hw;
 			v1.y = -hh;
 			v1.z = -hd;
-			updateOrAddSegment(4, v0, v1);
+			this.updateOrAddSegment(4, v0, v1);
 			v0.y = hh;
 			v1.y = hh;
-			updateOrAddSegment(5, v0, v1);
+			this.updateOrAddSegment(5, v0, v1);
 			v0.z = hd;
 			v1.z = hd;
-			updateOrAddSegment(6, v0, v1);
+			this.updateOrAddSegment(6, v0, v1);
 			v0.y = -hh;
 			v1.y = -hh;
-			updateOrAddSegment(7, v0, v1);
+			this.updateOrAddSegment(7, v0, v1);
 
 			v0.x = -hw;
 			v0.y = -hh;
@@ -131,16 +131,16 @@ module feng3d
 			v1.x = -hw;
 			v1.y = -hh;
 			v1.z = hd;
-			updateOrAddSegment(8, v0, v1);
+			this.updateOrAddSegment(8, v0, v1);
 			v0.y = hh;
 			v1.y = hh;
-			updateOrAddSegment(9, v0, v1);
+			this.updateOrAddSegment(9, v0, v1);
 			v0.x = hw;
 			v1.x = hw;
-			updateOrAddSegment(10, v0, v1);
+			this.updateOrAddSegment(10, v0, v1);
 			v0.y = -hh;
 			v1.y = -hh;
-			updateOrAddSegment(11, v0, v1);
+			this.updateOrAddSegment(11, v0, v1);
 		}
 
 	}

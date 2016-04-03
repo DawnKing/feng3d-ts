@@ -11,9 +11,9 @@ module feng3d
 	 * @param inCycleTimeTemp			粒子周期内时间临时寄存器
 	 * @author feng 2014-12-26
 	 */
-	constructor(particleVelocity:Register, positionTemp:Register, inCycleTimeTemp:Register)
+	public V_ParticleVelocityGlobal(particleVelocity:Register, positionTemp:Register, inCycleTimeTemp:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var vt3:Register = _.getFreeTemp();
 

@@ -18,7 +18,7 @@ module feng3d
 		
 		public get camera():Camera3D
 		{
-			return data as Camera3D;
+			return this.data as Camera3D;
 		}
 	}
 }

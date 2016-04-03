@@ -46,64 +46,64 @@ module feng3d
 			this._width = width;
 			this._height = height;
 			this._spriteMatrix = new Matrix3D();
-			if (!_sprite3DGeometry)
+			if (!Sprite3D._sprite3DGeometry)
 			{
-				_sprite3DGeometry = new SubGeometry();
-				_sprite3DGeometry.numVertices = 4;
-				_sprite3DGeometry.updateVertexPositionData(number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
-				_sprite3DGeometry.updateUVData(number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
-				_sprite3DGeometry.updateIndexData(number[]([0, 1, 2, 0, 2, 3]));
-				_sprite3DGeometry.updateVertexTangentData(number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
-				_sprite3DGeometry.updateVertexNormalData(number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
+				Sprite3D._sprite3DGeometry = new SubGeometry();
+				Sprite3D._sprite3DGeometry.numVertices = 4;
+				Sprite3D._sprite3DGeometry.updateVertexPositionData(number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
+				Sprite3D._sprite3DGeometry.updateUVData(number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
+				Sprite3D._sprite3DGeometry.updateIndexData(number[]([0, 1, 2, 0, 2, 3]));
+				Sprite3D._sprite3DGeometry.updateVertexTangentData(number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
+				Sprite3D._sprite3DGeometry.updateVertexNormalData(number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
 			}
-			this.geometry.addSubGeometry(_sprite3DGeometry);
+			this.geometry.addSubGeometry(Sprite3D._sprite3DGeometry);
 		}
 
 		public set pickingCollider(value:IPickingCollider)
 		{
 			super.pickingCollider = value;
 			if (value)
-			{ // bounds collider is the only null value
-				_pickingSubMesh = new SubMesh(_sprite3DGeometry, null);
-				_pickingTransform = new Matrix3D();
+			{ // this.bounds collider is the only null value
+				this._pickingSubMesh = new SubMesh(Sprite3D._sprite3DGeometry, null);
+				this._pickingTransform = new Matrix3D();
 			}
 		}
 
 		public get width():number
 		{
-			return _width;
+			return this._width;
 		}
 
 		public set width(value:number)
 		{
-			if (_width == value)
+			if (this._width == value)
 				return;
-			_width = value;
-			transform3D.invalidateTransform();
+			this._width = value;
+			this.transform3D.invalidateTransform();
 		}
 
 		public get height():number
 		{
-			return _height;
+			return this._height;
 		}
 
 		public set height(value:number)
 		{
-			if (_height == value)
+			if (this._height == value)
 				return;
-			_height = value;
-			transform3D.invalidateTransform();
+			this._height = value;
+			this.transform3D.invalidateTransform();
 		}
 
 		public get castsShadows():boolean
 		{
-			return _shadowCaster;
+			return this._shadowCaster;
 		}
 
 		protected updateBounds()
 		{
-			_bounds.fromExtremes(-.5 * this.transform3D.scaleX, -.5 * this.transform3D.scaleY, -.5 * this.transform3D.scaleZ, .5 * this.transform3D.scaleX, .5 * this.transform3D.scaleY, .5 * this.transform3D.scaleZ);
-			_boundsInvalid = false;
+			this._bounds.fromExtremes(-.5 * this.transform3D.scaleX, -.5 * this.transform3D.scaleY, -.5 * this.transform3D.scaleZ, .5 * this.transform3D.scaleX, .5 * this.transform3D.scaleY, .5 * this.transform3D.scaleZ);
+			this._boundsInvalid = false;
 		}
 
 		protected onTransformUpdated(event:Transform3DEvent)

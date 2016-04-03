@@ -76,12 +76,12 @@ module feng3d
 
 		private updateFrontBuffer(frontBuffer:VCVectorBuffer)
 		{
-			frontBuffer.update(FRONT_VECTOR);
+			frontBuffer.update(SegmentPass.FRONT_VECTOR);
 		}
 
 		private updateOneBuffer(oneBuffer:VCVectorBuffer)
 		{
-			oneBuffer.update(ONE_VECTOR);
+			oneBuffer.update(SegmentPass.ONE_VECTOR);
 		}
 
 		private updateC2pMatrixBuffer(c2pMatrixBuffer:VCMatrixBuffer)

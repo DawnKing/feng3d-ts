@@ -33,7 +33,7 @@ module feng3d
 		 */
 		public get numPoses():number
 		{
-			return _numPoses;
+			return this._numPoses;
 		}
 
 		/**

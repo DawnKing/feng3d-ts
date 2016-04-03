@@ -7,12 +7,12 @@ module feng3d
 	 * <p>为优化渲染EntityCollector排序</p>
 	 * @author feng 2015-3-6
 	 */
-	public interface IEntitySorter
+	export interface IEntitySorter
 	{
 		/**
 		 * 排序实体收集器中潜在显示对象
 		 * @param collector		实体收集器
 		 */
-		function sort(collector:EntityCollector);
+		sort(collector:EntityCollector);
 	}
 }

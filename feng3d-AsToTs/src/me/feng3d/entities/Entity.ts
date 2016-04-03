@@ -56,20 +56,20 @@ module feng3d
 		 */
 		public get showBounds():boolean
 		{
-			return _showBounds;
+			return this._showBounds;
 		}
 
 		public set showBounds(value:boolean)
 		{
-			if (value == _showBounds)
+			if (value == this._showBounds)
 				return;
 
-			_showBounds = value;
+			this._showBounds = value;
 
-			if (_showBounds)
-				addBounds();
+			if (this._showBounds)
+				this.addBounds();
 			else
-				removeBounds();
+				this.removeBounds();
 		}
 
 		/**
@@ -102,10 +102,10 @@ module feng3d
 		 */
 		public get minX():number
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds.min.x;
+			return this._bounds.min.x;
 		}
 
 		/**
@@ -113,10 +113,10 @@ module feng3d
 		 */
 		public get minY():number
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds.min.y;
+			return this._bounds.min.y;
 		}
 
 		/**
@@ -124,10 +124,10 @@ module feng3d
 		 */
 		public get minZ():number
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds.min.z;
+			return this._bounds.min.z;
 		}
 
 		/**
@@ -135,10 +135,10 @@ module feng3d
 		 */
 		public get maxX():number
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds.max.x;
+			return this._bounds.max.x;
 		}
 
 		/**
@@ -146,10 +146,10 @@ module feng3d
 		 */
 		public get maxY():number
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds.max.y;
+			return this._bounds.max.y;
 		}
 
 		/**
@@ -157,10 +157,10 @@ module feng3d
 		 */
 		public get maxZ():number
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds.max.z;
+			return this._bounds.max.z;
 		}
 
 		/**
@@ -168,10 +168,10 @@ module feng3d
 		 */
 		public get bounds():BoundingVolumeBase
 		{
-			if (_boundsInvalid)
-				updateBounds();
+			if (this._boundsInvalid)
+				this.updateBounds();
 
-			return _bounds;
+			return this._bounds;
 		}
 
 		/**
@@ -213,10 +213,10 @@ module feng3d
 		 */
 		public get pickingCollisionVO():PickingCollisionVO
 		{
-			if (!_pickingCollisionVO)
-				_pickingCollisionVO = new PickingCollisionVO(this);
+			if (!this._pickingCollisionVO)
+				this._pickingCollisionVO = new PickingCollisionVO(this);
 
-			return _pickingCollisionVO;
+			return this._pickingCollisionVO;
 		}
 
 		/**
@@ -252,12 +252,12 @@ module feng3d
 		 */
 		public get pickingCollider():IPickingCollider
 		{
-			return _pickingCollider;
+			return this._pickingCollider;
 		}
 
 		public set pickingCollider(value:IPickingCollider)
 		{
-			_pickingCollider = value;
+			this._pickingCollider = value;
 		}
 
 		/**
@@ -276,15 +276,15 @@ module feng3d
 		 */
 		public set implicitPartition(value:Partition3D)
 		{
-			if (value == _implicitPartition)
+			if (value == this._implicitPartition)
 				return;
 
-			if (_implicitPartition)
-				notifyPartitionUnassigned();
+			if (this._implicitPartition)
+				this.notifyPartitionUnassigned();
 
 			super.implicitPartition = value;
 
-			notifyPartitionAssigned();
+			this.notifyPartitionAssigned();
 		}
 
 		/**
@@ -310,11 +310,11 @@ module feng3d
 		 */
 		public set scene(value:Scene3D)
 		{
-			if (value == _scene)
+			if (value == this._scene)
 				return;
 
-			if (_scene)
-				_scene.unregisterEntity(this);
+			if (this._scene)
+				this._scene.unregisterEntity(this);
 
 			if (value)
 				value.registerEntity(this);
@@ -353,10 +353,10 @@ module feng3d
 		 */
 		public get worldBounds():BoundingVolumeBase
 		{
-			if (_worldBoundsInvalid)
-				updateWorldBounds();
+			if (this._worldBoundsInvalid)
+				this.updateWorldBounds();
 
-			return _worldBounds;
+			return this._worldBounds;
 		}
 
 		/**

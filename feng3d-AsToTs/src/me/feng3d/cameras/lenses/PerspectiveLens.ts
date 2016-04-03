@@ -35,20 +35,20 @@ module feng3d
 		 */
 		public get fieldOfView():number
 		{
-			return _fieldOfView;
+			return this._fieldOfView;
 		}
 
 		public set fieldOfView(value:number)
 		{
-			if (value == _fieldOfView)
+			if (value == this._fieldOfView)
 				return;
 
-			_fieldOfView = value;
+			this._fieldOfView = value;
 
-			_focalLengthInv = Math.tan(_fieldOfView * Math.PI / 360);
-			_focalLength = 1 / _focalLengthInv;
+			this._focalLengthInv = Math.tan(this._fieldOfView * Math.PI / 360);
+			this._focalLength = 1 / this._focalLengthInv;
 
-			invalidateMatrix();
+			this.invalidateMatrix();
 		}
 
 		/**
@@ -56,20 +56,20 @@ module feng3d
 		 */
 		public get focalLength():number
 		{
-			return _focalLength;
+			return this._focalLength;
 		}
 
 		public set focalLength(value:number)
 		{
-			if (value == _focalLength)
+			if (value == this._focalLength)
 				return;
 
-			_focalLength = value;
+			this._focalLength = value;
 
-			_focalLengthInv = 1 / _focalLength;
-			_fieldOfView = Math.atan(_focalLengthInv) * 360 / Math.PI;
+			this._focalLengthInv = 1 / this._focalLength;
+			this._fieldOfView = Math.atan(this._focalLengthInv) * 360 / Math.PI;
 
-			invalidateMatrix();
+			this.invalidateMatrix();
 		}
 
 		public unproject(nX:number, nY:number, sZ:number, v:Vector3D = null):Vector3D
@@ -97,29 +97,29 @@ module feng3d
 		 */
 		public get coordinateSystem():number
 		{
-			return _coordinateSystem;
+			return this._coordinateSystem;
 		}
 
 		public set coordinateSystem(value:number)
 		{
-			if (value == _coordinateSystem)
+			if (value == this._coordinateSystem)
 				return;
 
-			_coordinateSystem = value;
+			this._coordinateSystem = value;
 
-			invalidateMatrix();
+			this.invalidateMatrix();
 		}
 
 		protected updateMatrix()
 		{
 			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 
-			this._yMax = _near * this._focalLengthInv;
-			this._xMax = this._yMax * _aspectRatio;
+			this._yMax = this._near * this._focalLengthInv;
+			this._xMax = this._yMax * this._aspectRatio;
 
 			var left:number, right:number, top:number, bottom:number;
 
-			if (_scissorRect.x == 0 && _scissorRect.y == 0 && _scissorRect.width == _viewPort.width && _scissorRect.height == _viewPort.height)
+			if (this._scissorRect.x == 0 && this._scissorRect.y == 0 && this._scissorRect.width == this._viewPort.width && this._scissorRect.height == this._viewPort.height)
 			{
 				// assume unscissored frustum
 				left = -this._xMax;
@@ -127,59 +127,59 @@ module feng3d
 				top = -this._yMax;
 				bottom = this._yMax;
 				// assume unscissored frustum
-				raw[number(0)] = _near / this._xMax;
-				raw[number(5)] = _near / this._yMax;
-				raw[number(10)] = _far / (_far - _near);
-				raw[number(11)] = 1;
-				raw[number(1)] = raw[number(2)] = raw[number(3)] = raw[number(4)] = raw[number(6)] = raw[number(7)] = raw[number(8)] = raw[number(9)] = raw[number(12)] = raw[number(13)] = raw[number(15)] = 0;
-				raw[number(14)] = -_near * raw[number(10)];
+				raw[0] = this._near / this._xMax;
+				raw[5] = this._near / this._yMax;
+				raw[10] = this._far / (this._far - this._near);
+				raw[11] = 1;
+				raw[1] = raw[2] = raw[3] = raw[4] = raw[6] = raw[7] = raw[8] = raw[9] = raw[12] = raw[13] = raw[15] = 0;
+				raw[14] = -this._near * raw[10];
 			}
 			else
 			{
 				// assume scissored frustum
-				var xWidth:number = this._xMax * (_viewPort.width / _scissorRect.width);
-				var yHgt:number = this._yMax * (_viewPort.height / _scissorRect.height);
-				var center:number = this._xMax * (_scissorRect.x * 2 - _viewPort.width) / _scissorRect.width + this._xMax;
-				var middle:number = -this._yMax * (_scissorRect.y * 2 - _viewPort.height) / _scissorRect.height - this._yMax;
+				var xWidth:number = this._xMax * (this._viewPort.width / this._scissorRect.width);
+				var yHgt:number = this._yMax * (this._viewPort.height / this._scissorRect.height);
+				var center:number = this._xMax * (this._scissorRect.x * 2 - this._viewPort.width) / this._scissorRect.width + this._xMax;
+				var middle:number = -this._yMax * (this._scissorRect.y * 2 - this._viewPort.height) / this._scissorRect.height - this._yMax;
 
 				left = center - xWidth;
 				right = center + xWidth;
 				top = middle - yHgt;
 				bottom = middle + yHgt;
 
-				raw[number(0)] = 2 * _near / (right - left);
-				raw[number(5)] = 2 * _near / (bottom - top);
-				raw[number(8)] = (right + left) / (right - left);
-				raw[number(9)] = (bottom + top) / (bottom - top);
-				raw[number(10)] = (_far + _near) / (_far - _near);
-				raw[number(11)] = 1;
-				raw[number(1)] = raw[number(2)] = raw[number(3)] = raw[number(4)] = raw[number(6)] = raw[number(7)] = raw[number(12)] = raw[number(13)] = raw[number(15)] = 0;
-				raw[number(14)] = -2 * _far * _near / (_far - _near);
+				raw[0] = 2 * this._near / (right - left);
+				raw[5] = 2 * this._near / (bottom - top);
+				raw[8] = (right + left) / (right - left);
+				raw[9] = (bottom + top) / (bottom - top);
+				raw[10] = (this._far + this._near) / (this._far - this._near);
+				raw[11] = 1;
+				raw[1] = raw[2] = raw[3] = raw[4] = raw[6] = raw[7] = raw[12] = raw[13] = raw[15] = 0;
+				raw[14] = -2 * this._far * this._near / (this._far - this._near);
 			}
 
 			// Switch projection transform from left to right handed.
 			if (this._coordinateSystem == CoordinateSystem.RIGHT_HANDED)
-				raw[number(5)] = -raw[number(5)];
+				raw[5] = -raw[5];
 
-			_matrix.copyRawDataFrom(raw);
+			this._matrix.copyRawDataFrom(raw);
 
-			var yMaxFar:number = _far * this._focalLengthInv;
-			var xMaxFar:number = yMaxFar * _aspectRatio;
+			var yMaxFar:number = this._far * this._focalLengthInv;
+			var xMaxFar:number = yMaxFar * this._aspectRatio;
 
-			_frustumCorners[0] = _frustumCorners[9] = left;
-			_frustumCorners[3] = _frustumCorners[6] = right;
-			_frustumCorners[1] = _frustumCorners[4] = top;
-			_frustumCorners[7] = _frustumCorners[10] = bottom;
+			this._frustumCorners[0] = this._frustumCorners[9] = left;
+			this._frustumCorners[3] = this._frustumCorners[6] = right;
+			this._frustumCorners[1] = this._frustumCorners[4] = top;
+			this._frustumCorners[7] = this._frustumCorners[10] = bottom;
 
-			_frustumCorners[12] = _frustumCorners[21] = -xMaxFar;
-			_frustumCorners[15] = _frustumCorners[18] = xMaxFar;
-			_frustumCorners[13] = _frustumCorners[16] = -yMaxFar;
-			_frustumCorners[19] = _frustumCorners[22] = yMaxFar;
+			this._frustumCorners[12] = this._frustumCorners[21] = -xMaxFar;
+			this._frustumCorners[15] = this._frustumCorners[18] = xMaxFar;
+			this._frustumCorners[13] = this._frustumCorners[16] = -yMaxFar;
+			this._frustumCorners[19] = this._frustumCorners[22] = yMaxFar;
 
-			_frustumCorners[2] = _frustumCorners[5] = _frustumCorners[8] = _frustumCorners[11] = _near;
-			_frustumCorners[14] = _frustumCorners[17] = _frustumCorners[20] = _frustumCorners[23] = _far;
+			this._frustumCorners[2] = this._frustumCorners[5] = this._frustumCorners[8] = this._frustumCorners[11] = this._near;
+			this._frustumCorners[14] = this._frustumCorners[17] = this._frustumCorners[20] = this._frustumCorners[23] = this._far;
 
-			_matrixInvalid = false;
+			this._matrixInvalid = false;
 		}
 	}
 }

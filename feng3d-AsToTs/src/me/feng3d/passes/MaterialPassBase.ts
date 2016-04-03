@@ -97,12 +97,12 @@ module feng3d
 		 */
 		public get material():MaterialBase
 		{
-			return _material;
+			return this._material;
 		}
 
 		public set material(value:MaterialBase)
 		{
-			_material = value;
+			this._material = value;
 		}
 
 		/**
@@ -110,7 +110,7 @@ module feng3d
 		 */
 		public get shaderParams():ShaderParams
 		{
-			return _shaderParams ||= new ShaderParams();
+			return this._shaderParams ||= new ShaderParams();
 		}
 
 		/**
@@ -118,15 +118,15 @@ module feng3d
 		 */
 		public get smooth():boolean
 		{
-			return _smooth;
+			return this._smooth;
 		}
 
 		public set smooth(value:boolean)
 		{
-			if (_smooth == value)
+			if (this._smooth == value)
 				return;
-			_smooth = value;
-			invalidateShaderProgram();
+			this._smooth = value;
+			this.invalidateShaderProgram();
 		}
 
 		/**
@@ -134,15 +134,15 @@ module feng3d
 		 */
 		public get repeat():boolean
 		{
-			return _repeat;
+			return this._repeat;
 		}
 
 		public set repeat(value:boolean)
 		{
-			if (_repeat == value)
+			if (this._repeat == value)
 				return;
-			_repeat = value;
-			invalidateShaderProgram();
+			this._repeat = value;
+			this.invalidateShaderProgram();
 		}
 
 		/**
@@ -150,15 +150,15 @@ module feng3d
 		 */
 		public get mipmap():boolean
 		{
-			return _mipmap;
+			return this._mipmap;
 		}
 
 		public set mipmap(value:boolean)
 		{
-			if (_mipmap == value)
+			if (this._mipmap == value)
 				return;
-			_mipmap = value;
-			invalidateShaderProgram();
+			this._mipmap = value;
+			this.invalidateShaderProgram();
 		}
 
 		/**
@@ -166,14 +166,14 @@ module feng3d
 		 */
 		public get enableBlending():boolean
 		{
-			return _enableBlending;
+			return this._enableBlending;
 		}
 
 		public set enableBlending(value:boolean)
 		{
-			_enableBlending = value;
-			context3DBufferOwner.markBufferDirty(_.blendFactors);
-			context3DBufferOwner.markBufferDirty(_.depthTest);
+			this._enableBlending = value;
+			this.context3DBufferOwner.markBufferDirty(this._.blendFactors);
+			this.context3DBufferOwner.markBufferDirty(this._.depthTest);
 		}
 
 		/**
@@ -192,17 +192,17 @@ module feng3d
 		 */
 		public get animationSet():IAnimationSet
 		{
-			return _animationSet;
+			return this._animationSet;
 		}
 
 		public set animationSet(value:IAnimationSet)
 		{
-			if (_animationSet == value)
+			if (this._animationSet == value)
 				return;
 
-			_animationSet = value;
+			this._animationSet = value;
 
-			invalidateShaderProgram();
+			this.invalidateShaderProgram();
 		}
 
 		/**
@@ -330,17 +330,17 @@ module feng3d
 		 */
 		public get lightPicker():LightPickerBase
 		{
-			return _lightPicker;
+			return this._lightPicker;
 		}
 
 		public set lightPicker(value:LightPickerBase)
 		{
-			if (_lightPicker)
-				_lightPicker.removeEventListener(Event.CHANGE, onLightsChange);
-			_lightPicker = value;
-			if (_lightPicker)
-				_lightPicker.addEventListener(Event.CHANGE, onLightsChange);
-			updateLights();
+			if (this._lightPicker)
+				this._lightPicker.removeEventListener(Event.CHANGE, this.onLightsChange);
+			this._lightPicker = value;
+			if (this._lightPicker)
+				this._lightPicker.addEventListener(Event.CHANGE, this.onLightsChange);
+			this.updateLights();
 		}
 
 		/**
@@ -412,13 +412,13 @@ module feng3d
 		 */
 		public get writeDepth():boolean
 		{
-			return _writeDepth;
+			return this._writeDepth;
 		}
 
 		public set writeDepth(value:boolean)
 		{
-			_writeDepth = value;
-			context3DBufferOwner.markBufferDirty(_.depthTest);
+			this._writeDepth = value;
+			this.context3DBufferOwner.markBufferDirty(this._.depthTest);
 		}
 
 		/**
@@ -426,13 +426,13 @@ module feng3d
 		 */
 		public get depthCompareMode():string
 		{
-			return _depthCompareMode;
+			return this._depthCompareMode;
 		}
 
 		public set depthCompareMode(value:string)
 		{
-			_depthCompareMode = value;
-			context3DBufferOwner.markBufferDirty(_.depthTest);
+			this._depthCompareMode = value;
+			this.context3DBufferOwner.markBufferDirty(this._.depthTest);
 		}
 
 		/**
@@ -440,13 +440,13 @@ module feng3d
 		 */
 		public get bothSides():boolean
 		{
-			return _bothSides;
+			return this._bothSides;
 		}
 
 		public set bothSides(value:boolean)
 		{
-			_bothSides = value;
-			context3DBufferOwner.markBufferDirty(_.culling);
+			this._bothSides = value;
+			this.context3DBufferOwner.markBufferDirty(this._.culling);
 		}
 
 		/**
@@ -464,13 +464,13 @@ module feng3d
 		 */
 		public get alphaPremultiplied():boolean
 		{
-			return _alphaPremultiplied;
+			return this._alphaPremultiplied;
 		}
 
 		public set alphaPremultiplied(value:boolean)
 		{
-			_alphaPremultiplied = value;
-			invalidateShaderProgram();
+			this._alphaPremultiplied = value;
+			this.invalidateShaderProgram();
 		}
 
 		/**

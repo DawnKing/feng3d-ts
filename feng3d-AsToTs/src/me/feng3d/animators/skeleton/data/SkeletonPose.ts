@@ -18,18 +18,18 @@ module feng3d
 
 		public get numJointPoses():number
 		{
-			return jointPoses.length;
+			return this.jointPoses.length;
 		}
 
 		constructor()
 		{
 			this._namedAsset = new NamedAsset(this,AssetType.SKELETON_POSE);
-			this.jointPoses = new JointPose[]();
+			this.jointPoses = [];
 		}
 
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 	}
 }

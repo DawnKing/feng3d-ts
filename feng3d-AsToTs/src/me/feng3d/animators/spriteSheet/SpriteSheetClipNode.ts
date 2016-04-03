@@ -8,14 +8,14 @@ module feng3dSheet
 	 */
 	export class SpriteSheetClipNode extends AnimationClipNodeBase
 	{
-		private _frames:SpriteSheetAnimationFrame[] = new SpriteSheetAnimationFrame[]();
+		private _frames:SpriteSheetAnimationFrame[] = [];
 
 		/**
 		 * 创建<code>SpriteSheetClipNode</code>实例.
 		 */
 		constructor()
 		{
-			_stateClass = SpriteSheetAnimationState;
+			this._stateClass = SpriteSheetAnimationState;
 		}
 
 		/**
@@ -23,7 +23,7 @@ module feng3dSheet
 		 */
 		public get frames():SpriteSheetAnimationFrame[]
 		{
-			return _frames;
+			return this._frames;
 		}
 
 		/**
@@ -34,10 +34,10 @@ module feng3dSheet
 		public addFrame(spriteSheetAnimationFrame:SpriteSheetAnimationFrame, duration:number)
 		{
 			this._frames.push(spriteSheetAnimationFrame);
-			_durations.push(duration);
-			_numFrames = _durations.length;
+			this._durations.push(duration);
+			this._numFrames = this._durations.length;
 
-			_stitchDirty = false;
+			this._stitchDirty = false;
 		}
 	}
 }

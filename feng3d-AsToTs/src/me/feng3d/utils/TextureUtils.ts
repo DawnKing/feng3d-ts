@@ -29,7 +29,7 @@ module feng3d
 			if (bitmapData == null)
 				return true;
 
-			return isDimensionValid(bitmapData.width) && isDimensionValid(bitmapData.height);
+			return TextureUtils.isDimensionValid(bitmapData.width) && TextureUtils.isDimensionValid(bitmapData.height);
 		}
 
 		/**
@@ -39,7 +39,7 @@ module feng3d
 		 */
 		public static isDimensionValid(d:number):boolean
 		{
-			return d >= 1 && d <= MAX_SIZE && isPowerOfTwo(d);
+			return d >= 1 && d <= TextureUtils.MAX_SIZE && TextureUtils.isPowerOfTwo(d);
 		}
 
 		/**
@@ -64,8 +64,8 @@ module feng3d
 			while (p < value)
 				p <<= 1;
 
-			if (p > MAX_SIZE)
-				p = MAX_SIZE;
+			if (p > TextureUtils.MAX_SIZE)
+				p = TextureUtils.MAX_SIZE;
 
 			return p;
 		}
@@ -79,9 +79,9 @@ module feng3d
 		 * @param forceWrap 			强制重复纹理参数
 		 * @return
 		 */
-		public static getFlags(useMipmapping:boolean, useSmoothTextures:boolean, repeatTextures:boolean, texture:TextureProxyBase, forceWrap:string = null):Array
+		public static getFlags(useMipmapping:boolean, useSmoothTextures:boolean, repeatTextures:boolean, texture:TextureProxyBase, forceWrap:string = null)
 		{
-			var flags:Array = [texture.type];
+			var flags = [texture.type];
 
 			var enableMipMaps:boolean = useMipmapping && texture.hasMipMaps;
 			if (useSmoothTextures)

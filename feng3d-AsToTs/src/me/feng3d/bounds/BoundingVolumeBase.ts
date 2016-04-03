@@ -30,7 +30,7 @@ module feng3d
 		 */
 		public get max():Vector3D
 		{
-			return _max;
+			return this._max;
 		}
 
 		/**
@@ -38,7 +38,7 @@ module feng3d
 		 */
 		public get min():Vector3D
 		{
-			return _min;
+			return this._min;
 		}
 
 		/**
@@ -57,13 +57,13 @@ module feng3d
 		 */
 		public get boundingRenderable():WireframePrimitiveBase
 		{
-			if (!_boundingRenderable)
+			if (!this._boundingRenderable)
 			{
-				_boundingRenderable = createBoundingRenderable();
-				updateBoundingRenderable();
+				this._boundingRenderable = this.createBoundingRenderable();
+				this.updateBoundingRenderable();
 			}
 
-			return _boundingRenderable;
+			return this._boundingRenderable;
 		}
 
 		/**

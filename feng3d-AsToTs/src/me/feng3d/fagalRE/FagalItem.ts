@@ -12,14 +12,14 @@ module feng3dRE
 	export class FagalItem
 	{
 		public funcName:string;
-		public parameters:Array;
+		public parameters;
 
 		/**
 		 * 创建一个fagal函数单元
 		 * @param funcName			函数名称
 		 * @param parameters		参数
 		 */
-		constructor(funcName:string, parameters:Array)
+		constructor(funcName:string, parameters)
 		{
 			this.funcName = funcName;
 			this.parameters = parameters;
@@ -54,7 +54,7 @@ module feng3dRE
 		 */
 		private getIFieldList():IField[]
 		{
-			var list:IField[] = new IField[]();
+			var list:IField[] = [];
 
 			for each (var reg:IField in this.parameters)
 			{

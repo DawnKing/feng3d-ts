@@ -23,22 +23,22 @@ module feng3d
 
 		public get ambientColor():number
 		{
-			return _ambientColor;
+			return this._ambientColor;
 		}
 
 		public set ambientColor(value:number)
 		{
-			_ambientColor = value;
+			this._ambientColor = value;
 		}
 
 		public get specularMethod():BasicSpecularMethod
 		{
-			return _specularMethod;
+			return this._specularMethod;
 		}
 
 		public set specularMethod(value:BasicSpecularMethod)
 		{
-			_specularMethod = value;
+			this._specularMethod = value;
 		}
 
 		/**
@@ -47,12 +47,12 @@ module feng3d
 		 */
 		public get normalMap():Texture2DBase
 		{
-			return _normalMethod.normalMap;
+			return this._normalMethod.normalMap;
 		}
 		
 		public set normalMap(value:Texture2DBase)
 		{
-			_normalMethod.normalMap = value;
+			this._normalMethod.normalMap = value;
 		}
 		
 		/**
@@ -64,12 +64,12 @@ module feng3d
 		 */
 		public get specularMap():Texture2DBase
 		{
-			return _specularMethod.texture;
+			return this._specularMethod.texture;
 		}
 		
 		public set specularMap(value:Texture2DBase)
 		{
-			_specularMethod.texture = value;
+			this._specularMethod.texture = value;
 		}
 		
 		/**
@@ -77,13 +77,13 @@ module feng3d
 		 */
 		public get specular():number
 		{
-			return _specularMethod? _specularMethod.specular : 0;
+			return this._specularMethod? this._specularMethod.specular : 0;
 		}
 		
 		public set specular(value:number)
 		{
-			if (_specularMethod)
-				_specularMethod.specular = value;
+			if (this._specularMethod)
+				this._specularMethod.specular = value;
 		}
 		
 	}

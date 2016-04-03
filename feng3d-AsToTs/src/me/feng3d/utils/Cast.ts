@@ -26,10 +26,10 @@ module feng3d
 		 */
 		public static tryClass(name:string):Object
 		{
-			if (_notClasses[name])
+			if (Cast._notClasses[name])
 				return name;
 
-			var result:Class = _classes[name];
+			var result = Cast._classes[name];
 
 			if (result != null)
 				return result;
@@ -37,14 +37,14 @@ module feng3d
 			try
 			{
 				result = getDefinitionByName(name) as Class;
-				_classes[name] = result;
+				Cast._classes[name] = result;
 				return result;
 			}
 			catch (error:ReferenceError)
 			{
 			}
 
-			_notClasses[name] = true;
+			Cast._notClasses[name] = true;
 
 			return name;
 		}
@@ -54,13 +54,13 @@ module feng3d
 		 * @param data		位图数据
 		 * @return 			位图数据
 		 */
-		public static bitmapData(data:*):BitmapData
+		public static bitmapData(data):BitmapData
 		{
 			if (data == null)
 				return null;
 
 			if (data is string)
-				data = tryClass(data);
+				data = Cast.tryClass(data);
 
 			if (data is Class)
 			{
@@ -79,7 +79,7 @@ module feng3d
 
 			if (data is Bitmap)
 			{
-				if ((data as Bitmap).hasOwnProperty("bitmapData")) // if (data is BitmapAsset)
+				if ((data as Bitmap).hasOwnProperty("Cast.bitmapData")) // if (data is BitmapAsset)
 					return (data as Bitmap).bitmapData;
 			}
 
@@ -102,13 +102,13 @@ module feng3d
 		 * @param data		位图数据
 		 * @return 			位图纹理
 		 */
-		public static bitmapTexture(data:*):BitmapTexture
+		public static bitmapTexture(data):BitmapTexture
 		{
 			if (data == null)
 				return null;
 
 			if (data is string)
-				data = tryClass(data);
+				data = Cast.tryClass(data);
 
 			if (data is Class)
 			{

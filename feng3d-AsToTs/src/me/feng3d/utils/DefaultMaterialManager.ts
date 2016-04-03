@@ -13,44 +13,44 @@ module feng3d
 		
 		public static getDefaultMaterial():TextureMaterial
 		{
-			if (!_defaultTexture)
-				createDefaultTexture();
+			if (!DefaultMaterialManager._defaultTexture)
+				DefaultMaterialManager.createDefaultTexture();
 			
-			if (!_defaultMaterial)
-				createDefaultMaterial();
+			if (!DefaultMaterialManager._defaultMaterial)
+				DefaultMaterialManager.createDefaultMaterial();
 			
-			return _defaultMaterial;
+			return DefaultMaterialManager._defaultMaterial;
 		}
 		
 		public static getDefaultTexture():BitmapTexture
 		{
-			if (!_defaultTexture)
-				createDefaultTexture();
+			if (!DefaultMaterialManager._defaultTexture)
+				DefaultMaterialManager.createDefaultTexture();
 			
-			return _defaultTexture;
+			return DefaultMaterialManager._defaultTexture;
 		}
 		
 		private static function createDefaultTexture(color:number = 0XFFFFFF)
 		{
-			_defaultTextureBitmapData = new BitmapData(8, 8, false, 0x0);
+			DefaultMaterialManager._defaultTextureBitmapData = new BitmapData(8, 8, false, 0x0);
 			
 			//create chekerboard
 			var i:number, j:number;
 			for (i = 0; i < 8; i++) {
 				for (j = 0; j < 8; j++) {
 					if ((j & 1) ^ (i & 1))
-						_defaultTextureBitmapData.setPixel(i, j, 0XFFFFFF);
+						DefaultMaterialManager._defaultTextureBitmapData.setPixel(i, j, 0XFFFFFF);
 				}
 			}
 			
-			_defaultTexture = new BitmapTexture(_defaultTextureBitmapData);
+			DefaultMaterialManager._defaultTexture = new BitmapTexture(DefaultMaterialManager._defaultTextureBitmapData);
 		}
 		
 		private static function createDefaultMaterial()
 		{
-			_defaultMaterial = new TextureMaterial(_defaultTexture);
-			_defaultMaterial.mipmap = false;
-			_defaultMaterial.smooth = false;
+			DefaultMaterialManager._defaultMaterial = new TextureMaterial(DefaultMaterialManager._defaultTexture);
+			DefaultMaterialManager._defaultMaterial.mipmap = false;
+			DefaultMaterialManager._defaultMaterial.smooth = false;
 		}
 	}
 }

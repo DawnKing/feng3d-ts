@@ -42,11 +42,11 @@ module feng3d
 		 */
 		protected doUpdateFunc()
 		{
-			if (_updateFunc != null && _dataDirty)
+			if (this._updateFunc != null && this._dataDirty)
 			{
 				ShaderRegisterCache.invalid();
-				_updateFunc(this);
-				_dataDirty = false;
+				this._updateFunc(this);
+				this._dataDirty = false;
 				this.dataRegisterDic = ShaderRegisterCache.instance.dataRegisterDic;
 			}
 		}
@@ -59,7 +59,7 @@ module feng3d
 
 			if (this.bufferInvalid)
 			{
-				for (var key:* in this.bufferItemDic)
+				for (var key in this.bufferItemDic)
 				{
 					var contextTemp:Context3D = key as Context3D;
 					AGALProgram3DCache.getInstance(contextTemp).freeProgram3D(this.bufferItemDic[contextTemp]);

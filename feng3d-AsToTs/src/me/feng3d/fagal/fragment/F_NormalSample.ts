@@ -6,9 +6,9 @@ module feng3d
 	 * 法线取样函数
 	 * @author feng 2014-10-23
 	 */
-	constructor()
+	public F_NormalSample()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		//获取纹理数据
 		_.tex(_.normalTexData_ft_4, _.uv_v, _.normalTexture_fs);

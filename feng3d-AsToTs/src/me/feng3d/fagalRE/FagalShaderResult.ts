@@ -141,7 +141,7 @@ module feng3dRE
 			}
 		}
 
-		private fagalCodeList:Array;
+		private fagalCodeList;
 
 		/**
 		 * 执行Fagal函数记录
@@ -155,7 +155,7 @@ module feng3dRE
 			this.math.addEventListener(FagalMathEvent.FAGALMATHEVENT_APPEND, this.onFagalCodeAppend);
 
 			var funcName:string;
-			var parameters:Array;
+			var parameters;
 			for (var i:number = 0; i < callLog.length; i++)
 			{
 				funcName = callLog[i].funcName;
@@ -184,11 +184,11 @@ module feng3dRE
 		 */
 		private get math():FagalMath
 		{
-			if (_math == null)
+			if (this._math == null)
 			{
-				_math = new FagalMath();
+				this._math = new FagalMath();
 			}
-			return _math;
+			return this._math;
 		}
 
 		/**

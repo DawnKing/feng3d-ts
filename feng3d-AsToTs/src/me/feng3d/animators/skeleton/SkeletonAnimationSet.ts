@@ -34,7 +34,7 @@ module feng3d
 		 */
 		public get jointsPerVertex():number
 		{
-			return _jointsPerVertex;
+			return this._jointsPerVertex;
 		}
 
 		/**
@@ -58,7 +58,7 @@ module feng3d
 		 */
 		public set numJoints(value:number)
 		{
-			_numJoints = value;
+			this._numJoints = value;
 		}
 	}
 }

@@ -49,7 +49,7 @@ module feng3d
 
 		public set autoRotation(b:boolean)
 		{
-			_autoRotation = b;
+			this._autoRotation = b;
 		}
 
 		/**
@@ -57,12 +57,12 @@ module feng3d
 		 */
 		public get autoRotation():boolean
 		{
-			return _autoRotation;
+			return this._autoRotation;
 		}
 
 		public set rotationIncrease(value:number)
 		{
-			_rotationIncrease = value;
+			this._rotationIncrease = value;
 		}
 
 		/**
@@ -70,14 +70,14 @@ module feng3d
 		 */
 		public get rotationIncrease():number
 		{
-			return _rotationIncrease;
+			return this._rotationIncrease;
 		}
 
 		public set autoTranslate(b:boolean)
 		{
-			_autoTranslate = b;
-			if (b && !_translateIncrease)
-				_translateIncrease = number[]([0, 0]);
+			this._autoTranslate = b;
+			if (b && !this._translateIncrease)
+				this._translateIncrease = number[]([0, 0]);
 		}
 
 		/**
@@ -85,7 +85,7 @@ module feng3d
 		 */
 		public get autoTranslate():boolean
 		{
-			return _autoTranslate;
+			return this._autoTranslate;
 		}
 
 		/**
@@ -106,7 +106,7 @@ module feng3d
 		 */
 		public get translateIncrease():number[]
 		{
-			return _translateIncrease;
+			return this._translateIncrease;
 		}
 
 		/**
@@ -173,17 +173,17 @@ module feng3d
 		{
 			transition = transition;
 			offset = offset;
-			if (_activeAnimationName == name)
+			if (this._activeAnimationName == name)
 				return;
 
-			_activeAnimationName = name;
+			this._activeAnimationName = name;
 
-			if (!_animationSet.hasAnimation(name))
+			if (!this._animationSet.hasAnimation(name))
 				throw new Error("Animation root node " + name + " not found!");
 
-			_activeNode = _animationSet.getAnimation(name);
-			_activeState = this.getAnimationState(_activeNode);
-			this._activeUVState = _activeState as IUVAnimationState;
+			this._activeNode = this._animationSet.getAnimation(name);
+			this._activeState = this.getAnimationState(this._activeNode);
+			this._activeUVState = this._activeState as IUVAnimationState;
 
 			this.start();
 		}
@@ -193,8 +193,8 @@ module feng3d
 		 */
 		protected updateDeltaTime(dt:number)
 		{
-			_absoluteTime += dt;
-			this._activeUVState.update(_absoluteTime);
+			this._absoluteTime += dt;
+			this._activeUVState.update(this._absoluteTime);
 
 			var currentUVFrame:UVAnimationFrame = this._activeUVState.currentUVFrame;
 			var nextUVFrame:UVAnimationFrame = this._activeUVState.nextUVFrame;

@@ -22,7 +22,7 @@ module feng3d
 		
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 		
 	}

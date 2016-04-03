@@ -7,9 +7,9 @@ module feng3d
 	 * 雾片段着色器
 	 * @author feng 2015-8-27
 	 */
-	constructor()
+	public F_Fog()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var temp2:Register = _.getFreeTemp("");
 		var temp:Register = _.getFreeTemp("");

@@ -33,9 +33,9 @@ module feng3d
 			if (Register.TO_STRING == Register.NAME)
 				return this.regId + "[" + this._arrayIndex + "]";
 
-			if (_regType != RegisterType.OP && _regType != RegisterType.OC)
+			if (this._regType != RegisterType.OP && this._regType != RegisterType.OC)
 				return this.regType + (this._arrayIndex + this._registerArray.index);
-			return _regType;
+			return this._regType;
 		}
 
 	}

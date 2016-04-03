@@ -19,8 +19,7 @@ module feng3d
 
 	/**
 	 * 3D对象<br/><br/>
-	 * 主要功能:
-	 * <ul>
+	 * 主要功能 <ul>
 	 *     <li>能够被addChild添加到3d场景中</li>
 	 *     <li>维护场景变换矩阵sceneTransform、inverseSceneTransform</li>
 	 *     <li>维护父对象parent</li>
@@ -70,21 +69,21 @@ module feng3d
 
 		public get transform3D():Transform3D
 		{
-			return _transform3D;
+			return this._transform3D;
 		}
 
 		public set transform3D(value:Transform3D)
 		{
-			if (transform3D != null)
+			if (this.transform3D != null)
 			{
-				transform3D.removeEventListener(Transform3DEvent.TRANSFORM_CHANGED, onTransformChanged);
-				transform3D.removeEventListener(Transform3DEvent.POSITION_CHANGED, onPositionChanged);
+				this.transform3D.removeEventListener(Transform3DEvent.TRANSFORM_CHANGED, this.onTransformChanged);
+				this.transform3D.removeEventListener(Transform3DEvent.POSITION_CHANGED, this.onPositionChanged);
 			}
 
-			_transform3D = value;
+			this._transform3D = value;
 
-			transform3D.addEventListener(Transform3DEvent.TRANSFORM_CHANGED, onTransformChanged);
-			transform3D.addEventListener(Transform3DEvent.POSITION_CHANGED, onPositionChanged);
+			this.transform3D.addEventListener(Transform3DEvent.TRANSFORM_CHANGED, this.onTransformChanged);
+			this.transform3D.addEventListener(Transform3DEvent.POSITION_CHANGED, this.onPositionChanged);
 		}
 
 		/**
@@ -92,18 +91,18 @@ module feng3d
 		 */
 		public get scene():Scene3D
 		{
-			return _scene;
+			return this._scene;
 		}
 
 		public set scene(value:Scene3D)
 		{
-			if (_scene != value)
+			if (this._scene != value)
 			{
-				if (_scene)
-					_scene.removedObject3d(this);
-				_scene = value;
-				if (_scene)
-					_scene.addedObject3d(this);
+				if (this._scene)
+					this._scene.removedObject3d(this);
+				this._scene = value;
+				if (this._scene)
+					this._scene.addedObject3d(this);
 			}
 		}
 
@@ -124,14 +123,14 @@ module feng3d
 		 */
 		public get inverseSceneTransform():Matrix3D
 		{
-			if (_inverseSceneTransformDirty)
+			if (this._inverseSceneTransformDirty)
 			{
-				_inverseSceneTransform.copyFrom(sceneTransform);
-				_inverseSceneTransform.invert();
-				_inverseSceneTransformDirty = false;
+				this._inverseSceneTransform.copyFrom(this.sceneTransform);
+				this._inverseSceneTransform.invert();
+				this._inverseSceneTransformDirty = false;
 			}
 
-			return _inverseSceneTransform;
+			return this._inverseSceneTransform;
 		}
 
 		/**
@@ -139,9 +138,9 @@ module feng3d
 		 */
 		public get sceneTransform():Matrix3D
 		{
-			if (_sceneTransformDirty)
-				updateSceneTransform();
-			return _sceneTransform;
+			if (this._sceneTransformDirty)
+				this.updateSceneTransform();
+			return this._sceneTransform;
 		}
 
 		/**
@@ -202,17 +201,17 @@ module feng3d
 		 */
 		public get parent():Container3D
 		{
-			return _parent;
+			return this._parent;
 		}
 
 		public set parent(value:Container3D)
 		{
-			if (_parent != null)
-				_parent.removeChild(this);
+			if (this._parent != null)
+				this._parent.removeChild(this);
 
-			_parent = value;
+			this._parent = value;
 
-			transform3D.invalidateTransform();
+			this.transform3D.invalidateTransform();
 		}
 
 		/**
@@ -220,13 +219,13 @@ module feng3d
 		 */
 		public get scenePosition():Vector3D
 		{
-			if (_scenePositionDirty)
+			if (this._scenePositionDirty)
 			{
-				sceneTransform.copyColumnTo(3, _scenePosition);
-				_scenePositionDirty = false;
+				this.sceneTransform.copyColumnTo(3, this._scenePosition);
+				this._scenePositionDirty = false;
 			}
 
-			return _scenePosition;
+			return this._scenePosition;
 		}
 
 		/**
@@ -296,12 +295,12 @@ module feng3d
 		 */
 		public get visible():boolean
 		{
-			return _visible;
+			return this._visible;
 		}
 
 		public set visible(value:boolean)
 		{
-			_visible = value;
+			this._visible = value;
 		}
 
 		/**
@@ -309,8 +308,8 @@ module feng3d
 		 */
 		public get sceneVisible():boolean
 		{
-			//从这里开始一直找父容器到场景了，且visible全为true则为场景上可见
-			return visible && (scene != null) && ((parent is Scene3D) ? true : (parent ? parent.sceneVisible : false));
+			//从这里开始一直找父容器到场景了，且this.visible全为true则为场景上可见
+			return this.visible && (this.scene != null) && ((this.parent is Scene3D) ? true : (this.parent ? this.parent.sceneVisible : false));
 		}
 
 		/**
@@ -351,14 +350,14 @@ module feng3d
 		 */
 		public get partition():Partition3D
 		{
-			return _explicitPartition;
+			return this._explicitPartition;
 		}
 
 		public set partition(value:Partition3D)
 		{
-			_explicitPartition = value;
+			this._explicitPartition = value;
 
-			implicitPartition = value ? value : (_parent ? _parent.implicitPartition : null);
+			this.implicitPartition = value ? value : (this._parent ? this._parent.implicitPartition : null);
 		}
 
 		/**
@@ -366,15 +365,15 @@ module feng3d
 		 */
 		public get implicitPartition():Partition3D
 		{
-			return _implicitPartition;
+			return this._implicitPartition;
 		}
 
 		public set implicitPartition(value:Partition3D)
 		{
-			if (value == _implicitPartition)
+			if (value == this._implicitPartition)
 				return;
 
-			_implicitPartition = value;
+			this._implicitPartition = value;
 		}
 
 		/**
@@ -382,12 +381,12 @@ module feng3d
 		 */
 		public get zOffset():number
 		{
-			return _zOffset;
+			return this._zOffset;
 		}
 
 		public set zOffset(value:number)
 		{
-			_zOffset = value;
+			this._zOffset = value;
 		}
 
 		protected onPositionChanged(event:Transform3DEvent)

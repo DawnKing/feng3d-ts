@@ -10,7 +10,7 @@ module feng3d
 		/**
 		 * 缓冲编号配置
 		 */
-		public static bufferIdConfigs:Array = [ //
+		public static bufferIdConfigs = [ //
 			//----------------------------------------------------------
 			["normal_va_3", "法线数据"], //
 			["tangent_va_3", "切线数据"], //

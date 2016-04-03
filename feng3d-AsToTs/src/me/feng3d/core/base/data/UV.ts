@@ -26,12 +26,12 @@ module feng3d
 		 */
 		public get v():number
 		{
-			return _v;
+			return this._v;
 		}
 		
 		public set v(value:number)
 		{
-			_v = value;
+			this._v = value;
 		}
 		
 		/**
@@ -39,12 +39,12 @@ module feng3d
 		 */
 		public get u():number
 		{
-			return _u;
+			return this._u;
 		}
 		
 		public set u(value:number)
 		{
-			_u = value;
+			this._u = value;
 		}
 		
 		/**

@@ -26,25 +26,25 @@ module feng3d
 
 		constructor()
 		{
-			this.dataTypeId = _.tangent_va_3;
+			this.dataTypeId = this._.tangent_va_3;
 
 			super();
 		}
 
 		protected set subGeometry(value:SubGeometry)
 		{
-			if (_subGeometry != null)
+			if (this._subGeometry != null)
 			{
-				_subGeometry.removeEventListener(GeometryComponentEvent.GET_VA_DATA, onGetVAData);
-				_subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_VA_DATA, onChangedVAData);
-				_subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, onChangedIndexData);
+				this._subGeometry.removeEventListener(GeometryComponentEvent.GET_VA_DATA, this.onGetVAData);
+				this._subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_VA_DATA, this.onChangedVAData);
+				this._subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, this.onChangedIndexData);
 			}
-			_subGeometry = value;
-			if (_subGeometry != null)
+			this._subGeometry = value;
+			if (this._subGeometry != null)
 			{
-				_subGeometry.addEventListener(GeometryComponentEvent.GET_VA_DATA, onGetVAData);
-				_subGeometry.addEventListener(GeometryComponentEvent.CHANGED_VA_DATA, onChangedVAData);
-				_subGeometry.addEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, onChangedIndexData);
+				this._subGeometry.addEventListener(GeometryComponentEvent.GET_VA_DATA, this.onGetVAData);
+				this._subGeometry.addEventListener(GeometryComponentEvent.CHANGED_VA_DATA, this.onChangedVAData);
+				this._subGeometry.addEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, this.onChangedIndexData);
 			}
 		}
 
@@ -75,14 +75,14 @@ module feng3d
 
 		protected onChangedVAData(event:GeometryComponentEvent)
 		{
-			if (event.data == _.position_va_3)
+			if (event.data == this._.position_va_3)
 			{
 				this.needGenerate = true;
 
 				//标记面切线脏数据
 				this._faceTangentsDirty = true;
 
-				this.subGeometry.invalidVAData(_.tangent_va_3);
+				this.subGeometry.invalidVAData(this._.tangent_va_3);
 			}
 		}
 
@@ -90,15 +90,15 @@ module feng3d
 		{
 			this._faceTangentsDirty = true;
 
-			this.subGeometry.invalidVAData(_.tangent_va_3);
+			this.subGeometry.invalidVAData(this._.tangent_va_3);
 		}
 
 		/** 面切线 */
 		public get faceTangents():number[]
 		{
-			if (_faceTangentsDirty)
-				updateFaceTangents();
-			return _faceTangents;
+			if (this._faceTangentsDirty)
+				this.updateFaceTangents();
+			return this._faceTangents;
 		}
 
 		/**
@@ -106,14 +106,14 @@ module feng3d
 		 */
 		public get useFaceWeights():boolean
 		{
-			return _useFaceWeights;
+			return this._useFaceWeights;
 		}
 
 		public set useFaceWeights(value:boolean)
 		{
-			_useFaceWeights = value;
+			this._useFaceWeights = value;
 
-			subGeometry.invalidVAData(_.tangent_va_3);
+			this.subGeometry.invalidVAData(this._.tangent_va_3);
 		}
 
 		/** 更新面切线数据 */
@@ -131,11 +131,11 @@ module feng3d
 			var dx1:number, dy1:number, dz1:number;
 			var dx2:number, dy2:number, dz2:number;
 			var cx:number, cy:number, cz:number;
-			var vertices:number[] = this.subGeometry.getVAData(_.position_va_3);
-			var uvs:number[] = this.subGeometry.getVAData(_.uv_va_2);
-			var posStride:number = this.subGeometry.getVALen(_.position_va_3);
+			var vertices:number[] = this.subGeometry.getVAData(this._.position_va_3);
+			var uvs:number[] = this.subGeometry.getVAData(this._.uv_va_2);
+			var posStride:number = this.subGeometry.getVALen(this._.position_va_3);
 			var posOffset:number = 0;
-			var texStride:number = this.subGeometry.getVALen(_.uv_va_2);
+			var texStride:number = this.subGeometry.getVALen(this._.uv_va_2);
 			var texOffset:number = 0;
 
 			this._faceTangents ||= new number[](_indices.length, true);

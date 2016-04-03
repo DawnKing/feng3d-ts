@@ -49,12 +49,12 @@ module feng3d
 		
 		public get asset():IAsset
 		{
-			return _asset;
+			return this._asset;
 		}
 		
 		public get assetPrevName():string
 		{
-			return _prevName;
+			return this._prevName;
 		}
 	}
 }

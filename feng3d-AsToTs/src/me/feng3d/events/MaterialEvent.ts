@@ -13,7 +13,7 @@ module feng3d
 		/** 移除pass */
 		public static PASS_REMOVED:string = "passRemoved";
 
-		constructor(type:string, data:* = null, bubbles:boolean = false)
+		constructor(type:string, data = null, bubbles:boolean = false)
 		{
 			super(type, data, bubbles);
 		}

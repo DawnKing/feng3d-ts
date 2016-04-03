@@ -34,7 +34,7 @@ module feng3d
 		 */
 		public getViewCollision(ray3D:Ray3D, entitys:Entity[]):PickingCollisionVO
 		{
-			this._entities = new Entity[]();
+			this._entities = [];
 
 			if (entitys.length == 0)
 				return null;

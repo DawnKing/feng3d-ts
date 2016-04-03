@@ -66,12 +66,12 @@ module feng3d
 		 */
 		public get start():Vector3D
 		{
-			return _start;
+			return this._start;
 		}
 
 		public set start(value:Vector3D)
 		{
-			_start = value;
+			this._start = value;
 
 		}
 
@@ -80,12 +80,12 @@ module feng3d
 		 */
 		public get end():Vector3D
 		{
-			return _end;
+			return this._end;
 		}
 
 		public set end(value:Vector3D)
 		{
-			_end = value;
+			this._end = value;
 		}
 
 		/**
@@ -93,12 +93,12 @@ module feng3d
 		 */
 		public get thickness():number
 		{
-			return _thickness * 2;
+			return this._thickness * 2;
 		}
 
 		public set thickness(value:number)
 		{
-			_thickness = value * .5;
+			this._thickness = value * .5;
 
 		}
 
@@ -107,16 +107,16 @@ module feng3d
 		 */
 		public get startColor():number
 		{
-			return _startColor;
+			return this._startColor;
 		}
 
 		public set startColor(color:number)
 		{
-			_startR = ((color >> 16) & 0xff) / 255;
-			_startG = ((color >> 8) & 0xff) / 255;
-			_startB = (color & 0xff) / 255;
+			this._startR = ((color >> 16) & 0xff) / 255;
+			this._startG = ((color >> 8) & 0xff) / 255;
+			this._startB = (color & 0xff) / 255;
 
-			_startColor = color;
+			this._startColor = color;
 		}
 
 		/**
@@ -124,16 +124,16 @@ module feng3d
 		 */
 		public get endColor():number
 		{
-			return _endColor;
+			return this._endColor;
 		}
 
 		public set endColor(color:number)
 		{
-			_endR = ((color >> 16) & 0xff) / 255;
-			_endG = ((color >> 8) & 0xff) / 255;
-			_endB = (color & 0xff) / 255;
+			this._endR = ((color >> 16) & 0xff) / 255;
+			this._endG = ((color >> 8) & 0xff) / 255;
+			this._endB = (color & 0xff) / 255;
 
-			_endColor = color;
+			this._endColor = color;
 		}
 
 		public dispose()
@@ -144,32 +144,32 @@ module feng3d
 
 		public get startR():number
 		{
-			return _startR;
+			return this._startR;
 		}
 
 		public get startG():number
 		{
-			return _startG;
+			return this._startG;
 		}
 
 		public get startB():number
 		{
-			return _startB;
+			return this._startB;
 		}
 
 		public get endR():number
 		{
-			return _endR;
+			return this._endR;
 		}
 
 		public get endG():number
 		{
-			return _endG;
+			return this._endG;
 		}
 
 		public get endB():number
 		{
-			return _endB;
+			return this._endB;
 		}
 	}
 }

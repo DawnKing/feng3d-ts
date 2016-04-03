@@ -71,7 +71,7 @@ module feng3d
 		 */
 		protected updateBoundingRenderable()
 		{
-			var transform3D:Transform3D = _boundingRenderable.transform3D;
+			var transform3D:Transform3D = this._boundingRenderable.transform3D;
 			transform3D.scaleX = Math.max(this._halfExtentsX * 2, 0.001);
 			transform3D.scaleY = Math.max(this._halfExtentsY * 2, 0.001);
 			transform3D.scaleZ = Math.max(this._halfExtentsZ * 2, 0.001);
@@ -268,14 +268,14 @@ module feng3d
 			this._halfExtentsY = hx * m21 + hy * m22 + hz * m23;
 			this._halfExtentsZ = hx * m31 + hy * m32 + hz * m33;
 
-			_min.x = this._centerX - this._halfExtentsX;
-			_min.y = this._centerY - this._halfExtentsY;
-			_min.z = this._centerZ - this._halfExtentsZ;
-			_max.x = this._centerX + this._halfExtentsX;
-			_max.y = this._centerY + this._halfExtentsY;
-			_max.z = this._centerZ + this._halfExtentsZ;
+			this._min.x = this._centerX - this._halfExtentsX;
+			this._min.y = this._centerY - this._halfExtentsY;
+			this._min.z = this._centerZ - this._halfExtentsZ;
+			this._max.x = this._centerX + this._halfExtentsX;
+			this._max.y = this._centerY + this._halfExtentsY;
+			this._max.z = this._centerZ + this._halfExtentsZ;
 
-			_aabbPointsDirty = true;
+			this._aabbPointsDirty = true;
 		}
 	}
 }

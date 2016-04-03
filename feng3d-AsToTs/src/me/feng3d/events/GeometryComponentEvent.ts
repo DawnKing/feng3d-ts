@@ -23,7 +23,7 @@ module feng3d
 		 */
 		public static CHANGED_INDEX_DATA:string = "changedIndexData";
 
-		constructor(type:string, data:* = null, bubbles:boolean = false, cancelable:boolean = false)
+		constructor(type:string, data = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
 			super(type, data, bubbles, cancelable);
 		}

@@ -26,19 +26,19 @@ module feng3d
 	 * 当开始播放动画时触发
 	 * @eventType me.feng3d.events.AnimatorEvent
 	 */
-	[Event(name = "start", type = "me.feng3d.events.AnimatorEvent")]
+	//[Event(name = "start", type = "me.feng3d.events.AnimatorEvent")]
 
 	/**
 	 * 当动画停止时触发
 	 * @eventType me.feng3d.events.AnimatorEvent
 	 */
-	[Event(name = "stop", type = "me.feng3d.events.AnimatorEvent")]
+	//[Event(name = "stop", type = "me.feng3d.events.AnimatorEvent")]
 
 	/**
 	 * 当动画播放完一次时触发
 	 * @eventType me.feng3d.events.AnimatorEvent
 	 */
-	[Event(name = "cycle_complete", type = "me.feng3d.events.AnimatorEvent")]
+	//[Event(name = "cycle_complete", type = "me.feng3d.events.AnimatorEvent")]
 
 	/**
 	 * 动画基类
@@ -59,7 +59,7 @@ module feng3d
 		private _playbackSpeed:number = 1;
 
 		protected _animationSet:IAnimationSet;
-		protected _owners:Mesh[] = new Mesh[]();
+		protected _owners:Mesh[] = [];
 		protected _activeNode:AnimationNodeBase;
 		protected _activeState:IAnimationState;
 		protected _activeAnimationName:string;
@@ -108,7 +108,7 @@ module feng3d
 		 */
 		public getAnimationState(node:AnimationNodeBase):AnimationStateBase
 		{
-			var className:Class = node.stateClass;
+			var className = node.stateClass;
 
 			return this._animationStates[node] ||= new className(this, node);
 		}
@@ -131,7 +131,7 @@ module feng3d
 		 */
 		public get absoluteTime():number
 		{
-			return _absoluteTime;
+			return this._absoluteTime;
 		}
 
 		/**
@@ -139,7 +139,7 @@ module feng3d
 		 */
 		public get animationSet():IAnimationSet
 		{
-			return _animationSet;
+			return this._animationSet;
 		}
 
 		/**
@@ -147,7 +147,7 @@ module feng3d
 		 */
 		public get activeState():IAnimationState
 		{
-			return _activeState;
+			return this._activeState;
 		}
 
 		/**
@@ -155,7 +155,7 @@ module feng3d
 		 */
 		public get activeAnimation():AnimationNodeBase
 		{
-			return _animationSet.getAnimation(_activeAnimationName);
+			return this._animationSet.getAnimation(this._activeAnimationName);
 		}
 
 		/**
@@ -163,7 +163,7 @@ module feng3d
 		 */
 		public get activeAnimationName():string
 		{
-			return _activeAnimationName;
+			return this._activeAnimationName;
 		}
 
 		/**
@@ -173,20 +173,20 @@ module feng3d
 		 */
 		public get autoUpdate():boolean
 		{
-			return _autoUpdate;
+			return this._autoUpdate;
 		}
 
 		public set autoUpdate(value:boolean)
 		{
-			if (_autoUpdate == value)
+			if (this._autoUpdate == value)
 				return;
 
-			_autoUpdate = value;
+			this._autoUpdate = value;
 
-			if (_autoUpdate)
-				start();
+			if (this._autoUpdate)
+				this.start();
 			else
-				stop();
+				this.stop();
 		}
 
 		/**
@@ -194,15 +194,15 @@ module feng3d
 		 */
 		public get time():number
 		{
-			return _time;
+			return this._time;
 		}
 
 		public set time(value:number)
 		{
-			if (_time == value)
+			if (this._time == value)
 				return;
 
-			update(value);
+			this.update(value);
 		}
 
 		/**
@@ -223,12 +223,12 @@ module feng3d
 		 */
 		public get playbackSpeed():number
 		{
-			return _playbackSpeed;
+			return this._playbackSpeed;
 		}
 
 		public set playbackSpeed(value:number)
 		{
-			_playbackSpeed = value;
+			this._playbackSpeed = value;
 		}
 
 		/**
@@ -377,7 +377,7 @@ module feng3d
 
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 	}
 }

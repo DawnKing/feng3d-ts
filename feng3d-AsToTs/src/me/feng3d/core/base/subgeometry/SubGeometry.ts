@@ -19,17 +19,17 @@ module feng3d
 	/**
 	 * 获取几何体顶点数据时触发
 	 */
-	[Event(name = "getVAData", type = "me.feng3d.events.GeometryComponentEvent")]
+	//[Event(name = "getVAData", type = "me.feng3d.events.GeometryComponentEvent")]
 
 	/**
 	 * 改变几何体顶点数据后触发
 	 */
-	[Event(name = "changedVAData", type = "me.feng3d.events.GeometryComponentEvent")]
+	//[Event(name = "changedVAData", type = "me.feng3d.events.GeometryComponentEvent")]
 
 	/**
 	 * 改变顶点索引数据后触发
 	 */
-	[Event(name = "changedIndexData", type = "me.feng3d.events.GeometryComponentEvent")]
+	//[Event(name = "changedIndexData", type = "me.feng3d.events.GeometryComponentEvent")]
 
 	/**
 	 * 子几何体
@@ -77,7 +77,7 @@ module feng3d
 		 */
 		public get numTriangles():number
 		{
-			return _numTriangles;
+			return this._numTriangles;
 		}
 
 		/**
@@ -93,9 +93,9 @@ module feng3d
 		 */
 		public get indexData():number[]
 		{
-			if (_indices == null)
-				_indices = new number[]();
-			return _indices;
+			if (this._indices == null)
+				this._indices = [];
+			return this._indices;
 		}
 
 		/**
@@ -103,7 +103,7 @@ module feng3d
 		 */
 		public get numIndices():number
 		{
-			return _numIndices;
+			return this._numIndices;
 		}
 
 		/**
@@ -111,7 +111,7 @@ module feng3d
 		 */
 		public get indices():number[]
 		{
-			return _indices;
+			return this._indices;
 		}
 
 		/**
@@ -265,7 +265,7 @@ module feng3d
 		 */
 		public get vertexPositionData():number[]
 		{
-			return getVAData(_.position_va_3);
+			return this.getVAData(this._.position_va_3);
 		}
 
 		/**
@@ -273,7 +273,7 @@ module feng3d
 		 */
 		public get vertexNormalData():number[]
 		{
-			return getVAData(_.normal_va_3);
+			return this.getVAData(this._.normal_va_3);
 		}
 
 		/**
@@ -281,7 +281,7 @@ module feng3d
 		 */
 		public get vertexTangentData():number[]
 		{
-			return getVAData(_.tangent_va_3);
+			return this.getVAData(this._.tangent_va_3);
 		}
 
 		/**
@@ -289,7 +289,7 @@ module feng3d
 		 */
 		public get UVData():number[]
 		{
-			return getVAData(_.uv_va_2);
+			return this.getVAData(this._.uv_va_2);
 		}
 
 		/**
@@ -297,7 +297,7 @@ module feng3d
 		 */
 		public get vertexPositionStride():number
 		{
-			return getVALen(_.position_va_3);
+			return this.getVALen(this._.position_va_3);
 		}
 
 		/**
@@ -305,7 +305,7 @@ module feng3d
 		 */
 		public get vertexTangentStride():number
 		{
-			return getVALen(_.tangent_va_3);
+			return this.getVALen(this._.tangent_va_3);
 		}
 
 		/**
@@ -313,7 +313,7 @@ module feng3d
 		 */
 		public get vertexNormalStride():number
 		{
-			return getVALen(_.normal_va_3);
+			return this.getVALen(this._.normal_va_3);
 		}
 
 		/**
@@ -321,7 +321,7 @@ module feng3d
 		 */
 		public get UVStride():number
 		{
-			return getVALen(_.uv_va_2);
+			return this.getVALen(this._.uv_va_2);
 		}
 
 		protected notifyVADataChanged(dataTypeId:string)
@@ -340,7 +340,7 @@ module feng3d
 
 		public clone():SubGeometry
 		{
-			var cls:Class = getDefinitionByName(getQualifiedClassName(this)) as Class;
+			var cls = getDefinitionByName(getQualifiedClassName(this)) as Class;
 			var _clone:SubGeometry = new cls();
 
 			//顶点属性编号列表
@@ -374,12 +374,12 @@ module feng3d
 		 */
 		public get parent():Geometry
 		{
-			return _parent;
+			return this._parent;
 		}
 
 		public set parent(value:Geometry)
 		{
-			_parent = value;
+			this._parent = value;
 		}
 	}
 }

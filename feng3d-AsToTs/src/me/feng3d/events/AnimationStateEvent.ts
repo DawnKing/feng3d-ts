@@ -44,7 +44,7 @@ module feng3d
 		 */
 		public get animator():AnimatorBase
 		{
-			return _animator;
+			return this._animator;
 		}
 
 		/**
@@ -52,7 +52,7 @@ module feng3d
 		 */
 		public get animationState():IAnimationState
 		{
-			return _animationState;
+			return this._animationState;
 		}
 
 		/**
@@ -60,7 +60,7 @@ module feng3d
 		 */
 		public get animationNode():AnimationNodeBase
 		{
-			return _animationNode;
+			return this._animationNode;
 		}
 
 		/**

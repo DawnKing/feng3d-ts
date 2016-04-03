@@ -75,7 +75,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function render(renderable:IRenderable, stage3DProxy:Stage3DProxy, camera:Camera3D, renderIndex:number)
+		public render(renderable:IRenderable, stage3DProxy:Stage3DProxy, camera:Camera3D, renderIndex:number)
 		{
 			//场景变换矩阵（物体坐标-->世界坐标）
 			var sceneTransform:Matrix3D = renderable.sourceEntity.getRenderSceneTransform(camera);
@@ -105,7 +105,7 @@ module feng3d
 			var l:Vector3D = _sunVector3D.clone();
 			var n:Vector3D = new Vector3D(0, 1, 0);
 			var nl:number = n.dotProduct(l);
-			var d:number = -groundY;
+			var d:number = -PlanarShadowPass.groundY;
 
 			var mat1:Matrix3D = new Matrix3D(number[]( //
 				[nl + d - n.x * l.x, -n.y * l.x, -n.z * l.x, -d * l.x, //

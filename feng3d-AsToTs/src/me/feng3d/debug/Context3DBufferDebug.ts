@@ -39,28 +39,28 @@ module feng3d
 		 * @param context3DCache			3D环境缓冲
 		 * @return							调试信息
 		 */
-		public static debug(context3DCache:Context3DCache):Array
+		public static debug(context3DCache:Context3DCache)
 		{
-			var debugInfos:Array = [];
+			var debugInfos = [];
 
 			var debugInfoItem:Object;
-			debugInfoItem = debugInfo(context3DCache.programBuffer);
+			debugInfoItem = Context3DBufferDebug.debugInfo(context3DCache.programBuffer);
 			debugInfos.push(debugInfoItem);
 
 			for each (var context3DDataBuffer:Context3DBuffer in context3DCache.otherBufferDic)
 			{
-				debugInfoItem = debugInfo(context3DDataBuffer);
+				debugInfoItem = Context3DBufferDebug.debugInfo(context3DDataBuffer);
 				debugInfos.push(debugInfoItem);
 			}
 
 			for each (var registerBuffer:RegisterBuffer in context3DCache.runRegBufferList)
 			{
-				debugInfoItem = debugInfo(registerBuffer);
+				debugInfoItem = Context3DBufferDebug.debugInfo(registerBuffer);
 				debugInfoItem.shaderRegister = registerBuffer.firstRegister.toString();
 				debugInfos.push(debugInfoItem);
 			}
 
-			debugInfoItem = debugInfo(context3DCache.indexBuffer);
+			debugInfoItem = Context3DBufferDebug.debugInfo(context3DCache.indexBuffer);
 			debugInfos.push(debugInfoItem);
 
 			return debugInfos;
@@ -75,7 +75,7 @@ module feng3d
 		{
 			var debugInfoItem:Object = {className: getQualifiedClassName(context3DBuffer), constructorParams: [context3DBuffer.dataTypeId, null]};
 
-			var cla:Class = ClassUtils.getClass(context3DBuffer);
+			var cla = ClassUtils.getClass(context3DBuffer);
 
 			switch (cla)
 			{
@@ -142,11 +142,11 @@ module feng3d
 		{
 			var context3DCache:Context3DCache = new Context3DCache();
 
-			var arr:Array = obj as Array;
+			var arr = obj as Array;
 			for (var i:number = 0; i < arr.length; i++)
 			{
 				var item:Object = arr[i];
-				var cla:Class = ClassUtils.getClass(item.className);
+				var cla = ClassUtils.getClass(item.className);
 				var buff:Context3DBuffer = ClassUtils.structureInstance(cla, item.constructorParams);
 				ClassUtils.decodeParams(item.updateParams);
 				ClassUtils.call(buff, "update", item.updateParams);
@@ -157,7 +157,7 @@ module feng3d
 					var regBuff:RegisterBuffer = buff as RegisterBuffer;
 					var regStr:string = item.shaderRegister
 					var myPattern:RegExp = /([a-z]+)(\d+)/;
-					var result:Array = myPattern.exec(regStr);
+					var result = myPattern.exec(regStr);
 //-------------------
 					regBuff.firstRegister = result[2];
 

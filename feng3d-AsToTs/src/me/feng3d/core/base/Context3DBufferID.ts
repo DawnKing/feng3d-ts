@@ -12,13 +12,13 @@ module feng3d
 		/**
 		 * 创建3D环境缓冲编号集合
 		 */
-		constructor()
+		public Context3DBufferID()
 		{
 		}
 
 		public static get instance():Context3DBufferID
 		{
-			return _instance ||= new Context3DBufferID();
+			return null._instance ||= new Context3DBufferID();
 		}
 	}
 }

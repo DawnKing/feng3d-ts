@@ -36,7 +36,7 @@ module feng3d
 		public static fromVectors(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number = 0):SubGeometry[]
 		{ LIMIT_VERTS:number = 3 * 0xffff; LIMIT_INDICES:number = 15 * 0xffff;
 
-			var subs:SubGeometry[] = new SubGeometry[]();
+			var subs:SubGeometry[] = [];
 
 			if (uvs && !uvs.length)
 				uvs = null;
@@ -50,11 +50,11 @@ module feng3d
 			if ((indices.length >= LIMIT_INDICES) || (verts.length >= LIMIT_VERTS))
 			{
 				var i:number, len:number, outIndex:number, j:number;
-				var splitVerts:number[] = new number[]();
-				var splitIndices:number[] = new number[]();
-				var splitUvs:number[] = (uvs != null) ? new number[]() : null;
-				var splitWeights:number[] = (weights != null) ? new number[]() : null;
-				var splitJointIndices:number[] = (jointIndices != null) ? new number[]() : null;
+				var splitVerts:number[] = [];
+				var splitIndices:number[] = [];
+				var splitUvs:number[] = (uvs != null) ? [] : null;
+				var splitWeights:number[] = (weights != null) ? [] : null;
+				var splitJointIndices:number[] = (jointIndices != null) ? [] : null;
 
 				var mappings:number[] = new number[](verts.length / 3, true);
 				i = mappings.length;
@@ -74,12 +74,12 @@ module feng3d
 
 					if (((outIndex + 2) >= LIMIT_INDICES) || (splitIndex >= LIMIT_VERTS))
 					{
-						subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
-						splitVerts = new number[]();
-						splitIndices = new number[]();
-						splitUvs = (uvs != null) ? new number[]() : null;
-						splitWeights = (weights != null) ? new number[]() : null;
-						splitJointIndices = (jointIndices != null) ? new number[]() : null;
+						subs.push(GeomUtil.constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
+						splitVerts = [];
+						splitIndices = [];
+						splitUvs = (uvs != null) ? [] : null;
+						splitWeights = (weights != null) ? [] : null;
+						splitJointIndices = (jointIndices != null) ? [] : null;
 						splitIndex = 0;
 						j = mappings.length;
 						while (j-- > 0)
@@ -155,12 +155,12 @@ module feng3d
 				if (splitVerts.length > 0)
 				{
 					// More was added in the last iteration of the loop.
-					subs.push(constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
+					subs.push(GeomUtil.constructSubGeometry(splitVerts, splitIndices, splitUvs, splitWeights, splitJointIndices, triangleOffset));
 				}
 
 			}
 			else
-				subs.push(constructSubGeometry(verts, indices, uvs, weights, jointIndices, triangleOffset));
+				subs.push(GeomUtil.constructSubGeometry(verts, indices, uvs, weights, jointIndices, triangleOffset));
 
 			return subs;
 		}
@@ -213,7 +213,7 @@ module feng3d
 		 */
 		public static addSubGeometry(source:SubGeometry, target:SubGeometry):boolean
 		{
-			if (source.numVertices + target.numVertices > MAX_VERTEX)
+			if (source.numVertices + target.numVertices > GeomUtil.MAX_VERTEX)
 				return false;
 
 			//顶点属性编号列表

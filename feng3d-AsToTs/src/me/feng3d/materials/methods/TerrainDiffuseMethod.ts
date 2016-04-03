@@ -22,10 +22,10 @@ module feng3d
 	{
 		private tileData:number[] = new number[](4);
 		private _blendingTexture:Texture2DBase;
-		private _splats:Array;
+		private _splats;
 		private _numSplattingLayers:number;
 
-		constructor(splatTextures:Array, blendingTexture:Texture2DBase, tileData:number[])
+		constructor(splatTextures, blendingTexture:Texture2DBase, tileData:number[])
 		{
 			super();
 
@@ -42,26 +42,26 @@ module feng3d
 				throw new Error("More than 4 splatting layers is not supported!");
 		}
 
-		public get splats():Array
+		public get splats()
 		{
-			return _splats;
+			return this._splats;
 		}
 
-		public set splats(value:Array)
+		public set splats(value)
 		{
-			_splats = value;
-			context3DBufferOwner.markBufferDirty(_.terrainTextures_fs_array);
+			this._splats = value;
+			this.context3DBufferOwner.markBufferDirty(this._.terrainTextures_fs_array);
 		}
 
 		public get blendingTexture():Texture2DBase
 		{
-			return _blendingTexture;
+			return this._blendingTexture;
 		}
 
 		public set blendingTexture(value:Texture2DBase)
 		{
-			_blendingTexture = value;
-			context3DBufferOwner.markBufferDirty(_.blendingtexture_fs);
+			this._blendingTexture = value;
+			this.context3DBufferOwner.markBufferDirty(this._.blendingtexture_fs);
 		}
 
 		protected initBuffers()

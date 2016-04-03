@@ -105,7 +105,7 @@ module feng3d
 		 * @param data 需要解析的数据
 		 * @return
 		 */
-		public static supportsData(data:*):boolean
+		public static supportsData(data):boolean
 		{
 			data = data;
 			return false;
@@ -118,38 +118,38 @@ module feng3d
 			//标记开始解析
 			if (!this._startedParsing)
 			{
-				this._textData = getTextData();
+				this._textData = this.getTextData();
 				this._startedParsing = true;
 			}
 
-			while (hasTime())
+			while (this.hasTime())
 			{
 				//获取关键字
 				token = this.getNextToken();
 				switch (token)
 				{
-					case COMMENT_TOKEN:
+					case MD5MeshParser.COMMENT_TOKEN:
 						this.ignoreLine();
 						break;
-					case VERSION_TOKEN:
+					case MD5MeshParser.VERSION_TOKEN:
 						this._version = this.getNextInt();
 						if (this._version != 10)
 							throw new Error("Unknown version number encountered!");
 						break;
-					case COMMAND_LINE_TOKEN:
+					case MD5MeshParser.COMMAND_LINE_TOKEN:
 						this.parseCMD();
 						break;
-					case NUM_JOINTS_TOKEN:
+					case MD5MeshParser.NUM_JOINTS_TOKEN:
 						this._numJoints = this.getNextInt();
 						this._bindPoses = new Matrix3D[](this._numJoints, true);
 						break;
-					case NUM_MESHES_TOKEN:
+					case MD5MeshParser.NUM_MESHES_TOKEN:
 						this._numMeshes = this.getNextInt();
 						break;
-					case JOINTS_TOKEN:
+					case MD5MeshParser.JOINTS_TOKEN:
 						this.parseJoints();
 						break;
-					case MESH_TOKEN:
+					case MD5MeshParser.MESH_TOKEN:
 						this.parseMesh();
 						break;
 					default:
@@ -170,10 +170,10 @@ module feng3d
 					for (var i:number = 0; i < this._meshData.length; ++i)
 						_geometry.addSubGeometry(this.translateGeom(this._meshData[i].vertexData, this._meshData[i].weightData, this._meshData[i].indices));
 
-					finalizeAsset(_geometry);
-					finalizeAsset(_mesh);
-					finalizeAsset(this._skeleton);
-					finalizeAsset(this._animationSet);
+					this.finalizeAsset(_geometry);
+					this.finalizeAsset(_mesh);
+					this.finalizeAsset(this._skeleton);
+					this.finalizeAsset(this._animationSet);
 					return ParserBase.PARSING_DONE;
 				}
 			}
@@ -276,7 +276,7 @@ module feng3d
 				{
 					this.putBack();
 					ch = this.getNextToken();
-					if (ch == COMMENT_TOKEN)
+					if (ch == MD5MeshParser.COMMENT_TOKEN)
 						this.ignoreLine();
 					ch = this.getNextChar();
 
@@ -311,47 +311,47 @@ module feng3d
 			if (token != "{")
 				this.sendUnknownKeywordError();
 
-			this._shaders ||= new string[]();
+			this._shaders ||= [];
 
 			while (ch != "}")
 			{
 				ch = this.getNextToken();
 				switch (ch)
 				{
-					case COMMENT_TOKEN:
+					case MD5MeshParser.COMMENT_TOKEN:
 						this.ignoreLine();
 						break;
-					case MESH_SHADER_TOKEN:
+					case MD5MeshParser.MESH_SHADER_TOKEN:
 						//材质数据
 						this._shaders.push(this.parseLiteralString());
 						break;
-					case MESH_NUM_VERTS_TOKEN:
+					case MD5MeshParser.MESH_NUM_VERTS_TOKEN:
 						//顶点数据
 						vertexData = new VertexData[](this.getNextInt(), true);
 						break;
-					case MESH_NUM_TRIS_TOKEN:
+					case MD5MeshParser.MESH_NUM_TRIS_TOKEN:
 						//根据三角形个数 创建顶点数组
 						indices = new number[](this.getNextInt() * 3, true);
 						break;
-					case MESH_NUM_WEIGHTS_TOKEN:
+					case MD5MeshParser.MESH_NUM_WEIGHTS_TOKEN:
 						//创建关节数据
 						weights = new WeightData[](this.getNextInt(), true);
 						break;
-					case MESH_VERT_TOKEN:
+					case MD5MeshParser.MESH_VERT_TOKEN:
 						//解析一个顶点数据
 						this.parseVertex(vertexData);
 						break;
-					case MESH_TRI_TOKEN:
+					case MD5MeshParser.MESH_TRI_TOKEN:
 						this.parseTri(indices);
 						break;
-					case MESH_WEIGHT_TOKEN:
+					case MD5MeshParser.MESH_WEIGHT_TOKEN:
 						this.parseJoint(weights);
 						break;
 				}
 			}
 
 			//保存网格数据
-			this._meshData ||= new MeshData[]();
+			this._meshData ||= [];
 			var i:number = this._meshData.length;
 			this._meshData[i] = new MeshData();
 			this._meshData[i].vertexData = vertexData;
@@ -400,8 +400,7 @@ module feng3d
 				/**
 				 * 参考 http://blog.csdn.net/summerhust/article/details/17421213
 				 * VertexPos = (MJ-0 * weight[index0].pos * weight[index0].bias) + ... + (MJ-N * weight[indexN].pos * weight[indexN].bias)
-				 * 变量对应 :
-				 * MJ-N -> bindPose; 第J个关节的变换矩阵
+				 * 变量对应  MJ-N -> bindPose; 第J个关节的变换矩阵
 				 * weight[indexN].pos -> weight.pos;
 				 * weight[indexN].bias -> weight.bias;
 				 */
@@ -523,7 +522,7 @@ module feng3d
 				ch = this.getNextChar();
 				if (ch == " " || ch == "\r" || ch == "\n" || ch == "\t")
 				{
-					if (token != COMMENT_TOKEN)
+					if (token != MD5MeshParser.COMMENT_TOKEN)
 						this.skipWhiteSpace();
 					if (token != "")
 						return token;
@@ -531,7 +530,7 @@ module feng3d
 				else
 					token += ch;
 
-				if (token == COMMENT_TOKEN)
+				if (token == MD5MeshParser.COMMENT_TOKEN)
 					return token;
 			}
 

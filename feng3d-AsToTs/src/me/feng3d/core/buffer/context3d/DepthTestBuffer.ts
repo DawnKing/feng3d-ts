@@ -30,7 +30,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			doUpdateFunc();
+			this.doUpdateFunc();
 
 			context3D.setDepthTest(this.depthMask, this.passCompareMode);
 		}

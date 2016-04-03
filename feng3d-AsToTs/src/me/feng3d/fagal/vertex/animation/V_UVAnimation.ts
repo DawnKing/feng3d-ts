@@ -8,9 +8,9 @@ module feng3d
 	 * UV动画顶点渲染程序
 	 * @author feng 2015-9-5
 	 */
-	constructor(UVSource:Register, UVTarget:Register)
+	public V_UVAnimation(UVSource:Register, UVTarget:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var tempUV:Register = _.getFreeTemp();
 		var tempUV2:Register = _.getFreeTemp("用点乘代替m44运算的临时寄存器");

@@ -24,7 +24,7 @@ module feng3dRE
 		 */
 		private get math():FagalMath
 		{
-			return _math ||= new FagalMath();
+			return this._math ||= new FagalMath();
 		}
 
 		/**
@@ -38,7 +38,7 @@ module feng3dRE
 		/**
 		 * 创建Fagal运行环境空间
 		 */
-		constructor()
+		public FagalRESpace()
 		{
 			super();
 		}
@@ -46,7 +46,7 @@ module feng3dRE
 		/**
 		 * @inheritDoc
 		 */
-		override flash_proxy function getProperty(name:*):*
+		override flash_proxy function getProperty(name)
 		{
 			var attr:string = name;
 
@@ -57,7 +57,7 @@ module feng3dRE
 
 			if (registerCenter.hasOwnProperty(attr))
 			{
-				var value:* = FagalRESpace.prototype[attr] = registerCenter[attr];
+				var value = FagalRESpace.prototype[attr] = registerCenter[attr];
 				return value;
 			}
 
@@ -67,7 +67,7 @@ module feng3dRE
 		/**
 		 * @inheritDoc
 		 */
-		override flash_proxy function callProperty(name:*, ... parameters):*
+		override flash_proxy function callProperty(name, ... parameters)
 		{
 			var funcName:string = string(name);
 			var func:Function = math[funcName];
@@ -83,7 +83,7 @@ module feng3dRE
 		 */
 		public run(fagalMethod:Function):FagalItem[]
 		{
-			this.callLog = new FagalItem[]();
+			this.callLog = [];
 
 			fagalMethod();
 

@@ -31,7 +31,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this._childNodes = new NodeBase[]();
+			this._childNodes = [];
 		}
 
 		/**
@@ -39,7 +39,7 @@ module feng3d
 		 */
 		public get parent():NodeBase
 		{
-			return _parent;
+			return this._parent;
 		}
 
 		/**
@@ -47,7 +47,7 @@ module feng3d
 		 */
 		public get showDebugBounds():boolean
 		{
-			return _debugPrimitive != null;
+			return this._debugPrimitive != null;
 		}
 
 		/**
@@ -55,19 +55,19 @@ module feng3d
 		 */
 		public set showDebugBounds(value:boolean)
 		{
-			if (boolean(_debugPrimitive) == value)
+			if (boolean(this._debugPrimitive) == value)
 				return;
 
 			if (value)
-				_debugPrimitive = createDebugBounds();
+				this._debugPrimitive = this.createDebugBounds();
 			else
 			{
-//				_debugPrimitive.dispose();
-				_debugPrimitive = null;
+//				this._debugPrimitive.dispose();
+				this._debugPrimitive = null;
 			}
 
-			for (var i:number = 0; i < _numChildNodes; ++i)
-				_childNodes[i].showDebugBounds = value;
+			for (var i:number = 0; i < this._numChildNodes; ++i)
+				this._childNodes[i].showDebugBounds = value;
 		}
 
 		/**

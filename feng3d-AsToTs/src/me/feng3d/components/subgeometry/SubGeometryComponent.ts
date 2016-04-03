@@ -25,12 +25,12 @@ module feng3d
 
 		protected get subGeometry():SubGeometry
 		{
-			return _subGeometry;
+			return this._subGeometry;
 		}
 
 		protected set subGeometry(value:SubGeometry)
 		{
-			_subGeometry = value;
+			this._subGeometry = value;
 		}
 
 		/**

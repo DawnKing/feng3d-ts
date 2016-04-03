@@ -20,10 +20,10 @@ module feng3d
 		 */
 		public get currentGeometry():Geometry
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _currentGeometry;
+			return this._currentGeometry;
 		}
 
 		/**
@@ -31,10 +31,10 @@ module feng3d
 		 */
 		public get nextGeometry():Geometry
 		{
-			if (_framesDirty)
-				updateFrames();
+			if (this._framesDirty)
+				this.updateFrames();
 
-			return _nextGeometry;
+			return this._nextGeometry;
 		}
 
 		/**
@@ -42,7 +42,7 @@ module feng3d
 		 * @param animator				动画
 		 * @param vertexClipNode		顶点动画节点
 		 */
-		function VertexClipState(animator:AnimatorBase, vertexClipNode:VertexClipNode)
+		constructor(animator:AnimatorBase, vertexClipNode:VertexClipNode)
 		{
 			super(animator, vertexClipNode);
 
@@ -57,15 +57,15 @@ module feng3d
 		{
 			super.updateFrames();
 
-			this._currentGeometry = this._frames[_currentFrame];
+			this._currentGeometry = this._frames[this._currentFrame];
 
-			if (this._vertexClipNode.looping && _nextFrame >= this._vertexClipNode.lastFrame)
+			if (this._vertexClipNode.looping && this._nextFrame >= this._vertexClipNode.lastFrame)
 			{
 				this._nextGeometry = this._frames[0];
-				VertexAnimator(_animator).dispatchCycleEvent();
+				VertexAnimator(this._animator).dispatchCycleEvent();
 			}
 			else
-				this._nextGeometry = this._frames[_nextFrame];
+				this._nextGeometry = this._frames[this._nextFrame];
 		}
 	}
 }

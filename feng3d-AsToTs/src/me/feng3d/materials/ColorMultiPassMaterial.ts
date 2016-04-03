@@ -18,32 +18,32 @@ module feng3d
 
 		public get ambientColor():number
 		{
-			return _ambientColor;
+			return this._ambientColor;
 		}
 
 		public set ambientColor(value:number)
 		{
-			_ambientColor = value;
+			this._ambientColor = value;
 		}
 
 		public get specularColor():number
 		{
-			return _specularColor;
+			return this._specularColor;
 		}
 
 		public set specularColor(value:number)
 		{
-			_specularColor = value;
+			this._specularColor = value;
 		}
 
 		public get specular():number
 		{
-			return _specular;
+			return this._specular;
 		}
 
 		public set specular(value:number)
 		{
-			_specular = value;
+			this._specular = value;
 		}
 
 

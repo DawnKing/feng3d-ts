@@ -26,15 +26,15 @@ module feng3d
 		 */
 		public get blendWeight():number
 		{
-			return _blendWeight;
+			return this._blendWeight;
 		}
 
 		public set blendWeight(value:number)
 		{
-			_blendWeight = value;
+			this._blendWeight = value;
 
-			_positionDeltaDirty = true;
-			_skeletonPoseDirty = true;
+			this._positionDeltaDirty = true;
+			this._skeletonPoseDirty = true;
 		}
 
 		/**
@@ -42,7 +42,7 @@ module feng3d
 		 * @param animator						动画
 		 * @param skeletonAnimationNode			骨骼动画节点
 		 */
-		function SkeletonBinaryLERPState(animator:AnimatorBase, skeletonAnimationNode:SkeletonBinaryLERPNode)
+		constructor(animator:AnimatorBase, skeletonAnimationNode:SkeletonBinaryLERPNode)
 		{
 			super(animator, skeletonAnimationNode);
 
@@ -59,7 +59,7 @@ module feng3d
 		{
 			this._skeletonPoseDirty = true;
 
-			_positionDeltaDirty = true;
+			this._positionDeltaDirty = true;
 
 			this._inputA.phase(value);
 			this._inputB.phase(value);
@@ -94,14 +94,14 @@ module feng3d
 		 */
 		protected updatePositionDelta()
 		{
-			_positionDeltaDirty = false;
+			this._positionDeltaDirty = false;
 
 			var deltA:Vector3D = this._inputA.positionDelta;
 			var deltB:Vector3D = this._inputB.positionDelta;
 
-			_rootDelta.x = deltA.x + this._blendWeight * (deltB.x - deltA.x);
-			_rootDelta.y = deltA.y + this._blendWeight * (deltB.y - deltA.y);
-			_rootDelta.z = deltA.z + this._blendWeight * (deltB.z - deltA.z);
+			this._rootDelta.x = deltA.x + this._blendWeight * (deltB.x - deltA.x);
+			this._rootDelta.y = deltA.y + this._blendWeight * (deltB.y - deltA.y);
+			this._rootDelta.z = deltA.z + this._blendWeight * (deltB.z - deltA.z);
 		}
 
 		/**

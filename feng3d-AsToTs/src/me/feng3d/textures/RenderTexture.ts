@@ -15,7 +15,7 @@ module feng3d
 		constructor(width:number, height:number)
 		{
 			super();
-			setSize(width, height);
+			this.setSize(width, height);
 		}
 	}
 }

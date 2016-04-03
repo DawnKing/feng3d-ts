@@ -17,7 +17,7 @@ module feng3d
 		private _req:URLRequest;
 		private _assets:IAsset[];
 		private _parentParser:ParserBase;
-		private _data:*;
+		private _data;
 		private _retrieveAsRawData:boolean;
 		private _suppressAssetEvents:boolean;
 		private _dependencies:ResourceDependency[];
@@ -33,7 +33,7 @@ module feng3d
 		 * @param retrieveAsRawData
 		 * @param suppressAssetEvents
 		 */
-		constructor(id:string, req:URLRequest, data:*, parentParser:ParserBase, retrieveAsRawData:boolean = false, suppressAssetEvents:boolean = false)
+		constructor(id:string, req:URLRequest, data, parentParser:ParserBase, retrieveAsRawData:boolean = false, suppressAssetEvents:boolean = false)
 		{
 			this._id = id;
 			this._req = req;
@@ -42,46 +42,46 @@ module feng3d
 			this._retrieveAsRawData = retrieveAsRawData;
 			this._suppressAssetEvents = suppressAssetEvents;
 
-			this._assets = new IAsset[]();
-			this._dependencies = new ResourceDependency[]();
+			this._assets = [];
+			this._dependencies = [];
 		}
 
 		public get id():string
 		{
-			return _id;
+			return this._id;
 		}
 
 		public get assets():IAsset[]
 		{
-			return _assets;
+			return this._assets;
 		}
 
 		public get dependencies():ResourceDependency[]
 		{
-			return _dependencies;
+			return this._dependencies;
 		}
 
 		public get request():URLRequest
 		{
-			return _req;
+			return this._req;
 		}
 
 		public get retrieveAsRawData():boolean
 		{
-			return _retrieveAsRawData;
+			return this._retrieveAsRawData;
 		}
 
 		public get suppresAssetEvents():boolean
 		{
-			return _suppressAssetEvents;
+			return this._suppressAssetEvents;
 		}
 
-		public get data():*
+		public get data()
 		{
-			return _data;
+			return this._data;
 		}
 
-		public setData(data:*)
+		public setData(data)
 		{
 			this._data = data;
 		}
@@ -91,7 +91,7 @@ module feng3d
 		 */
 		public get parentParser():ParserBase
 		{
-			return _parentParser;
+			return this._parentParser;
 		}
 
 		/**

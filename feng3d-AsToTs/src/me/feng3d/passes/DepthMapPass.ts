@@ -54,13 +54,13 @@ module feng3d
 		 */
 		public get depthMap():TextureProxyBase
 		{
-			return _depthMap;
+			return this._depthMap;
 		}
 
 		public set depthMap(value:TextureProxyBase)
 		{
-			_depthMap = value;
-			context3DBufferOwner.markBufferDirty(_.depthMap_oc);
+			this._depthMap = value;
+			this.context3DBufferOwner.markBufferDirty(this._.depthMap_oc);
 		}
 
 		/**
@@ -127,7 +127,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function render(renderable:IRenderable, stage3DProxy:Stage3DProxy, camera:Camera3D, renderIndex:number)
+		public render(renderable:IRenderable, stage3DProxy:Stage3DProxy, camera:Camera3D, renderIndex:number)
 		{
 			//场景变换矩阵（物体坐标-->世界坐标）
 			var sceneTransform:Matrix3D = renderable.sourceEntity.getRenderSceneTransform(camera);

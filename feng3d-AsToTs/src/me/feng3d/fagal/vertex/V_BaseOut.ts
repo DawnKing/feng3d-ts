@@ -9,9 +9,9 @@ module feng3d
 	 * 基本顶点投影渲染
 	 * @author feng 2014-10-30
 	 */
-	constructor()
+	public V_BaseOut()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var shadowShaderParams:ShadowShaderParams = shaderParams.getOrCreateComponentByClass(ShadowShaderParams);
 

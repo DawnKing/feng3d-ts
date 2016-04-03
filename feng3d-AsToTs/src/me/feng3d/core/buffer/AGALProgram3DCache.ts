@@ -51,10 +51,10 @@ module feng3d
 		 */
 		constructor(context3D:Context3D)
 		{
-			if (_instanceDic[context3D])
+			if (AGALProgram3DCache._instanceDic[context3D])
 				throw new Error("已经存在对应的实例，请使用GetInstance方法获取。");
 
-			_instanceDic[context3D] = this;
+			AGALProgram3DCache._instanceDic[context3D] = this;
 
 			this._context3D = context3D;
 
@@ -70,7 +70,7 @@ module feng3d
 		 */
 		public static getInstance(context3D:Context3D):AGALProgram3DCache
 		{
-			return _instanceDic[context3D] ||= new AGALProgram3DCache(context3D);
+			return AGALProgram3DCache._instanceDic[context3D] ||= new AGALProgram3DCache(context3D);
 		}
 
 		/**
@@ -130,7 +130,7 @@ module feng3d
 		private getFragmentByteCode(fragmentCode:string):ByteArray
 		{
 			var noCommentCode:string = this.filterComment(fragmentCode);
-			return shaderByteCodeDic[fragmentCode] ||= new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
+			return AGALProgram3DCache.shaderByteCodeDic[fragmentCode] ||= new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
 		}
 
 		/**
@@ -141,7 +141,7 @@ module feng3d
 		private getVertexByteCode(vertexCode:string):ByteArray
 		{
 			var noCommentCode:string = this.filterComment(vertexCode);
-			return shaderByteCodeDic[vertexCode] ||= new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
+			return AGALProgram3DCache.shaderByteCodeDic[vertexCode] ||= new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
 		}
 
 		/**
@@ -152,7 +152,7 @@ module feng3d
 		private filterComment(code:string):string
 		{
 //			return code;
-			var codes:Array = code.split(FagalToken.BREAK);
+			var codes = code.split(FagalToken.BREAK);
 			var line:string;
 			var newCode:string = "";
 			for (var i:number = 0; i < codes.length; i++)

@@ -15,7 +15,7 @@ module feng3d
 	export class FSArrayBuffer extends RegisterBuffer
 	{
 		/** 纹理数据 */
-		public textures:Array;
+		public textures;
 
 		/**
 		 * 创建纹理数组缓存
@@ -33,7 +33,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			doUpdateFunc();
+			this.doUpdateFunc();
 
 			for (var i:number = 0; i < this.textures.length; i++)
 			{
@@ -48,7 +48,7 @@ module feng3d
 		 * 更新纹理
 		 * @param textures		纹理数组
 		 */
-		public update(textures:Array)
+		public update(textures)
 		{
 			this.textures = textures;
 		}

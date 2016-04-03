@@ -18,7 +18,7 @@ module feng3d
 		 * @param animator						动画
 		 * @param skeletonAnimationNode			骨骼动画节点
 		 */
-		function CrossfadeTransitionState(animator:AnimatorBase, skeletonAnimationNode:CrossfadeTransitionNode)
+		constructor(animator:AnimatorBase, skeletonAnimationNode:CrossfadeTransitionNode)
 		{
 			super(animator, skeletonAnimationNode);
 
@@ -35,7 +35,7 @@ module feng3d
 			if (this.blendWeight >= 1)
 			{
 				this.blendWeight = 1;
-				this._skeletonAnimationNode.dispatchEvent(this._animationStateTransitionComplete ||= new AnimationStateEvent(AnimationStateEvent.TRANSITION_COMPLETE, _animator, this, this._skeletonAnimationNode));
+				this._skeletonAnimationNode.dispatchEvent(this._animationStateTransitionComplete ||= new AnimationStateEvent(AnimationStateEvent.TRANSITION_COMPLETE, this._animator, this, this._skeletonAnimationNode));
 			}
 
 			super.updateTime(time);

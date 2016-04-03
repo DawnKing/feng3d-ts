@@ -37,12 +37,12 @@ module feng3d
 		 */
 		public get texture():Texture2DBase
 		{
-			return _screenPass.diffuseMethod.texture;
+			return this._screenPass.diffuseMethod.texture;
 		}
 
 		public set texture(value:Texture2DBase)
 		{
-			_screenPass.diffuseMethod.texture = value;
+			this._screenPass.diffuseMethod.texture = value;
 		}
 
 		/**
@@ -50,12 +50,12 @@ module feng3d
 		 */
 		public get alpha():number
 		{
-			return _alpha;
+			return this._alpha;
 		}
 
 		public set alpha(value:number)
 		{
-			_alpha = value;
+			this._alpha = value;
 		}
 
 		/**
@@ -63,12 +63,12 @@ module feng3d
 		 */
 		public get ambientTexture():Texture2DBase
 		{
-			return _screenPass.ambientMethod.texture;
+			return this._screenPass.ambientMethod.texture;
 		}
 
 		public set ambientTexture(value:Texture2DBase)
 		{
-			_screenPass.ambientMethod.texture = value;
+			this._screenPass.ambientMethod.texture = value;
 		}
 	}
 }

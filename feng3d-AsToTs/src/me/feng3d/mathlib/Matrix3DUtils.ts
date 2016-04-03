@@ -41,7 +41,7 @@ module feng3d
 			var zz:number = z * z;
 			var zw:number = z * w;
 
-			var raw:number[] = RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			raw[0] = 1 - 2 * (yy + zz);
 			raw[1] = 2 * (xy + zw);
 			raw[2] = 2 * (xz - yw);
@@ -135,7 +135,7 @@ module feng3d
 			var dirN:Vector3D;
 			var upN:Vector3D;
 			var lftN:Vector3D;
-			var raw:number[] = RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 
 			lftN = dir.crossProduct(up);
 			lftN.normalize();
@@ -176,7 +176,7 @@ module feng3d
 			var ab2:number = -2 * a * b;
 			var ac2:number = -2 * a * c;
 			var bc2:number = -2 * b * c;
-			// reflection matrix
+			// Matrix3DUtils.reflection matrix
 			rawData[0] = 1 - 2 * a * a;
 			rawData[4] = ab2;
 			rawData[8] = ac2;
@@ -200,7 +200,7 @@ module feng3d
 
 		public static decompose(sourceMatrix:Matrix3D, orientationStyle:string = "eulerAngles"):Vector3D[]
 		{
-			var raw:number[] = RAW_DATA_CONTAINER;
+			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			sourceMatrix.copyRawDataTo(raw);
 
 			var a:number = raw[0];
@@ -291,7 +291,7 @@ module feng3d
 				}
 			}
 
-			var v:Vector3D[] = CALCULATION_DECOMPOSE;
+			var v:Vector3D[] = Matrix3DUtils.CALCULATION_DECOMPOSE;
 			v[0].x = x;
 			v[0].y = y;
 			v[0].z = z;

@@ -45,12 +45,12 @@ module feng3d
 		 */
 		public get frustumCorners():number[]
 		{
-			return _frustumCorners;
+			return this._frustumCorners;
 		}
 
 		public set frustumCorners(frustumCorners:number[])
 		{
-			_frustumCorners = frustumCorners;
+			this._frustumCorners = frustumCorners;
 		}
 
 		/**
@@ -58,18 +58,18 @@ module feng3d
 		 */
 		public get matrix():Matrix3D
 		{
-			if (_matrixInvalid)
+			if (this._matrixInvalid)
 			{
-				updateMatrix();
-				_matrixInvalid = false;
+				this.updateMatrix();
+				this._matrixInvalid = false;
 			}
-			return _matrix;
+			return this._matrix;
 		}
 
 		public set matrix(value:Matrix3D)
 		{
-			_matrix = value;
-			invalidateMatrix();
+			this._matrix = value;
+			this.invalidateMatrix();
 		}
 
 		/**
@@ -77,15 +77,15 @@ module feng3d
 		 */
 		public get near():number
 		{
-			return _near;
+			return this._near;
 		}
 
 		public set near(value:number)
 		{
-			if (value == _near)
+			if (value == this._near)
 				return;
-			_near = value;
-			invalidateMatrix();
+			this._near = value;
+			this.invalidateMatrix();
 		}
 
 		/**
@@ -93,15 +93,15 @@ module feng3d
 		 */
 		public get far():number
 		{
-			return _far;
+			return this._far;
 		}
 
 		public set far(value:number)
 		{
-			if (value == _far)
+			if (value == this._far)
 				return;
-			_far = value;
-			invalidateMatrix();
+			this._far = value;
+			this.invalidateMatrix();
 		}
 
 		/**
@@ -109,15 +109,15 @@ module feng3d
 		 */
 		public get aspectRatio():number
 		{
-			return _aspectRatio;
+			return this._aspectRatio;
 		}
 
 		public set aspectRatio(value:number)
 		{
-			if (_aspectRatio == value || (value * 0) != 0)
+			if (this._aspectRatio == value || (value * 0) != 0)
 				return;
-			_aspectRatio = value;
-			invalidateMatrix();
+			this._aspectRatio = value;
+			this.invalidateMatrix();
 		}
 
 		/**
@@ -145,15 +145,15 @@ module feng3d
 		 */
 		public get unprojectionMatrix():Matrix3D
 		{
-			if (_unprojectionInvalid)
+			if (this._unprojectionInvalid)
 			{
-				_unprojection ||= new Matrix3D();
-				_unprojection.copyFrom(matrix);
-				_unprojection.invert();
-				_unprojectionInvalid = false;
+				this._unprojection ||= new Matrix3D();
+				this._unprojection.copyFrom(this.matrix);
+				this._unprojection.invert();
+				this._unprojectionInvalid = false;
 			}
 
-			return _unprojection;
+			return this._unprojection;
 		}
 
 		/**

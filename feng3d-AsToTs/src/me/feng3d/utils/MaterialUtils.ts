@@ -30,10 +30,10 @@ module feng3d
 
 			var loadObj:LoadModuleEventData = new LoadModuleEventData();
 			loadObj.urls = [url];
-			loadObj.addEventListener(LoadUrlEvent.LOAD_SINGLE_COMPLETE, onLoadSingleComplete);
+			loadObj.addEventListener(LoadUrlEvent.LOAD_SINGLE_COMPLETE, MaterialUtils.onLoadSingleComplete);
 
 			loadObj.data = {textureMaterial: textureMaterial}
-			dispatcher.dispatchEvent(new LoadModuleEvent(LoadModuleEvent.LOAD_RESOURCE, loadObj));
+			MaterialUtils.dispatcher.dispatchEvent(new LoadModuleEvent(LoadModuleEvent.LOAD_RESOURCE, loadObj));
 
 			return textureMaterial;
 		}

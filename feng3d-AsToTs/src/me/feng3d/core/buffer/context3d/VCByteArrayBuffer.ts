@@ -31,7 +31,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			doUpdateFunc();
+			this.doUpdateFunc();
 
 			context3D.setProgramConstantsFromByteArray(Context3DProgramType.VERTEX, this.firstRegister, 1, this.data, this.data.position);
 		}

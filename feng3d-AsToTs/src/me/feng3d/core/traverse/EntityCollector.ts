@@ -68,9 +68,9 @@ module feng3d
 		 */
 		private init()
 		{
-			this._lights = new LightBase[]();
-			this._directionalLights = new DirectionalLight[]();
-			this._pointLights = new PointLight[]();
+			this._lights = [];
+			this._directionalLights = [];
+			this._pointLights = [];
 			this._renderableListItemPool = new RenderableListItemPool();
 			this._entityListItemPool = new EntityListItemPool();
 		}
@@ -106,15 +106,15 @@ module feng3d
 		 */
 		public get camera():Camera3D
 		{
-			return _camera;
+			return this._camera;
 		}
 
 		public set camera(value:Camera3D)
 		{
-			_camera = value;
-			_entryPoint = _camera.scenePosition;
-			_cameraForward = Matrix3DUtils.getForward(_camera.transform3D.transform, _cameraForward);
-			_cullPlanes = _camera.frustumPlanes;
+			this._camera = value;
+			this._entryPoint = this._camera.scenePosition;
+			this._cameraForward = Matrix3DUtils.getForward(this._camera.transform3D.transform, this._cameraForward);
+			this._cullPlanes = this._camera.frustumPlanes;
 		}
 
 		/**
@@ -122,12 +122,12 @@ module feng3d
 		 */
 		public get cullPlanes():Plane3D[]
 		{
-			return _customCullPlanes;
+			return this._customCullPlanes;
 		}
 
 		public set cullPlanes(value:Plane3D[])
 		{
-			_customCullPlanes = value;
+			this._customCullPlanes = value;
 		}
 
 		/**
@@ -135,7 +135,7 @@ module feng3d
 		 */
 		public get skyBox():SkyBox
 		{
-			return _skyBox;
+			return this._skyBox;
 		}
 
 		/**
@@ -143,12 +143,12 @@ module feng3d
 		 */
 		public get opaqueRenderableHead():RenderableListItem
 		{
-			return _opaqueRenderableHead;
+			return this._opaqueRenderableHead;
 		}
 
 		public set opaqueRenderableHead(value:RenderableListItem)
 		{
-			_opaqueRenderableHead = value;
+			this._opaqueRenderableHead = value;
 		}
 
 		/**
@@ -156,12 +156,12 @@ module feng3d
 		 */
 		public get blendedRenderableHead():RenderableListItem
 		{
-			return _blendedRenderableHead;
+			return this._blendedRenderableHead;
 		}
 
 		public set blendedRenderableHead(value:RenderableListItem)
 		{
-			_blendedRenderableHead = value;
+			this._blendedRenderableHead = value;
 		}
 
 		/**
@@ -245,7 +245,7 @@ module feng3d
 		 */
 		public get directionalLights():DirectionalLight[]
 		{
-			return _directionalLights;
+			return this._directionalLights;
 		}
 	}
 }

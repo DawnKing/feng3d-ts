@@ -32,23 +32,23 @@ module feng3d
 		 */
 		public get targetObject():Entity
 		{
-			return _targetObject;
+			return this._targetObject;
 		}
 
 		public set targetObject(val:Entity)
 		{
-			if (_targetObject == val)
+			if (this._targetObject == val)
 				return;
 
-			if (_targetObject && _autoUpdate)
-				_targetObject._controller = null;
+			if (this._targetObject && this._autoUpdate)
+				this._targetObject._controller = null;
 
-			_targetObject = val;
+			this._targetObject = val;
 
-			if (_targetObject && _autoUpdate)
-				_targetObject._controller = this;
+			if (this._targetObject && this._autoUpdate)
+				this._targetObject._controller = this;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**

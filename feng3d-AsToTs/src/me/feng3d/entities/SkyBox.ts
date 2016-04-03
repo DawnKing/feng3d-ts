@@ -29,7 +29,7 @@ module feng3d
 		constructor(cubeMap:CubeTextureBase)
 		{
 			super();
-			_namedAsset._assetType = AssetType.SKYBOX;
+			this._namedAsset._assetType = AssetType.SKYBOX;
 			this.material = new SkyBoxMaterial(cubeMap);
 
 			this.subGeometry = new SubGeometry();
@@ -79,7 +79,7 @@ module feng3d
 		 */
 		protected updateBounds()
 		{
-			_boundsInvalid = false;
+			this._boundsInvalid = false;
 		}
 
 		/**

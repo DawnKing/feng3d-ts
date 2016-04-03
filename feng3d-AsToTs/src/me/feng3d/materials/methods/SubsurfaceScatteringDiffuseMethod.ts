@@ -56,24 +56,24 @@ module feng3d
 		constructor(depthMapSize:number = 512, depthMapOffset:number = 15)
 		{
 			super(this.scatterLight);
-			_passes = new MaterialPassBase[]();
+			this._passes = [];
 			this._depthPass = new SingleObjectDepthPass(depthMapSize, depthMapOffset);
-			_passes.push(this._depthPass);
+			this._passes.push(this._depthPass);
 			this._scattering = 0.2;
 			this._translucency = 1;
 		}
 
 		private get depthMap():TextureProxyBase
 		{
-			return _depthMap;
+			return this._depthMap;
 		}
 
 		private set depthMap(value:TextureProxyBase)
 		{
-			if (_depthMap != value)
+			if (this._depthMap != value)
 			{
-				_depthMap = value;
-				context3DBufferOwner.markBufferDirty(_.SSD$depthMap_fs);
+				this._depthMap = value;
+				this.context3DBufferOwner.markBufferDirty(this._.SSD$depthMap_fs);
 			}
 		}
 
@@ -123,7 +123,7 @@ module feng3d
 			vcMatrixBuffer.update(this.lightProjection, true);
 		}
 
-		public override function cleanCompilationData()
+		public cleanCompilationData()
 		{
 			super.cleanCompilationData();
 
@@ -139,12 +139,12 @@ module feng3d
 		 */
 		public get scattering():number
 		{
-			return _scattering;
+			return this._scattering;
 		}
 
 		public set scattering(value:number)
 		{
-			_scattering = value;
+			this._scattering = value;
 		}
 
 		/**
@@ -152,12 +152,12 @@ module feng3d
 		 */
 		public get translucency():number
 		{
-			return _translucency;
+			return this._translucency;
 		}
 
 		public set translucency(value:number)
 		{
-			_translucency = value;
+			this._translucency = value;
 		}
 
 		/**
@@ -165,15 +165,15 @@ module feng3d
 		 */
 		public get scatterColor():number
 		{
-			return _scatterColor;
+			return this._scatterColor;
 		}
 
 		public set scatterColor(scatterColor:number)
 		{
-			_scatterColor = scatterColor;
-			_scatterR = ((scatterColor >> 16) & 0xff) / 0xff;
-			_scatterG = ((scatterColor >> 8) & 0xff) / 0xff;
-			_scatterB = (scatterColor & 0xff) / 0xff;
+			this._scatterColor = scatterColor;
+			this._scatterR = ((scatterColor >> 16) & 0xff) / 0xff;
+			this._scatterG = ((scatterColor >> 8) & 0xff) / 0xff;
+			this._scatterB = (scatterColor & 0xff) / 0xff;
 		}
 
 		/**
@@ -183,7 +183,7 @@ module feng3d
 		{
 			var vt0:Register;
 
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 
 			var lightProjection:Register;
 			var toTexRegister:Register = _.SSD$ToTex_vc_vector;
@@ -206,7 +206,7 @@ module feng3d
 		 */
 		public getFragmentPreLightingCode()
 		{
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 
 			this._decReg = _.SSD$dec_fc_vector;
 			this._propReg = _.SSD$prop_fc_vector;
@@ -230,7 +230,7 @@ module feng3d
 		{
 			var targetReg:Register;
 
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 
 			var temp:Register = _.getFreeTemp();
 
@@ -244,7 +244,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function activate(shaderParams:ShaderParams)
+		public activate(shaderParams:ShaderParams)
 		{
 			super.activate(shaderParams);
 
@@ -259,7 +259,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function setRenderState(renderable:IRenderable, camera:Camera3D)
+		public setRenderState(renderable:IRenderable, camera:Camera3D)
 		{
 			this.depthMap = this._depthPass.getDepthMap(renderable);
 
@@ -272,7 +272,7 @@ module feng3d
 		 */
 		private scatterLight()
 		{
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 			var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 			var lightShaderParams:LightShaderParams = shaderParams.getOrCreateComponentByClass(LightShaderParams);
 

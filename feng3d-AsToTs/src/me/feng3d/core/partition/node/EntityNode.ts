@@ -49,7 +49,7 @@ module feng3d
 		 */
 		public get entity():Entity
 		{
-			return _entity;
+			return this._entity;
 		}
 
 		/**

@@ -85,7 +85,7 @@ module feng3d
 		{
 			super.start();
 			for each (var state:ParticleStateBase in this._timeParticleStates)
-				state.offset(_absoluteTime);
+				state.offset(this._absoluteTime);
 		}
 
 		/**
@@ -93,10 +93,10 @@ module feng3d
 		 */
 		protected updateDeltaTime(dt:number)
 		{
-			_absoluteTime += dt;
+			this._absoluteTime += dt;
 
 			for each (var state:ParticleStateBase in this._timeParticleStates)
-				state.update(_absoluteTime);
+				state.update(this._absoluteTime);
 		}
 
 	}

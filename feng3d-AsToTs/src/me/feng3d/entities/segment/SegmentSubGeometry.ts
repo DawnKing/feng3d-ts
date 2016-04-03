@@ -26,30 +26,30 @@ module feng3d
 
 		public get vertexPositionData():number[]
 		{
-			return pointData0;
+			return this.pointData0;
 		}
 
 		public get pointData0():number[]
 		{
-			var data:number[] = getVAData(_.segmentStart_va_3);
+			var data:number[] = this.getVAData(this._.segmentStart_va_3);
 			return data;
 		}
 
 		public get pointData1():number[]
 		{
-			var data:number[] = getVAData(_.segmentEnd_va_3);
+			var data:number[] = this.getVAData(this._.segmentEnd_va_3);
 			return data;
 		}
 
 		public get thicknessData():number[]
 		{
-			var data:number[] = getVAData(_.segmentThickness_va_1);
+			var data:number[] = this.getVAData(this._.segmentThickness_va_1);
 			return data;
 		}
 
 		public get colorData():number[]
 		{
-			var data:number[] = getVAData(_.segmentColor_va_4);
+			var data:number[] = this.getVAData(this._.segmentColor_va_4);
 			return data;
 		}
 

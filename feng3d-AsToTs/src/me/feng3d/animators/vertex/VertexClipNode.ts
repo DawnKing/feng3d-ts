@@ -11,15 +11,15 @@ module feng3d
 	 */
 	export class VertexClipNode extends AnimationClipNodeBase
 	{
-		private _frames:Geometry[] = new Geometry[]();
-		private _translations:Vector3D[] = new Vector3D[]();
+		private _frames:Geometry[] = [];
+		private _translations:Vector3D[] = [];
 
 		/**
 		 * 创建一个顶点动画剪辑节点
 		 */
 		constructor()
 		{
-			_stateClass = VertexClipState;
+			this._stateClass = VertexClipState;
 		}
 
 		/**
@@ -27,7 +27,7 @@ module feng3d
 		 */
 		public get frames():Geometry[]
 		{
-			return _frames;
+			return this._frames;
 		}
 
 		/**
@@ -39,12 +39,12 @@ module feng3d
 		public addFrame(geometry:Geometry, duration:number, translation:Vector3D = null)
 		{
 			this._frames.push(geometry);
-			_durations.push(duration);
+			this._durations.push(duration);
 			this._translations.push(translation || new Vector3D());
 
-			_numFrames = _durations.length;
+			this._numFrames = this._durations.length;
 
-			_stitchDirty = true;
+			this._stitchDirty = true;
 		}
 
 		/**
@@ -54,30 +54,30 @@ module feng3d
 		{
 			super.updateStitch();
 
-			var i:number = _numFrames - 1;
+			var i:number = this._numFrames - 1;
 			var p1:Vector3D, p2:Vector3D, delta:Vector3D;
 			while (i--)
 			{
-				_totalDuration += _durations[i];
+				this._totalDuration += this._durations[i];
 				p1 = this._translations[i];
 				p2 = this._translations[i + 1];
 				delta = p2.subtract(p1);
-				_totalDelta.x += delta.x;
-				_totalDelta.y += delta.y;
-				_totalDelta.z += delta.z;
+				this._totalDelta.x += delta.x;
+				this._totalDelta.y += delta.y;
+				this._totalDelta.z += delta.z;
 			}
 
-			if (_stitchFinalFrame && _looping)
+			if (this._stitchFinalFrame && this._looping)
 			{
-				_totalDuration += _durations[_numFrames - 1];
-				if (_numFrames > 1)
+				this._totalDuration += this._durations[this._numFrames - 1];
+				if (this._numFrames > 1)
 				{
 					p1 = this._translations[0];
 					p2 = this._translations[1];
 					delta = p2.subtract(p1);
-					_totalDelta.x += delta.x;
-					_totalDelta.y += delta.y;
-					_totalDelta.z += delta.z;
+					this._totalDelta.x += delta.x;
+					this._totalDelta.y += delta.y;
+					this._totalDelta.z += delta.z;
 				}
 			}
 		}

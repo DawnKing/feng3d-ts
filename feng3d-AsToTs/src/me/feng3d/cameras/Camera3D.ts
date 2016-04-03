@@ -38,7 +38,7 @@ module feng3d
 		constructor(lens:LensBase = null)
 		{
 			super();
-			_namedAsset._assetType = AssetType.CAMERA;
+			this._namedAsset._assetType = AssetType.CAMERA;
 			this._lens = lens || new PerspectiveLens();
 			this._lens.addEventListener(LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged);
 
@@ -86,24 +86,24 @@ module feng3d
 		 */
 		public get lens():LensBase
 		{
-			return _lens;
+			return this._lens;
 		}
 
 		public set lens(value:LensBase)
 		{
-			if (_lens == value)
+			if (this._lens == value)
 				return;
 
 			if (!value)
 				throw new Error("Lens cannot be null!");
 
-			_lens.removeEventListener(LensEvent.MATRIX_CHANGED, onLensMatrixChanged);
+			this._lens.removeEventListener(LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged);
 
-			_lens = value;
+			this._lens = value;
 
-			_lens.addEventListener(LensEvent.MATRIX_CHANGED, onLensMatrixChanged);
+			this._lens.addEventListener(LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged);
 
-			dispatchEvent(new CameraEvent(CameraEvent.LENS_CHANGED, this));
+			this.dispatchEvent(new CameraEvent(CameraEvent.LENS_CHANGED, this));
 		}
 
 		/**
@@ -111,16 +111,16 @@ module feng3d
 		 */
 		public get viewProjection():Matrix3D
 		{
-			if (_viewProjectionDirty)
+			if (this._viewProjectionDirty)
 			{
 				//场景空间转摄像机空间
-				_viewProjection.copyFrom(inverseSceneTransform);
+				this._viewProjection.copyFrom(this.inverseSceneTransform);
 				//+摄像机空间转投影空间 = 场景空间转投影空间
-				_viewProjection.append(_lens.matrix);
-				_viewProjectionDirty = false;
+				this._viewProjection.append(this._lens.matrix);
+				this._viewProjectionDirty = false;
 			}
 
-			return _viewProjection;
+			return this._viewProjection;
 		}
 
 		/**
@@ -128,10 +128,10 @@ module feng3d
 		 */
 		public get frustumPlanes():Plane3D[]
 		{
-			if (_frustumPlanesDirty)
-				updateFrustum();
+			if (this._frustumPlanesDirty)
+				this.updateFrustum();
 
-			return _frustumPlanes;
+			return this._frustumPlanes;
 		}
 
 		/**
@@ -141,7 +141,7 @@ module feng3d
 		private updateFrustum()
 		{
 			var a:number, b:number, c:number;
-			//var d :number;
+			//var d : number;
 			var c11:number, c12:number, c13:number, c14:number;
 			var c21:number, c22:number, c23:number, c24:number;
 			var c31:number, c32:number, c33:number, c34:number;
@@ -152,22 +152,22 @@ module feng3d
 			var invLen:number;
 			this.viewProjection.copyRawDataTo(raw);
 
-			c11 = raw[number(0)];
-			c12 = raw[number(4)];
-			c13 = raw[number(8)];
-			c14 = raw[number(12)];
-			c21 = raw[number(1)];
-			c22 = raw[number(5)];
-			c23 = raw[number(9)];
-			c24 = raw[number(13)];
-			c31 = raw[number(2)];
-			c32 = raw[number(6)];
-			c33 = raw[number(10)];
-			c34 = raw[number(14)];
-			c41 = raw[number(3)];
-			c42 = raw[number(7)];
-			c43 = raw[number(11)];
-			c44 = raw[number(15)];
+			c11 = raw[0];
+			c12 = raw[4];
+			c13 = raw[8];
+			c14 = raw[12];
+			c21 = raw[1];
+			c22 = raw[5];
+			c23 = raw[9];
+			c24 = raw[13];
+			c31 = raw[2];
+			c32 = raw[6];
+			c33 = raw[10];
+			c34 = raw[14];
+			c41 = raw[3];
+			c42 = raw[7];
+			c43 = raw[11];
+			c44 = raw[15];
 
 			// left plane
 			p = this._frustumPlanes[0];

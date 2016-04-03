@@ -39,14 +39,14 @@ module feng3d
 		 */
 		public get upAxis():Vector3D
 		{
-			return _upAxis;
+			return this._upAxis;
 		}
 
 		public set upAxis(upAxis:Vector3D)
 		{
-			_upAxis = upAxis;
+			this._upAxis = upAxis;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -54,20 +54,20 @@ module feng3d
 		 */
 		public get lookAtPosition():Vector3D
 		{
-			return _lookAtPosition;
+			return this._lookAtPosition;
 		}
 
 		public set lookAtPosition(val:Vector3D)
 		{
-			if (_lookAtObject)
+			if (this._lookAtObject)
 			{
-				_lookAtObject.removeEventListener(Transform3DEvent.SCENETRANSFORM_CHANGED, onLookAtObjectChanged);
-				_lookAtObject = null;
+				this._lookAtObject.removeEventListener(Transform3DEvent.SCENETRANSFORM_CHANGED, this.onLookAtObjectChanged);
+				this._lookAtObject = null;
 			}
 
-			_lookAtPosition = val;
+			this._lookAtPosition = val;
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -75,26 +75,26 @@ module feng3d
 		 */
 		public get lookAtObject():Container3D
 		{
-			return _lookAtObject;
+			return this._lookAtObject;
 		}
 
 		public set lookAtObject(val:Container3D)
 		{
-			if (_lookAtPosition)
-				_lookAtPosition = null;
+			if (this._lookAtPosition)
+				this._lookAtPosition = null;
 
-			if (_lookAtObject == val)
+			if (this._lookAtObject == val)
 				return;
 
-			if (_lookAtObject)
-				_lookAtObject.removeEventListener(Transform3DEvent.SCENETRANSFORM_CHANGED, onLookAtObjectChanged);
+			if (this._lookAtObject)
+				this._lookAtObject.removeEventListener(Transform3DEvent.SCENETRANSFORM_CHANGED, this.onLookAtObjectChanged);
 
-			_lookAtObject = val;
+			this._lookAtObject = val;
 
-			if (_lookAtObject)
-				_lookAtObject.addEventListener(Transform3DEvent.SCENETRANSFORM_CHANGED, onLookAtObjectChanged);
+			if (this._lookAtObject)
+				this._lookAtObject.addEventListener(Transform3DEvent.SCENETRANSFORM_CHANGED, this.onLookAtObjectChanged);
 
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -102,7 +102,7 @@ module feng3d
 		 */
 		private onLookAtObjectChanged(event:Transform3DEvent)
 		{
-			notifyUpdate();
+			this.notifyUpdate();
 		}
 
 		/**
@@ -110,23 +110,23 @@ module feng3d
 		 */
 		public update()
 		{
-			if (_targetObject)
+			if (this._targetObject)
 			{
 				if (this._lookAtPosition)
 				{
-					_targetObject.transform3D.lookAt(this._lookAtPosition, this._upAxis);
+					this._targetObject.transform3D.lookAt(this._lookAtPosition, this._upAxis);
 				}
 				else if (this._lookAtObject)
 				{
-					if (_targetObject.parent && this._lookAtObject.parent)
+					if (this._targetObject.parent && this._lookAtObject.parent)
 					{
-						if (_targetObject.parent != this._lookAtObject.parent)
+						if (this._targetObject.parent != this._lookAtObject.parent)
 						{ // different spaces
 							this._pos.x = this._lookAtObject.scenePosition.x;
 							this._pos.y = this._lookAtObject.scenePosition.y;
 							this._pos.z = this._lookAtObject.scenePosition.z;
 							//
-							Matrix3DUtils.transformVector(_targetObject.parent.inverseSceneTransform, this._pos, this._pos);
+							Matrix3DUtils.transformVector(this._targetObject.parent.inverseSceneTransform, this._pos, this._pos);
 						}
 						else
 						{ //one parent
@@ -143,7 +143,7 @@ module feng3d
 					{
 						Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos);
 					}
-					_targetObject.transform3D.lookAt(this._pos, this._upAxis);
+					this._targetObject.transform3D.lookAt(this._pos, this._upAxis);
 				}
 			}
 		}

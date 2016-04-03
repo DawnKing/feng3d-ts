@@ -11,14 +11,14 @@ module feng3d
 	 */
 	export class UVClipNode extends AnimationClipNodeBase
 	{
-		private _frames:UVAnimationFrame[] = new UVAnimationFrame[]();
+		private _frames:UVAnimationFrame[] = [];
 
 		/**
 		 * 帧数据列表
 		 */
 		public get frames():UVAnimationFrame[]
 		{
-			return _frames;
+			return this._frames;
 		}
 
 		/**
@@ -26,7 +26,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			_stateClass = UVClipState;
+			this._stateClass = UVClipState;
 		}
 
 		/**
@@ -37,10 +37,10 @@ module feng3d
 		public addFrame(uvFrame:UVAnimationFrame, duration:number)
 		{
 			this._frames.push(uvFrame);
-			_durations.push(duration);
-			_numFrames = _durations.length;
+			this._durations.push(duration);
+			this._numFrames = this._durations.length;
 
-			_stitchDirty = true;
+			this._stitchDirty = true;
 		}
 
 		/**
@@ -51,15 +51,15 @@ module feng3d
 			super.updateStitch();
 			var i:number;
 
-			if (_durations.length > 0)
+			if (this._durations.length > 0)
 			{
 
-				i = _numFrames - 1;
+				i = this._numFrames - 1;
 				while (i--)
-					_totalDuration += _durations[i];
+					this._totalDuration += this._durations[i];
 
-				if (_stitchFinalFrame || !_looping)
-					_totalDuration += _durations[_numFrames - 1];
+				if (this._stitchFinalFrame || !this._looping)
+					this._totalDuration += this._durations[this._numFrames - 1];
 			}
 
 		}

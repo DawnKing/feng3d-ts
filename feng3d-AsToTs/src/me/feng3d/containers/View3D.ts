@@ -116,32 +116,32 @@ module feng3d
 
 		public set x(value:number)
 		{
-			if (x == value)
+			if (this.x == value)
 				return;
 
-			_localPos.x = super.x = value;
+			this._localPos.x = super.x = value;
 
-			_globalPos.x = parent ? parent.localToGlobal(_localPos).x : value;
-			_globalPosDirty = true;
+			this._globalPos.x = this.parent ? this.parent.localToGlobal(this._localPos).x : value;
+			this._globalPosDirty = true;
 		}
 
 		public set y(value:number)
 		{
-			if (y == value)
+			if (this.y == value)
 				return;
 
-			_localPos.y = super.y = value;
+			this._localPos.y = super.y = value;
 
-			_globalPos.y = parent ? parent.localToGlobal(_localPos).y : value;
-			_globalPosDirty = true;
+			this._globalPos.y = this.parent ? this.parent.localToGlobal(this._localPos).y : value;
+			this._globalPosDirty = true;
 		}
 
 		public set visible(value:boolean)
 		{
 			super.visible = value;
 
-			if (_stage3DProxy && !_shareContext)
-				_stage3DProxy.visible = value;
+			if (this._stage3DProxy && !this._shareContext)
+				this._stage3DProxy.visible = value;
 		}
 
 		/**
@@ -149,14 +149,14 @@ module feng3d
 		 */
 		public get antiAlias():number
 		{
-			return _antiAlias;
+			return this._antiAlias;
 		}
 
 		public set antiAlias(value:number)
 		{
-			_antiAlias = value;
+			this._antiAlias = value;
 
-			_backBufferInvalid = true;
+			this._backBufferInvalid = true;
 		}
 
 		/**
@@ -164,23 +164,23 @@ module feng3d
 		 */
 		public get camera():Camera3D
 		{
-			return _camera;
+			return this._camera;
 		}
 
 		public set camera(value:Camera3D)
 		{
-			_camera.removeEventListener(CameraEvent.LENS_CHANGED, onLensChanged);
+			this._camera.removeEventListener(CameraEvent.LENS_CHANGED, this.onLensChanged);
 
-			_camera = value;
-			_entityCollector.camera = _camera;
+			this._camera = value;
+			this._entityCollector.camera = this._camera;
 
-			if (_scene)
-				_camera.partition = _scene.partition;
+			if (this._scene)
+				this._camera.partition = this._scene.partition;
 
-			_camera.addEventListener(CameraEvent.LENS_CHANGED, onLensChanged);
+			this._camera.addEventListener(CameraEvent.LENS_CHANGED, this.onLensChanged);
 
-			_scissorRectDirty = true;
-			_viewportDirty = true;
+			this._scissorRectDirty = true;
+			this._viewportDirty = true;
 
 		}
 
@@ -325,7 +325,7 @@ module feng3d
 		/** 3d场景 */
 		public get scene():Scene3D
 		{
-			return _scene;
+			return this._scene;
 		}
 
 		/**
@@ -333,7 +333,7 @@ module feng3d
 		 */
 		public set scene(value:Scene3D)
 		{
-			_scene = value;
+			this._scene = value;
 		}
 
 		/**
@@ -341,16 +341,16 @@ module feng3d
 		 */
 		public get stage3DProxy():Stage3DProxy
 		{
-			return _stage3DProxy;
+			return this._stage3DProxy;
 		}
 
 		public set stage3DProxy(value:Stage3DProxy)
 		{
-			_stage3DProxy = value;
+			this._stage3DProxy = value;
 
-			_stage3DProxy = stage3DProxy;
+			this._stage3DProxy = this.stage3DProxy;
 
-			_globalPosDirty = true;
+			this._globalPosDirty = true;
 		}
 
 		/**
@@ -358,25 +358,25 @@ module feng3d
 		 */
 		public get width():number
 		{
-			return _width;
+			return this._width;
 		}
 
 		public set width(value:number)
 		{
 			//限制软件渲染时最大宽度
-			if (_stage3DProxy && _stage3DProxy.usesSoftwareRendering && value > 2048)
+			if (this._stage3DProxy && this._stage3DProxy.usesSoftwareRendering && value > 2048)
 				value = 2048;
 
-			if (_width == value)
+			if (this._width == value)
 				return;
 
-			_hitField.width = value;
-			_width = value;
+			this._hitField.width = value;
+			this._width = value;
 
-			_aspectRatio = _width / _height;
-			_camera.lens.aspectRatio = _aspectRatio;
+			this._aspectRatio = this._width / this._height;
+			this._camera.lens.aspectRatio = this._aspectRatio;
 
-			_backBufferInvalid = true;
+			this._backBufferInvalid = true;
 		}
 
 		/**
@@ -384,25 +384,25 @@ module feng3d
 		 */
 		public get height():number
 		{
-			return _height;
+			return this._height;
 		}
 
 		public set height(value:number)
 		{
 			//限制软件渲染时最大高度
-			if (_stage3DProxy && _stage3DProxy.usesSoftwareRendering && value > 2048)
+			if (this._stage3DProxy && this._stage3DProxy.usesSoftwareRendering && value > 2048)
 				value = 2048;
 
-			if (_height == value)
+			if (this._height == value)
 				return;
 
-			_hitField.height = value;
-			_height = value;
+			this._hitField.height = value;
+			this._height = value;
 
-			_aspectRatio = _width / _height;
-			_camera.lens.aspectRatio = _aspectRatio;
+			this._aspectRatio = this._width / this._height;
+			this._camera.lens.aspectRatio = this._aspectRatio;
 
-			_backBufferInvalid = true;
+			this._backBufferInvalid = true;
 		}
 
 		/**
@@ -419,16 +419,16 @@ module feng3d
 		 */
 		public get shareContext():boolean
 		{
-			return _shareContext;
+			return this._shareContext;
 		}
 
 		public set shareContext(value:boolean)
 		{
-			if (_shareContext == value)
+			if (this._shareContext == value)
 				return;
 
-			_shareContext = value;
-			_globalPosDirty = true;
+			this._shareContext = value;
+			this._globalPosDirty = true;
 		}
 
 		/**
@@ -477,8 +477,8 @@ module feng3d
 		 */
 		public set backgroundColor(value:number)
 		{
-			_backgroundColor = value;
-			_renderer.backgroundColor = _backgroundColor;
+			this._backgroundColor = value;
+			this._renderer.backgroundColor = this._backgroundColor;
 		}
 
 		/**
@@ -540,9 +540,9 @@ module feng3d
 		public getRay3D(x:number, y:number):Ray3D
 		{
 			//摄像机坐标
-			var rayPosition:Vector3D = this.unproject(x, y, 0, tempRayPosition);
+			var rayPosition:Vector3D = this.unproject(x, y, 0, View3D.tempRayPosition);
 			//摄像机前方1处坐标
-			var rayDirection:Vector3D = this.unproject(x, y, 1, tempRayDirection);
+			var rayDirection:Vector3D = this.unproject(x, y, 1, View3D.tempRayDirection);
 			//射线方向
 			rayDirection.x = rayDirection.x - rayPosition.x;
 			rayDirection.y = rayDirection.y - rayPosition.y;
@@ -558,21 +558,21 @@ module feng3d
 		 */
 		public get renderer():RendererBase
 		{
-			return _renderer;
+			return this._renderer;
 		}
 
 		public set renderer(value:RendererBase)
 		{
-			_renderer.dispose();
-			_renderer = value;
-			_entityCollector = _renderer.createEntityCollector();
-			_entityCollector.camera = _camera;
-			_renderer.backgroundColor = _backgroundColor;
-			_renderer.backgroundAlpha = _backgroundAlpha;
-			_renderer.viewWidth = _width;
-			_renderer.viewHeight = _height;
+			this._renderer.dispose();
+			this._renderer = value;
+			this._entityCollector = this._renderer.createEntityCollector();
+			this._entityCollector.camera = this._camera;
+			this._renderer.backgroundColor = this._backgroundColor;
+			this._renderer.backgroundAlpha = this._backgroundAlpha;
+			this._renderer.viewWidth = this._width;
+			this._renderer.viewHeight = this._height;
 
-			_backBufferInvalid = true;
+			this._backBufferInvalid = true;
 		}
 
 	}
