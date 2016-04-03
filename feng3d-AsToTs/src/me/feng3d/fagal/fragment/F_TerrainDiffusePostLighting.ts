@@ -9,9 +9,9 @@ module feng3d
 	 * 地形渲染函数
 	 * @author feng 2014-11-6
 	 */
-	public F_TerrainDiffusePostLighting()
+	constructor()
 	{
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var terrainShaderParams:TerrainShaderParams = shaderParams.getOrCreateComponentByClass(TerrainShaderParams);

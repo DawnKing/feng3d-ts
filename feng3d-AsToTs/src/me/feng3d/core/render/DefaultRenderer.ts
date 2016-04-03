@@ -52,13 +52,13 @@ module feng3d
 		 */
 		protected override function executeRender(stage3DProxy:Stage3DProxy, entityCollector:EntityCollector, target:TextureProxyBase = null)
 		{
-			if (!DefaultRenderer.usePlanarShadow)
+			if (!usePlanarShadow)
 			{
 				this.updateLights(stage3DProxy, entityCollector);
 			}
 			super.executeRender(stage3DProxy, entityCollector, target);
 
-			if (DefaultRenderer.usePlanarShadow)
+			if (usePlanarShadow)
 			{
 				this._planarShadowRenderer.render(stage3DProxy, entityCollector, target);
 			}
@@ -119,7 +119,7 @@ module feng3d
 			pass.shaderParams.initParams();
 			//激活渲染通道
 			pass.activate(camera);
-			pass.render(renderable, stage3DProxy, camera, this._renderIndex++);
+			pass.render(renderable, stage3DProxy, camera, _renderIndex++);
 			pass.deactivate();
 		}
 
@@ -156,7 +156,7 @@ module feng3d
 
 					do
 					{
-						pass.render(item2.renderable, stage3DProxy, camera, this._renderIndex++);
+						pass.render(item2.renderable, stage3DProxy, camera, _renderIndex++);
 
 						item2 = item2.next;
 					} while (item2 && item2.renderable.material == this._activeMaterial);

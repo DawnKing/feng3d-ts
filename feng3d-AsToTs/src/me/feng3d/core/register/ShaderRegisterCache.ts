@@ -28,7 +28,7 @@ module feng3d
 		private registerPoolDic;
 
 //		/** 寄存器配置 */
-//		private registerConfig = //
+//		private registerConfig:Array = //
 //			[[RegisterType.VA, 8], //
 //			[RegisterType.VC, 128], //
 //			[RegisterType.VT, 8], //
@@ -43,7 +43,7 @@ module feng3d
 		/**
 		 * AGAL2寄存器配置
 		 */
-		private static registerConfig = //
+		private static registerConfig:Array = //
 			[[RegisterType.VA, 8], //
 			[RegisterType.VC, 250], //
 			[RegisterType.VT, 26], //
@@ -60,9 +60,9 @@ module feng3d
 		 */
 		constructor()
 		{
-			if (ShaderRegisterCache._instance)
+			if (_instance)
 				throw new Error("ShaderRegisterCache 单例");
-			ShaderRegisterCache._instance = this;
+			_instance = this;
 
 			this.init();
 		}
@@ -80,7 +80,7 @@ module feng3d
 			{
 				this.registerPoolDic[this.registerConfig[i][0]] = new RegisterPool(this.registerConfig[i][0], this.registerConfig[i][1]);
 			}
-			ShaderRegisterCache._dirty = false;
+			_dirty = false;
 		}
 
 		/**
@@ -96,7 +96,7 @@ module feng3d
 				registerPool.reset();
 			}
 
-			ShaderRegisterCache._dirty = false;
+			_dirty = false;
 		}
 
 		/**
@@ -167,10 +167,10 @@ module feng3d
 		 */
 		public static get instance():ShaderRegisterCache
 		{
-			ShaderRegisterCache._instance || new ShaderRegisterCache();
-			if (ShaderRegisterCache._dirty)
-				ShaderRegisterCache._instance.reset();
-			return ShaderRegisterCache._instance;
+			_instance || new ShaderRegisterCache();
+			if (_dirty)
+				_instance.reset();
+			return _instance;
 		}
 
 		/**
@@ -178,7 +178,7 @@ module feng3d
 		 */
 		public static invalid()
 		{
-			ShaderRegisterCache._dirty = true;
+			_dirty = true;
 		}
 
 		/**
@@ -186,7 +186,7 @@ module feng3d
 		 */
 		public get dataRegisterDic()
 		{
-			return this._dataRegisterDic;
+			return _dataRegisterDic;
 		}
 
 	}

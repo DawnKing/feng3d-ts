@@ -17,7 +17,7 @@ module feng3dMap
 		 */
 		constructor()
 		{
-			this._shaderType = Context3DProgramType.FRAGMENT;
+			_shaderType = Context3DProgramType.FRAGMENT;
 		}
 
 		/**
@@ -25,7 +25,7 @@ module feng3dMap
 		 */
 		public runFunc()
 		{
-			var _ = FagalRE.instance.space;
+			var _:* = FagalRE.instance.space;
 
 			var positionReg:Register = _.getFreeTemp("坐标"); //ft2
 			//深度的（乘以1,255,255*255,255*255*255后）不同值

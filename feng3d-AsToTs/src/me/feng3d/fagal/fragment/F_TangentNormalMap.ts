@@ -8,9 +8,9 @@ module feng3d
 	 * 编译切线法线贴图片段程序
 	 * @author feng 2014-11-7
 	 */
-	public F_TangentNormalMap()
+	constructor()
 	{
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		//此处必须三个寄存器申请为寄存器数组来确保三个临时寄存器连续与同时销毁
 		var normalMxt3:RegisterArray = _.getFreeTemps("动画后顶点法线空间寄存器向量，(切线，双切线，法线)", 3);

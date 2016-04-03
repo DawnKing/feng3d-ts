@@ -30,7 +30,7 @@ module feng3d
 		constructor()
 		{
 			super();
-			this.addPass(this._screenPass = new SuperShaderPass());
+			addPass(this._screenPass = new SuperShaderPass());
 		}
 
 		/**
@@ -38,7 +38,7 @@ module feng3d
 		 */
 		public get numMethods():number
 		{
-			return this._screenPass.numMethods;
+			return _screenPass.numMethods;
 		}
 
 		/**
@@ -47,7 +47,7 @@ module feng3d
 		public set blendMode(value:string)
 		{
 			super.blendMode = value;
-			this._screenPass.setBlendMode(this.blendMode == BlendMode.NORMAL && this.requiresBlending ? BlendMode.LAYER : this.blendMode);
+			_screenPass.setBlendMode(blendMode == BlendMode.NORMAL && requiresBlending ? BlendMode.LAYER : blendMode);
 		}
 
 		/**
@@ -55,7 +55,7 @@ module feng3d
 		 */
 		public get requiresBlending():boolean
 		{
-			return super.requiresBlending || this._alphaBlending;
+			return super.requiresBlending || _alphaBlending;
 		}
 
 		/**
@@ -65,12 +65,12 @@ module feng3d
 		 */
 		public get alphaThreshold():number
 		{
-			return this._screenPass.diffuseMethod.alphaThreshold;
+			return _screenPass.diffuseMethod.alphaThreshold;
 		}
 
 		public set alphaThreshold(value:number)
 		{
-			this._screenPass.diffuseMethod.alphaThreshold = value;
+			_screenPass.diffuseMethod.alphaThreshold = value;
 		}
 
 		/**
@@ -78,12 +78,12 @@ module feng3d
 		 */
 		public get ambientColor():number
 		{
-			return this._screenPass.ambientMethod.ambientColor;
+			return _screenPass.ambientMethod.ambientColor;
 		}
 
 		public set ambientColor(value:number)
 		{
-			this._screenPass.ambientMethod.ambientColor = value;
+			_screenPass.ambientMethod.ambientColor = value;
 		}
 
 		/**
@@ -91,12 +91,12 @@ module feng3d
 		 */
 		public get specularColor():number
 		{
-			return this._screenPass.specularMethod.specularColor;
+			return _screenPass.specularMethod.specularColor;
 		}
 
 		public set specularColor(value:number)
 		{
-			this._screenPass.specularMethod.specularColor = value;
+			_screenPass.specularMethod.specularColor = value;
 		}
 
 		/**
@@ -104,13 +104,13 @@ module feng3d
 		 */
 		public get specular():number
 		{
-			return this._screenPass.specularMethod ? this._screenPass.specularMethod.specular : 0;
+			return _screenPass.specularMethod ? _screenPass.specularMethod.specular : 0;
 		}
 
 		public set specular(value:number)
 		{
-			if (this._screenPass.specularMethod)
-				this._screenPass.specularMethod.specular = value;
+			if (_screenPass.specularMethod)
+				_screenPass.specularMethod.specular = value;
 		}
 
 		/**
@@ -118,12 +118,12 @@ module feng3d
 		 */
 		public get ambient():number
 		{
-			return this._screenPass.ambientMethod.ambient;
+			return _screenPass.ambientMethod.ambient;
 		}
 
 		public set ambient(value:number)
 		{
-			this._screenPass.ambientMethod.ambient = value;
+			_screenPass.ambientMethod.ambient = value;
 		}
 
 		/**
@@ -131,14 +131,14 @@ module feng3d
 		 */
 		public get alphaBlending():boolean
 		{
-			return this._alphaBlending;
+			return _alphaBlending;
 		}
 
 		public set alphaBlending(value:boolean)
 		{
-			this._alphaBlending = value;
-			this._screenPass.setBlendMode(this.blendMode == BlendMode.NORMAL && this.requiresBlending ? BlendMode.LAYER : this.blendMode);
-//			this._screenPass.preserveAlpha = this.requiresBlending;
+			_alphaBlending = value;
+			_screenPass.setBlendMode(blendMode == BlendMode.NORMAL && requiresBlending ? BlendMode.LAYER : blendMode);
+//			_screenPass.preserveAlpha = requiresBlending;
 		}
 
 		/**
@@ -146,12 +146,12 @@ module feng3d
 		 */
 		public get diffuseMethod():BasicDiffuseMethod
 		{
-			return this._screenPass.diffuseMethod;
+			return _screenPass.diffuseMethod;
 		}
 
 		public set diffuseMethod(value:BasicDiffuseMethod)
 		{
-			this._screenPass.diffuseMethod = value;
+			_screenPass.diffuseMethod = value;
 		}
 
 		/**
@@ -159,12 +159,12 @@ module feng3d
 		 */
 		public get normalMethod():BasicNormalMethod
 		{
-			return this._screenPass.normalMethod;
+			return _screenPass.normalMethod;
 		}
 
 		public set normalMethod(value:BasicNormalMethod)
 		{
-			this._screenPass.normalMethod = value;
+			_screenPass.normalMethod = value;
 		}
 
 		/**
@@ -172,12 +172,12 @@ module feng3d
 		 */
 		public get ambientMethod():BasicAmbientMethod
 		{
-			return this._screenPass.ambientMethod;
+			return _screenPass.ambientMethod;
 		}
 
 		public set ambientMethod(value:BasicAmbientMethod)
 		{
-			this._screenPass.ambientMethod = value;
+			_screenPass.ambientMethod = value;
 		}
 
 		/**
@@ -185,12 +185,12 @@ module feng3d
 		 */
 		public get specularMethod():BasicSpecularMethod
 		{
-			return this._screenPass.specularMethod;
+			return _screenPass.specularMethod;
 		}
 
 		public set specularMethod(value:BasicSpecularMethod)
 		{
-			this._screenPass.specularMethod = value;
+			_screenPass.specularMethod = value;
 		}
 
 		/**
@@ -198,12 +198,12 @@ module feng3d
 		 */
 		public get normalMap():Texture2DBase
 		{
-			return this._screenPass.normalMethod.normalMap;
+			return _screenPass.normalMethod.normalMap;
 		}
 
 		public set normalMap(value:Texture2DBase)
 		{
-			this._screenPass.normalMethod.normalMap = value;
+			_screenPass.normalMethod.normalMap = value;
 		}
 
 		/**
@@ -211,15 +211,15 @@ module feng3d
 		 */
 		public get specularMap():Texture2DBase
 		{
-			return this._screenPass.specularMethod.texture;
+			return _screenPass.specularMethod.texture;
 		}
 
 		public set specularMap(value:Texture2DBase)
 		{
-			if (this._screenPass.specularMethod)
-				this._screenPass.specularMethod.texture = value;
+			if (_screenPass.specularMethod)
+				_screenPass.specularMethod.texture = value;
 			else
-				throw new Error("No this.specular method was set to assign the specularGlossMap to");
+				throw new Error("No specular method was set to assign the specularGlossMap to");
 		}
 
 		/**
@@ -227,13 +227,13 @@ module feng3d
 		 */
 		public get gloss():number
 		{
-			return this._screenPass.specularMethod ? this._screenPass.specularMethod.gloss : 0;
+			return _screenPass.specularMethod ? _screenPass.specularMethod.gloss : 0;
 		}
 
 		public set gloss(value:number)
 		{
-			if (this._screenPass.specularMethod)
-				this._screenPass.specularMethod.gloss = value;
+			if (_screenPass.specularMethod)
+				_screenPass.specularMethod.gloss = value;
 		}
 
 		/**
@@ -241,12 +241,12 @@ module feng3d
 		 */
 		public get shadowMethod():ShadowMapMethodBase
 		{
-			return this._screenPass.shadowMethod;
+			return _screenPass.shadowMethod;
 		}
 
 		public set shadowMethod(value:ShadowMapMethodBase)
 		{
-			this._screenPass.shadowMethod = value;
+			_screenPass.shadowMethod = value;
 		}
 
 		/**
@@ -255,7 +255,7 @@ module feng3d
 		public set lightPicker(value:LightPickerBase)
 		{
 			super.lightPicker = value;
-			this._screenPass.lightPicker = value;
+			_screenPass.lightPicker = value;
 		}
 
 		/**

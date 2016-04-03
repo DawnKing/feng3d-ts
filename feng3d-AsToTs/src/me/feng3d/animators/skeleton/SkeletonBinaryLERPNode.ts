@@ -24,7 +24,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this._stateClass = SkeletonBinaryLERPState;
+			_stateClass = SkeletonBinaryLERPState;
 		}
 
 		/**

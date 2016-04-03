@@ -12,7 +12,7 @@ module feng3d
 	 * 发布漫反射光
 	 * @author feng 2014-11-7
 	 */
-	public F_DiffusePostLighting()
+	constructor()
 	{
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);
@@ -20,7 +20,7 @@ module feng3d
 		var shadowShaderParams:ShadowShaderParams = shaderParams.getOrCreateComponentByClass(ShadowShaderParams);
 
 
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		//把阴影使用到漫反射光上
 		if (lightShaderParams.numLights > 0 && shadowShaderParams.needsShadowRegister > 0)

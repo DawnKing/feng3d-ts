@@ -20,7 +20,7 @@ module feng3d
 		/**
 		 * 创建sprite动画剪辑节帮助程序实例
 		 */
-		constructor()
+		function SpriteSheetHelper()
 		{
 		}
 
@@ -36,7 +36,7 @@ module feng3d
 		 */
 		public generateFromMovieClip(sourceMC:MovieClip, cols:number, rows:number, width:number, height:number, transparent:boolean = false, backgroundColor:number = 0):Texture2DBase[]
 		{
-			var spriteSheets:Texture2DBase[] = [];
+			var spriteSheets:Texture2DBase[] = new Texture2DBase[]();
 			var framesCount:number = sourceMC.totalFrames;
 			var i:number = framesCount;
 			var w:number = width;

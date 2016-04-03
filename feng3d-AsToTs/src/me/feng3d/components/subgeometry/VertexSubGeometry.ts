@@ -21,22 +21,22 @@ module feng3d
 		{
 			super.onBeAddedComponet(event);
 
-			this.subGeometry.mapVABuffer(this._.position0_va_3, 3);
-			this.subGeometry.mapVABuffer(this._.position1_va_3, 3);
+			subGeometry.mapVABuffer(_.position0_va_3, 3);
+			subGeometry.mapVABuffer(_.position1_va_3, 3);
 
-			this.updateVertexData0(this.subGeometry.vertexPositionData.concat());
-			this.updateVertexData1(this.subGeometry.vertexPositionData.concat());
+			this.updateVertexData0(subGeometry.vertexPositionData.concat());
+			this.updateVertexData1(subGeometry.vertexPositionData.concat());
 		}
 
 		public updateVertexData0(vertices:number[])
 		{
-			this.subGeometry.updateVertexPositionData(vertices);
-			this.subGeometry.setVAData(this._.position0_va_3, vertices);
+			subGeometry.updateVertexPositionData(vertices);
+			subGeometry.setVAData(_.position0_va_3, vertices);
 		}
 
 		public updateVertexData1(vertices:number[])
 		{
-			this.subGeometry.setVAData(this._.position1_va_3, vertices);
+			subGeometry.setVAData(_.position1_va_3, vertices);
 		}
 	}
 }

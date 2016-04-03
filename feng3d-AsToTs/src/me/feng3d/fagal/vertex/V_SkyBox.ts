@@ -15,12 +15,12 @@ module feng3d
 	{
 		constructor()
 		{
-			this._shaderType = Context3DProgramType.VERTEX;
+			_shaderType = Context3DProgramType.VERTEX;
 		}
 
 		public runFunc()
 		{
-			var _ = FagalRE.instance.space;
+			var _:* = FagalRE.instance.space;
 
 			var vt0:Register = _.getFreeTemp("缩放后的顶点坐标");
 			_.comment("缩放到天空盒应有的大小");

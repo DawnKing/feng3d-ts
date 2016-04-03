@@ -32,14 +32,14 @@ module feng3d
 		 */
 		public get minScale():number
 		{
-			return this._minScale;
+			return _minScale;
 		}
 
 		public set minScale(value:number)
 		{
-			this._minScale = value;
+			_minScale = value;
 
-			this.updateScaleData();
+			updateScaleData();
 		}
 
 		/**
@@ -47,14 +47,14 @@ module feng3d
 		 */
 		public get maxScale():number
 		{
-			return this._maxScale;
+			return _maxScale;
 		}
 
 		public set maxScale(value:number)
 		{
-			this._maxScale = value;
+			_maxScale = value;
 
-			this.updateScaleData();
+			updateScaleData();
 		}
 
 		/**
@@ -111,12 +111,12 @@ module feng3d
 		 */
 		public generatePropertyOfOneParticle(param:ParticleProperties)
 		{
-			var scale:Vector3D = param[ParticleScaleNode.SCALE_VECTOR3D];
+			var scale:Vector3D = param[SCALE_VECTOR3D];
 			if (!scale)
-				throw(new Error("there is no " + ParticleScaleNode.SCALE_VECTOR3D + " in param!"));
+				throw(new Error("there is no " + SCALE_VECTOR3D + " in param!"));
 
-			this._oneData[0] = scale.x;
-			this._oneData[1] = scale.y - scale.x;
+			_oneData[0] = scale.x;
+			_oneData[1] = scale.y - scale.x;
 		}
 
 		/**

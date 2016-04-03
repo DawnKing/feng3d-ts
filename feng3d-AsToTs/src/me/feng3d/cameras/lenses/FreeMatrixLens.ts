@@ -14,7 +14,7 @@ module feng3d
 
 		protected updateMatrix()
 		{
-			this._matrixInvalid = false;
+			_matrixInvalid = false;
 		}
 	}
 }

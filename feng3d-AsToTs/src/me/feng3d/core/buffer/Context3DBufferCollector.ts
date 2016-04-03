@@ -35,16 +35,16 @@ module feng3d
 		 */
 		private get rootBufferOwner():Context3DBufferOwner
 		{
-			if (this._rootBufferOwner == null)
+			if (_rootBufferOwner == null)
 			{
-				this._rootBufferOwner = new Context3DBufferOwner();
+				_rootBufferOwner = new Context3DBufferOwner();
 				//添加事件
-				this._rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, this.onAddContext3DBuffer);
-				this._rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER, this.onRemoveContext3DBuffer);
-				this._rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER, this.onAddChildContext3DBufferOwner);
-				this._rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER, this.onRemoveChildContext3DBufferOwner);
+				_rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, onAddContext3DBuffer);
+				_rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER, onRemoveContext3DBuffer);
+				_rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER, onAddChildContext3DBufferOwner);
+				_rootBufferOwner.addEventListener(Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER, onRemoveChildContext3DBufferOwner);
 			}
-			return this._rootBufferOwner;
+			return _rootBufferOwner;
 		}
 
 		/**

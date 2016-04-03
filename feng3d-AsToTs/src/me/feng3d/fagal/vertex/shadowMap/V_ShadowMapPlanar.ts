@@ -8,9 +8,9 @@ module feng3dMap
 	 * 方向光阴影映射
 	 * @author feng 2015-7-17
 	 */
-	public V_ShadowMapPlanar()
+	constructor()
 	{
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		var temp:Register = _.getFreeTemp();
 

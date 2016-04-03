@@ -8,7 +8,7 @@ module feng3d
 	 */
 	export class RegisterArrayComplexItem extends RegisterArrayItem
 	{
-		private _complexArgs;
+		private _complexArgs:Array;
 
 		/**
 		 * 创建一个寄存器数组复杂元素
@@ -16,7 +16,7 @@ module feng3d
 		 * @param complexArgs			复杂参数（用来计算所在寄存器数组中的索引值）
 		 * @param arrayIndex			起始索引值
 		 */
-		constructor(registerArray:RegisterArray, complexArgs, startIndex:number)
+		constructor(registerArray:RegisterArray, complexArgs:Array, startIndex:number)
 		{
 			this._complexArgs = complexArgs;
 
@@ -26,9 +26,9 @@ module feng3d
 		/**
 		 * 复杂参数（用来计算所在寄存器数组中的索引值）
 		 */
-		public get complexArgs()
+		public get complexArgs():Array
 		{
-			return this._complexArgs;
+			return _complexArgs;
 		}
 
 		/**
@@ -39,11 +39,11 @@ module feng3d
 			var _numStr:string = this._complexArgs.join("+");
 
 			if (Register.TO_STRING == Register.NAME)
-				return this.regId + "[" + _numStr + "+" + this._arrayIndex + "]";
+				return this.regId + "[" + _numStr + "+" + _arrayIndex + "]";
 
-			if (this._regType != RegisterType.OP && this._regType != RegisterType.OC)
-				return this.regType + "[" + _numStr + "+" + (this._arrayIndex + this._registerArray.index) + "]";
-			return this._regType;
+			if (_regType != RegisterType.OP && _regType != RegisterType.OC)
+				return this.regType + "[" + _numStr + "+" + (_arrayIndex + _registerArray.index) + "]";
+			return _regType;
 		}
 	}
 }

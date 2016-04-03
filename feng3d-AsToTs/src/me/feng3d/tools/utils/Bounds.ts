@@ -35,7 +35,7 @@ module feng3d
 		 */
 		public static getMeshBounds(mesh:Mesh)
 		{
-			Bounds.getObjectContainerBounds(mesh);
+			getObjectContainerBounds(mesh);
 		}
 
 		/**
@@ -45,10 +45,10 @@ module feng3d
 		 */
 		public static getObjectContainerBounds(container:Container3D, worldBased:boolean = true)
 		{
-			Bounds.reset();
-			Bounds.parseObjectContainerBounds(container);
+			reset();
+			parseObjectContainerBounds(container);
 
-			if (Bounds.isInfinite(Bounds._minX) || Bounds.isInfinite(Bounds._minY) || Bounds.isInfinite(Bounds._minZ) || Bounds.isInfinite(Bounds._maxX) || Bounds.isInfinite(Bounds._maxY) || Bounds.isInfinite(Bounds._maxZ))
+			if (isInfinite(_minX) || isInfinite(_minY) || isInfinite(_minZ) || isInfinite(_maxX) || isInfinite(_maxY) || isInfinite(_maxZ))
 			{
 				return;
 			}
@@ -57,14 +57,14 @@ module feng3d
 			if (worldBased)
 			{
 				var b:number[] = number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
-				var c:number[] = Bounds.getBoundsCorners(Bounds._minX, Bounds._minY, Bounds._minZ, Bounds._maxX, Bounds._maxY, Bounds._maxZ);
-				Bounds.transformContainer(b, c, container.sceneTransform);
-				Bounds._minX = b[0];
-				Bounds._minY = b[1];
-				Bounds._minZ = b[2];
-				Bounds._maxX = b[3];
-				Bounds._maxY = b[4];
-				Bounds._maxZ = b[5];
+				var c:number[] = getBoundsCorners(_minX, _minY, _minZ, _maxX, _maxY, _maxZ);
+				transformContainer(b, c, container.sceneTransform);
+				_minX = b[0];
+				_minY = b[1];
+				_minZ = b[2];
+				_maxX = b[3];
+				_maxY = b[4];
+				_maxZ = b[5];
 			}
 		}
 
@@ -75,7 +75,7 @@ module feng3d
 		 */
 		public static getVerticesVectorBounds(vertices:number[])
 		{
-			Bounds.reset();
+			reset();
 			var l:number = vertices.length;
 			if (l % 3 != 0)
 				return;
@@ -90,20 +90,20 @@ module feng3d
 				y = vertices[i + 1];
 				z = vertices[i + 2];
 
-				if (x < Bounds._minX)
-					Bounds._minX = x;
-				if (x > Bounds._maxX)
-					Bounds._maxX = x;
+				if (x < _minX)
+					_minX = x;
+				if (x > _maxX)
+					_maxX = x;
 
-				if (y < Bounds._minY)
-					Bounds._minY = y;
-				if (y > Bounds._maxY)
-					Bounds._maxY = y;
+				if (y < _minY)
+					_minY = y;
+				if (y > _maxY)
+					_maxY = y;
 
-				if (z < Bounds._minZ)
-					Bounds._minZ = z;
-				if (z > Bounds._maxZ)
-					Bounds._maxZ = z;
+				if (z < _minZ)
+					_minZ = z;
+				if (z > _maxZ)
+					_maxZ = z;
 			}
 		}
 
@@ -114,9 +114,9 @@ module feng3d
 		public static getCenter(outCenter:Vector3D = null):Vector3D
 		{
 			var center:Vector3D = outCenter || new Vector3D();
-			center.x = Bounds._minX + (Bounds._maxX - Bounds._minX) * .5;
-			center.y = Bounds._minY + (Bounds._maxY - Bounds._minY) * .5;
-			center.z = Bounds._minZ + (Bounds._maxZ - Bounds._minZ) * .5;
+			center.x = _minX + (_maxX - _minX) * .5;
+			center.y = _minY + (_maxY - _minY) * .5;
+			center.z = _minZ + (_maxZ - _minZ) * .5;
 
 			return center;
 		}
@@ -126,7 +126,7 @@ module feng3d
 		 */
 		public static get minX():number
 		{
-			return Bounds._minX;
+			return _minX;
 		}
 
 		/**
@@ -134,7 +134,7 @@ module feng3d
 		 */
 		public static get minY():number
 		{
-			return Bounds._minY;
+			return _minY;
 		}
 
 		/**
@@ -142,7 +142,7 @@ module feng3d
 		 */
 		public static get minZ():number
 		{
-			return Bounds._minZ;
+			return _minZ;
 		}
 
 		/**
@@ -150,7 +150,7 @@ module feng3d
 		 */
 		public static get maxX():number
 		{
-			return Bounds._maxX;
+			return _maxX;
 		}
 
 		/**
@@ -158,7 +158,7 @@ module feng3d
 		 */
 		public static get maxY():number
 		{
-			return Bounds._maxY;
+			return _maxY;
 		}
 
 		/**
@@ -166,7 +166,7 @@ module feng3d
 		 */
 		public static get maxZ():number
 		{
-			return Bounds._maxZ;
+			return _maxZ;
 		}
 
 		/**
@@ -174,7 +174,7 @@ module feng3d
 		 */
 		public static get width():number
 		{
-			return Bounds._maxX - Bounds._minX;
+			return _maxX - _minX;
 		}
 
 		/**
@@ -182,7 +182,7 @@ module feng3d
 		 */
 		public static get height():number
 		{
-			return Bounds._maxY - Bounds._minY;
+			return _maxY - _minY;
 		}
 
 		/**
@@ -190,17 +190,17 @@ module feng3d
 		 */
 		public static get depth():number
 		{
-			return Bounds._maxZ - Bounds._minZ;
+			return _maxZ - _minZ;
 		}
 
 		private static function reset()
 		{
-			Bounds._containers = {};
-			Bounds._minX = Bounds._minY = Bounds._minZ = Infinity;
-			Bounds._maxX = Bounds._maxY = Bounds._maxZ = -Infinity;
-			Bounds._defaultPosition.x = 0.0;
-			Bounds._defaultPosition.y = 0.0;
-			Bounds._defaultPosition.z = 0.0;
+			_containers = {};
+			_minX = _minY = _minZ = Infinity;
+			_maxX = _maxY = _maxZ = -Infinity;
+			_defaultPosition.x = 0.0;
+			_defaultPosition.y = 0.0;
+			_defaultPosition.z = 0.0;
 		}
 
 		private static function parseObjectContainerBounds(obj:Container3D, parentTransform:Matrix3D = null)
@@ -208,7 +208,7 @@ module feng3d
 			if (!obj.visible)
 				return;
 
-			var containerBounds:number[] = Bounds._containers[obj] ||= number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+			var containerBounds:number[] = _containers[obj] ||= number[]([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
 
 			var child:Container3D;
 			var isEntity:Entity = obj as Entity;
@@ -216,7 +216,7 @@ module feng3d
 
 			if (isEntity && parentTransform)
 			{
-				Bounds.parseObjectBounds(obj, parentTransform);
+				parseObjectBounds(obj, parentTransform);
 
 				containerTransform = obj.transform3D.transform.clone();
 				if (parentTransform)
@@ -226,18 +226,18 @@ module feng3d
 			{
 				var mat:Matrix3D = obj.transform3D.transform.clone();
 				mat.invert();
-				Bounds.parseObjectBounds(obj, mat);
+				parseObjectBounds(obj, mat);
 			}
 
 			for (var i:number = 0; i < obj.numChildren; ++i)
 			{
 				child = obj.getChildAt(i) as Container3D;
-				Bounds.parseObjectContainerBounds(child, containerTransform);
+				parseObjectContainerBounds(child, containerTransform);
 			}
 
-			var parentBounds:number[] = Bounds._containers[obj.parent];
+			var parentBounds:number[] = _containers[obj.parent];
 			if (!isEntity && parentTransform)
-				Bounds.parseObjectBounds(obj, parentTransform, true);
+				parseObjectBounds(obj, parentTransform, true);
 
 			if (parentBounds)
 			{
@@ -250,12 +250,12 @@ module feng3d
 			}
 			else
 			{
-				Bounds._minX = containerBounds[0];
-				Bounds._minY = containerBounds[1];
-				Bounds._minZ = containerBounds[2];
-				Bounds._maxX = containerBounds[3];
-				Bounds._maxY = containerBounds[4];
-				Bounds._maxZ = containerBounds[5];
+				_minX = containerBounds[0];
+				_minY = containerBounds[1];
+				_minZ = containerBounds[2];
+				_maxX = containerBounds[3];
+				_maxY = containerBounds[4];
+				_maxZ = containerBounds[5];
 			}
 		}
 
@@ -272,21 +272,21 @@ module feng3d
 			var e:Entity = oC as Entity;
 			var corners:number[];
 			var mat:Matrix3D = oC.transform3D.transform.clone();
-			var cB:number[] = Bounds._containers[oC];
+			var cB:number[] = _containers[oC];
 			if (e)
 			{
-				if (Bounds.isInfinite(e.minX) || Bounds.isInfinite(e.minY) || Bounds.isInfinite(e.minZ) || Bounds.isInfinite(e.maxX) || Bounds.isInfinite(e.maxY) || Bounds.isInfinite(e.maxZ))
+				if (isInfinite(e.minX) || isInfinite(e.minY) || isInfinite(e.minZ) || isInfinite(e.maxX) || isInfinite(e.maxY) || isInfinite(e.maxZ))
 				{
 					return;
 				}
 
-				corners = Bounds.getBoundsCorners(e.minX, e.minY, e.minZ, e.maxX, e.maxY, e.maxZ);
+				corners = getBoundsCorners(e.minX, e.minY, e.minZ, e.maxX, e.maxY, e.maxZ);
 				if (parentTransform)
 					mat.append(parentTransform);
 			}
 			else
 			{
-				corners = Bounds.getBoundsCorners(cB[0], cB[1], cB[2], cB[3], cB[4], cB[5]);
+				corners = getBoundsCorners(cB[0], cB[1], cB[2], cB[3], cB[4], cB[5]);
 				if (parentTransform)
 					mat.prepend(parentTransform);
 			}
@@ -297,7 +297,7 @@ module feng3d
 				cB[3] = cB[4] = cB[5] = -Infinity;
 			}
 
-			Bounds.transformContainer(cB, corners, mat);
+			transformContainer(cB, corners, mat);
 		}
 
 		private static function getBoundsCorners(minX:number, minY:number, minZ:number, maxX:number, maxY:number, maxZ:number):number[]

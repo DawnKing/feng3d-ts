@@ -6,9 +6,9 @@ module feng3d
 	 * 编译切线片段程序(无法线图)
 	 * @author feng 2014-11-7
 	 */
-	public F_TangentNormalNoMap()
+	constructor()
 	{
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		//标准化法线
 		_.nrm(_.normal_ft_4.xyz, _.normal_v);

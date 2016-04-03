@@ -131,7 +131,7 @@ module feng3d
 		 */
 		private buildUVs()
 		{
-			var uvs:number[] = [];
+			var uvs:number[] = new number[]();
 			var numUvs:number = (this._segmentsH + 1) * (this._segmentsW + 1) * 2;
 
 			uvs = this._subGeometry.UVData;

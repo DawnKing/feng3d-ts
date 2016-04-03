@@ -18,7 +18,7 @@ module feng3d
 	{
 		private _particleNode:ParticleNodeBase;
 
-		protected _dynamicProperties:Vector3D[] = [];
+		protected _dynamicProperties:Vector3D[] = new Vector3D[]();
 		protected _dynamicPropertiesDirty = new Dictionary(true);
 
 		protected _needUpdateTime:boolean;
@@ -42,7 +42,7 @@ module feng3d
 		 */
 		public get needUpdateTime():boolean
 		{
-			return this._needUpdateTime;
+			return _needUpdateTime;
 		}
 	}
 

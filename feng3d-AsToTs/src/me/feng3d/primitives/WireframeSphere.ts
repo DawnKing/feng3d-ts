@@ -36,9 +36,9 @@ module feng3d
 		 */
 		protected buildGeometry()
 		{
-			this.segmentGeometry.removeAllSegments();
+			segmentGeometry.removeAllSegments();
 
-			var vertices:number[] = [];
+			var vertices:number[] = new number[]();
 			var v0:Vector3D = new Vector3D();
 			var v1:Vector3D = new Vector3D();
 			var i:number, j:number;
@@ -79,11 +79,11 @@ module feng3d
 						v1.x = vertices[d];
 						v1.y = vertices[d + 1];
 						v1.z = vertices[d + 2];
-						this.updateOrAddSegment(index++, v0, v1);
+						updateOrAddSegment(index++, v0, v1);
 						v0.x = vertices[a];
 						v0.y = vertices[a + 1];
 						v0.z = vertices[a + 2];
-						this.updateOrAddSegment(index++, v0, v1);
+						updateOrAddSegment(index++, v0, v1);
 					}
 					else if (j == 1)
 					{
@@ -93,7 +93,7 @@ module feng3d
 						v0.x = vertices[c];
 						v0.y = vertices[c + 1];
 						v0.z = vertices[c + 2];
-						this.updateOrAddSegment(index++, v0, v1);
+						updateOrAddSegment(index++, v0, v1);
 					}
 					else
 					{
@@ -103,11 +103,11 @@ module feng3d
 						v0.x = vertices[c];
 						v0.y = vertices[c + 1];
 						v0.z = vertices[c + 2];
-						this.updateOrAddSegment(index++, v0, v1);
+						updateOrAddSegment(index++, v0, v1);
 						v1.x = vertices[d];
 						v1.y = vertices[d + 1];
 						v1.z = vertices[d + 2];
-						this.updateOrAddSegment(index++, v0, v1);
+						updateOrAddSegment(index++, v0, v1);
 					}
 				}
 			}

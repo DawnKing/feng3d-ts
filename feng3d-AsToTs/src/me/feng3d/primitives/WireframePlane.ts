@@ -45,14 +45,14 @@ module feng3d
 		 */
 		public get orientation():string
 		{
-			return this._orientation;
+			return _orientation;
 		}
 
 		public set orientation(value:string)
 		{
-			this._orientation = value;
+			_orientation = value;
 
-			this.buildGeometry();
+			buildGeometry();
 		}
 
 		/**
@@ -60,14 +60,14 @@ module feng3d
 		 */
 		public get width():number
 		{
-			return this._width;
+			return _width;
 		}
 
 		public set width(value:number)
 		{
-			this._width = value;
+			_width = value;
 
-			this.buildGeometry();
+			buildGeometry();
 		}
 
 		/**
@@ -75,16 +75,16 @@ module feng3d
 		 */
 		public get height():number
 		{
-			return this._height;
+			return _height;
 		}
 
 		public set height(value:number)
 		{
 			if (value <= 0)
 				throw new Error("Value needs to be greater than 0");
-			this._height = value;
+			_height = value;
 
-			this.buildGeometry();
+			buildGeometry();
 		}
 
 		/**
@@ -92,14 +92,14 @@ module feng3d
 		 */
 		public get segmentsW():number
 		{
-			return this._segmentsW;
+			return _segmentsW;
 		}
 
 		public set segmentsW(value:number)
 		{
-			this._segmentsW = value;
+			_segmentsW = value;
 
-			this.buildGeometry();
+			buildGeometry();
 		}
 
 		/**
@@ -107,14 +107,14 @@ module feng3d
 		 */
 		public get segmentsH():number
 		{
-			return this._segmentsH;
+			return _segmentsH;
 		}
 
 		public set segmentsH(value:number)
 		{
-			this._segmentsH = value;
+			_segmentsH = value;
 
-			this.buildGeometry();
+			buildGeometry();
 		}
 
 		/**
@@ -122,7 +122,7 @@ module feng3d
 		 */
 		protected buildGeometry()
 		{
-			this.segmentGeometry.removeAllSegments();
+			segmentGeometry.removeAllSegments();
 
 			var v0:Vector3D = new Vector3D();
 			var v1:Vector3D = new Vector3D();
@@ -131,7 +131,7 @@ module feng3d
 			var index:number;
 			var ws:number, hs:number;
 
-			if (this._orientation == WireframePlane.ORIENTATION_XY)
+			if (this._orientation == ORIENTATION_XY)
 			{
 				v0.y = hh;
 				v0.z = 0;
@@ -141,7 +141,7 @@ module feng3d
 				for (ws = 0; ws <= this._segmentsW; ++ws)
 				{
 					v0.x = v1.x = (ws / this._segmentsW - .5) * this._width;
-					this.updateOrAddSegment(index++, v0, v1);
+					updateOrAddSegment(index++, v0, v1);
 				}
 
 				v0.x = -hw;
@@ -150,11 +150,11 @@ module feng3d
 				for (hs = 0; hs <= this._segmentsH; ++hs)
 				{
 					v0.y = v1.y = (hs / this._segmentsH - .5) * this._height;
-					this.updateOrAddSegment(index++, v0, v1);
+					updateOrAddSegment(index++, v0, v1);
 				}
 			}
 
-			else if (this._orientation == WireframePlane.ORIENTATION_XZ)
+			else if (this._orientation == ORIENTATION_XZ)
 			{
 				v0.z = hh;
 				v0.y = 0;
@@ -164,7 +164,7 @@ module feng3d
 				for (ws = 0; ws <= this._segmentsW; ++ws)
 				{
 					v0.x = v1.x = (ws / this._segmentsW - .5) * this._width;
-					this.updateOrAddSegment(index++, v0, v1);
+					updateOrAddSegment(index++, v0, v1);
 				}
 
 				v0.x = -hw;
@@ -173,11 +173,11 @@ module feng3d
 				for (hs = 0; hs <= this._segmentsH; ++hs)
 				{
 					v0.z = v1.z = (hs / this._segmentsH - .5) * this._height;
-					this.updateOrAddSegment(index++, v0, v1);
+					updateOrAddSegment(index++, v0, v1);
 				}
 			}
 
-			else if (this._orientation == WireframePlane.ORIENTATION_YZ)
+			else if (this._orientation == ORIENTATION_YZ)
 			{
 				v0.y = hh;
 				v0.x = 0;
@@ -187,7 +187,7 @@ module feng3d
 				for (ws = 0; ws <= this._segmentsW; ++ws)
 				{
 					v0.z = v1.z = (ws / this._segmentsW - .5) * this._width;
-					this.updateOrAddSegment(index++, v0, v1);
+					updateOrAddSegment(index++, v0, v1);
 				}
 
 				v0.z = hw;
@@ -196,7 +196,7 @@ module feng3d
 				for (hs = 0; hs <= this._segmentsH; ++hs)
 				{
 					v0.y = v1.y = (hs / this._segmentsH - .5) * this._height;
-					this.updateOrAddSegment(index++, v0, v1);
+					updateOrAddSegment(index++, v0, v1);
 				}
 			}
 		}

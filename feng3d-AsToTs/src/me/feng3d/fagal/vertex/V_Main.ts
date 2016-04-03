@@ -30,7 +30,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this._shaderType = Context3DProgramType.VERTEX;
+			_shaderType = Context3DProgramType.VERTEX;
 		}
 
 		/**
@@ -38,7 +38,7 @@ module feng3d
 		 */
 		public runFunc()
 		{
-			var _ = FagalRE.instance.space;
+			var _:* = FagalRE.instance.space;
 			var commonShaderParams:CommonShaderParams = this.shaderParams.getOrCreateComponentByClass(CommonShaderParams);
 			var animationShaderParams:AnimationShaderParams = this.shaderParams.getOrCreateComponentByClass(AnimationShaderParams);
 			var lightShaderParams:LightShaderParams = this.shaderParams.getOrCreateComponentByClass(LightShaderParams);

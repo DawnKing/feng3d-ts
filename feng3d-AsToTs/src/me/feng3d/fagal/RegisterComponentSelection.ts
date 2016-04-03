@@ -17,7 +17,7 @@ module feng3d
 		/** 寄存器id */
 		public get regId():string
 		{
-			return this._regId;
+			return _regId;
 		}
 
 		/**
@@ -25,7 +25,7 @@ module feng3d
 		 */
 		public set regId(value:string)
 		{
-			this._regId = value;
+			_regId = value;
 		}
 
 		/**
@@ -56,7 +56,7 @@ module feng3d
 		 */
 		public get regType():string
 		{
-			return this._regType;
+			return _regType;
 		}
 
 		/**
@@ -72,7 +72,7 @@ module feng3d
 		 */
 		public get desc():string
 		{
-			return this.toString();
+			return toString();
 		}
 	}
 }

@@ -30,9 +30,9 @@ module feng3d
 		{
 			super.onBeAddedComponet(event);
 
-			this.subGeometry.mapVABuffer(this._.animated_va_3, 3);
-			this.subGeometry.mapVABuffer(this._.jointweights_va_x, this._jointsPerVertex);
-			this.subGeometry.mapVABuffer(this._.jointindex_va_x, this._jointsPerVertex);
+			subGeometry.mapVABuffer(_.animated_va_3, 3);
+			subGeometry.mapVABuffer(_.jointweights_va_x, this._jointsPerVertex);
+			subGeometry.mapVABuffer(_.jointindex_va_x, this._jointsPerVertex);
 		}
 
 		/**
@@ -40,7 +40,7 @@ module feng3d
 		 */
 		public updateAnimatedData(value:number[])
 		{
-			this.subGeometry.setVAData(this._.animated_va_3, value);
+			subGeometry.setVAData(_.animated_va_3, value);
 		}
 
 		/**
@@ -48,7 +48,7 @@ module feng3d
 		 */
 		public get jointWeightsData():number[]
 		{
-			var data:number[] = this.subGeometry.getVAData(this._.jointweights_va_x);
+			var data:number[] = subGeometry.getVAData(_.jointweights_va_x);
 			return data;
 		}
 
@@ -57,7 +57,7 @@ module feng3d
 		 */
 		public get jointIndexData():number[]
 		{
-			var data:number[] = this.subGeometry.getVAData(this._.jointindex_va_x);
+			var data:number[] = subGeometry.getVAData(_.jointindex_va_x);
 			return data;
 		}
 
@@ -66,7 +66,7 @@ module feng3d
 		 */
 		public updateJointWeightsData(value:number[])
 		{
-			this.subGeometry.setVAData(this._.jointweights_va_x, value);
+			subGeometry.setVAData(_.jointweights_va_x, value);
 		}
 
 		/**
@@ -74,7 +74,7 @@ module feng3d
 		 */
 		public updateJointIndexData(value:number[])
 		{
-			this.subGeometry.setVAData(this._.jointindex_va_x, value);
+			subGeometry.setVAData(_.jointindex_va_x, value);
 		}
 	}
 }

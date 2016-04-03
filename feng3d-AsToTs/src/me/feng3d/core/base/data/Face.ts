@@ -26,7 +26,7 @@ module feng3d
 		 * @param    vertices        [optional] 9 entries long Vector.&lt;number&gt; representing the x, y and z of v0, v1, and v2 of a face
 		 * @param    uvs            [optional] 6 entries long Vector.&lt;number&gt; representing the u and v of uv0, uv1, and uv2 of a face
 		 */
-		constructor(vertices:number[] = null, uvs:number[] = null)
+		function Face(vertices:number[] = null, uvs:number[] = null)
 		{
 			_vertices = vertices || number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
 			_uvs = uvs || number[]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
@@ -52,7 +52,7 @@ module feng3d
 		 */
 		public set faceIndex(ind:number)
 		{
-			this._faceIndex = ind;
+			_faceIndex = ind;
 		}
 		
 		/**
@@ -60,7 +60,7 @@ module feng3d
 		 */
 		public get faceIndex():number
 		{
-			return this._faceIndex;
+			return _faceIndex;
 		}
 		
 		//uv0
@@ -70,7 +70,7 @@ module feng3d
 		 */
 		public set uv0Index(ind:number)
 		{
-			this._uv0Index = ind;
+			_uv0Index = ind;
 		}
 		
 		/**
@@ -78,7 +78,7 @@ module feng3d
 		 */
 		public get uv0Index():number
 		{
-			return this._uv0Index;
+			return _uv0Index;
 		}
 		
 		/**
@@ -97,7 +97,7 @@ module feng3d
 		 */
 		public get uv0u():number
 		{
-			return this._uvs[0];
+			return _uvs[0];
 		}
 		
 		/**
@@ -105,7 +105,7 @@ module feng3d
 		 */
 		public get uv0v():number
 		{
-			return this._uvs[1];
+			return _uvs[1];
 		}
 		
 		//uv1
@@ -115,7 +115,7 @@ module feng3d
 		 */
 		public set uv1Index(ind:number)
 		{
-			this._uv1Index = ind;
+			_uv1Index = ind;
 		}
 		
 		/**
@@ -123,7 +123,7 @@ module feng3d
 		 */
 		public get uv1Index():number
 		{
-			return this._uv1Index;
+			return _uv1Index;
 		}
 		
 		/**
@@ -142,7 +142,7 @@ module feng3d
 		 */
 		public get uv1u():number
 		{
-			return this._uvs[2];
+			return _uvs[2];
 		}
 		
 		/**
@@ -150,7 +150,7 @@ module feng3d
 		 */
 		public get uv1v():number
 		{
-			return this._uvs[3];
+			return _uvs[3];
 		}
 		
 		//uv2
@@ -160,7 +160,7 @@ module feng3d
 		 */
 		public set uv2Index(ind:number)
 		{
-			this._uv2Index = ind;
+			_uv2Index = ind;
 		}
 		
 		/**
@@ -168,7 +168,7 @@ module feng3d
 		 */
 		public get uv2Index():number
 		{
-			return this._uv2Index;
+			return _uv2Index;
 		}
 		
 		/**
@@ -187,7 +187,7 @@ module feng3d
 		 */
 		public get uv2u():number
 		{
-			return this._uvs[4];
+			return _uvs[4];
 		}
 		
 		/**
@@ -195,7 +195,7 @@ module feng3d
 		 */
 		public get uv2v():number
 		{
-			return this._uvs[5];
+			return _uvs[5];
 		}
 		
 		//vertices
@@ -221,7 +221,7 @@ module feng3d
 		 */
 		public set v0Index(ind:number)
 		{
-			this._v0Index = ind;
+			_v0Index = ind;
 		}
 		
 		/**
@@ -229,7 +229,7 @@ module feng3d
 		 */
 		public get v0Index():number
 		{
-			return this._v0Index;
+			return _v0Index;
 		}
 		
 		/**
@@ -237,7 +237,7 @@ module feng3d
 		 */
 		public get v0():number[]
 		{
-			return number[]([this._vertices[0], this._vertices[1], this._vertices[2]]);
+			return number[]([_vertices[0], _vertices[1], _vertices[2]]);
 		}
 		
 		/**
@@ -245,7 +245,7 @@ module feng3d
 		 */
 		public get v0x():number
 		{
-			return this._vertices[0];
+			return _vertices[0];
 		}
 		
 		/**
@@ -253,7 +253,7 @@ module feng3d
 		 */
 		public get v0y():number
 		{
-			return this._vertices[1];
+			return _vertices[1];
 		}
 		
 		/**
@@ -261,7 +261,7 @@ module feng3d
 		 */
 		public get v0z():number
 		{
-			return this._vertices[2];
+			return _vertices[2];
 		}
 		
 		//v1
@@ -271,7 +271,7 @@ module feng3d
 		 */
 		public set v1Index(ind:number)
 		{
-			this._v1Index = ind;
+			_v1Index = ind;
 		}
 		
 		/**
@@ -279,7 +279,7 @@ module feng3d
 		 */
 		public get v1Index():number
 		{
-			return this._v1Index;
+			return _v1Index;
 		}
 		
 		/**
@@ -287,7 +287,7 @@ module feng3d
 		 */
 		public get v1():number[]
 		{
-			return number[]([this._vertices[3], this._vertices[4], this._vertices[5]]);
+			return number[]([_vertices[3], _vertices[4], _vertices[5]]);
 		}
 		
 		/**
@@ -295,7 +295,7 @@ module feng3d
 		 */
 		public get v1x():number
 		{
-			return this._vertices[3];
+			return _vertices[3];
 		}
 		
 		/**
@@ -303,7 +303,7 @@ module feng3d
 		 */
 		public get v1y():number
 		{
-			return this._vertices[4];
+			return _vertices[4];
 		}
 		
 		/**
@@ -311,7 +311,7 @@ module feng3d
 		 */
 		public get v1z():number
 		{
-			return this._vertices[5];
+			return _vertices[5];
 		}
 		
 		//v2
@@ -321,7 +321,7 @@ module feng3d
 		 */
 		public set v2Index(ind:number)
 		{
-			this._v2Index = ind;
+			_v2Index = ind;
 		}
 		
 		/**
@@ -329,7 +329,7 @@ module feng3d
 		 */
 		public get v2Index():number
 		{
-			return this._v2Index;
+			return _v2Index;
 		}
 		
 		/**
@@ -337,7 +337,7 @@ module feng3d
 		 */
 		public get v2():number[]
 		{
-			return number[]([this._vertices[6], this._vertices[7], this._vertices[8]]);
+			return number[]([_vertices[6], _vertices[7], _vertices[8]]);
 		}
 		
 		/**
@@ -345,7 +345,7 @@ module feng3d
 		 */
 		public get v2x():number
 		{
-			return this._vertices[6];
+			return _vertices[6];
 		}
 		
 		/**
@@ -353,7 +353,7 @@ module feng3d
 		 */
 		public get v2y():number
 		{
-			return this._vertices[7];
+			return _vertices[7];
 		}
 		
 		/**
@@ -361,7 +361,7 @@ module feng3d
 		 */
 		public get v2z():number
 		{
-			return this._vertices[8];
+			return _vertices[8];
 		}
 		
 		/**
@@ -423,9 +423,9 @@ module feng3d
 			if (!this.planeContains(point, maxDistanceToPlane))
 				return false;
 			
-			this.getBarycentricCoords(point, Face._calcPoint ||= new Point());
-			var s:number = Face._calcPoint.x;
-			var t:number = Face._calcPoint.y;
+			this.getBarycentricCoords(point, _calcPoint ||= new Point());
+			var s:number = _calcPoint.x;
+			var t:number = _calcPoint.y;
 			return s >= 0.0 && t >= 0.0 && (s + t) <= 1.0;
 		}
 		
@@ -465,10 +465,10 @@ module feng3d
 		 */
 		public getUVAtPoint(point:Vector3D, target:UV = null):UV
 		{
-			this.getBarycentricCoords(point, Face._calcPoint ||= new Point());
+			this.getBarycentricCoords(point, _calcPoint ||= new Point());
 			
-			var s:number = Face._calcPoint.x;
-			var t:number = Face._calcPoint.y;
+			var s:number = _calcPoint.x;
+			var t:number = _calcPoint.y;
 			
 			if (s >= 0.0 && t >= 0.0 && (s + t) <= 1.0) {
 				var u0:number = this._uvs[0];

@@ -45,7 +45,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this.methodType = BasicAmbientMethod.METHOD_TYPE;
+			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;
 		}
 
@@ -93,13 +93,13 @@ module feng3d
 		 */
 		public get ambient():number
 		{
-			return this._ambient;
+			return _ambient;
 		}
 
 		public set ambient(value:number)
 		{
-			this._ambient = value;
-			this.updateAmbient();
+			_ambient = value;
+			updateAmbient();
 		}
 
 		/**
@@ -107,13 +107,13 @@ module feng3d
 		 */
 		public get ambientColor():number
 		{
-			return this._ambientColor;
+			return _ambientColor;
 		}
 
 		public set ambientColor(value:number)
 		{
-			this._ambientColor = value;
-			this.updateAmbient();
+			_ambientColor = value;
+			updateAmbient();
 		}
 
 		/**
@@ -121,19 +121,19 @@ module feng3d
 		 */
 		public get texture():Texture2DBase
 		{
-			return this._texture;
+			return _texture;
 		}
 
 		public set texture(value:Texture2DBase)
 		{
-			if (boolean(value) != this._useTexture || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
+			if (boolean(value) != _useTexture || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
 			{
-				this.invalidateShaderProgram();
+				invalidateShaderProgram();
 			}
-			this._useTexture = boolean(value);
-			this._texture = value;
+			_useTexture = boolean(value);
+			_texture = value;
 
-			this.context3DBufferOwner.markBufferDirty(this._.ambientTexture_fs);
+			context3DBufferOwner.markBufferDirty(_.ambientTexture_fs);
 		}
 
 		public activate(shaderParams:ShaderParams)

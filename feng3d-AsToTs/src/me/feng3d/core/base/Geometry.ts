@@ -26,13 +26,13 @@ module feng3d
 
 		public get subGeometries():SubGeometry[]
 		{
-			return this._subGeometries;
+			return _subGeometries;
 		}
 
 		constructor()
 		{
 			this._namedAsset = new NamedAsset(this, AssetType.GEOMETRY);
-			this._subGeometries = [];
+			this._subGeometries = new SubGeometry[]();
 		}
 
 		/**
@@ -41,9 +41,9 @@ module feng3d
 		public get numVertices():number
 		{
 			var _numVertices:number;
-			for (var i:number = 0; i < this._subGeometries.length; i++)
+			for (var i:number = 0; i < _subGeometries.length; i++)
 			{
-				_numVertices += this._subGeometries[i].numVertices;
+				_numVertices += _subGeometries[i].numVertices;
 			}
 			return _numVertices;
 		}
@@ -94,7 +94,7 @@ module feng3d
 
 		public clone():Geometry
 		{
-			var cls = getDefinitionByName(getQualifiedClassName(this)) as Class;
+			var cls:Class = getDefinitionByName(getQualifiedClassName(this)) as Class;
 			var clone:Geometry = new cls();
 
 			var len:number = this._subGeometries.length;
@@ -146,7 +146,7 @@ module feng3d
 
 		public get namedAsset():NamedAsset
 		{
-			return this._namedAsset;
+			return _namedAsset;
 		}
 	}
 }

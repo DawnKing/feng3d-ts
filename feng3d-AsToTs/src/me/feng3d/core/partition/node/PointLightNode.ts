@@ -27,7 +27,7 @@ module feng3d
 		 */
 		public get light():PointLight
 		{
-			return this._light;
+			return _light;
 		}
 
 		/**

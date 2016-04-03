@@ -31,35 +31,35 @@ module feng3d
 		/** 线框颜色 */
 		public get color():number
 		{
-			return this._color;
+			return _color;
 		}
 
 		public set color(value:number)
 		{
-			this._color = value;
+			_color = value;
 
-			for each (var segment:Segment in this.segmentGeometry.segments)
+			for each (var segment:Segment in segmentGeometry.segments)
 			{
 				segment.startColor = segment.endColor = value;
 			}
-			this.segmentGeometry.updateGeometry();
+			segmentGeometry.updateGeometry();
 		}
 
 		/** 线条粗细值 */
 		public get thickness():number
 		{
-			return this._thickness;
+			return _thickness;
 		}
 
 		public set thickness(value:number)
 		{
-			this._thickness = value;
+			_thickness = value;
 
-			for each (var segment:Segment in this.segmentGeometry.segments)
+			for each (var segment:Segment in segmentGeometry.segments)
 			{
 				segment.thickness = segment.thickness = value;
 			}
-			this.segmentGeometry.updateGeometry();
+			segmentGeometry.updateGeometry();
 		}
 
 		/**
@@ -71,14 +71,14 @@ module feng3d
 		protected updateOrAddSegment(index:number, v0:Vector3D, v1:Vector3D)
 		{
 			var segment:Segment;
-			if ((segment = this.segmentGeometry.getSegment(index)) != null)
+			if ((segment = segmentGeometry.getSegment(index)) != null)
 			{
 				segment.start = v0;
 				segment.end = v1;
 			}
 			else
 			{
-				this.segmentGeometry.addSegment(new Segment(v0.clone(), v1.clone(), this._color, this._color, this._thickness));
+				segmentGeometry.addSegment(new Segment(v0.clone(), v1.clone(), this._color, this._color, this._thickness));
 			}
 		}
 	}

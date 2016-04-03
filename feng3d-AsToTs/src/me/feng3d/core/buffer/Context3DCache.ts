@@ -30,7 +30,7 @@ module feng3d
 		/**
 		 * 运行寄存器缓冲列表
 		 */
-		public runRegBufferList;
+		public runRegBufferList:Array;
 
 		/** 渲染程序缓存 */
 		public programBuffer:ProgramBuffer;
@@ -64,7 +64,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public addDataBuffer(context3DDataBuffer:Context3DBuffer)
+		public override function addDataBuffer(context3DDataBuffer:Context3DBuffer)
 		{
 			super.addDataBuffer(context3DDataBuffer);
 
@@ -82,7 +82,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public removeDataBuffer(context3DDataBuffer:Context3DBuffer)
+		public override function removeDataBuffer(context3DDataBuffer:Context3DBuffer)
 		{
 			super.removeDataBuffer(context3DDataBuffer);
 
@@ -150,7 +150,7 @@ module feng3d
 		 */
 		private get dataRegisterDic()
 		{
-			return this._dataRegisterDic;
+			return _dataRegisterDic;
 		}
 
 		/**
@@ -158,10 +158,10 @@ module feng3d
 		 */
 		private set dataRegisterDic(value)
 		{
-			if (this._dataRegisterDic != value)
+			if (_dataRegisterDic != value)
 			{
-				this._dataRegisterDic = value;
-				this.mapRegister();
+				_dataRegisterDic = value;
+				mapRegister();
 			}
 		}
 

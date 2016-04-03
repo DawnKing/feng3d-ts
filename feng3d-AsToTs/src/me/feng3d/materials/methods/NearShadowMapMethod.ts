@@ -36,7 +36,7 @@ module feng3d
 			super(baseMethod.castingLight);
 			this._baseMethod = baseMethod;
 			this._fadeRatio = fadeRatio;
-			this._nearShadowMapper = this._castingLight.shadowMapper as NearDirectionalShadowMapper;
+			this._nearShadowMapper = _castingLight.shadowMapper as NearDirectionalShadowMapper;
 			if (!this._nearShadowMapper)
 				throw new Error("NearShadowMapMethod requires a light that has a NearDirectionalShadowMapper instance assigned to shadowMapper.");
 			this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
@@ -47,17 +47,17 @@ module feng3d
 		 */
 		public get baseMethod():SimpleShadowMapMethodBase
 		{
-			return this._baseMethod;
+			return _baseMethod;
 		}
 
 		public set baseMethod(value:SimpleShadowMapMethodBase)
 		{
-			if (this._baseMethod == value)
+			if (_baseMethod == value)
 				return;
-			this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
-			this._baseMethod = value;
-			this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated, false, 0, true);
-			this.invalidateShaderProgram();
+			_baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, onShaderInvalidated);
+			_baseMethod = value;
+			_baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, onShaderInvalidated, false, 0, true);
+			invalidateShaderProgram();
 		}
 
 		/**
@@ -126,7 +126,7 @@ module feng3d
 		 */
 		private onShaderInvalidated(event:ShadingMethodEvent)
 		{
-			this.invalidateShaderProgram();
+			invalidateShaderProgram();
 		}
 	}
 }

@@ -26,7 +26,7 @@ module feng3d
 		 */
 		public get light():DirectionalLight
 		{
-			return this._light;
+			return _light;
 		}
 
 		/**

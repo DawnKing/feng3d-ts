@@ -24,7 +24,7 @@ module feng3d
 			super();
 
 			this.subMesh = subMesh;
-			this._context3dCache.addChildBufferOwner(subMesh.context3DBufferOwner);
+			_context3dCache.addChildBufferOwner(subMesh.context3DBufferOwner);
 		}
 
 		/**
@@ -32,7 +32,7 @@ module feng3d
 		 */
 		public get mouseEnabled():boolean
 		{
-			return this.subMesh.mouseEnabled;
+			return subMesh.mouseEnabled;
 		}
 
 		/**
@@ -40,7 +40,7 @@ module feng3d
 		 */
 		public get numTriangles():number
 		{
-			return this.subMesh.numTriangles;
+			return subMesh.numTriangles;
 		}
 
 		/**
@@ -48,7 +48,7 @@ module feng3d
 		 */
 		public get sourceEntity():Entity
 		{
-			return this.subMesh.sourceEntity;
+			return subMesh.sourceEntity;
 		}
 
 		/**
@@ -56,7 +56,7 @@ module feng3d
 		 */
 		public get material():MaterialBase
 		{
-			return this.subMesh.material;
+			return subMesh.material;
 		}
 
 		/**
@@ -64,7 +64,7 @@ module feng3d
 		 */
 		public get animator():AnimatorBase
 		{
-			return this.subMesh.animator;
+			return subMesh.animator;
 		}
 
 		/**
@@ -72,7 +72,7 @@ module feng3d
 		 */
 		public get castsShadows():boolean
 		{
-			return this.subMesh.castsShadows;
+			return subMesh.castsShadows;
 		}
 	}
 }

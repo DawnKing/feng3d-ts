@@ -27,7 +27,7 @@ module feng3d
 
 		public get drawGeometry():Geometry
 		{
-			return this._drawGeometry;
+			return _drawGeometry;
 		}
 
 		/**
@@ -42,7 +42,7 @@ module feng3d
 
 		protected buildGeometry()
 		{
-			this.segmentGeometry.removeAllSegments();
+			segmentGeometry.removeAllSegments();
 
 			if (this.drawGeometry == null)
 				return;
@@ -81,19 +81,19 @@ module feng3d
 					//线段AB
 					if (!segmentDic[posA.toString() + "-" + posB.toString()])
 					{
-						this.updateOrAddSegment(++segmentIndex, posA, posB);
+						updateOrAddSegment(++segmentIndex, posA, posB);
 						segmentDic[posA.toString() + "-" + posB.toString()] = segmentDic[posB.toString() + "-" + posA.toString()] = true;
 					}
 					//线段BC
 					if (!segmentDic[posB.toString() + "-" + posC.toString()])
 					{
-						this.updateOrAddSegment(++segmentIndex, posB, posC);
+						updateOrAddSegment(++segmentIndex, posB, posC);
 						segmentDic[posB.toString() + "-" + posC.toString()] = segmentDic[posC.toString() + "-" + posB.toString()] = true;
 					}
 					//线段CA
 					if (!segmentDic[posC.toString() + "-" + posA.toString()])
 					{
-						this.updateOrAddSegment(++segmentIndex, posC, posA);
+						updateOrAddSegment(++segmentIndex, posC, posA);
 						segmentDic[posC.toString() + "-" + posA.toString()] = segmentDic[posA.toString() + "-" + posC.toString()] = true;
 					}
 				}

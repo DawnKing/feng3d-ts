@@ -8,16 +8,16 @@ module feng3d
 	 * IMaterialOwner为一个对象提供能够使用材质的接口
 	 * IMaterialOwner provides an interface for objects that can use materials.
 	 */
-	export interface IMaterialOwner
+	public interface IMaterialOwner
 	{
 		/**
 		 * 渲染材质
 		 */
-		get material():MaterialBase;
+		function get material():MaterialBase;
 
 		/**
 		 * 动画
 		 */
-		get animator():AnimatorBase;
+		function get animator():AnimatorBase;
 	}
 }

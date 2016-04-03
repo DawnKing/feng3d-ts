@@ -41,14 +41,14 @@ module feng3d
 		 */
 		public get segmentsW():number
 		{
-			return this._segmentsW;
+			return _segmentsW;
 		}
 
 		public set segmentsW(value:number)
 		{
-			this._segmentsW = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsW = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -56,14 +56,14 @@ module feng3d
 		 */
 		public get segmentsH():number
 		{
-			return this._segmentsH;
+			return _segmentsH;
 		}
 
 		public set segmentsH(value:number)
 		{
-			this._segmentsH = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsH = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -71,13 +71,13 @@ module feng3d
 		 */
 		public get yUp():boolean
 		{
-			return this._yUp;
+			return _yUp;
 		}
 
 		public set yUp(value:boolean)
 		{
-			this._yUp = value;
-			this.invalidateGeometry();
+			_yUp = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -85,13 +85,13 @@ module feng3d
 		 */
 		public get doubleSided():boolean
 		{
-			return this._doubleSided;
+			return _doubleSided;
 		}
 
 		public set doubleSided(value:boolean)
 		{
-			this._doubleSided = value;
-			this.invalidateGeometry();
+			_doubleSided = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -99,13 +99,13 @@ module feng3d
 		 */
 		public get width():number
 		{
-			return this._width;
+			return _width;
 		}
 
 		public set width(value:number)
 		{
-			this._width = value;
-			this.invalidateGeometry();
+			_width = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -113,13 +113,13 @@ module feng3d
 		 */
 		public get height():number
 		{
-			return this._height;
+			return _height;
 		}
 
 		public set height(value:number)
 		{
-			this._height = value;
-			this.invalidateGeometry();
+			_height = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -159,7 +159,7 @@ module feng3d
 				vertexNormalData = new number[](numVertices * vertexNormalStride, true);
 				vertexTangentData = new number[](numVertices * vertexTangentStride, true);
 				indices = new number[](numIndices, true);
-				this.invalidateUVs();
+				invalidateUVs();
 			}
 			target.numVertices = numVertices;
 
@@ -270,7 +270,7 @@ module feng3d
 			if (data == null || numUvs != data.length)
 			{
 				data = new number[](numUvs, true);
-				this.invalidateGeometry();
+				invalidateGeometry();
 			}
 
 			var index:number = 0;

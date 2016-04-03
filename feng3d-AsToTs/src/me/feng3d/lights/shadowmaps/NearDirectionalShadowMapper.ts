@@ -27,7 +27,7 @@ module feng3d
 		 */
 		public get coverageRatio():number
 		{
-			return this._coverageRatio;
+			return _coverageRatio;
 		}
 
 		public set coverageRatio(value:number)
@@ -37,7 +37,7 @@ module feng3d
 			else if (value < 0)
 				value = 0;
 
-			this._coverageRatio = value;
+			_coverageRatio = value;
 		}
 
 		/**
@@ -50,12 +50,12 @@ module feng3d
 			for (var i:number = 0; i < 12; ++i)
 			{
 				var v:number = corners[i];
-				this._localFrustum[i] = v;
-				this._localFrustum[number(i + 12)] = v + (corners[number(i + 12)] - v) * this._coverageRatio;
+				_localFrustum[i] = v;
+				_localFrustum[number(i + 12)] = v + (corners[number(i + 12)] - v) * this._coverageRatio;
 			}
 
-			this.updateProjectionFromFrustumCorners(viewCamera, this._localFrustum, this._matrix);
-			this._overallDepthLens.matrix = this._matrix;
+			updateProjectionFromFrustumCorners(viewCamera, _localFrustum, _matrix);
+			_overallDepthLens.matrix = _matrix;
 		}
 	}
 }

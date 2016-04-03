@@ -15,7 +15,7 @@ module feng3d
 		 */
 		constructor(regId:string)
 		{
-			this._regs = [];
+			this._regs = new Register[]();
 			this._regs.length = 1;
 			super(regId);
 		}
@@ -25,7 +25,7 @@ module feng3d
 		 */
 		public get first():Register
 		{
-			return this.getReg(0);
+			return getReg(0);
 		}
 
 		/**
@@ -33,7 +33,7 @@ module feng3d
 		 */
 		public get last():Register
 		{
-			return this.getReg(this._regs.length - 1);
+			return getReg(_regs.length - 1);
 		}
 
 		/**
@@ -65,7 +65,7 @@ module feng3d
 		{
 			var index:number = 0;
 
-			var complexArgs = [];
+			var complexArgs:Array = [];
 
 			for (var i:number = 0; i < args.length; i++)
 			{
@@ -89,12 +89,12 @@ module feng3d
 		 */
 		public get regLen():number
 		{
-			return this._regs.length;
+			return _regs.length;
 		}
 
 		public set regLen(value:number)
 		{
-			this._regs.length = value;
+			_regs.length = value;
 		}
 
 		/**

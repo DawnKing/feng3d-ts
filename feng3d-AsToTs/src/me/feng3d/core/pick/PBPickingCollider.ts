@@ -15,7 +15,7 @@ module feng3d
 	export class PBPickingCollider extends PickingColliderBase implements IPickingCollider
 	{
 		[Embed("../../../../../pb/RayTriangleKernel.pbj", mimeType = "application/octet-stream")]
-		private RayTriangleKernelClass;
+		private RayTriangleKernelClass:Class;
 
 		/** 是否查找最短距离碰撞 */
 		private _findClosestCollision:boolean;
@@ -36,7 +36,7 @@ module feng3d
 			this._findClosestCollision = findClosestCollision;
 
 			//初始化出入缓存
-			this._kernelOutputBuffer = [];
+			this._kernelOutputBuffer = new number[]();
 			//初始化渲染器
 			this._rayTriangleKernel = new Shader(new this.RayTriangleKernelClass() as ByteArray);
 		}
@@ -109,14 +109,14 @@ module feng3d
 			{
 				pickingCollisionVO.rayEntryDistance = shortestCollisionDistance;
 
-				pickingCollisionVO.localPosition = this.ray3D.getPoint(shortestCollisionDistance);
+				pickingCollisionVO.localPosition = ray3D.getPoint(shortestCollisionDistance);
 
-				pickingCollisionVO.localNormal = this.getCollisionNormal(indexData, vertexData, collisionTriangleIndex, pickingCollisionVO.localNormal);
+				pickingCollisionVO.localNormal = getCollisionNormal(indexData, vertexData, collisionTriangleIndex, pickingCollisionVO.localNormal);
 
 				v = this._kernelOutputBuffer[collisionTriangleIndex + 1]; // barycentric coord 1
 				w = this._kernelOutputBuffer[collisionTriangleIndex + 2]; // barycentric coord 2
 				u = 1.0 - v - w;
-				pickingCollisionVO.uv = this.getCollisionUV(indexData, uvData, collisionTriangleIndex, v, w, u, 0, 2, pickingCollisionVO.uv);
+				pickingCollisionVO.uv = getCollisionUV(indexData, uvData, collisionTriangleIndex, v, w, u, 0, 2, pickingCollisionVO.uv);
 				pickingCollisionVO.index = collisionTriangleIndex * 3;
 				return true;
 			}

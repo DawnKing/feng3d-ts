@@ -11,7 +11,7 @@ module feng3d
 		private _regCount:number;
 
 		/** 使用中的寄存器数组 */
-		private usedRegisters;
+		private usedRegisters:Array;
 
 		/**
 		 * 创建寄存器池
@@ -31,7 +31,7 @@ module feng3d
 		 */
 		public get regCount():number
 		{
-			return this._regCount;
+			return _regCount;
 		}
 
 		/**
@@ -39,7 +39,7 @@ module feng3d
 		 */
 		public get regType():string
 		{
-			return this._regType;
+			return _regType;
 		}
 
 		/**

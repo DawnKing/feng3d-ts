@@ -33,7 +33,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this.methodType = BasicSpecularMethod.METHOD_TYPE;
+			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;
 			super();
 		}
@@ -43,19 +43,19 @@ module feng3d
 		 */
 		public get specularColor():number
 		{
-			return this._specularColor;
+			return _specularColor;
 		}
 
 		public set specularColor(value:number)
 		{
-			if (this._specularColor == value)
+			if (_specularColor == value)
 				return;
 
-			if (this._specularColor == 0 || value == 0)
-				this.invalidateShaderProgram();
+			if (_specularColor == 0 || value == 0)
+				invalidateShaderProgram();
 
-			this._specularColor = value;
-			this.updateSpecular();
+			_specularColor = value;
+			updateSpecular();
 		}
 
 		/**
@@ -63,17 +63,17 @@ module feng3d
 		 */
 		public get texture():Texture2DBase
 		{
-			return this._texture;
+			return _texture;
 		}
 
 		public set texture(value:Texture2DBase)
 		{
-			if (boolean(value) != boolean(this._texture) || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
+			if (boolean(value) != boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
 			{
-				this.invalidateShaderProgram();
+				invalidateShaderProgram();
 			}
-			this._texture = value;
-			this.context3DBufferOwner.markBufferDirty(this._.specularTexture_fs);
+			_texture = value;
+			context3DBufferOwner.markBufferDirty(_.specularTexture_fs);
 		}
 
 		/**
@@ -81,13 +81,13 @@ module feng3d
 		 */
 		public get gloss():number
 		{
-			return this._gloss;
+			return _gloss;
 		}
 
 		public set gloss(value:number)
 		{
-			this._gloss = value;
-			this.updateSpecular();
+			_gloss = value;
+			updateSpecular();
 		}
 
 		/**
@@ -95,16 +95,16 @@ module feng3d
 		 */
 		public get specular():number
 		{
-			return this._specular;
+			return _specular;
 		}
 
 		public set specular(value:number)
 		{
-			if (value == this._specular)
+			if (value == _specular)
 				return;
 
-			this._specular = value;
-			this.updateSpecular();
+			_specular = value;
+			updateSpecular();
 		}
 
 		/**

@@ -29,21 +29,21 @@ module feng3d
 		 */
 		public get radius():number
 		{
-			return this._radius;
+			return _radius;
 		}
 
 		public set radius(value:number)
 		{
-			this._radius = value;
-			if (this._radius < 0)
-				this._radius = 0;
-			else if (this._radius > this._fallOff)
+			_radius = value;
+			if (_radius < 0)
+				_radius = 0;
+			else if (_radius > _fallOff)
 			{
-				this._fallOff = this._radius;
-				this.invalidateBounds();
+				_fallOff = _radius;
+				invalidateBounds();
 			}
 
-			this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);
+			_fallOffFactor = 1 / (_fallOff * _fallOff - _radius * _radius);
 		}
 
 		/**
@@ -51,18 +51,18 @@ module feng3d
 		 */
 		public get fallOff():number
 		{
-			return this._fallOff;
+			return _fallOff;
 		}
 
 		public set fallOff(value:number)
 		{
-			this._fallOff = value;
-			if (this._fallOff < 0)
-				this._fallOff = 0;
-			if (this._fallOff < this._radius)
-				this._radius = this._fallOff;
-			this._fallOffFactor = 1 / (this._fallOff * this._fallOff - this._radius * this._radius);
-			this.invalidateBounds();
+			_fallOff = value;
+			if (_fallOff < 0)
+				_fallOff = 0;
+			if (_fallOff < _radius)
+				_radius = _fallOff;
+			_fallOffFactor = 1 / (_fallOff * _fallOff - _radius * _radius);
+			invalidateBounds();
 		}
 
 		/**
@@ -79,9 +79,9 @@ module feng3d
 		protected updateBounds()
 		{
 			//			super.updateBounds();
-			//			this._bounds.fromExtremes(-this._fallOff, -this._fallOff, -this._fallOff, this._fallOff, this._fallOff, this._fallOff);
-			this._bounds.fromSphere(new Vector3D(), this._fallOff);
-			this._boundsInvalid = false;
+			//			_bounds.fromExtremes(-this._fallOff, -this._fallOff, -this._fallOff, this._fallOff, this._fallOff, this._fallOff);
+			_bounds.fromSphere(new Vector3D(), this._fallOff);
+			_boundsInvalid = false;
 		}
 
 	}

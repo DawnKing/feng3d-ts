@@ -7,9 +7,9 @@ module feng3d
 	 * blinn-phong half vector model
 	 * @author feng 2015-9-24
 	 */
-	public F_Blinn_Phong(singleSpecularColorReg:Register, lightDirReg:Register)
+	constructor(singleSpecularColorReg:Register, lightDirReg:Register)
 	{
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		//入射光与视线方向的和 = 光照场景方向 add 标准视线方向
 		_.add(singleSpecularColorReg, lightDirReg, _.viewDir_ft_4);

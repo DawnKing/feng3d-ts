@@ -39,8 +39,8 @@ module feng3d
 		/** 所有粒子动画都需要的时间节点 */
 		private _timeNode:ParticleTimeNode;
 
-		private _particleNodes:ParticleNodeBase[] = [];
-		private _localStaticNodes:ParticleNodeBase[] = [];
+		private _particleNodes:ParticleNodeBase[] = new ParticleNodeBase[]();
+		private _localStaticNodes:ParticleNodeBase[] = new ParticleNodeBase[]();
 
 		/** 初始化粒子函数 */
 		public initParticleFunc:Function;
@@ -49,9 +49,9 @@ module feng3d
 		public hasBillboard:boolean;
 
 		/** 动画节点列表 */
-		private _effects:ParticleNodeBase[] = [];
+		private _effects:ParticleNodeBase[] = new ParticleNodeBase[]();
 		/** 动画名称列表 */
-		private _effectNames:string[] = [];
+		private _effectNames:string[] = new string[]();
 		/** 动画字典 */
 		private _effectDictionary = new Dictionary(true);
 
@@ -80,7 +80,7 @@ module feng3d
 		 */
 		public get particleNodes():ParticleNodeBase[]
 		{
-			return this._particleNodes;
+			return _particleNodes;
 		}
 
 		/**

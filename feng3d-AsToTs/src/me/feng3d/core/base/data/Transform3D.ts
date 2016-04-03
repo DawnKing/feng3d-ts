@@ -9,7 +9,8 @@ module feng3d
 	/**
 	 * 3D元素状态变换<br/><br/>
 	 *
-	 * 主要功能 <ul>
+	 * 主要功能:
+	 * <ul>
 	 *     <li>处理3d元素的平移、旋转、缩放等操作</li>
 	 * </ul>
 	 *
@@ -33,7 +34,7 @@ module feng3d
 		 */
 		public get forwardVector():Vector3D
 		{
-			return Matrix3DUtils.getForward(this.transform);
+			return Matrix3DUtils.getForward(transform);
 		}
 
 		/**
@@ -44,7 +45,7 @@ module feng3d
 		 */
 		public get rightVector():Vector3D
 		{
-			return Matrix3DUtils.getRight(this.transform);
+			return Matrix3DUtils.getRight(transform);
 		}
 
 		/**
@@ -55,7 +56,7 @@ module feng3d
 		 */
 		public get upVector():Vector3D
 		{
-			return Matrix3DUtils.getUp(this.transform);
+			return Matrix3DUtils.getUp(transform);
 		}
 
 		/**
@@ -66,7 +67,7 @@ module feng3d
 		 */
 		public get backVector():Vector3D
 		{
-			var director:Vector3D = Matrix3DUtils.getForward(this.transform);
+			var director:Vector3D = Matrix3DUtils.getForward(transform);
 			director.negate();
 
 			return director;
@@ -80,7 +81,7 @@ module feng3d
 		 */
 		public get leftVector():Vector3D
 		{
-			var director:Vector3D = Matrix3DUtils.getRight(this.transform);
+			var director:Vector3D = Matrix3DUtils.getRight(transform);
 			director.negate();
 
 			return director;
@@ -94,7 +95,7 @@ module feng3d
 		 */
 		public get downVector():Vector3D
 		{
-			var director:Vector3D = Matrix3DUtils.getUp(this.transform);
+			var director:Vector3D = Matrix3DUtils.getUp(transform);
 			director.negate();
 
 			return director;
@@ -106,11 +107,11 @@ module feng3d
 		 */
 		public scale(value:number)
 		{
-			this._scaleX *= value;
-			this._scaleY *= value;
-			this._scaleZ *= value;
+			_scaleX *= value;
+			_scaleY *= value;
+			_scaleZ *= value;
 
-			this.invalidateScale();
+			invalidateScale();
 		}
 
 		/**
@@ -175,13 +176,13 @@ module feng3d
 		 */
 		public moveTo(newX:number, newY:number, newZ:number)
 		{
-			if (this._x == newX && this._y == newY && this._z == newZ)
+			if (_x == newX && _y == newY && _z == newZ)
 				return;
-			this._x = newX;
-			this._y = newY;
-			this._z = newZ;
+			_x = newX;
+			_y = newY;
+			_z = newZ;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**
@@ -192,13 +193,13 @@ module feng3d
 		 */
 		public movePivot(dx:number, dy:number, dz:number)
 		{
-			if (!this._pivotPoint)
-				this._pivotPoint = new Vector3D();
-			this._pivotPoint.x += dx;
-			this._pivotPoint.y += dy;
-			this._pivotPoint.z += dz;
+			if (!_pivotPoint)
+				_pivotPoint = new Vector3D();
+			_pivotPoint.x += dx;
+			_pivotPoint.y += dy;
+			_pivotPoint.z += dz;
 
-			this.invalidatePivot();
+			invalidatePivot();
 		}
 
 		/**
@@ -211,11 +212,11 @@ module feng3d
 			var x:number = axis.x, this.y:number = axis.y, this.z:number = axis.z;
 			var len:number = distance / Math.sqrt(x * x + this.y * this.y + this.z * this.z);
 
-			this._x += x * len;
-			this._y += this.y * len;
-			this._z += this.z * len;
+			_x += x * len;
+			_y += this.y * len;
+			_z += this.z * len;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**
@@ -234,13 +235,13 @@ module feng3d
 
 			this.transform.prependTranslation(axis.x * len, axis.y * len, axis.z * len);
 
-			this._transform.copyColumnTo(3, this._pos);
+			_transform.copyColumnTo(3, _pos);
 
-			this._x = this._pos.x;
-			this._y = this._pos.y;
-			this._z = this._pos.z;
+			_x = _pos.x;
+			_y = _pos.y;
+			_z = _pos.z;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**
@@ -278,11 +279,11 @@ module feng3d
 		 */
 		public rotateTo(ax:number, ay:number, az:number)
 		{
-			this._rotationX = ax * MathConsts.DEGREES_TO_RADIANS;
-			this._rotationY = ay * MathConsts.DEGREES_TO_RADIANS;
-			this._rotationZ = az * MathConsts.DEGREES_TO_RADIANS;
+			_rotationX = ax * MathConsts.DEGREES_TO_RADIANS;
+			_rotationY = ay * MathConsts.DEGREES_TO_RADIANS;
+			_rotationZ = az * MathConsts.DEGREES_TO_RADIANS;
 
-			this.invalidateRotation();
+			invalidateRotation();
 		}
 
 		/**
@@ -297,11 +298,11 @@ module feng3d
 
 			var vec:Vector3D = m.decompose()[1];
 
-			this._rotationX += vec.x;
-			this._rotationY += vec.y;
-			this._rotationZ += vec.z;
+			_rotationX += vec.x;
+			_rotationY += vec.y;
+			_rotationZ += vec.z;
 
-			this.invalidateRotation();
+			invalidateRotation();
 		}
 
 		/**
@@ -336,21 +337,21 @@ module feng3d
 			//向上方向默认值为Y轴
 			upAxis ||= Vector3D.Y_AXIS;
 
-			if (this._transformDirty)
+			if (_transformDirty)
 			{
-				this.updateTransform();
+				updateTransform();
 			}
 
 			//物体与目标点在相同位置时，稍作偏移
-			if (new Vector3D(this._x, this._y, this._z).subtract(target).length == 0)
+			if (new Vector3D(_x, _y, _z).subtract(target).length == 0)
 			{
-				this._z = target.z + 0.1;
+				_z = target.z + 0.1;
 			}
 
 			//获得Z轴
-			zAxis.x = target.x - this._x;
-			zAxis.y = target.y - this._y;
-			zAxis.z = target.z - this._z;
+			zAxis.x = target.x - _x;
+			zAxis.y = target.y - _y;
+			zAxis.z = target.z - _z;
 			zAxis.normalize();
 
 			//向上方向与Z轴 叉乘 得到X轴
@@ -375,27 +376,27 @@ module feng3d
 			raw = Matrix3DUtils.RAW_DATA_CONTAINER;
 
 			//根据XYZ轴计算变换矩阵
-			raw[0] = this._scaleX * xAxis.x;
-			raw[1] = this._scaleX * xAxis.y;
-			raw[2] = this._scaleX * xAxis.z;
-			raw[3] = 0;
+			raw[number(0)] = _scaleX * xAxis.x;
+			raw[number(1)] = _scaleX * xAxis.y;
+			raw[number(2)] = _scaleX * xAxis.z;
+			raw[number(3)] = 0;
 
-			raw[4] = this._scaleY * yAxis.x;
-			raw[5] = this._scaleY * yAxis.y;
-			raw[6] = this._scaleY * yAxis.z;
-			raw[7] = 0;
+			raw[number(4)] = _scaleY * yAxis.x;
+			raw[number(5)] = _scaleY * yAxis.y;
+			raw[number(6)] = _scaleY * yAxis.z;
+			raw[number(7)] = 0;
 
-			raw[8] = this._scaleZ * zAxis.x;
-			raw[9] = this._scaleZ * zAxis.y;
-			raw[10] = this._scaleZ * zAxis.z;
-			raw[11] = 0;
+			raw[number(8)] = _scaleZ * zAxis.x;
+			raw[number(9)] = _scaleZ * zAxis.y;
+			raw[number(10)] = _scaleZ * zAxis.z;
+			raw[number(11)] = 0;
 
-			raw[12] = this._x;
-			raw[13] = this._y;
-			raw[14] = this._z;
-			raw[15] = 1;
+			raw[number(12)] = _x;
+			raw[number(13)] = _y;
+			raw[number(14)] = _z;
+			raw[number(15)] = 1;
 
-			this._transform.copyRawDataFrom(raw);
+			_transform.copyRawDataFrom(raw);
 
 			this.transform = this.transform;
 

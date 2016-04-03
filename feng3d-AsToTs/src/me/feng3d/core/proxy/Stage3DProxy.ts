@@ -16,8 +16,8 @@ module feng3d
 
 	
 
-	//[Event(name = "enterFrame", type = "flash.events.Event")]
-	//[Event(name = "exitFrame", type = "flash.events.Event")]
+	[Event(name = "enterFrame", type = "flash.events.Event")]
+	[Event(name = "exitFrame", type = "flash.events.Event")]
 
 	/**
 	 * 3D舞台代理
@@ -75,12 +75,12 @@ module feng3d
 		 */
 		public get color():number
 		{
-			return this._color;
+			return _color;
 		}
 
 		public set color(color:number)
 		{
-			this._color = color;
+			_color = color;
 		}
 
 		/**
@@ -211,7 +211,7 @@ module feng3d
 		 * @param priority						事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
 		 * @param useWeakReference				确定对侦听器的引用是强引用，还是弱引用。强引用（默认值）可防止您的侦听器被当作垃圾回收。弱引用则没有此作用。
 		 */
-		public addEventListener(type:string, listener:Function, useCapture:boolean = false, priority:number = 0, useWeakReference:boolean = false)
+		public override function addEventListener(type:string, listener:Function, useCapture:boolean = false, priority:number = 0, useWeakReference:boolean = false)
 		{
 			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
 
@@ -225,7 +225,7 @@ module feng3d
 		 * @param listener			要删除的侦听器函数
 		 * @param useCapture		指出是为捕获阶段还是为目标和冒泡阶段注册了侦听器。如果为捕获阶段以及目标和冒泡阶段注册了侦听器，则需要对 removeEventListener() 进行两次调用才能将这两个侦听器删除，一次调用将 useCapture() 设置为 true，另一次调用将 useCapture() 设置为 false。
 		 */
-		public removeEventListener(type:string, listener:Function, useCapture:boolean = false)
+		public override function removeEventListener(type:string, listener:Function, useCapture:boolean = false)
 		{
 			super.removeEventListener(type, listener, useCapture);
 
@@ -239,13 +239,13 @@ module feng3d
 		 */
 		public get scissorRect():Rectangle
 		{
-			return this._scissorRect;
+			return _scissorRect;
 		}
 
 		public set scissorRect(value:Rectangle)
 		{
-			this._scissorRect = value;
-			this._context3D.setScissorRectangle(this._scissorRect);
+			_scissorRect = value;
+			_context3D.setScissorRectangle(_scissorRect);
 		}
 
 		/**
@@ -253,7 +253,7 @@ module feng3d
 		 */
 		public get stage3DIndex():number
 		{
-			return this._stage3DIndex;
+			return _stage3DIndex;
 		}
 
 		/**
@@ -261,7 +261,7 @@ module feng3d
 		 */
 		public get stage3D():Stage3D
 		{
-			return this._stage3D;
+			return _stage3D;
 		}
 
 		/**
@@ -269,7 +269,7 @@ module feng3d
 		 */
 		public get context3D():Context3D
 		{
-			return this._context3D;
+			return _context3D;
 		}
 
 		/**
@@ -277,7 +277,7 @@ module feng3d
 		 */
 		public get driverInfo():string
 		{
-			return this._context3D ? this._context3D.driverInfo : null;
+			return _context3D ? _context3D.driverInfo : null;
 		}
 
 		/**
@@ -285,7 +285,7 @@ module feng3d
 		 */
 		public get usesSoftwareRendering():boolean
 		{
-			return this._usesSoftwareRendering;
+			return _usesSoftwareRendering;
 		}
 
 		/**
@@ -293,17 +293,17 @@ module feng3d
 		 */
 		public get x():number
 		{
-			return this._stage3D.x;
+			return _stage3D.x;
 		}
 
 		public set x(value:number)
 		{
-			if (this._viewPort.x == value)
+			if (_viewPort.x == value)
 				return;
 
-			this._stage3D.x = this._viewPort.x = value;
+			_stage3D.x = _viewPort.x = value;
 
-			this.notifyViewportUpdated();
+			notifyViewportUpdated();
 		}
 
 		/**
@@ -311,17 +311,17 @@ module feng3d
 		 */
 		public get y():number
 		{
-			return this._stage3D.y;
+			return _stage3D.y;
 		}
 
 		public set y(value:number)
 		{
-			if (this._viewPort.y == value)
+			if (_viewPort.y == value)
 				return;
 
-			this._stage3D.y = this._viewPort.y = value;
+			_stage3D.y = _viewPort.y = value;
 
-			this.notifyViewportUpdated();
+			notifyViewportUpdated();
 		}
 
 		/**
@@ -329,20 +329,20 @@ module feng3d
 		 */
 		public get width():number
 		{
-			return this._backBufferWidth;
+			return _backBufferWidth;
 		}
 
 		public set width(width:number)
 		{
-			if (this._viewPort.width == width)
+			if (_viewPort.width == width)
 				return;
 
 			if (width < 50)
 				width = 50;
-			this._backBufferWidth = this._viewPort.width = width;
-			this._backBufferDirty = true;
+			_backBufferWidth = _viewPort.width = width;
+			_backBufferDirty = true;
 
-			this.notifyViewportUpdated();
+			notifyViewportUpdated();
 		}
 
 		/**
@@ -350,20 +350,20 @@ module feng3d
 		 */
 		public get height():number
 		{
-			return this._backBufferHeight;
+			return _backBufferHeight;
 		}
 
 		public set height(height:number)
 		{
-			if (this._viewPort.height == height)
+			if (_viewPort.height == height)
 				return;
 
 			if (height < 50)
 				height = 50;
-			this._backBufferHeight = this._viewPort.height = height;
-			this._backBufferDirty = true;
+			_backBufferHeight = _viewPort.height = height;
+			_backBufferDirty = true;
 
-			this.notifyViewportUpdated();
+			notifyViewportUpdated();
 		}
 
 		/**
@@ -371,13 +371,13 @@ module feng3d
 		 */
 		public get antiAlias():number
 		{
-			return this._antiAlias;
+			return _antiAlias;
 		}
 
 		public set antiAlias(antiAlias:number)
 		{
-			this._antiAlias = antiAlias;
-			this._backBufferDirty = true;
+			_antiAlias = antiAlias;
+			_backBufferDirty = true;
 		}
 
 		/**
@@ -385,9 +385,9 @@ module feng3d
 		 */
 		public get viewPort():Rectangle
 		{
-			this._viewportDirty = false;
+			_viewportDirty = false;
 
-			return this._viewPort;
+			return _viewPort;
 		}
 
 		/**
@@ -395,12 +395,12 @@ module feng3d
 		 */
 		public get visible():boolean
 		{
-			return this._stage3D.visible;
+			return _stage3D.visible;
 		}
 
 		public set visible(value:boolean)
 		{
-			this._stage3D.visible = value;
+			_stage3D.visible = value;
 		}
 
 		/**
@@ -408,12 +408,12 @@ module feng3d
 		 */
 		public get bufferClear():boolean
 		{
-			return this._bufferClear;
+			return _bufferClear;
 		}
 
 		public set bufferClear(newBufferClear:boolean)
 		{
-			this._bufferClear = newBufferClear;
+			_bufferClear = newBufferClear;
 		}
 
 		/**

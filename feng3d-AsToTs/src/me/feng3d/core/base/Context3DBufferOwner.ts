@@ -12,22 +12,22 @@ module feng3d
 	/**
 	 * 添加3D环境缓冲事件
 	 */
-	//[Event(name = "addContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
+	[Event(name = "addContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
 
 	/**
 	 * 移除3D环境缓冲事件
 	 */
-	//[Event(name = "removeContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
+	[Event(name = "removeContext3DBuffer", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
 
 	/**
 	 * 添加子项3D环境缓冲拥有者事件
 	 */
-	//[Event(name = "addChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
+	[Event(name = "addChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
 
 	/**
 	 * 移除子项3D环境缓冲拥有者事件
 	 */
-	//[Event(name = "removeChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
+	[Event(name = "removeChildContext3DBufferOwner", type = "me.feng3d.events.Context3DBufferOwnerEvent")]
 
 	/**
 	 * Context3D缓存拥有者
@@ -53,7 +53,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this.childrenBufferOwner = []
+			this.childrenBufferOwner = new Context3DBufferOwner[]()
 			this.initBuffers();
 		}
 
@@ -70,7 +70,7 @@ module feng3d
 		 */
 		public get bufferDic()
 		{
-			return this._bufferDic ||= {};
+			return _bufferDic ||= {};
 		}
 
 		/**
@@ -78,7 +78,7 @@ module feng3d
 		 */
 		public get bufferList():Context3DBuffer[]
 		{
-			return this._bufferList ||= [];
+			return _bufferList ||= new Context3DBuffer[]();
 		}
 
 		/**
@@ -149,7 +149,7 @@ module feng3d
 		 */
 		public mapContext3DBuffer(dataTypeId:string, updateFunc:Function):Context3DBuffer
 		{
-			var bufferCls = Context3DBufferTypeManager.getBufferClass(dataTypeId);
+			var bufferCls:Class = Context3DBufferTypeManager.getBufferClass(dataTypeId);
 
 			var context3DBuffer:Context3DBuffer = new bufferCls(dataTypeId, updateFunc);
 			this.bufferDic[dataTypeId] = context3DBuffer;

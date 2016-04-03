@@ -21,7 +21,7 @@ module feng3d
 	/**
 	 * 材质发生变化时抛出
 	 */
-	//[Event(name = "materialChange", type = "me.feng3d.events.MeshEvent")]
+	[Event(name = "materialChange", type = "me.feng3d.events.MeshEvent")]
 
 	/**
 	 * 网格
@@ -47,8 +47,8 @@ module feng3d
 		constructor(geometry:Geometry = null, material:MaterialBase = null)
 		{
 			super();
-			this._namedAsset._assetType = AssetType.MESH;
-			this._subMeshes = [];
+			_namedAsset._assetType = AssetType.MESH;
+			this._subMeshes = new SubMesh[]();
 
 			this.geometry = geometry || new Geometry();
 
@@ -58,39 +58,39 @@ module feng3d
 		/** 几何形状 */
 		public get geometry():Geometry
 		{
-			return this._geometry;
+			return _geometry;
 		}
 
 		public set geometry(value:Geometry)
 		{
 			var i:number;
 
-			if (this._geometry)
+			if (_geometry)
 			{
-				this._geometry.removeEventListener(GeometryEvent.SHAPE_CHANGE, this.onGeometryBoundsInvalid);
-				this._geometry.removeEventListener(GeometryEvent.SUB_GEOMETRY_ADDED, this.onSubGeometryAdded);
-				this._geometry.removeEventListener(GeometryEvent.SUB_GEOMETRY_REMOVED, this.onSubGeometryRemoved);
+				_geometry.removeEventListener(GeometryEvent.SHAPE_CHANGE, onGeometryBoundsInvalid);
+				_geometry.removeEventListener(GeometryEvent.SUB_GEOMETRY_ADDED, onSubGeometryAdded);
+				_geometry.removeEventListener(GeometryEvent.SUB_GEOMETRY_REMOVED, onSubGeometryRemoved);
 
-				for (i = 0; i < this._subMeshes.length; ++i)
-					this._subMeshes[i].dispose();
-				this._subMeshes.length = 0;
+				for (i = 0; i < _subMeshes.length; ++i)
+					_subMeshes[i].dispose();
+				_subMeshes.length = 0;
 			}
 
-			this._geometry = value;
+			_geometry = value;
 
-			if (this._geometry)
+			if (_geometry)
 			{
-				this._geometry.addEventListener(GeometryEvent.SHAPE_CHANGE, this.onGeometryBoundsInvalid);
-				this._geometry.addEventListener(GeometryEvent.SUB_GEOMETRY_ADDED, this.onSubGeometryAdded);
-				this._geometry.addEventListener(GeometryEvent.SUB_GEOMETRY_REMOVED, this.onSubGeometryRemoved);
+				_geometry.addEventListener(GeometryEvent.SHAPE_CHANGE, onGeometryBoundsInvalid);
+				_geometry.addEventListener(GeometryEvent.SUB_GEOMETRY_ADDED, onSubGeometryAdded);
+				_geometry.addEventListener(GeometryEvent.SUB_GEOMETRY_REMOVED, onSubGeometryRemoved);
 
-				var subGeoms:SubGeometry[] = this._geometry.subGeometries;
+				var subGeoms:SubGeometry[] = _geometry.subGeometries;
 
 				for (i = 0; i < subGeoms.length; ++i)
-					this.addSubMesh(subGeoms[i]);
+					addSubMesh(subGeoms[i]);
 			}
 
-			this.invalidateBounds();
+			invalidateBounds();
 		}
 
 		/**
@@ -98,7 +98,7 @@ module feng3d
 		 */
 		public get material():MaterialBase
 		{
-			return this._materialSelf;
+			return _materialSelf;
 		}
 
 		/**
@@ -106,20 +106,20 @@ module feng3d
 		 */
 		public get materialSelf():MaterialBase
 		{
-			return this._materialSelf;
+			return _materialSelf;
 		}
 
 		public set material(value:MaterialBase)
 		{
-			if (value == this._materialSelf)
+			if (value == _materialSelf)
 				return;
-			if (this._materialSelf)
-				this._materialSelf.removeOwner(this);
-			this._materialSelf = value;
-			if (this._materialSelf)
-				this._materialSelf.addOwner(this);
+			if (_materialSelf)
+				_materialSelf.removeOwner(this);
+			_materialSelf = value;
+			if (_materialSelf)
+				_materialSelf.addOwner(this);
 
-			this.dispatchEvent(new MeshEvent(MeshEvent.MATERIAL_CHANGE));
+			dispatchEvent(new MeshEvent(MeshEvent.MATERIAL_CHANGE));
 		}
 
 		/**
@@ -135,8 +135,8 @@ module feng3d
 		 */
 		protected updateBounds()
 		{
-			this._bounds.fromGeometry(this.geometry);
-			this._boundsInvalid = false;
+			_bounds.fromGeometry(this.geometry);
+			_boundsInvalid = false;
 		}
 
 		/**
@@ -169,26 +169,26 @@ module feng3d
 		 */
 		public get animator():AnimatorBase
 		{
-			return this._animator;
+			return _animator;
 		}
 
 		public set animator(value:AnimatorBase)
 		{
-			if (this._animator)
-				this._animator.removeOwner(this);
+			if (_animator)
+				_animator.removeOwner(this);
 
-			this._animator = value;
+			_animator = value;
 
 			var i:number;
 
-			for (i = 0; i < this.subMeshes.length; i++)
+			for (i = 0; i < subMeshes.length; i++)
 			{
-				var subMesh:SubMesh = this.subMeshes[i];
-				subMesh.animator = this._animator;
+				var subMesh:SubMesh = subMeshes[i];
+				subMesh.animator = _animator;
 			}
 
-			if (this._animator)
-				this._animator.addOwner(this);
+			if (_animator)
+				_animator.addOwner(this);
 		}
 
 		/**
@@ -196,7 +196,7 @@ module feng3d
 		 */
 		public get subMeshes():SubMesh[]
 		{
-			return this._subMeshes;
+			return _subMeshes;
 		}
 
 		/**
@@ -209,7 +209,7 @@ module feng3d
 			var len:number = this._subMeshes.length;
 			subMesh._index = len;
 			this._subMeshes[len] = subMesh;
-			this.invalidateBounds();
+			invalidateBounds();
 		}
 
 		/**
@@ -217,7 +217,7 @@ module feng3d
 		 */
 		private onGeometryBoundsInvalid(event:GeometryEvent)
 		{
-			this.invalidateBounds();
+			invalidateBounds();
 		}
 
 		/**
@@ -226,7 +226,7 @@ module feng3d
 		private onSubGeometryAdded(event:GeometryEvent)
 		{
 			this.addSubMesh(event.subGeometry);
-			this.invalidateBounds();
+			invalidateBounds();
 		}
 
 		/**
@@ -254,7 +254,7 @@ module feng3d
 			for (; i < len; ++i)
 				this._subMeshes[i]._index = i;
 
-			this.invalidateBounds();
+			invalidateBounds();
 		}
 
 		/**
@@ -262,12 +262,12 @@ module feng3d
 		 */
 		public get castsShadows():boolean
 		{
-			return this._castsShadows;
+			return _castsShadows;
 		}
 
 		public set castsShadows(value:boolean)
 		{
-			this._castsShadows = value;
+			_castsShadows = value;
 		}
 
 		/**

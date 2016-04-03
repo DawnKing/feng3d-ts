@@ -11,33 +11,34 @@ module feng3d
 	/**
 	 * 位移时抛出
 	 */
-	//[Event(name = "positionChanged", type = "me.feng3d.events.Transform3DEvent")]
+	[Event(name = "positionChanged", type = "me.feng3d.events.Transform3DEvent")]
 
 	/**
 	 * 旋转时抛出
 	 */
-	//[Event(name = "rotationChanged", type = "me.feng3d.events.Transform3DEvent")]
+	[Event(name = "rotationChanged", type = "me.feng3d.events.Transform3DEvent")]
 
 	/**
 	 * 缩放时抛出
 	 */
-	//[Event(name = "scaleChanged", type = "me.feng3d.events.Transform3DEvent")]
+	[Event(name = "scaleChanged", type = "me.feng3d.events.Transform3DEvent")]
 
 	/**
 	 * 变换状态抛出
 	 */
-	//[Event(name = "transformChanged", type = "me.feng3d.events.Transform3DEvent")]
+	[Event(name = "transformChanged", type = "me.feng3d.events.Transform3DEvent")]
 
 	/**
 	 * 变换已更新
 	 */
-	//[Event(name = "transformUpdated", type = "me.feng3d.events.Transform3DEvent")]
+	[Event(name = "transformUpdated", type = "me.feng3d.events.Transform3DEvent")]
 
 
 	/**
 	 * 3D元素<br/><br/>
 	 *
-	 * 主要功能 <ul>
+	 * 主要功能:
+	 * <ul>
 	 *     <li>管理3D元素的位置、旋转、缩放状态</li>
 	 * </ul>
 	 * @author feng 2014-3-31
@@ -82,7 +83,7 @@ module feng3d
 
 		constructor()
 		{
-			// Cached vector of transformation this.components used when
+			// Cached vector of transformation components used when
 			// recomposing the this.transform matrix in this.updateTransform()
 			this._transformComponents = new Vector3D[](3, true);
 			this._transformComponents[0] = this._pos;
@@ -97,17 +98,17 @@ module feng3d
 		 */
 		public get x():number
 		{
-			return this._x;
+			return _x;
 		}
 
 		public set x(val:number)
 		{
-			if (this._x == val)
+			if (_x == val)
 				return;
 
-			this._x = val;
+			_x = val;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**
@@ -115,17 +116,17 @@ module feng3d
 		 */
 		public get y():number
 		{
-			return this._y;
+			return _y;
 		}
 
 		public set y(val:number)
 		{
-			if (this._y == val)
+			if (_y == val)
 				return;
 
-			this._y = val;
+			_y = val;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**
@@ -133,17 +134,17 @@ module feng3d
 		 */
 		public get z():number
 		{
-			return this._z;
+			return _z;
 		}
 
 		public set z(val:number)
 		{
-			if (this._z == val)
+			if (_z == val)
 				return;
 
-			this._z = val;
+			_z = val;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**
@@ -151,17 +152,17 @@ module feng3d
 		 */
 		public get rotationX():number
 		{
-			return this._rotationX * MathConsts.RADIANS_TO_DEGREES;
+			return _rotationX * MathConsts.RADIANS_TO_DEGREES;
 		}
 
 		public set rotationX(val:number)
 		{
-			if (this.rotationX == val)
+			if (rotationX == val)
 				return;
 
-			this._rotationX = val * MathConsts.DEGREES_TO_RADIANS;
+			_rotationX = val * MathConsts.DEGREES_TO_RADIANS;
 
-			this.invalidateRotation();
+			invalidateRotation();
 		}
 
 		/**
@@ -169,17 +170,17 @@ module feng3d
 		 */
 		public get rotationY():number
 		{
-			return this._rotationY * MathConsts.RADIANS_TO_DEGREES;
+			return _rotationY * MathConsts.RADIANS_TO_DEGREES;
 		}
 
 		public set rotationY(val:number)
 		{
-			if (this.rotationY == val)
+			if (rotationY == val)
 				return;
 
-			this._rotationY = val * MathConsts.DEGREES_TO_RADIANS;
+			_rotationY = val * MathConsts.DEGREES_TO_RADIANS;
 
-			this.invalidateRotation();
+			invalidateRotation();
 		}
 
 		/**
@@ -187,17 +188,17 @@ module feng3d
 		 */
 		public get rotationZ():number
 		{
-			return this._rotationZ * MathConsts.RADIANS_TO_DEGREES;
+			return _rotationZ * MathConsts.RADIANS_TO_DEGREES;
 		}
 
 		public set rotationZ(val:number)
 		{
-			if (this.rotationZ == val)
+			if (rotationZ == val)
 				return;
 
-			this._rotationZ = val * MathConsts.DEGREES_TO_RADIANS;
+			_rotationZ = val * MathConsts.DEGREES_TO_RADIANS;
 
-			this.invalidateRotation();
+			invalidateRotation();
 		}
 
 		/**
@@ -205,17 +206,17 @@ module feng3d
 		 */
 		public get scaleX():number
 		{
-			return this._scaleX;
+			return _scaleX;
 		}
 
 		public set scaleX(val:number)
 		{
-			if (this._scaleX == val)
+			if (_scaleX == val)
 				return;
 
-			this._scaleX = val;
+			_scaleX = val;
 
-			this.invalidateScale();
+			invalidateScale();
 		}
 
 		/**
@@ -223,17 +224,17 @@ module feng3d
 		 */
 		public get scaleY():number
 		{
-			return this._scaleY;
+			return _scaleY;
 		}
 
 		public set scaleY(val:number)
 		{
-			if (this._scaleY == val)
+			if (_scaleY == val)
 				return;
 
-			this._scaleY = val;
+			_scaleY = val;
 
-			this.invalidateScale();
+			invalidateScale();
 		}
 
 		/**
@@ -241,17 +242,17 @@ module feng3d
 		 */
 		public get scaleZ():number
 		{
-			return this._scaleZ;
+			return _scaleZ;
 		}
 
 		public set scaleZ(val:number)
 		{
-			if (this._scaleZ == val)
+			if (_scaleZ == val)
 				return;
 
-			this._scaleZ = val;
+			_scaleZ = val;
 
-			this.invalidateScale();
+			invalidateScale();
 		}
 
 		/**
@@ -262,20 +263,20 @@ module feng3d
 		 */
 		public get eulers():Vector3D
 		{
-			this._eulers.x = this._rotationX * MathConsts.RADIANS_TO_DEGREES;
-			this._eulers.y = this._rotationY * MathConsts.RADIANS_TO_DEGREES;
-			this._eulers.z = this._rotationZ * MathConsts.RADIANS_TO_DEGREES;
+			_eulers.x = _rotationX * MathConsts.RADIANS_TO_DEGREES;
+			_eulers.y = _rotationY * MathConsts.RADIANS_TO_DEGREES;
+			_eulers.z = _rotationZ * MathConsts.RADIANS_TO_DEGREES;
 
-			return this._eulers;
+			return _eulers;
 		}
 
 		public set eulers(value:Vector3D)
 		{
-			this._rotationX = value.x * MathConsts.DEGREES_TO_RADIANS;
-			this._rotationY = value.y * MathConsts.DEGREES_TO_RADIANS;
-			this._rotationZ = value.z * MathConsts.DEGREES_TO_RADIANS;
+			_rotationX = value.x * MathConsts.DEGREES_TO_RADIANS;
+			_rotationY = value.y * MathConsts.DEGREES_TO_RADIANS;
+			_rotationZ = value.z * MathConsts.DEGREES_TO_RADIANS;
 
-			this.invalidateRotation();
+			invalidateRotation();
 		}
 
 		/**
@@ -283,10 +284,10 @@ module feng3d
 		 */
 		public get transform():Matrix3D
 		{
-			if (this._transformDirty)
-				this.updateTransform();
+			if (_transformDirty)
+				updateTransform();
 
-			return this._transform;
+			return _transform;
 		}
 
 		public set transform(val:Matrix3D)
@@ -294,9 +295,9 @@ module feng3d
 			//ridiculous matrix error
 			var raw:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			val.copyRawDataTo(raw);
-			if (!raw[0])
+			if (!raw[number(0)])
 			{
-				raw[0] = this._smallestNumber;
+				raw[number(0)] = _smallestNumber;
 				val.copyRawDataFrom(raw);
 			}
 
@@ -305,35 +306,35 @@ module feng3d
 
 			vec = elements[0];
 
-			if (this._x != vec.x || this._y != vec.y || this._z != vec.z)
+			if (_x != vec.x || _y != vec.y || _z != vec.z)
 			{
-				this._x = vec.x;
-				this._y = vec.y;
-				this._z = vec.z;
+				_x = vec.x;
+				_y = vec.y;
+				_z = vec.z;
 
-				this.invalidatePosition();
+				invalidatePosition();
 			}
 
 			vec = elements[1];
 
-			if (this._rotationX != vec.x || this._rotationY != vec.y || this._rotationZ != vec.z)
+			if (_rotationX != vec.x || _rotationY != vec.y || _rotationZ != vec.z)
 			{
-				this._rotationX = vec.x;
-				this._rotationY = vec.y;
-				this._rotationZ = vec.z;
+				_rotationX = vec.x;
+				_rotationY = vec.y;
+				_rotationZ = vec.z;
 
-				this.invalidateRotation();
+				invalidateRotation();
 			}
 
 			vec = elements[2];
 
-			if (this._scaleX != vec.x || this._scaleY != vec.y || this._scaleZ != vec.z)
+			if (_scaleX != vec.x || _scaleY != vec.y || _scaleZ != vec.z)
 			{
-				this._scaleX = vec.x;
-				this._scaleY = vec.y;
-				this._scaleZ = vec.z;
+				_scaleX = vec.x;
+				_scaleY = vec.y;
+				_scaleZ = vec.z;
 
-				this.invalidateScale();
+				invalidateScale();
 			}
 		}
 
@@ -342,18 +343,18 @@ module feng3d
 		 */
 		public get pivotPoint():Vector3D
 		{
-			return this._pivotPoint;
+			return _pivotPoint;
 		}
 
 		public set pivotPoint(pivot:Vector3D)
 		{
-			if (!this._pivotPoint)
-				this._pivotPoint = new Vector3D();
-			this._pivotPoint.x = pivot.x;
-			this._pivotPoint.y = pivot.y;
-			this._pivotPoint.z = pivot.z;
+			if (!_pivotPoint)
+				_pivotPoint = new Vector3D();
+			_pivotPoint.x = pivot.x;
+			_pivotPoint.y = pivot.y;
+			_pivotPoint.z = pivot.z;
 
-			this.invalidatePivot();
+			invalidatePivot();
 		}
 
 		/**
@@ -361,18 +362,18 @@ module feng3d
 		 */
 		public get position():Vector3D
 		{
-			this.transform.copyColumnTo(3, this._pos);
+			transform.copyColumnTo(3, _pos);
 
-			return this._pos.clone();
+			return _pos.clone();
 		}
 
 		public set position(value:Vector3D)
 		{
-			this._x = value.x;
-			this._y = value.y;
-			this._z = value.z;
+			_x = value.x;
+			_y = value.y;
+			_z = value.z;
 
-			this.invalidatePosition();
+			invalidatePosition();
 		}
 
 		/**

@@ -90,7 +90,7 @@ module feng3d
 				this.vertexNormalData = new number[](this._numVertices * this.vertexNormalStride, true);
 				this.vertexTangentData = new number[](this._numVertices * this.vertexTangentStride, true);
 				this._rawIndices = new number[](numTriangles * 3, true);
-				this.invalidateUVs();
+				invalidateUVs();
 			}
 
 			// evaluate revolution steps
@@ -219,13 +219,13 @@ module feng3d
 		 */
 		public get radius():number
 		{
-			return this._radius;
+			return _radius;
 		}
 
 		public set radius(value:number)
 		{
-			this._radius = value;
-			this.invalidateGeometry();
+			_radius = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -233,13 +233,13 @@ module feng3d
 		 */
 		public get tubeRadius():number
 		{
-			return this._tubeRadius;
+			return _tubeRadius;
 		}
 
 		public set tubeRadius(value:number)
 		{
-			this._tubeRadius = value;
-			this.invalidateGeometry();
+			_tubeRadius = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -247,14 +247,14 @@ module feng3d
 		 */
 		public get segmentsR():number
 		{
-			return this._segmentsR;
+			return _segmentsR;
 		}
 
 		public set segmentsR(value:number)
 		{
-			this._segmentsR = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsR = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -262,14 +262,14 @@ module feng3d
 		 */
 		public get segmentsT():number
 		{
-			return this._segmentsT;
+			return _segmentsT;
 		}
 
 		public set segmentsT(value:number)
 		{
-			this._segmentsT = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsT = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -277,13 +277,13 @@ module feng3d
 		 */
 		public get yUp():boolean
 		{
-			return this._yUp;
+			return _yUp;
 		}
 
 		public set yUp(value:boolean)
 		{
-			this._yUp = value;
-			this.invalidateGeometry();
+			_yUp = value;
+			invalidateGeometry();
 		}
 
 		/**

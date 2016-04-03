@@ -47,13 +47,13 @@ module feng3d
 		 */
 		public get width():number
 		{
-			return this._width;
+			return _width;
 		}
 
 		public set width(value:number)
 		{
-			this._width = value;
-			this.invalidateGeometry();
+			_width = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -61,13 +61,13 @@ module feng3d
 		 */
 		public get height():number
 		{
-			return this._height;
+			return _height;
 		}
 
 		public set height(value:number)
 		{
-			this._height = value;
-			this.invalidateGeometry();
+			_height = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -75,13 +75,13 @@ module feng3d
 		 */
 		public get depth():number
 		{
-			return this._depth;
+			return _depth;
 		}
 
 		public set depth(value:number)
 		{
-			this._depth = value;
-			this.invalidateGeometry();
+			_depth = value;
+			invalidateGeometry();
 		}
 
 		/**
@@ -94,13 +94,13 @@ module feng3d
 		 */
 		public get tile6():boolean
 		{
-			return this._tile6;
+			return _tile6;
 		}
 
 		public set tile6(value:boolean)
 		{
-			this._tile6 = value;
-			this.invalidateUVs();
+			_tile6 = value;
+			invalidateUVs();
 		}
 
 		/**
@@ -108,14 +108,14 @@ module feng3d
 		 */
 		public get segmentsW():number
 		{
-			return this._segmentsW;
+			return _segmentsW;
 		}
 
 		public set segmentsW(value:number)
 		{
-			this._segmentsW = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsW = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -123,14 +123,14 @@ module feng3d
 		 */
 		public get segmentsH():number
 		{
-			return this._segmentsH;
+			return _segmentsH;
 		}
 
 		public set segmentsH(value:number)
 		{
-			this._segmentsH = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsH = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -138,14 +138,14 @@ module feng3d
 		 */
 		public get segmentsD():number
 		{
-			return this._segmentsD;
+			return _segmentsD;
 		}
 
 		public set segmentsD(value:number)
 		{
-			this._segmentsD = value;
-			this.invalidateGeometry();
-			this.invalidateUVs();
+			_segmentsD = value;
+			invalidateGeometry();
+			invalidateUVs();
 		}
 
 		/**
@@ -185,7 +185,7 @@ module feng3d
 				vertexNormalData = new number[](numVerts * vertexNormalStride, true);
 				vertexTangentData = new number[](numVerts * vertexTangentStride, true);
 				indices = new number[]((this._segmentsW * this._segmentsH + this._segmentsW * this._segmentsD + this._segmentsH * this._segmentsD) * 12, true);
-				this.invalidateUVs();
+				invalidateUVs();
 			}
 
 			// Indices
@@ -390,7 +390,7 @@ module feng3d
 			if (data == null || numUvs != data.length)
 			{
 				data = new number[](numUvs, true);
-				this.invalidateGeometry();
+				invalidateGeometry();
 			}
 
 			if (this._tile6)

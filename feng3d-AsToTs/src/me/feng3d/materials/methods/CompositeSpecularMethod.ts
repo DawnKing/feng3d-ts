@@ -17,7 +17,7 @@ module feng3d
 
 		/**
 		 * Creates a new WrapSpecularMethod object.
-		 * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature modSpecular(t : ShaderRegisterElement, regCache : ShaderRegisterCache) : string, in which t.w will contain the specular strength and t.xyz will contain the half-vector or the reflection vector.
+		 * @param modulateMethod The method which will add the code to alter the base method's strength. It needs to have the signature modSpecular(t : ShaderRegisterElement, regCache : ShaderRegisterCache) :string, in which t.w will contain the specular strength and t.xyz will contain the half-vector or the reflection vector.
 		 * @param baseSpecularMethod The base specular method on which this method's shading is based.
 		 */
 		constructor(modulateMethod:Function, baseSpecularMethod:BasicSpecularMethod = null)
@@ -33,17 +33,17 @@ module feng3d
 		 */
 		public get baseMethod():BasicSpecularMethod
 		{
-			return this._baseMethod;
+			return _baseMethod;
 		}
 
 		public set baseMethod(value:BasicSpecularMethod)
 		{
-			if (this._baseMethod == value)
+			if (_baseMethod == value)
 				return;
-			this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
-			this._baseMethod = value;
-			this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated, false, 0, true);
-			this.invalidateShaderProgram();
+			_baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, onShaderInvalidated);
+			_baseMethod = value;
+			_baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, onShaderInvalidated, false, 0, true);
+			invalidateShaderProgram();
 		}
 
 		/**
@@ -51,12 +51,12 @@ module feng3d
 		 */
 		public get gloss():number
 		{
-			return this._baseMethod.gloss;
+			return _baseMethod.gloss;
 		}
 
 		public set gloss(value:number)
 		{
-			this._baseMethod.gloss = value;
+			_baseMethod.gloss = value;
 		}
 
 		/**
@@ -64,12 +64,12 @@ module feng3d
 		 */
 		public get specular():number
 		{
-			return this._baseMethod.specular;
+			return _baseMethod.specular;
 		}
 
 		public set specular(value:number)
 		{
-			this._baseMethod.specular = value;
+			_baseMethod.specular = value;
 		}
 
 		/**
@@ -86,12 +86,12 @@ module feng3d
 		 */
 		public get texture():Texture2DBase
 		{
-			return this._baseMethod.texture;
+			return _baseMethod.texture;
 		}
 
 		public set texture(value:Texture2DBase)
 		{
-			this._baseMethod.texture = value;
+			_baseMethod.texture = value;
 		}
 
 		/**
@@ -105,7 +105,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public cleanCompilationData()
+		public override function cleanCompilationData()
 		{
 			super.cleanCompilationData();
 			this._baseMethod.cleanCompilationData();
@@ -116,7 +116,7 @@ module feng3d
 		 */
 		private onShaderInvalidated(event:ShadingMethodEvent)
 		{
-			this.invalidateShaderProgram();
+			invalidateShaderProgram();
 		}
 	}
 }

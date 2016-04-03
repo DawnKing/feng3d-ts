@@ -1,9 +1,6 @@
-module feng3d
-{
-	
+module feng3d {
 
-	export interface IAsset
-	{
-		get namedAsset():NamedAsset;
-	}
+    export interface IAsset {
+        namedAsset: NamedAsset;
+    }
 }

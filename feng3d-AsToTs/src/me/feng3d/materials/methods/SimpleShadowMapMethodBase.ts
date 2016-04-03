@@ -115,7 +115,7 @@ module feng3d
 		 */
 		private updateTextureBuffer(textureBuffer:FSBuffer)
 		{
-			textureBuffer.update(this._castingLight.shadowMapper.depthMap);
+			textureBuffer.update(_castingLight.shadowMapper.depthMap);
 		}
 
 		/**
@@ -129,18 +129,18 @@ module feng3d
 			shadowShaderParams.usePoint += this._usePoint;
 
 			if (this._usePoint)
-				this.shadowCommonsData1[0] = -Math.pow(1 / ((this._castingLight as PointLight).fallOff * this._epsilon), 2);
+				this.shadowCommonsData1[0] = -Math.pow(1 / ((_castingLight as PointLight).fallOff * _epsilon), 2);
 			else
-				this.shadowCommonsVCData0[3] = -1 / (DirectionalShadowMapper(this._shadowMapper).depth * this._epsilon);
+				this.shadowCommonsVCData0[3] = -1 / (DirectionalShadowMapper(_shadowMapper).depth * _epsilon);
 
-			this.shadowCommonsData1[1] = 1 - this._alpha;
+			this.shadowCommonsData1[1] = 1 - _alpha;
 
 			var size:number = this.castingLight.shadowMapper.depthMapSize;
 			this.shadowCommonsData2[1] = size;
 			this.shadowCommonsData2[2] = 1 / size;
 
 			//通用渲染参数
-			var flags = [this.castingLight.shadowMapper.depthMap.type, Context3DTextureFilter.NEAREST, Context3DWrapMode.CLAMP];
+			var flags:Array = [this.castingLight.shadowMapper.depthMap.type, Context3DTextureFilter.NEAREST, Context3DWrapMode.CLAMP];
 			shaderParams.setSampleFlags(this._.depthMap_fs, flags);
 		}
 
@@ -151,7 +151,7 @@ module feng3d
 		{
 			if (!this._usePoint)
 			{
-				this.depthProjection.copyFrom(DirectionalShadowMapper(this._shadowMapper).depthProjection);
+				this.depthProjection.copyFrom(DirectionalShadowMapper(_shadowMapper).depthProjection);
 			}
 		}
 

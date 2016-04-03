@@ -30,7 +30,7 @@ module feng3d
 		 */
 		public get vaId():string
 		{
-			return this._.particleVelocity_va_3;
+			return _.particleVelocity_va_3;
 		}
 
 		/**
@@ -85,13 +85,13 @@ module feng3d
 		 */
 		public generatePropertyOfOneParticle(param:ParticleProperties)
 		{
-			var _tempVelocity:Vector3D = param[ParticleVelocityNode.VELOCITY_VECTOR3D];
+			var _tempVelocity:Vector3D = param[VELOCITY_VECTOR3D];
 			if (!_tempVelocity)
-				throw new Error("there is no " + ParticleVelocityNode.VELOCITY_VECTOR3D + " in param!");
+				throw new Error("there is no " + VELOCITY_VECTOR3D + " in param!");
 
-			this._oneData[0] = _tempVelocity.x;
-			this._oneData[1] = _tempVelocity.y;
-			this._oneData[2] = _tempVelocity.z;
+			_oneData[0] = _tempVelocity.x;
+			_oneData[1] = _tempVelocity.y;
+			_oneData[2] = _tempVelocity.z;
 		}
 
 		/**

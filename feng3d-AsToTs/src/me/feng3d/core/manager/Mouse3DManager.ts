@@ -22,7 +22,7 @@ module feng3d
 		private _mousePicker:RaycastPicker = new RaycastPicker(false);
 
 		/** 收集的鼠标事件列表 */
-		private mouseEventList:string[] = [];
+		private mouseEventList:string[] = new string[]();
 
 		/** 是否开启鼠标事件检测 */
 		private mouseEventOpen:boolean = false;
@@ -37,17 +37,17 @@ module feng3d
 
 		constructor()
 		{
-			if (Mouse3DManager.eventMap == null)
+			if (eventMap == null)
 			{
-				Mouse3DManager.eventMap = {};
-				Mouse3DManager.eventMap[MouseEvent.CLICK] = MouseEvent3D.CLICK;
-				Mouse3DManager.eventMap[MouseEvent.DOUBLE_CLICK] = MouseEvent3D.DOUBLE_CLICK;
-				Mouse3DManager.eventMap[MouseEvent.MOUSE_DOWN] = MouseEvent3D.MOUSE_DOWN;
-				Mouse3DManager.eventMap[MouseEvent.MOUSE_MOVE] = MouseEvent3D.MOUSE_MOVE;
-				Mouse3DManager.eventMap[MouseEvent.MOUSE_OUT] = MouseEvent3D.MOUSE_OUT;
-				Mouse3DManager.eventMap[MouseEvent.MOUSE_OVER] = MouseEvent3D.MOUSE_OVER;
-				Mouse3DManager.eventMap[MouseEvent.MOUSE_UP] = MouseEvent3D.MOUSE_UP;
-				Mouse3DManager.eventMap[MouseEvent.MOUSE_WHEEL] = MouseEvent3D.MOUSE_WHEEL;
+				eventMap = {};
+				eventMap[MouseEvent.CLICK] = MouseEvent3D.CLICK;
+				eventMap[MouseEvent.DOUBLE_CLICK] = MouseEvent3D.DOUBLE_CLICK;
+				eventMap[MouseEvent.MOUSE_DOWN] = MouseEvent3D.MOUSE_DOWN;
+				eventMap[MouseEvent.MOUSE_MOVE] = MouseEvent3D.MOUSE_MOVE;
+				eventMap[MouseEvent.MOUSE_OUT] = MouseEvent3D.MOUSE_OUT;
+				eventMap[MouseEvent.MOUSE_OVER] = MouseEvent3D.MOUSE_OVER;
+				eventMap[MouseEvent.MOUSE_UP] = MouseEvent3D.MOUSE_UP;
+				eventMap[MouseEvent.MOUSE_WHEEL] = MouseEvent3D.MOUSE_WHEEL;
 			}
 		}
 
@@ -63,7 +63,7 @@ module feng3d
 		private onMouseOver(event:MouseEvent)
 		{
 			var view:Sprite = event.currentTarget as Sprite;
-			for (var eventType:string in Mouse3DManager.eventMap)
+			for (var eventType:string in eventMap)
 			{
 				view.addEventListener(eventType, this.onMouseEvent);
 			}
@@ -74,7 +74,7 @@ module feng3d
 		private onMouseOut(event:MouseEvent)
 		{
 			var view:Sprite = event.currentTarget as Sprite;
-			for (var eventType:string in Mouse3DManager.eventMap)
+			for (var eventType:string in eventMap)
 			{
 				view.removeEventListener(eventType, this.onMouseEvent);
 			}
@@ -100,7 +100,7 @@ module feng3d
 				return;
 			}
 
-			var mouseEvent3DList:MouseEvent3D[] = [];
+			var mouseEvent3DList:MouseEvent3D[] = new MouseEvent3D[]();
 
 			//计算得到鼠标射线相交的物体
 			this._collidingObject = this._mousePicker.getViewCollision(mouseRay3D, mouseCollisionEntitys);
@@ -168,7 +168,7 @@ module feng3d
 		 */
 		private createMouseEvent3D(sourceEventType:string, collider:PickingCollisionVO = null):MouseEvent3D
 		{
-			var mouseEvent3DType:string = Mouse3DManager.eventMap[sourceEventType];
+			var mouseEvent3DType:string = eventMap[sourceEventType];
 			if (mouseEvent3DType == null)
 				return null;
 

@@ -10,9 +10,9 @@ module feng3d
 	 * 点光源渲染
 	 * @author feng 2014-11-8
 	 */
-	public F_PointLight()
+	constructor()
 	{
-		var _ = FagalRE.instance.space;
+		var _:* = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);

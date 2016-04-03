@@ -30,7 +30,7 @@ module feng3d
 		public _fileName:string;
 
 		protected _dataFormat:string;
-		protected _data;
+		protected _data:*;
 		protected _frameLimit:number;
 		protected _lastFrameTime:number;
 
@@ -48,7 +48,7 @@ module feng3d
 		{
 			this._materialMode = 0;
 			this._dataFormat = format;
-			this._dependencies = [];
+			this._dependencies = new ResourceDependency[]();
 			AbstractClassError.check(this);
 		}
 
@@ -64,18 +64,18 @@ module feng3d
 
 		public set materialMode(newMaterialMode:number)
 		{
-			this._materialMode = newMaterialMode;
+			_materialMode = newMaterialMode;
 		}
 
 		public get materialMode():number
 		{
-			return this._materialMode;
+			return _materialMode;
 		}
 
 		/** 数据格式 */
 		public get dataFormat():string
 		{
-			return this._dataFormat;
+			return _dataFormat;
 		}
 
 		/**
@@ -226,7 +226,7 @@ module feng3d
 		 */
 		public get parsingPaused():boolean
 		{
-			return this._parsingPaused;
+			return _parsingPaused;
 		}
 
 		/**
@@ -234,7 +234,7 @@ module feng3d
 		 */
 		public get parsingComplete():boolean
 		{
-			return this._parsingComplete;
+			return _parsingComplete;
 		}
 
 		/**
@@ -242,7 +242,7 @@ module feng3d
 		 * @param data 数据
 		 * @param frameLimit 帧时间限制
 		 */
-		public parseAsync(data, frameLimit:number = 30)
+		public parseAsync(data:*, frameLimit:number = 30)
 		{
 			this._data = data;
 			this.startParsing(frameLimit);
@@ -253,7 +253,7 @@ module feng3d
 		 */
 		public get dependencies():ResourceDependency[]
 		{
-			return this._dependencies;
+			return _dependencies;
 		}
 
 		/**
@@ -331,7 +331,7 @@ module feng3d
 		 * @param data
 		 * @param suppressErrorEvents
 		 */
-		protected addDependency(id:string, req:URLRequest, retrieveAsRawData:boolean = false, data = null, suppressErrorEvents:boolean = false)
+		protected addDependency(id:string, req:URLRequest, retrieveAsRawData:boolean = false, data:* = null, suppressErrorEvents:boolean = false)
 		{
 			this._dependencies.push(new ResourceDependency(id, req, data, this, retrieveAsRawData, suppressErrorEvents));
 		}

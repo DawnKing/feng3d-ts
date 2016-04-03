@@ -34,20 +34,20 @@ module feng3d
 		 */
 		public get name():string
 		{
-			if (!this._name)
+			if (!_name)
 			{
 				var defaultName:string = ClassUtils.getDefaultName(this);
-				this._name = defaultName + number(NamedAsset.nameDic[defaultName]);
-				NamedAsset.nameDic[defaultName] = number(NamedAsset.nameDic[defaultName]) + 1;
+				_name = defaultName + number(nameDic[defaultName]);
+				nameDic[defaultName] = number(nameDic[defaultName]) + 1;
 			}
-			return this._name;
+			return _name;
 		}
 
 		public set name(value:string)
 		{
-//			if (this._name)
+//			if (_name)
 //				throw new Error(getQualifiedClassName(this) + " -- 对象已经有名称，无法更改");
-			this._name = value;
+			_name = value;
 		}
 
 		/**
@@ -55,7 +55,7 @@ module feng3d
 		 */
 		public get assetType():string
 		{
-			return this._assetType;
+			return _assetType;
 		}
 
 	}

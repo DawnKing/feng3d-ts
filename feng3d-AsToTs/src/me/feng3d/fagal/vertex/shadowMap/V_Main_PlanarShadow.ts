@@ -25,7 +25,7 @@ module feng3dMap
 		 */
 		constructor()
 		{
-			this._shaderType = Context3DProgramType.VERTEX;
+			_shaderType = Context3DProgramType.VERTEX;
 		}
 
 		/**
@@ -33,7 +33,7 @@ module feng3dMap
 		 */
 		public runFunc()
 		{
-			var _ = FagalRE.instance.space;
+			var _:* = FagalRE.instance.space;
 
 			this.buildAnimationAGAL();
 

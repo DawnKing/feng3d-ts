@@ -41,7 +41,7 @@ module feng3d
 		 */
 		public static isConst(regType:string):boolean
 		{
-			return regType == RegisterType.VC || regType == RegisterType.FC;
+			return regType == VC || regType == FC;
 		}
 
 		/**
@@ -50,7 +50,7 @@ module feng3d
 		 */
 		public static isTemp(regType:string):boolean
 		{
-			return regType == RegisterType.VT || regType == RegisterType.FT;
+			return regType == VT || regType == FT;
 		}
 
 		/**
@@ -62,23 +62,23 @@ module feng3d
 		{
 			switch (regType)
 			{
-				case RegisterType.VA:
+				case VA:
 					return true;
-				case RegisterType.VC:
+				case VC:
 					return true;
-				case RegisterType.VT:
+				case VT:
 					return false;
-				case RegisterType.OP:
+				case OP:
 					return false;
-				case RegisterType.V:
+				case V:
 					return false;
-				case RegisterType.FS:
+				case FS:
 					return true;
-				case RegisterType.FC:
+				case FC:
 					return true;
-				case RegisterType.FT:
+				case FT:
 					return false;
-				case RegisterType.OC:
+				case OC:
 					return false;
 			}
 			throw new Error("错误寄存器类型");
@@ -93,23 +93,23 @@ module feng3d
 		{
 			switch (regType)
 			{
-				case RegisterType.VA:
+				case VA:
 					return true;
-				case RegisterType.VC:
+				case VC:
 					return true;
-				case RegisterType.VT:
+				case VT:
 					return true;
-				case RegisterType.OP:
+				case OP:
 					return true;
-				case RegisterType.V:
+				case V:
 					return true;
-				case RegisterType.FS:
+				case FS:
 					return false;
-				case RegisterType.FC:
+				case FC:
 					return false;
-				case RegisterType.FT:
+				case FT:
 					return false;
-				case RegisterType.OC:
+				case OC:
 					return false;
 			}
 			throw new Error("错误寄存器类型");
@@ -124,23 +124,23 @@ module feng3d
 		{
 			switch (regType)
 			{
-				case RegisterType.VA:
+				case VA:
 					return false;
-				case RegisterType.VC:
+				case VC:
 					return false;
-				case RegisterType.VT:
+				case VT:
 					return false;
-				case RegisterType.OP:
+				case OP:
 					return false;
-				case RegisterType.V:
+				case V:
 					return true;
-				case RegisterType.FS:
+				case FS:
 					return true;
-				case RegisterType.FC:
+				case FC:
 					return true;
-				case RegisterType.FT:
+				case FT:
 					return true;
-				case RegisterType.OC:
+				case OC:
 					return true;
 			}
 			throw new Error("错误寄存器类型");
@@ -155,23 +155,23 @@ module feng3d
 		{
 			switch (regType)
 			{
-				case RegisterType.VA:
+				case VA:
 					return true;
-				case RegisterType.VC:
+				case VC:
 					return true;
-				case RegisterType.VT:
+				case VT:
 					return false;
-				case RegisterType.OP:
+				case OP:
 					return false;
-				case RegisterType.V:
+				case V:
 					return false;
-				case RegisterType.FS:
+				case FS:
 					return true;
-				case RegisterType.FC:
+				case FC:
 					return true;
-				case RegisterType.FT:
+				case FT:
 					return false;
-				case RegisterType.OC:
+				case OC:
 					return false;
 			}
 			throw new Error("错误寄存器类型");

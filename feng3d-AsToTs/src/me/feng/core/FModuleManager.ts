@@ -1,33 +1,29 @@
-module feng3d
-{
-	
+module feng3d {
+
 
 	/**
 	 * 模块管理者
 	 * <p>负责模块与外部的事件交互</p>
 	 * @author feng
 	 */
-	export class FModuleManager
-	{
+    export class FModuleManager {
 		/**
 		 * 全局事件
 		 */
-		protected static dispatcher:GlobalDispatcher = GlobalDispatcher.instance;
+        protected dispatcher: GlobalDispatcher = GlobalDispatcher.instance;
 
 		/**
 		 * 创建一个模块
 		 */
-		constructor()
-		{
-		}
+        constructor() {
+        }
 
 		/**
 		 * 初始化模块
 		 */
-		protected init()
-		{
+        protected init() {
 
-		}
+        }
 
 		/**
 		 * 派发全局事件
@@ -35,10 +31,9 @@ module feng3d
 		 * @param event						调度到事件流中的 Event 对象。如果正在重新调度事件，则会自动创建此事件的一个克隆。在调度了事件后，其 target 属性将无法更改，因此您必须创建此事件的一个新副本以能够重新调度。
 		 * @return 							如果成功调度了事件，则值为 true。值 false 表示失败或对事件调用了 preventDefault()。
 		 */
-		public dispatchEvent(event:Event):boolean
-		{
-			return GlobalDispatcher.instance.dispatchEvent(event);
-		}
+        public dispatchEvent(event: Event): boolean {
+            return GlobalDispatcher.instance.dispatchEvent(event);
+        }
 
 		/**
 		 * 监听全局事件
@@ -61,9 +56,8 @@ module feng3d
 		 *
 		 * @see flash.events.EventDispatcher.addEventListener()
 		 */
-		public addEventListener(type:string, listener:Function, useCapture:boolean = false, priority:number = 0, useWeakReference:boolean = false)
-		{
-			GlobalDispatcher.instance.addEventListener(type, listener, useCapture, priority, useWeakReference);
-		}
-	}
+        public addEventListener(type: string, listener: Function, priority: number = 0, useWeakReference: boolean = false) {
+            GlobalDispatcher.instance.addEventListener(type, listener, priority, useWeakReference);
+        }
+    }
 }

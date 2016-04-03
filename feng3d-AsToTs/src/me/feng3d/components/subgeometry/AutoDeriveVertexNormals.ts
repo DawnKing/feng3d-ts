@@ -27,25 +27,25 @@ module feng3d
 
 		constructor()
 		{
-			this.dataTypeId = this._.normal_va_3;
+			this.dataTypeId = _.normal_va_3;
 
 			super();
 		}
 
 		protected set subGeometry(value:SubGeometry)
 		{
-			if (this._subGeometry != null)
+			if (_subGeometry != null)
 			{
-				this._subGeometry.removeEventListener(GeometryComponentEvent.GET_VA_DATA, this.onGetVAData);
-				this._subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_VA_DATA, this.onChangedVAData);
-				this._subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, this.onChangedIndexData);
+				_subGeometry.removeEventListener(GeometryComponentEvent.GET_VA_DATA, onGetVAData);
+				_subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_VA_DATA, onChangedVAData);
+				_subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, onChangedIndexData);
 			}
-			this._subGeometry = value;
-			if (this._subGeometry != null)
+			_subGeometry = value;
+			if (_subGeometry != null)
 			{
-				this._subGeometry.addEventListener(GeometryComponentEvent.GET_VA_DATA, this.onGetVAData);
-				this._subGeometry.addEventListener(GeometryComponentEvent.CHANGED_VA_DATA, this.onChangedVAData);
-				this._subGeometry.addEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, this.onChangedIndexData);
+				_subGeometry.addEventListener(GeometryComponentEvent.GET_VA_DATA, onGetVAData);
+				_subGeometry.addEventListener(GeometryComponentEvent.CHANGED_VA_DATA, onChangedVAData);
+				_subGeometry.addEventListener(GeometryComponentEvent.CHANGED_INDEX_DATA, onChangedIndexData);
 			}
 		}
 
@@ -76,7 +76,7 @@ module feng3d
 
 		protected onChangedVAData(event:GeometryComponentEvent)
 		{
-			if (event.data == this._.position_va_3)
+			if (event.data == _.position_va_3)
 			{
 				this.needGenerate = true;
 
@@ -97,9 +97,9 @@ module feng3d
 		/** 面法线 */
 		public get faceNormals():number[]
 		{
-			if (this._faceNormalsDirty)
-				this.updateFaceNormals();
-			return this._faceNormals;
+			if (_faceNormalsDirty)
+				updateFaceNormals();
+			return _faceNormals;
 		}
 
 		/**
@@ -107,16 +107,16 @@ module feng3d
 		 */
 		public get useFaceWeights():boolean
 		{
-			return this._useFaceWeights;
+			return _useFaceWeights;
 		}
 
 		public set useFaceWeights(value:boolean)
 		{
-			this._useFaceWeights = value;
+			_useFaceWeights = value;
 
-			this.subGeometry.invalidVAData(this.dataTypeId);
+			subGeometry.invalidVAData(dataTypeId);
 
-			this._faceNormalsDirty = true;
+			_faceNormalsDirty = true;
 		}
 
 		/** 更新面法线数据 */
@@ -133,7 +133,7 @@ module feng3d
 			var dx2:number, dy2:number, dz2:number;
 			var cx:number, cy:number, cz:number;
 			var d:number;
-			var vertices:number[] = this.subGeometry.getVAData(this._.position_va_3);
+			var vertices:number[] = this.subGeometry.getVAData(_.position_va_3);
 			var posStride:number = 3;
 			var posOffset:number = 0;
 

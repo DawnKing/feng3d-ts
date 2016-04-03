@@ -39,7 +39,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this.methodType = BasicDiffuseMethod.METHOD_TYPE;
+			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;
 		}
 
@@ -57,13 +57,13 @@ module feng3d
 		/** 漫反射颜色 */
 		public get diffuseColor():number
 		{
-			return this._diffuseColor;
+			return _diffuseColor;
 		}
 
 		public set diffuseColor(diffuseColor:number)
 		{
-			this._diffuseColor = diffuseColor;
-			this.updateDiffuse();
+			_diffuseColor = diffuseColor;
+			updateDiffuse();
 		}
 
 		/**
@@ -79,12 +79,12 @@ module feng3d
 		/** 漫反射alpha */
 		public get diffuseAlpha():number
 		{
-			return this.diffuseInputData[3];
+			return diffuseInputData[3];
 		}
 
 		public set diffuseAlpha(value:number)
 		{
-			this.diffuseInputData[3] = value;
+			diffuseInputData[3] = value;
 		}
 
 		/**
@@ -113,19 +113,19 @@ module feng3d
 		 */
 		public get texture():Texture2DBase
 		{
-			return this._texture;
+			return _texture;
 		}
 
 		public set texture(value:Texture2DBase)
 		{
-			if (boolean(value) != boolean(this._texture) || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
+			if (boolean(value) != boolean(_texture) || (value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format)))
 			{
-				this.invalidateShaderProgram();
+				invalidateShaderProgram();
 			}
 
-			this._texture = value;
+			_texture = value;
 
-			this.context3DBufferOwner.markBufferDirty(this._.texture_fs);
+			context3DBufferOwner.markBufferDirty(_.texture_fs);
 		}
 
 		/**
@@ -135,7 +135,7 @@ module feng3d
 		 */
 		public get alphaThreshold():number
 		{
-			return this._alphaThreshold;
+			return _alphaThreshold;
 		}
 
 		public set alphaThreshold(value:number)
@@ -144,15 +144,15 @@ module feng3d
 				value = 0;
 			else if (value > 1)
 				value = 1;
-			if (value == this._alphaThreshold)
+			if (value == _alphaThreshold)
 				return;
 
-			if (value == 0 || this._alphaThreshold == 0)
-				this.invalidateShaderProgram();
+			if (value == 0 || _alphaThreshold == 0)
+				invalidateShaderProgram();
 
-			this._alphaThreshold = value;
+			_alphaThreshold = value;
 
-			this.alphaThresholdData[0] = this._alphaThreshold;
+			alphaThresholdData[0] = _alphaThreshold;
 		}
 
 		/**

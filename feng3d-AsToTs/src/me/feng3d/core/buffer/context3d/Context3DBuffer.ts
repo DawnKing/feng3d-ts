@@ -63,7 +63,7 @@ module feng3d
 		 */
 		public get dataTypeId():string
 		{
-			return this._dataTypeId;
+			return _dataTypeId;
 		}
 
 		/**

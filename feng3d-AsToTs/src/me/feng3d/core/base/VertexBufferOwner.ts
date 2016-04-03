@@ -17,7 +17,7 @@ module feng3d
 
 		protected _numVertices:number;
 
-		private _vaIdList:string[] = [];
+		private _vaIdList:string[] = new string[]();
 		/** 顶点属性数据缓存字典 */
 		private vaBufferDic = {};
 		/** 顶点数据长度字典 */
@@ -42,19 +42,19 @@ module feng3d
 		 */
 		public get numVertices():number
 		{
-			return this._numVertices;
+			return _numVertices;
 		}
 
 		public set numVertices(value:number)
 		{
-			if (this._numVertices != value)
+			if (_numVertices != value)
 			{
-				for each (var vaBuffer:VABuffer in this.vaBufferDic)
+				for each (var vaBuffer:VABuffer in vaBufferDic)
 				{
 					vaBuffer.invalid();
 				}
 			}
-			this._numVertices = value;
+			_numVertices = value;
 		}
 
 		/**
@@ -65,7 +65,7 @@ module feng3d
 		public mapVABuffer(dataTypeId:string, data32PerVertex:number)
 		{
 			this.data32PerVertexDic[dataTypeId] = data32PerVertex;
-			this.vertexDataDic[dataTypeId] = [];
+			this.vertexDataDic[dataTypeId] = new number[]();
 			this._vaIdList.push(dataTypeId);
 			this.vaBufferDic[dataTypeId] = this.context3DBufferOwner.mapContext3DBuffer(dataTypeId, this.updateVABuffer);
 		}
@@ -157,7 +157,7 @@ module feng3d
 		/** 顶点属性编号列表 */
 		public get vaIdList():string[]
 		{
-			return this._vaIdList;
+			return _vaIdList;
 		}
 
 		/**

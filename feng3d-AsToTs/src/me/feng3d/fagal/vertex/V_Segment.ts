@@ -15,12 +15,12 @@ module feng3d
 	{
 		constructor()
 		{
-			this._shaderType = Context3DProgramType.VERTEX;
+			_shaderType = Context3DProgramType.VERTEX;
 		}
 
 		public runFunc()
 		{
-			var _ = FagalRE.instance.space;
+			var _:* = FagalRE.instance.space;
 
 			var cStartPosReg:Register = _.getFreeTemp("摄像机空间起点坐标");
 			var cEndPosReg:Register = _.getFreeTemp("摄像机空间终点坐标");

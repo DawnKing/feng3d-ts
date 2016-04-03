@@ -35,7 +35,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			this.doUpdateFunc();
+			doUpdateFunc();
 
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.FRAGMENT, this.firstRegister, this.matrix, false);
 		}

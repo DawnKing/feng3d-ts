@@ -16,23 +16,23 @@ module feng3d
 
 		constructor()
 		{
-			this.dataTypeId = this._.uv_va_2;
+			this.dataTypeId = _.uv_va_2;
 
 			super();
 		}
 
 		protected set subGeometry(value:SubGeometry)
 		{
-			if (this._subGeometry != null)
+			if (_subGeometry != null)
 			{
-				this._subGeometry.removeEventListener(GeometryComponentEvent.GET_VA_DATA, this.onGetVAData);
-				this._subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_VA_DATA, this.onChangedVAData);
+				_subGeometry.removeEventListener(GeometryComponentEvent.GET_VA_DATA, onGetVAData);
+				_subGeometry.removeEventListener(GeometryComponentEvent.CHANGED_VA_DATA, onChangedVAData);
 			}
-			this._subGeometry = value;
-			if (this._subGeometry != null)
+			_subGeometry = value;
+			if (_subGeometry != null)
 			{
-				this._subGeometry.addEventListener(GeometryComponentEvent.GET_VA_DATA, this.onGetVAData);
-				this._subGeometry.addEventListener(GeometryComponentEvent.CHANGED_VA_DATA, this.onChangedVAData);
+				_subGeometry.addEventListener(GeometryComponentEvent.GET_VA_DATA, onGetVAData);
+				_subGeometry.addEventListener(GeometryComponentEvent.CHANGED_VA_DATA, onChangedVAData);
 			}
 		}
 
@@ -72,7 +72,7 @@ module feng3d
 			var len:number = this.subGeometry.numVertices * stride;
 
 			if (!target)
-				target = [];
+				target = new number[]();
 			target.fixed = false;
 			target.length = len;
 			target.fixed = true;
@@ -93,7 +93,7 @@ module feng3d
 
 		protected onChangedVAData(event:GeometryComponentEvent)
 		{
-			if (event.data == this._.position_va_3)
+			if (event.data == _.position_va_3)
 			{
 				this.needGenerate = true;
 			}

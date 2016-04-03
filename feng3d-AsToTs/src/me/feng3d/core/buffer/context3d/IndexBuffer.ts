@@ -52,7 +52,7 @@ module feng3d
 		 */
 		public doBuffer(context3D:Context3D)
 		{
-			this.doUpdateFunc();
+			doUpdateFunc();
 
 			var indexBufferItem:IndexBufferItem;
 			//处理 缓存无效标记

@@ -42,7 +42,7 @@ module feng3d
 		 */
 		public get numDirectionalLights():number
 		{
-			return this._numDirectionalLights;
+			return _numDirectionalLights;
 		}
 
 		/**
@@ -50,7 +50,7 @@ module feng3d
 		 */
 		public get numPointLights():number
 		{
-			return this._numPointLights;
+			return _numPointLights;
 		}
 
 		/**
@@ -58,7 +58,7 @@ module feng3d
 		 */
 		public get pointLights():PointLight[]
 		{
-			return this._pointLights;
+			return _pointLights;
 		}
 
 		/**
@@ -66,7 +66,7 @@ module feng3d
 		 */
 		public get directionalLights():DirectionalLight[]
 		{
-			return this._directionalLights;
+			return _directionalLights;
 		}
 
 		/**
@@ -74,12 +74,12 @@ module feng3d
 		 */
 		public get allPickedLights():LightBase[]
 		{
-			return this._allPickedLights;
+			return _allPickedLights;
 		}
 		
 		public get namedAsset():NamedAsset
 		{
-			return this._namedAsset;
+			return _namedAsset;
 		}
 	}
 }

@@ -49,7 +49,7 @@ module feng3d
 		 * @param data The data block to potentially be parsed.
 		 * @return Whether or not the given data is supported.
 		 */
-		public static supportsData(data):boolean
+		public static supportsData(data:*):boolean
 		{
 			//shortcut if asset is IFlexAsset
 			if (data is Bitmap)
@@ -90,18 +90,18 @@ module feng3d
 		 */
 		protected override function proceedParsing():boolean
 		{
-			var asset;
-			if (this._data is Bitmap)
+			var asset:*;
+			if (_data is Bitmap)
 			{
-				asset = new BitmapTexture(Bitmap(this._data).bitmapData);
-				this.finalizeAsset(asset, this._fileName);
+				asset = new BitmapTexture(Bitmap(_data).bitmapData);
+				finalizeAsset(asset, this._fileName);
 				return PARSING_DONE;
 			}
 
-			if (this._data is BitmapData)
+			if (_data is BitmapData)
 			{
-				asset = new BitmapTexture(this._data as BitmapData);
-				this.finalizeAsset(asset, this._fileName);
+				asset = new BitmapTexture(_data as BitmapData);
+				finalizeAsset(asset, this._fileName);
 				return PARSING_DONE;
 			}
 

@@ -16,7 +16,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this._pool = [];
+			this._pool = new RenderableListItem[]();
 		}
 
 		/**

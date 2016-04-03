@@ -85,8 +85,8 @@ module feng3d
 				nz *= nl;
 
 				//初始化射线数据
-				var rayPosition:Vector3D = this.ray3D.position;
-				var rayDirection:Vector3D = this.ray3D.direction;
+				var rayPosition:Vector3D = ray3D.position;
+				var rayDirection:Vector3D = ray3D.direction;
 
 				//计算射线与法线的点积，不等于零表示射线所在直线与三角面相交
 				nDotV = nx * rayDirection.x + ny * +rayDirection.y + nz * rayDirection.z; // rayDirection . normal
@@ -127,7 +127,7 @@ module feng3d
 						pickingCollisionVO.rayEntryDistance = t;
 						pickingCollisionVO.localPosition = new Vector3D(cx, cy, cz);
 						pickingCollisionVO.localNormal = new Vector3D(nx, ny, nz);
-						pickingCollisionVO.uv = this.getCollisionUV(indexData, uvData, index, v, w, u, 0, uvStride);
+						pickingCollisionVO.uv = getCollisionUV(indexData, uvData, index, v, w, u, 0, uvStride);
 						pickingCollisionVO.index = index;
 
 						//是否继续寻找最优解

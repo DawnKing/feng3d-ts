@@ -21,18 +21,18 @@ module feng3d
 
 		public get scaleU():number
 		{
-			return this._scaleU;
+			return _scaleU;
 		}
 
 		public get scaleV():number
 		{
-			return this._scaleV;
+			return _scaleV;
 		}
 
 		public scaleUV(scaleU:number = 1, scaleV:number = 1)
 		{
-			var stride:number = this.subGeometry.getVALen(this._.uv_va_2);
-			var uvs:number[] = this.subGeometry.UVData;
+			var stride:number = subGeometry.getVALen(_.uv_va_2);
+			var uvs:number[] = subGeometry.UVData;
 			var len:number = uvs.length;
 			var ratioU:number = scaleU / this._scaleU;
 			var ratioV:number = scaleV / this._scaleV;
@@ -46,7 +46,7 @@ module feng3d
 			this._scaleU = scaleU;
 			this._scaleV = scaleV;
 
-			this.subGeometry.setVAData(this._.uv_va_2, uvs);
+			subGeometry.setVAData(_.uv_va_2, uvs);
 		}
 
 		/**
@@ -54,9 +54,9 @@ module feng3d
 		 */
 		public scale(scale:number)
 		{
-			var vertices:number[] = this.subGeometry.getVAData(this._.position_va_3);
+			var vertices:number[] = subGeometry.getVAData(_.position_va_3);
 			var len:number = vertices.length;
-			var stride:number = this.subGeometry.getVALen(this._.position_va_3);
+			var stride:number = subGeometry.getVALen(_.position_va_3);
 
 			for (var i:number = 0; i < len; i += stride)
 			{
@@ -64,7 +64,7 @@ module feng3d
 				vertices[i + 1] *= scale;
 				vertices[i + 2] *= scale;
 			}
-			this.subGeometry.setVAData(this._.position_va_3, vertices);
+			subGeometry.setVAData(_.position_va_3, vertices);
 		}
 
 		/**
@@ -73,13 +73,13 @@ module feng3d
 		 */
 		public applyTransformation(transform:Matrix3D)
 		{
-			var vertices:number[] = this.subGeometry.vertexPositionData;
-			var normals:number[] = this.subGeometry.vertexNormalData;
-			var tangents:number[] = this.subGeometry.vertexTangentData;
+			var vertices:number[] = subGeometry.vertexPositionData;
+			var normals:number[] = subGeometry.vertexNormalData;
+			var tangents:number[] = subGeometry.vertexTangentData;
 
-			var posStride:number = this.subGeometry.vertexPositionStride;
-			var normalStride:number = this.subGeometry.vertexNormalStride;
-			var tangentStride:number = this.subGeometry.vertexTangentStride;
+			var posStride:number = subGeometry.vertexPositionStride;
+			var normalStride:number = subGeometry.vertexNormalStride;
+			var tangentStride:number = subGeometry.vertexTangentStride;
 
 			var len:number = vertices.length / posStride;
 			var i:number, i1:number, i2:number;
@@ -148,9 +148,9 @@ module feng3d
 				}
 			}
 
-			this.subGeometry.setVAData(this._.position_va_3, vertices);
-			this.subGeometry.setVAData(this._.normal_va_3, normals);
-			this.subGeometry.setVAData(this._.tangent_va_3, tangents);
+			subGeometry.setVAData(_.position_va_3, vertices);
+			subGeometry.setVAData(_.normal_va_3, normals);
+			subGeometry.setVAData(_.tangent_va_3, tangents);
 		}
 	}
 }

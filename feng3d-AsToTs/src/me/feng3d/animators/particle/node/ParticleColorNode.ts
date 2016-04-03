@@ -109,40 +109,40 @@ module feng3d
 		 */
 		public generatePropertyOfOneParticle(param:ParticleProperties)
 		{
-			var startColor:ColorTransform = param[ParticleColorNode.COLOR_START_COLORTRANSFORM];
+			var startColor:ColorTransform = param[COLOR_START_COLORTRANSFORM];
 			if (!startColor)
-				throw(new Error("there is no " + ParticleColorNode.COLOR_START_COLORTRANSFORM + " in param!"));
+				throw(new Error("there is no " + COLOR_START_COLORTRANSFORM + " in param!"));
 
-			var endColor:ColorTransform = param[ParticleColorNode.COLOR_END_COLORTRANSFORM];
+			var endColor:ColorTransform = param[COLOR_END_COLORTRANSFORM];
 			if (!endColor)
-				throw(new Error("there is no " + ParticleColorNode.COLOR_END_COLORTRANSFORM + " in param!"));
+				throw(new Error("there is no " + COLOR_END_COLORTRANSFORM + " in param!"));
 
 			var i:number;
 
 			//multiplier
 			if (this._usesMultiplier)
 			{
-				this._oneData[i++] = startColor.redMultiplier;
-				this._oneData[i++] = startColor.greenMultiplier;
-				this._oneData[i++] = startColor.blueMultiplier;
-				this._oneData[i++] = startColor.alphaMultiplier;
-				this._oneData[i++] = endColor.redMultiplier - startColor.redMultiplier;
-				this._oneData[i++] = endColor.greenMultiplier - startColor.greenMultiplier;
-				this._oneData[i++] = endColor.blueMultiplier - startColor.blueMultiplier;
-				this._oneData[i++] = endColor.alphaMultiplier - startColor.alphaMultiplier;
+				_oneData[i++] = startColor.redMultiplier;
+				_oneData[i++] = startColor.greenMultiplier;
+				_oneData[i++] = startColor.blueMultiplier;
+				_oneData[i++] = startColor.alphaMultiplier;
+				_oneData[i++] = endColor.redMultiplier - startColor.redMultiplier;
+				_oneData[i++] = endColor.greenMultiplier - startColor.greenMultiplier;
+				_oneData[i++] = endColor.blueMultiplier - startColor.blueMultiplier;
+				_oneData[i++] = endColor.alphaMultiplier - startColor.alphaMultiplier;
 			}
 
 			//offset
 			if (this._usesOffset)
 			{
-				this._oneData[i++] = startColor.redOffset / 255;
-				this._oneData[i++] = startColor.greenOffset / 255;
-				this._oneData[i++] = startColor.blueOffset / 255;
-				this._oneData[i++] = startColor.alphaOffset / 255;
-				this._oneData[i++] = (endColor.redOffset - startColor.redOffset) / 255;
-				this._oneData[i++] = (endColor.greenOffset - startColor.greenOffset) / 255;
-				this._oneData[i++] = (endColor.blueOffset - startColor.blueOffset) / 255;
-				this._oneData[i++] = (endColor.alphaOffset - startColor.alphaOffset) / 255;
+				_oneData[i++] = startColor.redOffset / 255;
+				_oneData[i++] = startColor.greenOffset / 255;
+				_oneData[i++] = startColor.blueOffset / 255;
+				_oneData[i++] = startColor.alphaOffset / 255;
+				_oneData[i++] = (endColor.redOffset - startColor.redOffset) / 255;
+				_oneData[i++] = (endColor.greenOffset - startColor.greenOffset) / 255;
+				_oneData[i++] = (endColor.blueOffset - startColor.blueOffset) / 255;
+				_oneData[i++] = (endColor.alphaOffset - startColor.alphaOffset) / 255;
 			}
 		}
 

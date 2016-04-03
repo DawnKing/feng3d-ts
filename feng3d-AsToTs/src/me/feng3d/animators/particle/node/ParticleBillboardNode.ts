@@ -99,14 +99,14 @@ module feng3d
 		 */
 		public get billboardAxis():Vector3D
 		{
-			return this._billboardAxis;
+			return _billboardAxis;
 		}
 
 		public set billboardAxis(value:Vector3D)
 		{
-			this._billboardAxis = value ? value.clone() : null;
-			if (this._billboardAxis)
-				this._billboardAxis.normalize();
+			_billboardAxis = value ? value.clone() : null;
+			if (_billboardAxis)
+				_billboardAxis.normalize();
 		}
 
 		/**

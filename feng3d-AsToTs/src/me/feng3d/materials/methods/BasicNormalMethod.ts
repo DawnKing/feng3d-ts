@@ -23,7 +23,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			this.methodType = BasicNormalMethod.METHOD_TYPE;
+			this.methodType = METHOD_TYPE;
 			this.typeUnique = true;
 		}
 
@@ -46,20 +46,20 @@ module feng3d
 		 */
 		public get normalMap():Texture2DBase
 		{
-			return this._texture;
+			return _texture;
 		}
 
 		public set normalMap(value:Texture2DBase)
 		{
-			if (boolean(value) != boolean(this._texture) || //
-				(value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format))) //
+			if (boolean(value) != boolean(_texture) || //
+				(value && _texture && (value.hasMipMaps != _texture.hasMipMaps || value.format != _texture.format))) //
 			{
-				this.invalidateShaderProgram();
+				invalidateShaderProgram();
 			}
 
-			this._texture = value;
+			_texture = value;
 
-			this.context3DBufferOwner.markBufferDirty(this._.normalTexture_fs);
+			context3DBufferOwner.markBufferDirty(_.normalTexture_fs);
 		}
 
 		/**
@@ -68,7 +68,7 @@ module feng3d
 		 */
 		public get hasOutput():boolean
 		{
-			return boolean(this._texture);
+			return boolean(_texture);
 		}
 
 		/**

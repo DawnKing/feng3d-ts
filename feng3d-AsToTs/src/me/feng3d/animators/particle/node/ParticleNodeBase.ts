@@ -60,7 +60,7 @@ module feng3d
 		 */
 		constructor(animationName:string, mode:number, dataLength:number, priority:number = 1)
 		{
-			this.name = animationName + ParticleNodeBase.MODES[mode];
+			this.name = animationName + MODES[mode];
 
 			this._mode = mode;
 			this._priority = priority;
@@ -78,7 +78,7 @@ module feng3d
 		 */
 		public get priority():number
 		{
-			return this._priority;
+			return _priority;
 		}
 
 		/**
@@ -86,7 +86,7 @@ module feng3d
 		 */
 		public get dataLength():number
 		{
-			return this._dataLength;
+			return _dataLength;
 		}
 
 		/**
@@ -94,7 +94,7 @@ module feng3d
 		 */
 		public get oneData():number[]
 		{
-			return this._oneData;
+			return _oneData;
 		}
 
 		/**
@@ -102,7 +102,7 @@ module feng3d
 		 */
 		public get mode():number
 		{
-			return this._mode;
+			return _mode;
 		}
 
 		/**
