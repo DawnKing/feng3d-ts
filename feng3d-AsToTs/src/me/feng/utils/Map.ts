@@ -5,8 +5,27 @@ module feng3d {
      */
     export class Map<K, V>
     {
-        list: KV<K, V>[] = [];
+        /**
+         * key,value组合列表
+         */
+        private list: KV<K, V>[] = [];
 
+        /**
+         * 删除
+         */
+        public delete(k: K) {
+            for (var i = 0; i < this.list.length; i++) {
+                var element = this.list[i];
+                if (element.k == k) {
+                    this.list.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        /**
+         * 添加映射
+         */
         public push(k: K, v: V) {
 
             var target = this._getKV(k);
@@ -18,6 +37,9 @@ module feng3d {
             }
         }
 
+        /**
+         * 通过key获取value
+         */
         public get(k: K): V {
             var target = this._getKV(k);
             if (target != null)
@@ -25,6 +47,9 @@ module feng3d {
             return null;
         }
 
+        /**
+         * 通过key获取(key,value)组合
+         */
         private _getKV(k: K): KV<K, V> {
             var target: KV<K, V>;
             this.list.forEach(kv => {
@@ -36,6 +61,9 @@ module feng3d {
         }
     }
 
+    /**
+     * key,value组合
+     */
     class KV<K, V>
     {
         constructor(public k: K, public v: V)

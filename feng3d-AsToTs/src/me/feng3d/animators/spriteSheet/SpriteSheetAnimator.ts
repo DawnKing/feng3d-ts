@@ -104,6 +104,7 @@ module feng3d {
             vcVectorBuffer.update(this._vectorFrame);
         }
 
+
 		/**
 		 * @inheritDoc
 		 */
