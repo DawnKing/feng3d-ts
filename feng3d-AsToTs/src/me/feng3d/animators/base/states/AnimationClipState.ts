@@ -62,13 +62,13 @@ module feng3d {
 		 */
         public update(time: number) {
             if (!this._animationClipNode.looping) {
-                if (time > _startTime + this._animationClipNode.totalDuration)
-                    time = _startTime + this._animationClipNode.totalDuration;
-                else if (time < _startTime)
-                    time = _startTime;
+                if (time > this._startTime + this._animationClipNode.totalDuration)
+                    time = this._startTime + this._animationClipNode.totalDuration;
+                else if (time < this._startTime)
+                    time = this._startTime;
             }
 
-            if (_time == time - _startTime)
+            if (this._time == time - this._startTime)
                 return;
 
             this.updateTime(time);
@@ -78,9 +78,9 @@ module feng3d {
 		 * @inheritDoc
 		 */
         public phase(value: number) {
-            var time: number = value * this._animationClipNode.totalDuration + _startTime;
+            var time: number = value * this._animationClipNode.totalDuration + this._startTime;
 
-            if (_time == time - _startTime)
+            if (this._time == time - this._startTime)
                 return;
 
             this.updateTime(time);
@@ -92,7 +92,7 @@ module feng3d {
         protected updateTime(time: number) {
             this._framesDirty = true;
 
-            this._timeDir = (time - _startTime > _time) ? 1 : -1;
+            this._timeDir = (time - this._startTime > this._time) ? 1 : -1;
 
             super.updateTime(time);
         }
@@ -110,7 +110,7 @@ module feng3d {
             var looping: boolean = this._animationClipNode.looping;
             var totalDuration: number = this._animationClipNode.totalDuration;
             var lastFrame: number = this._animationClipNode.lastFrame;
-            var time: number = _time;
+            var time: number = this._time;
 
             //trace("time", time, totalDuration)
             if (looping && (time >= totalDuration || time < 0)) {
@@ -162,7 +162,7 @@ module feng3d {
 		 * 通知播放完成
 		 */
         private notifyPlaybackComplete() {
-            this._animationClipNode.dispatchEvent(new AnimationStateEvent(AnimationStateEvent.PLAYBACK_COMPLETE, _animator, this, this._animationClipNode));
+            this._animationClipNode.dispatchEvent(new AnimationStateEvent(AnimationStateEvent.PLAYBACK_COMPLETE, this._animator, this, this._animationClipNode));
         }
     }
 }

@@ -4,17 +4,17 @@ module feng3d {
 	 * 动画集合基类
 	 * @author feng 2014-5-20
 	 */
-    export class AnimationSetBase extends Component implements IAsset {
+    export abstract class AnimationSetBase extends Component implements IAsset {
         private _namedAsset: NamedAsset;
         public context3DBufferOwner: Context3DBufferOwner;
 
         private _usesCPU: boolean;
         /** 动画节点列表 */
-        private _animations: AnimationNodeBase[] = new AnimationNodeBase[]();
+        private _animations: AnimationNodeBase[] = [];
         /** 动画名称列表 */
-        private _animationNames: string[] = new string[]();
+        private _animationNames: string[] = [];
         /** 动画字典 */
-        private _animationDictionary = new Dictionary(true);
+        private _animationDictionary = {};
 
 		/**
 		 * 创建一个动画集合基类
@@ -22,7 +22,6 @@ module feng3d {
         constructor() {
             super();
             this._namedAsset = new NamedAsset(this, AssetType.ANIMATION_SET);
-            AbstractClassError.check(this);
             this.context3DBufferOwner = new Context3DBufferOwner();
             this.initBuffers();
         }
@@ -45,14 +44,14 @@ module feng3d {
 		 * 是否使用CPU
 		 */
         public get usesCPU(): boolean {
-            return _usesCPU;
+            return this._usesCPU;
         }
 
 		/**
 		 * Returns a vector of animation state objects that make up the contents of the animation data set.
 		 */
         public get animations(): AnimationNodeBase[] {
-            return _animations;
+            return this._animations;
         }
 
 		/**
@@ -108,12 +107,10 @@ module feng3d {
 		 * @param pass			渲染通道
 		 * @throws	me.feng.error.AbstractMethodError
 		 */
-        public activate(shaderParams: ShaderParams, pass: MaterialPassBase) {
-            throw new AbstractMethodError();
-        }
+        public abstract activate(shaderParams: ShaderParams, pass: MaterialPassBase);
 
         public get namedAsset(): NamedAsset {
-            return _namedAsset;
+            return this._namedAsset;
         }
 
     }
