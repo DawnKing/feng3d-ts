@@ -56,8 +56,8 @@ module feng3d {
 		 *
 		 * @see flash.events.EventDispatcher.addEventListener()
 		 */
-        public addEventListener(type: string, listener: Function, useCapture: boolean = false, priority: number = 0, useWeakReference: boolean = false) {
-            GlobalDispatcher.instance.addEventListener(type, listener, useCapture, priority, useWeakReference);
+        public addEventListener(type: string, listener: Function, priority: number = 0, useWeakReference: boolean = false) {
+            GlobalDispatcher.instance.addEventListener(type, listener, priority, useWeakReference);
         }
     }
 }
