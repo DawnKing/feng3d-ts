@@ -1,10 +1,5 @@
-module feng3dRE
+module feng3d
 {
-	
-
-	
-	
-
 	/**
 	 * fagal函数单元
 	 * @author feng 2015-8-8

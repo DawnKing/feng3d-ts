@@ -11,11 +11,6 @@ module feng3d {
         private taskCollectionTypeDic;
 
 		/**
-		 * 执行中的任务集合字典（执行中的任务集合实例：任务相关数据）
-		 */
-        private executingTaskCollectionDic;
-
-		/**
 		 * 创建一个任务管理器
 		 */
         constructor() {
@@ -29,7 +24,6 @@ module feng3d {
         protected init() {
             //初始化默认任务集合类型字典
             this.taskCollectionTypeDic = {};
-            this.executingTaskCollectionDic = {};
 
             this.registerTaskCollectionType(TaskCollectionType.LIST, TaskList);
             this.registerTaskCollectionType(TaskCollectionType.QUEUE, TaskQueue);
@@ -70,7 +64,7 @@ module feng3d {
             assert(taskCollectionCls != null, "尝试使用未注册的（" + data.taskCollectionType + "）任务集合类型");
 
             var taskCollection: TaskCollection = new taskCollectionCls();
-            this.executingTaskCollectionDic[taskCollection] = data;
+            taskCollection.data = data;
 
             taskCollection.addEventListener(TaskEvent.COMPLETEDITEM, this.onCompletedItem);
             taskCollection.addEventListener(TaskEvent.COMPLETED, this.onCompleted);
@@ -85,13 +79,13 @@ module feng3d {
 		 */
         protected onCompleted(event: TaskEvent) {
             var taskCollection: TaskCollection = event.currentTarget as TaskCollection;
-            var data: TaskModuleEventDispatchTaskData = this.executingTaskCollectionDic[taskCollection];
+            var data: TaskModuleEventDispatchTaskData = taskCollection.data;
             data.dispatchEvent(event);
 
             taskCollection.removeEventListener(TaskEvent.COMPLETEDITEM, this.onCompletedItem);
             taskCollection.removeEventListener(TaskEvent.COMPLETED, this.onCompleted);
 
-            delete this.executingTaskCollectionDic[taskCollection];
+            taskCollection.data = null;
         }
 
 		/**
@@ -99,7 +93,7 @@ module feng3d {
 		 */
         protected onCompletedItem(event: TaskEvent) {
             var taskCollection: TaskCollection = event.currentTarget as TaskCollection;
-            var data: TaskModuleEventDispatchTaskData = this.executingTaskCollectionDic[taskCollection];
+            var data: TaskModuleEventDispatchTaskData = taskCollection.data;
 
             data.dispatchEvent(event);
         }

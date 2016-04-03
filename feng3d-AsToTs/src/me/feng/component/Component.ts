@@ -193,7 +193,7 @@ module feng3d {
 		 * @param cls
 		 * @return
 		 */
-        public getOrCreateComponentByClass(cls): Component {
+        public getOrCreateComponentByClass(cls): any {
             var component: Component = this.getComponentByClass(cls);
 
             if (component == null) {

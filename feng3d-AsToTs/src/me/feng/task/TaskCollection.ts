@@ -25,6 +25,8 @@ module feng3d {
 		 * 已完成任务列表
 		 */
         protected completedItemList: TaskItem[];
+        
+        public data: TaskModuleEventDispatchTaskData;
 
 		/**
 		 * 是否已经结束任务

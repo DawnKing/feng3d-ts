@@ -55,7 +55,7 @@ module feng3d {
             //加载资源
             if (!loader.hasItem(this._url)) {
                 if (this._type) {
-                    loader.add(this._url, { this.type: this._type });
+                    loader.add(this._url, { type: this._type });
                 }
                 else {
                     loader.add(this._url);

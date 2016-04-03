@@ -8,6 +8,7 @@ module feng3d {
          * @private
          */
         public constructor() {
+            $feng3dStartTime = Date.now();
             super();
             if ($ticker) {
                 throw "心跳计时器为单例";
@@ -49,4 +50,5 @@ module feng3d {
      * 心跳计时器单例
      */
     export var $ticker: SystemTicker = new SystemTicker();
+    export var $feng3dStartTime: number = -1;
 }

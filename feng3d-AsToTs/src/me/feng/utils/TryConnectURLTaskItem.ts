@@ -28,7 +28,7 @@ module feng3d {
             try {
                 this.loader.load(request);
             }
-            catch (error: Error) {
+            catch (error) {
                 this.connectFailure();
             }
         }
