@@ -16,7 +16,7 @@ module feng3d
 		protected _stitchFinalFrame:boolean = false;
 		protected _numFrames:number = 0;
 
-		protected _durations:number[] = new number[]();
+		protected _durations:number[] = [];
 		protected _totalDelta:Vector3D = new Vector3D();
 
 		/** 是否稳定帧率 */
@@ -35,7 +35,7 @@ module feng3d
 		 */
 		public get durations():number[]
 		{
-			return _durations;
+			return this._durations;
 		}
 
 		/**
@@ -43,10 +43,10 @@ module feng3d
 		 */
 		public get totalDelta():Vector3D
 		{
-			if (_stitchDirty)
-				updateStitch();
+			if (this._stitchDirty)
+				this.updateStitch();
 
-			return _totalDelta;
+			return this._totalDelta;
 		}
 
 		/**
@@ -54,17 +54,17 @@ module feng3d
 		 */
 		public get looping():boolean
 		{
-			return _looping;
+			return this._looping;
 		}
 
 		public set looping(value:boolean)
 		{
-			if (_looping == value)
+			if (this._looping == value)
 				return;
 
-			_looping = value;
+			this._looping = value;
 
-			_stitchDirty = true;
+			this._stitchDirty = true;
 		}
 
 		/**
@@ -72,17 +72,17 @@ module feng3d
 		 */
 		public get stitchFinalFrame():boolean
 		{
-			return _stitchFinalFrame;
+			return this._stitchFinalFrame;
 		}
 
 		public set stitchFinalFrame(value:boolean)
 		{
-			if (_stitchFinalFrame == value)
+			if (this._stitchFinalFrame == value)
 				return;
 
-			_stitchFinalFrame = value;
+			this._stitchFinalFrame = value;
 
-			_stitchDirty = true;
+			this._stitchDirty = true;
 		}
 
 		/**
@@ -90,10 +90,10 @@ module feng3d
 		 */
 		public get totalDuration():number
 		{
-			if (_stitchDirty)
-				updateStitch();
+			if (this._stitchDirty)
+				this.updateStitch();
 
-			return _totalDuration;
+			return this._totalDuration;
 		}
 
 		/**
@@ -101,10 +101,10 @@ module feng3d
 		 */
 		public get lastFrame():number
 		{
-			if (_stitchDirty)
-				updateStitch();
+			if (this._stitchDirty)
+				this.updateStitch();
 
-			return _lastFrame;
+			return this._lastFrame;
 		}
 
 		/**

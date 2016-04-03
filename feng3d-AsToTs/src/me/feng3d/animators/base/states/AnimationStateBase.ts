@@ -1,10 +1,6 @@
 module feng3d
 {
 	
-
-	
-	
-
 	/**
 	 * 动画状态基类
 	 * @author feng 2015-9-18
@@ -35,7 +31,7 @@ module feng3d
 		 * @param animator				动画
 		 * @param animationNode			动画节点
 		 */
-		function AnimationStateBase(animator:AnimatorBase, animationNode:AnimationNodeBase)
+		constructor(animator:AnimatorBase, animationNode:AnimationNodeBase)
 		{
 			_animator = animator;
 			_animationNode = animationNode;
