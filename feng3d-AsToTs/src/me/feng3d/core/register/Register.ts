@@ -4,7 +4,7 @@ module feng3d {
 	 * 寄存器(链表)
 	 * @author feng 2014-6-9
 	 */
-    export class Register extends Proxy implements IRegister {
+    export class Register implements IRegister {
 		/**
 		 * 输出寄存器名称
 		 */
@@ -68,7 +68,6 @@ module feng3d {
 		 * @param regId			寄存器id
 		 */
         constructor(regId: string) {
-            super();
             this._regId = regId;
 
             this.init();

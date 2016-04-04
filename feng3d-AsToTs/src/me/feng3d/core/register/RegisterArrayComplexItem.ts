@@ -1,14 +1,12 @@
-module feng3d
-{
-	
+module feng3d {
+
 
 	/**
 	 * 寄存器数组复杂元素
 	 * @author feng 2014-11-3
 	 */
-	export class RegisterArrayComplexItem extends RegisterArrayItem
-	{
-		private _complexArgs:Array;
+    export class RegisterArrayComplexItem extends RegisterArrayItem {
+        private _complexArgs: any[];
 
 		/**
 		 * 创建一个寄存器数组复杂元素
@@ -16,34 +14,31 @@ module feng3d
 		 * @param complexArgs			复杂参数（用来计算所在寄存器数组中的索引值）
 		 * @param arrayIndex			起始索引值
 		 */
-		constructor(registerArray:RegisterArray, complexArgs:Array, startIndex:number)
-		{
-			this._complexArgs = complexArgs;
+        constructor(registerArray: RegisterArray, complexArgs: any[], startIndex: number) {
+            super(registerArray, startIndex);
+            this._complexArgs = complexArgs;
 
-			super(registerArray, startIndex);
-		}
+        }
 
 		/**
 		 * 复杂参数（用来计算所在寄存器数组中的索引值）
 		 */
-		public get complexArgs():Array
-		{
-			return _complexArgs;
-		}
+        public get complexArgs(): any[] {
+            return this._complexArgs;
+        }
 
 		/**
 		 * @inheritDoc
 		 */
-		public toString():string
-		{
-			var _numStr:string = this._complexArgs.join("+");
+        public toString(): string {
+            var _numStr: string = this._complexArgs.join("+");
 
-			if (Register.TO_STRING == Register.NAME)
-				return this.regId + "[" + _numStr + "+" + _arrayIndex + "]";
+            if (Register.TO_STRING == Register.NAME)
+                return this.regId + "[" + _numStr + "+" + this._arrayIndex + "]";
 
-			if (_regType != RegisterType.OP && _regType != RegisterType.OC)
-				return this.regType + "[" + _numStr + "+" + (_arrayIndex + _registerArray.index) + "]";
-			return _regType;
-		}
-	}
+            if (this._regType != RegisterType.OP && this._regType != RegisterType.OC)
+                return this.regType + "[" + _numStr + "+" + (this._arrayIndex + this._registerArray.index) + "]";
+            return this._regType;
+        }
+    }
 }

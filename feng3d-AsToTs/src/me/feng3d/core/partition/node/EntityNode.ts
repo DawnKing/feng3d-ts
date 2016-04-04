@@ -1,10 +1,5 @@
 module feng3d
 {
-	
-	
-	
-
-	
 
 	/**
 	 * 实体分区节点
@@ -49,7 +44,7 @@ module feng3d
 		 */
 		public get entity():Entity
 		{
-			return _entity;
+			return this._entity;
 		}
 
 		/**
