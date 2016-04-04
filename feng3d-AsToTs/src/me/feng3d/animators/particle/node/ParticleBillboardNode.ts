@@ -10,6 +10,20 @@ module feng3d {
         /** 广告牌轴线 */
         public _billboardAxis: Vector3D;
 
+        /**
+		 * 顶点数据编号
+		 */
+        public getVaId(): string {
+            return "";
+        }
+
+		/**
+		 * 顶点数据长度
+		 */
+        public getVaLen(): number {
+            return 0;
+        }
+
 		/**
 		 * 创建一个广告牌节点
 		 * @param billboardAxis
@@ -39,7 +53,7 @@ module feng3d {
         public setRenderState(renderable: IRenderable, camera: Camera3D) {
             var comps: Vector3D[];
             if (this._billboardAxis) {
-                var pos: Vector3D = renderable.sourceEntity.sceneTransform.position;
+                var pos: Vector3D = renderable.getSourceEntity().sceneTransform.position;
                 var look: Vector3D = camera.sceneTransform.position.subtract(pos);
                 var right: Vector3D = look.crossProduct(this._billboardAxis);
                 right.normalize();
@@ -47,7 +61,7 @@ module feng3d {
                 look.normalize();
 
                 //create a quick inverse projection matrix
-                this._matrix.copyFrom(renderable.sourceEntity.sceneTransform);
+                this._matrix.copyFrom(renderable.getSourceEntity().sceneTransform);
                 comps = Matrix3DUtils.decompose(this._matrix, Orientation3D.AXIS_ANGLE);
                 this._matrix.copyColumnFrom(0, right);
                 this._matrix.copyColumnFrom(1, this._billboardAxis);
@@ -57,7 +71,7 @@ module feng3d {
             }
             else {
                 //create a quick inverse projection matrix
-                this._matrix.copyFrom(renderable.sourceEntity.sceneTransform);
+                this._matrix.copyFrom(renderable.getSourceEntity().sceneTransform);
                 this._matrix.append(camera.inverseSceneTransform);
 
                 //decompose using axis angle rotations
@@ -75,13 +89,13 @@ module feng3d {
 		 * 广告牌轴线
 		 */
         public get billboardAxis(): Vector3D {
-            return _billboardAxis;
+            return this._billboardAxis;
         }
 
         public set billboardAxis(value: Vector3D) {
-            _billboardAxis = value ? value.clone() : null;
-            if (_billboardAxis)
-                _billboardAxis.normalize();
+            this._billboardAxis = value ? value.clone() : null;
+            if (this._billboardAxis)
+                this._billboardAxis.normalize();
         }
 
 		/**

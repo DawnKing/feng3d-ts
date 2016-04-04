@@ -90,9 +90,7 @@ module feng3d {
 		 * 设置粒子渲染参数
 		 * @param particleShaderParam 粒子渲染参数
 		 */
-        public processAnimationSetting(shaderParam: ShaderParams) {
-            throw new Error("必须设置对应的渲染参数");
-        }
+        public abstract processAnimationSetting(shaderParam: ShaderParams);
 
 		/**
 		 * 设置渲染状态

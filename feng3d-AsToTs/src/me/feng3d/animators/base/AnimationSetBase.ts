@@ -43,7 +43,7 @@ module feng3d {
 		/**
 		 * 是否使用CPU
 		 */
-        public get usesCPU(): boolean {
+        public getUsesCPU(): boolean {
             return this._usesCPU;
         }
 

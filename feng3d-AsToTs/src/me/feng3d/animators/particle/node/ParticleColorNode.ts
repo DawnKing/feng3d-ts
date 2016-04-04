@@ -18,6 +18,20 @@ module feng3d {
         private _startOffsetData: number[];
         private _deltaOffsetData: number[];
 
+        /**
+          * 顶点数据编号
+          */
+        public getVaId(): string {
+            return "";
+        }
+
+		/**
+		 * 顶点数据长度
+		 */
+        public getVaLen(): number {
+            return 0;
+        }
+
 		/**
 		 * 开始颜色属性
 		 */

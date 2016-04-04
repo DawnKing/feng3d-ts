@@ -34,7 +34,7 @@ module feng3d {
         private _playbackSpeed: number = 1;
 
         protected _animationSet: IAnimationSet;
-        protected _owners: Mesh[] = new Mesh[]();
+        protected _owners: Mesh[] = [];
         protected _activeNode: AnimationNodeBase;
         protected _activeState: IAnimationState;
         protected _activeAnimationName: string;

@@ -8,7 +8,7 @@ module feng3d {
         private _globalPose: SkeletonPose = new SkeletonPose();
         private _globalPropertiesDirty: boolean;
         private _numJoints: number;
-        private _animationStates = new Map<SubGeometry, SubGeomAnimationState>();
+        private _animationStates1 = new Map<SubGeometry, SubGeomAnimationState>();
 
         private _skeleton: Skeleton;
         private _forceCPU: boolean;
@@ -151,10 +151,10 @@ module feng3d {
             var subGeometry: SubGeometry = meshRenderable.subMesh.subGeometry;
 
             if (this._animationSet.usesCPU) {
-                var subGeomAnimState: SubGeomAnimationState = this._animationStates.get(subGeometry);
+                var subGeomAnimState: SubGeomAnimationState = this._animationStates1.get(subGeometry);
                 if (subGeomAnimState == null) {
                     subGeomAnimState = new SubGeomAnimationState(subGeometry);
-                    this._animationStates.push(subGeometry, subGeomAnimState);
+                    this._animationStates1.push(subGeometry, subGeomAnimState);
                 }
 
                 //检查动画数据
@@ -179,8 +179,8 @@ module feng3d {
             //invalidate pose matrices
             this._globalPropertiesDirty = true;
 
-            for (var key: Object in this._animationStates)
-                this._animationStates[key].dirty = true;
+            for (var key: Object in this._animationStates1)
+                this._animationStates1[key].dirty = true;
         }
 
 		/**

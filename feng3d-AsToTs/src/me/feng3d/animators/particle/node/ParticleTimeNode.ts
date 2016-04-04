@@ -32,10 +32,10 @@ module feng3d {
 		 * @inheritDoc
 		 */
         public generatePropertyOfOneParticle(param: ParticleProperties) {
-            _oneData[0] = param.startTime;
-            _oneData[1] = param.duration;
-            _oneData[2] = param.delay + param.duration;
-            _oneData[3] = 1 / param.duration;
+            this._oneData[0] = param.startTime;
+            this._oneData[1] = param.duration;
+            this._oneData[2] = param.delay + param.duration;
+            this._oneData[3] = 1 / param.duration;
         }
 
 		/**

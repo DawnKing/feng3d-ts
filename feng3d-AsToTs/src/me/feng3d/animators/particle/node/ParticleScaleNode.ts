@@ -14,38 +14,44 @@ module feng3d {
 		 */
         public static SCALE_VECTOR3D: string = "ScaleVector3D";
 
-        public getVaId() {
-
+        /**
+		 * 顶点数据编号
+		 */
+        public getVaId(): string {
+            return "";
         }
 
-        public getVaLen() {
-
+		/**
+		 * 顶点数据长度
+		 */
+        public getVaLen(): number {
+            return 0;
         }
 
 		/**
 		 * 最小缩放
 		 */
         public get minScale(): number {
-            return _minScale;
+            return this._minScale;
         }
 
         public set minScale(value: number) {
-            _minScale = value;
+            this._minScale = value;
 
-            updateScaleData();
+            this.updateScaleData();
         }
 
 		/**
 		 * 最大缩放
 		 */
         public get maxScale(): number {
-            return _maxScale;
+            return this._maxScale;
         }
 
         public set maxScale(value: number) {
-            _maxScale = value;
+            this._maxScale = value;
 
-            updateScaleData();
+            this.updateScaleData();
         }
 
 		/**
@@ -88,7 +94,7 @@ module feng3d {
 
         private updateScaleData() {
             if (this.mode == ParticlePropertiesMode.GLOBAL) {
-                this._scaleData = number[]([this._minScale, this._maxScale - this._minScale, 0, 0]);
+                this._scaleData = [this._minScale, this._maxScale - this._minScale, 0, 0];
             }
         }
 
@@ -96,12 +102,12 @@ module feng3d {
 		 * @inheritDoc
 		 */
         public generatePropertyOfOneParticle(param: ParticleProperties) {
-            var scale: Vector3D = param[SCALE_VECTOR3D];
+            var scale: Vector3D = param[ParticleScaleNode.SCALE_VECTOR3D];
             if (!scale)
-                throw (new Error("there is no " + SCALE_VECTOR3D + " in param!"));
+                throw (new Error("there is no " + ParticleScaleNode.SCALE_VECTOR3D + " in param!"));
 
-            _oneData[0] = scale.x;
-            _oneData[1] = scale.y - scale.x;
+            this._oneData[0] = scale.x;
+            this._oneData[1] = scale.y - scale.x;
         }
 
 		/**

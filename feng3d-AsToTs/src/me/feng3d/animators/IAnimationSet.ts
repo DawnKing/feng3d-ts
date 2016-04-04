@@ -26,7 +26,7 @@ module feng3d
 		 * 判断是否使用CPU计算
 		 * @private
 		 */
-		get usesCPU():boolean;
+		getUsesCPU():boolean;
 
 		/**
 		 * 取消使用GPU计算

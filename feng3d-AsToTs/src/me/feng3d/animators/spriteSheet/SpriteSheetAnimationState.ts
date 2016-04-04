@@ -52,7 +52,7 @@ module feng3d {
 		/**
 		 * 当前帧数
 		 */
-        public get currentFrameNumber(): number {
+        public getCurrentFrameNumber(): number {
             return this._currentFrameID;
         }
 
