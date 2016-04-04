@@ -19,7 +19,7 @@ module feng3d {
 		 * @see #currentFrame
 		 * @see #nextFrame
 		 */
-        public get blendWeight(): number {
+        public getBlendWeight(): number {
             if (this._framesDirty)
                 this.updateFrames();
 
@@ -29,7 +29,7 @@ module feng3d {
 		/**
 		 * 当前帧
 		 */
-        public get currentFrame(): number {
+        public getCurrentFrame(): number {
             if (this._framesDirty)
                 this.updateFrames();
 
@@ -39,7 +39,7 @@ module feng3d {
 		/**
 		 * 下一帧
 		 */
-        public get nextFrame(): number {
+        public getNextFrame(): number {
             if (this._framesDirty)
                 this.updateFrames();
 
@@ -145,7 +145,7 @@ module feng3d {
 
                 do {
                     frameTime = dur;
-                    dur += durations[this.nextFrame];
+                    dur += durations[this.getNextFrame()];
                     this._currentFrame = this._nextFrame++;
                 } while (time > dur);
 

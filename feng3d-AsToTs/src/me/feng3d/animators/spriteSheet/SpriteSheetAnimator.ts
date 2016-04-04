@@ -104,24 +104,23 @@ module feng3d {
             vcVectorBuffer.update(this._vectorFrame);
         }
 
-
 		/**
 		 * @inheritDoc
 		 */
         public setRenderState(renderable: IRenderable, camera: Camera3D) {
-            var material: MaterialBase = renderable.material;
-            if (!material || !material is TextureMaterial)
-            return;
+            var material: MaterialBase = renderable.getMaterial();
+            if (!material || !is(material, TextureMaterial))
+                return;
 
-            var subMesh: SubMesh = MeshRenderable(renderable).subMesh;
+            var subMesh: SubMesh = as(renderable, MeshRenderable).subMesh;
             if (!subMesh)
                 return;
 
             //because textures are already uploaded, we can't offset the uv's yet
             var swapped: boolean;
 
-            if (material is SpriteSheetMaterial && this._mapDirty)
-            swapped = SpriteSheetMaterial(material).swap(this._frame.mapID);
+            if (is(material, SpriteSheetMaterial) && this._mapDirty)
+                swapped = as(material, SpriteSheetMaterial).swap(this._frame.mapID);
 
             if (!swapped) {
                 this._vectorFrame[0] = this._frame.offsetU;
@@ -147,7 +146,7 @@ module feng3d {
 
             this._activeNode = this._animationSet.getAnimation(name);
             this._activeState = this.getAnimationState(this._activeNode);
-            this._frame = SpriteSheetAnimationState(this._activeState).currentFrameData;
+            this._frame = as(this._activeState, SpriteSheetAnimationState).currentFrameData;
             this._activeSpriteSheetState = this._activeState as ISpriteSheetAnimationState;
 
             this.start();
@@ -158,8 +157,8 @@ module feng3d {
 		 */
         protected updateDeltaTime(dt: number) {
             if (this._specsDirty) {
-                SpriteSheetAnimationState(this._activeSpriteSheetState).reverse = this._reverse;
-                SpriteSheetAnimationState(this._activeSpriteSheetState).backAndForth = this._backAndForth;
+                as(this._activeSpriteSheetState, SpriteSheetAnimationState).reverse = this._reverse;
+                as(this._activeSpriteSheetState, SpriteSheetAnimationState).backAndForth = this._backAndForth;
                 this._specsDirty = false;
             }
 
@@ -169,7 +168,7 @@ module feng3d {
             if ((now - this._lastTime) > this._ms) {
                 this._mapDirty = true;
                 this._activeSpriteSheetState.update(this._absoluteTime);
-                this._frame = SpriteSheetAnimationState(this._activeSpriteSheetState).currentFrameData;
+                this._frame = as(this._activeSpriteSheetState, SpriteSheetAnimationState).currentFrameData;
                 this._lastTime = now;
 
             }
@@ -193,9 +192,9 @@ module feng3d {
         private gotoFrame(frameNumber: number, doPlay: boolean) {
             if (!this._activeState)
                 return;
-            SpriteSheetAnimationState(this._activeState).currentFrameNumber = (frameNumber == 0) ? frameNumber : frameNumber - 1;
+            as(this._activeState, SpriteSheetAnimationState).currentFrameNumber = (frameNumber == 0) ? frameNumber : frameNumber - 1;
             var currentMapID: number = this._frame.mapID;
-            this._frame = SpriteSheetAnimationState(this._activeSpriteSheetState).currentFrameData;
+            this._frame = as(this._activeSpriteSheetState, SpriteSheetAnimationState).currentFrameData;
 
             if (doPlay)
                 this.start();
