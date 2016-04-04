@@ -52,8 +52,6 @@ module feng3d {
 		/**
 		 * 更新被控制对象状态
 		 */
-        public update() {
-            throw new AbstractMethodError();
-        }
+        public abstract update();
     }
 }
