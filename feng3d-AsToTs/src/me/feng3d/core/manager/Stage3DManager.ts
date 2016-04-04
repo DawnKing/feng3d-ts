@@ -1,14 +1,6 @@
 module feng3d
 {
 	
-	
-	
-
-	
-	
-
-	
-
 	/**
 	 * The Stage3DManager class provides a multiton object that handles management for Stage3D objects. Stage3D objects
 	 * should not be requested directly, but are exposed by a Stage3DProxy.
@@ -34,8 +26,8 @@ module feng3d
 				throw new Error("This class is a multiton and cannot be instantiated manually. Use Stage3DManager.getInstance instead.");
 			this._stage = stage;
 
-			if (!_stageProxies)
-				_stageProxies = new Stage3DProxy[](this._stage.stage3Ds.length, true);
+			if (!Stage3DManager._stageProxies)
+				Stage3DManager._stageProxies = new Stage3DProxy[](this._stage.stage3Ds.length, true);
 		}
 
 		/**
@@ -45,7 +37,7 @@ module feng3d
 		 */
 		public static getInstance(stage:Stage):Stage3DManager
 		{
-			return (_instances ||= {})[stage] ||= new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
+			return (Stage3DManager._instances ||= {})[stage] ||= new Stage3DManager(stage, new Stage3DManagerSingletonEnforcer());
 		}
 
 		/**

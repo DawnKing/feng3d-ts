@@ -48,6 +48,26 @@ module feng3d {
         }
 
         /**
+         * 获取键列表
+         */
+        public getKeys(): K[] {
+            var keys: K[] = [];
+
+            this.list.forEach(kv => {
+                keys.push(kv.k);
+            });
+
+            return keys;
+        }
+
+        /**
+         * 清理字典
+         */
+        public clear() {
+            this.list.length = 0;
+        }
+
+        /**
          * 通过key获取(key,value)组合
          */
         private _getKV(k: K): KV<K, V> {

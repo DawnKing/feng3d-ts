@@ -1,19 +1,10 @@
 module feng3d {
 
-
-
-
-
-
-
-
-
-
 	/**
 	 * Context3D可执行的数据缓存
 	 * @author feng 2014-6-9
 	 */
-    export class Context3DBuffer {
+    export abstract class Context3DBuffer {
         /** 3d缓存类型编号 */
         private _dataTypeId: string;
 
@@ -31,8 +22,6 @@ module feng3d {
         constructor(dataTypeId: string, updateFunc: Function) {
             this._dataTypeId = dataTypeId;
             this._updateFunc = updateFunc;
-
-            AbstractClassError.check(this);
         }
 
 		/**
@@ -56,7 +45,7 @@ module feng3d {
 		 * 缓存类型编号
 		 */
         public get dataTypeId(): string {
-            return _dataTypeId;
+            return this._dataTypeId;
         }
 
 		/**
@@ -67,9 +56,7 @@ module feng3d {
 		 *
 		 * @see me.feng3d.core.buffer.Context3DCache
 		 */
-        public doBuffer(context3D: Context3D) {
-            throw new AbstractMethodError();
-        }
+        public abstract doBuffer(context3D: Context3D);
 
 		/**
 		 * 字符串描述
