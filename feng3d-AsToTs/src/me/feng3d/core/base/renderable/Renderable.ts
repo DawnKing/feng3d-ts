@@ -24,7 +24,7 @@ module feng3d {
 		/**
 		 * @inheritDoc
 		 */
-        public get context3dCache(): Context3DCache {
+        public getContext3dCache(): Context3DCache {
             return this._context3dCache;
         }
 
@@ -36,7 +36,7 @@ module feng3d {
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getMumTriangles(): number;
+        public abstract getNumTriangles(): number;
 
 		/**
 		 * @inheritDoc

@@ -1,78 +1,62 @@
-module feng3d
-{
-	
-	
-	
-	
-	
-
-	
+module feng3d {
 
 	/**
 	 * 可渲染对象基类
 	 * @author feng 2015-5-27
 	 */
-	export class MeshRenderable extends Renderable
-	{
-		public subMesh:SubMesh;
+    export class MeshRenderable extends Renderable {
+        public subMesh: SubMesh;
 
 		/**
 		 * 创建一个可渲染对象基类
 		 */
-		constructor(subMesh:SubMesh)
-		{
-			super();
+        constructor(subMesh: SubMesh) {
+            super();
 
-			this.subMesh = subMesh;
-			_context3dCache.addChildBufferOwner(subMesh.context3DBufferOwner);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public get mouseEnabled():boolean
-		{
-			return subMesh.mouseEnabled;
-		}
+            this.subMesh = subMesh;
+            this._context3dCache.addChildBufferOwner(subMesh.context3DBufferOwner);
+        }
 
 		/**
 		 * @inheritDoc
 		 */
-		public get numTriangles():number
-		{
-			return subMesh.numTriangles;
-		}
+        public getMouseEnabled(): boolean {
+            return this.subMesh.mouseEnabled;
+        }
 
 		/**
 		 * @inheritDoc
 		 */
-		public get sourceEntity():Entity
-		{
-			return subMesh.sourceEntity;
-		}
+        public getNumTriangles(): number {
+            return this.subMesh.numTriangles;
+        }
 
 		/**
 		 * @inheritDoc
 		 */
-		public get material():MaterialBase
-		{
-			return subMesh.material;
-		}
+        public getSourceEntity(): Entity {
+            return this.subMesh.sourceEntity;
+        }
 
 		/**
 		 * @inheritDoc
 		 */
-		public get animator():AnimatorBase
-		{
-			return subMesh.animator;
-		}
+        public getMaterial(): MaterialBase {
+            return this.subMesh.material;
+        }
 
 		/**
 		 * @inheritDoc
 		 */
-		public get castsShadows():boolean
-		{
-			return subMesh.castsShadows;
-		}
-	}
+        public getAnimator(): AnimatorBase {
+            return this.subMesh.animator;
+        }
+
+		/**
+		 * @inheritDoc
+		 */
+        public getCastsShadows(): boolean {
+            return this.subMesh.castsShadows;
+        }
+    }
 }

@@ -438,6 +438,7 @@
 //         "src/me/feng3d/lights/shadowmaps/DirectionalShadowMapper.ts",
 //         "src/me/feng3d/lights/shadowmaps/NearDirectionalShadowMapper.ts",
 //         //
+//         "src/me/feng3d/mathlib/Point.ts",
 //         "src/me/feng3d/mathlib/Matrix3D.ts",
 //         "src/me/feng3d/mathlib/Orientation3D.ts",
 //         "src/me/feng3d/mathlib/Quaternion.ts",

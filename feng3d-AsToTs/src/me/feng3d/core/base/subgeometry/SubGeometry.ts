@@ -1,35 +1,19 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-
-	
-
 	/**
 	 * 获取几何体顶点数据时触发
 	 */
-	[Event(name = "getVAData", type = "me.feng3d.events.GeometryComponentEvent")]
+	//[Event(name = "getVAData", type = "me.feng3d.events.GeometryComponentEvent")]
 
 	/**
 	 * 改变几何体顶点数据后触发
 	 */
-	[Event(name = "changedVAData", type = "me.feng3d.events.GeometryComponentEvent")]
+	//[Event(name = "changedVAData", type = "me.feng3d.events.GeometryComponentEvent")]
 
 	/**
 	 * 改变顶点索引数据后触发
 	 */
-	[Event(name = "changedIndexData", type = "me.feng3d.events.GeometryComponentEvent")]
+	//[Event(name = "changedIndexData", type = "me.feng3d.events.GeometryComponentEvent")]
 
 	/**
 	 * 子几何体
