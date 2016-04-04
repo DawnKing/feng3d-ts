@@ -1,8 +1,6 @@
 module feng3d
 {
 	
-	
-
 	/**
 	 *
 	 * @author feng 2014-8-26
@@ -31,7 +29,7 @@ module feng3d
 
 		public drawTriangles(firstIndex:number = 0, numTriangles:number = -1)
 		{
-			context3D.drawTriangles(indexBuffer3D, firstIndex, numTriangles);
+			this.context3D.drawTriangles(this.indexBuffer3D, firstIndex, numTriangles);
 		}
 
 	}

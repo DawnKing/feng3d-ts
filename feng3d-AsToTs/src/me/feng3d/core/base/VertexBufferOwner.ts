@@ -1,11 +1,6 @@
 module feng3d {
 
 
-
-
-
-
-
 	/**
 	 * 顶点数据拥有者
 	 * @author feng 2015-1-14

@@ -1,11 +1,10 @@
-module feng3d
-{
-	
-	
+module feng3d {
 
-	
-	
-	
+
+
+
+
+
 
 
 
@@ -14,57 +13,51 @@ module feng3d
 	 * Context3D可执行的数据缓存
 	 * @author feng 2014-6-9
 	 */
-	export class Context3DBuffer
-	{
-		/** 3d缓存类型编号 */
-		private _dataTypeId:string;
+    export class Context3DBuffer {
+        /** 3d缓存类型编号 */
+        private _dataTypeId: string;
 
-		/** 数据脏了 */
-		protected _dataDirty:boolean = true;
+        /** 数据脏了 */
+        protected _dataDirty: boolean = true;
 
-		/** 更新回调函数 */
-		protected _updateFunc:Function;
+        /** 更新回调函数 */
+        protected _updateFunc: Function;
 
 		/**
 		 * 创建一个Context3D可执行的数据缓存
 		 * @param dataTypeId 		数据缓存编号
 		 * @param updateFunc 		更新回调函数
 		 */
-		constructor(dataTypeId:string, updateFunc:Function)
-		{
-			this._dataTypeId = dataTypeId;
-			this._updateFunc = updateFunc;
+        constructor(dataTypeId: string, updateFunc: Function) {
+            this._dataTypeId = dataTypeId;
+            this._updateFunc = updateFunc;
 
-			AbstractClassError.check(this);
-		}
+            AbstractClassError.check(this);
+        }
 
 		/**
 		 * 使缓存无效
 		 */
-		public invalid()
-		{
-			this._dataDirty = true;
-		}
+        public invalid() {
+            this._dataDirty = true;
+        }
 
 		/**
 		 * 运行更新回调函数
 		 */
-		protected doUpdateFunc()
-		{
-			if (this._updateFunc != null && this._dataDirty)
-			{
-				this._updateFunc(this);
-				this._dataDirty = false;
-			}
-		}
+        protected doUpdateFunc() {
+            if (this._updateFunc != null && this._dataDirty) {
+                this._updateFunc(this);
+                this._dataDirty = false;
+            }
+        }
 
 		/**
 		 * 缓存类型编号
 		 */
-		public get dataTypeId():string
-		{
-			return _dataTypeId;
-		}
+        public get dataTypeId(): string {
+            return _dataTypeId;
+        }
 
 		/**
 		 * 执行Context3DBuffer
@@ -74,17 +67,15 @@ module feng3d
 		 *
 		 * @see me.feng3d.core.buffer.Context3DCache
 		 */
-		public doBuffer(context3D:Context3D)
-		{
-			throw new AbstractMethodError();
-		}
+        public doBuffer(context3D: Context3D) {
+            throw new AbstractMethodError();
+        }
 
 		/**
 		 * 字符串描述
 		 */
-		public toString():string
-		{
-			return formatString("[{0} dataType=\"{1}\"]", getQualifiedClassName(this).split("::").pop(), this._dataTypeId);
-		}
-	}
+        public toString(): string {
+            return formatString("[{0} dataType=\"{1}\"]", getQualifiedClassName(this).split("::").pop(), this._dataTypeId);
+        }
+    }
 }
