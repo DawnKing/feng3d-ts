@@ -1,19 +1,5 @@
-module feng3dMap
+module feng3d
 {
-	
-
-	
-	
-	
-	
-	_BaseAnimation;
-	_SkeletonAnimationCPU;
-	_SkeletonAnimationGPU;
-	_VertexAnimationCPU;
-	_VertexAnimationGPU;
-	_Particles;
-	
-
 	/**
 	 * 深度图顶点主程序
 	 * @author feng 2015-5-30
@@ -25,6 +11,7 @@ module feng3dMap
 		 */
 		constructor()
 		{
+            super()
 			this._shaderType = Context3DProgramType.VERTEX;
 		}
 
@@ -40,7 +27,7 @@ module feng3dMap
 			//普通动画
 //			_.mov(_.animatedPosition_vt_4, _.position_va_3);
 
-			var outPosition:Register = _.getFreeTemp("投影后的坐标");
+			var outPosition = _.getFreeTemp("投影后的坐标");
 			//计算投影
 			_.m44(outPosition, _.animatedPosition_vt_4, _.projection_vc_matrix);
 			//输出顶点坐标数据			
@@ -78,7 +65,6 @@ module feng3dMap
 					break;
 				default:
 					throw new Error(AnimationType.PARTICLE + "类型动画缺少FAGAL代码");
-					break;
 			}
 		}
 	}

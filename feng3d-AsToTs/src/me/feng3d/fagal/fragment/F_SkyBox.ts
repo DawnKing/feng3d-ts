@@ -1,10 +1,6 @@
 module feng3d
 {
 	
-
-	
-	
-
 	/**
 	 * 天空盒片段渲染程序
 	 * @author feng 2014-11-4
@@ -13,6 +9,7 @@ module feng3d
 	{
 		constructor()
 		{
+            super();
 			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 

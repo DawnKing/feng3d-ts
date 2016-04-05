@@ -9,7 +9,7 @@ module feng3d
 	 * @param positionTemp				偏移坐标临时寄存器
 	 * @author feng 2014-12-26
 	 */
-	public V_ParticlePositionEnd(animatedPosition:Register, positionTemp:Register)
+	export function V_ParticlePositionEnd(animatedPosition, positionTemp)
 	{
 		var _ = FagalRE.instance.space;
 

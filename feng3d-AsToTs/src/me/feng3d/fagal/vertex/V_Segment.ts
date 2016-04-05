@@ -15,6 +15,7 @@ module feng3d
 	{
 		constructor()
 		{
+            super()
 			this._shaderType = Context3DProgramType.VERTEX;
 		}
 
@@ -22,12 +23,12 @@ module feng3d
 		{
 			var _ = FagalRE.instance.space;
 
-			var cStartPosReg:Register = _.getFreeTemp("摄像机空间起点坐标");
-			var cEndPosReg:Register = _.getFreeTemp("摄像机空间终点坐标");
-			var lenghtReg:Register = _.getFreeTemp("线段长度");
-			var temp3:Register = _.getFreeTemp("");
-			var temp4:Register = _.getFreeTemp("");
-			var temp5:Register = _.getFreeTemp("");
+			var cStartPosReg = _.getFreeTemp("摄像机空间起点坐标");
+			var cEndPosReg = _.getFreeTemp("摄像机空间终点坐标");
+			var lenghtReg = _.getFreeTemp("线段长度");
+			var temp3 = _.getFreeTemp("");
+			var temp4 = _.getFreeTemp("");
+			var temp5 = _.getFreeTemp("");
 
 			_.comment("计算相机坐标系起点位置、终点位置、线段距离");
 			_.m44(cStartPosReg, _.segmentStart_va_3, _.segmentM2cMatrix_vc_matrix);

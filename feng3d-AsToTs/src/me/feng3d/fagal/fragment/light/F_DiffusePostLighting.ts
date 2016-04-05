@@ -1,18 +1,10 @@
 module feng3d
 {
-	_DiffuseColor;
-	_DiffuseTexure;
-	
-	
-	
-	
-	
-
 	/**
 	 * 发布漫反射光
 	 * @author feng 2014-11-7
 	 */
-	public F_DiffusePostLighting()
+	export function F_DiffusePostLighting()
 	{
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);

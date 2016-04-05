@@ -1,13 +1,5 @@
-module feng3dRE
+module feng3d
 {
-	
-
-	
-	
-	
-	
-	
-
 	
 
 	/**
@@ -29,7 +21,7 @@ module feng3dRE
 		/**
 		 * 数据id字典
 		 */
-		internal static var idDic = {};
+		static idDic = {};
 
 		/**
 		 * 添加3d缓冲编号配置
@@ -56,9 +48,9 @@ module feng3dRE
 		/**
 		 * Fagal运行环境空间
 		 */
-		public get space():FagalRESpace
+		public get space():any
 		{
-			return this._space ||= new FagalRESpace();
+			return this._space =this._space || new FagalRESpace();
 		}
 
 		/**

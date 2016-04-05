@@ -9,7 +9,7 @@ module feng3d
 	 * 骨骼动画渲染程序(GPU)
 	 * @author feng 2014-11-3
 	 */
-	public V_SkeletonAnimationGPU():Register
+	export function V_SkeletonAnimationGPU():Register
 	{
 		var _ = FagalRE.instance.space;
 
@@ -17,7 +17,7 @@ module feng3d
 		var animationShaderParams:AnimationShaderParams = shaderParams.getOrCreateComponentByClass(AnimationShaderParams);
 
 		//
-		var vt1:Register = _.getFreeTemp();
+		var vt1:any = _.getFreeTemp();
 		var vt2:Register = _.getFreeTemp();
 
 		_.globalmatrices_vc_vector.regLen = animationShaderParams.numJoints * 3;

@@ -1,19 +1,5 @@
-module feng3dMap
+module feng3d
 {
-	
-
-	
-	
-	
-	
-	_BaseAnimation;
-	_SkeletonAnimationCPU;
-	_SkeletonAnimationGPU;
-	_VertexAnimationCPU;
-	_VertexAnimationGPU;
-	_Particles;
-	
-
 	/**
 	 * 平面阴影顶点主程序
 	 * @author feng 2015-5-30
@@ -25,6 +11,7 @@ module feng3dMap
 		 */
 		constructor()
 		{
+            super();
 			this._shaderType = Context3DProgramType.VERTEX;
 		}
 
@@ -75,7 +62,6 @@ module feng3dMap
 					break;
 				default:
 					throw new Error(AnimationType.PARTICLE + "类型动画缺少FAGAL代码");
-					break;
 			}
 		}
 	}

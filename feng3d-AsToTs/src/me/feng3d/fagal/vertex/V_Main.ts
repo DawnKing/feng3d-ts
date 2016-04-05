@@ -1,23 +1,5 @@
 module feng3d
 {
-	
-
-	
-	
-	
-	
-	
-	
-	_SkeletonAnimationCPU;
-	_SkeletonAnimationGPU;
-	_SpriteSheetAnimation;
-	_UVAnimation;
-	_VertexAnimationCPU;
-	_VertexAnimationGPU;
-	_Particles;
-	_ShadowMap;
-	
-
 	/**
 	 * 顶点渲染程序主入口
 	 * @author feng 2014-10-30
@@ -30,6 +12,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 			this._shaderType = Context3DProgramType.VERTEX;
 		}
 
@@ -130,7 +113,6 @@ module feng3d
 					break;
 				default:
 					throw new Error(AnimationType.PARTICLE + "类型动画缺少FAGAL代码");
-					break;
 			}
 		}
 	}

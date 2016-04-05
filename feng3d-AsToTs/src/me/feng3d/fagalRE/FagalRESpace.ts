@@ -1,19 +1,11 @@
-module feng3dRE
+module feng3d
 {
-	
-	_proxy;
-	
-
-	
-	
-	
-	
 
 	/**
 	 * Fagal运行环境空间
 	 * @author feng 2015-7-23
 	 */
-	public dynamic class FagalRESpace extends Proxy
+	export class FagalRESpace extends Proxy
 	{
 		private callLog:FagalItem[];
 
@@ -24,7 +16,7 @@ module feng3dRE
 		 */
 		private get math():FagalMath
 		{
-			return this._math ||= new FagalMath();
+			return this._math =this._math|| new FagalMath();
 		}
 
 		/**

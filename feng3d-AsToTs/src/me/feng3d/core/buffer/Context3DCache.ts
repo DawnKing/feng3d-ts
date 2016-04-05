@@ -172,7 +172,7 @@ module feng3d {
                         }
                     }
                     if (registerBuffer != null) {
-                        if (is(registerBuffer, OCBuffer)
+                        if (is(registerBuffer, OCBuffer))
                         {
                             this.ocBuffer = registerBuffer as OCBuffer;
                         }

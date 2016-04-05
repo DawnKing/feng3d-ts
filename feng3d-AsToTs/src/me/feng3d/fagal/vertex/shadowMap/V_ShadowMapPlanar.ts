@@ -1,4 +1,4 @@
-module feng3dMap
+module feng3d
 {
 	
 	
@@ -8,11 +8,11 @@ module feng3dMap
 	 * 方向光阴影映射
 	 * @author feng 2015-7-17
 	 */
-	public V_ShadowMapPlanar()
+	export function V_ShadowMapPlanar()
 	{
 		var _ = FagalRE.instance.space;
 
-		var temp:Register = _.getFreeTemp();
+		var temp = _.getFreeTemp();
 
 		//计算顶点深度值
 		_.m44(temp, _.globalPosition_vt_4, _.depthMap_vc_matrix);

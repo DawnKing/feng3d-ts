@@ -1,12 +1,10 @@
 module feng3d
 {
-	
-
 	/**
 	 * 光泽图取样函数
 	 * @author feng 2014-10-23
 	 */
-	public F_SpecularSample()
+	export function F_SpecularSample()
 	{
 		var _ = FagalRE.instance.space;
 

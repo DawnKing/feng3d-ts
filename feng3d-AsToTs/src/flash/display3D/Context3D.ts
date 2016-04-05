@@ -6,5 +6,25 @@ module feng3d
         {
             return null;
         }
+        
+        public clear(a, b, c)
+        {
+            
+        }
+        
+        public setRenderToBackBuffer()
+        {
+            
+        }
+        
+        public setVertexBufferAt(a, b)
+        {
+            
+        }
+        
+        public setTextureAt(i, b)
+        {
+            
+        }
     }
 }

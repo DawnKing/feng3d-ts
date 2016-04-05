@@ -7,7 +7,7 @@ module feng3d
 	 * 骨骼动画渲染程序(CPU)
 	 * @author feng 2014-11-3
 	 */
-	public V_SkeletonAnimationCPU()
+	export function V_SkeletonAnimationCPU()
 	{
 		var _ = FagalRE.instance.space;
 

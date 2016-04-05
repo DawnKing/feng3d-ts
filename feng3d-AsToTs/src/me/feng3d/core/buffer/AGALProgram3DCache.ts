@@ -66,8 +66,11 @@ module feng3d {
 		 * 销毁
 		 */
         public dispose() {
-            for (var key: string in this._program3Ds)
-                this.destroyProgram(key);
+            for (var key in this._program3Ds) {
+                if (this._program3Ds.hasOwnProperty(key)) {
+                    this.destroyProgram(key);
+                }
+            }
 
             this._keys = null;
             this._program3Ds = null;
@@ -154,9 +157,9 @@ module feng3d {
 		 * @param program3D		被释放的渲染程序
 		 */
         public freeProgram3D(program3D: Program3D) {
-            this._usages[program3D]--;
-            if (this._usages[program3D] == 0)
-                this.destroyProgram(this._keys[program3D]);
+            this._usages.push(program3D, this._usages.get(program3D) - 1);
+            if (this._usages.get(program3D) == 0)
+                this.destroyProgram(this._keys.get(program3D));
         }
 
 		/**

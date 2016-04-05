@@ -8,7 +8,7 @@ module feng3d
 	 * 粒子顶点渲染程序
 	 * @author feng 2014-11-14
 	 */
-	public V_Particles()
+	export function V_Particles()
 	{
 		var _ = FagalRE.instance.space;
 

@@ -1,10 +1,5 @@
 module feng3d
 {
-	
-
-	
-	
-
 	/**
 	 * 线段片段渲染程序
 	 * @author feng 2014-10-28
@@ -13,6 +8,7 @@ module feng3d
 	{
 		constructor()
 		{
+            super()
 			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 

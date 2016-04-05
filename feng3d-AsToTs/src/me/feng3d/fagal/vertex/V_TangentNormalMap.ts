@@ -8,13 +8,13 @@ module feng3d
 	 * 编译切线顶点程序
 	 * @author feng 2014-11-7
 	 */
-	public V_TangentNormalMap()
+	export function V_TangentNormalMap()
 	{
 		var _ = FagalRE.instance.space;
 
-		var animatedNormal:Register = _.getFreeTemp("动画后顶点法线临时寄存器");
-		var animatedTangent:Register = _.getFreeTemp("动画后顶点切线临时寄存器");
-		var bitanTemp:Register = _.getFreeTemp("动画后顶点双切线临时寄存器");
+		var animatedNormal = _.getFreeTemp("动画后顶点法线临时寄存器");
+		var animatedTangent = _.getFreeTemp("动画后顶点切线临时寄存器");
+		var bitanTemp = _.getFreeTemp("动画后顶点双切线临时寄存器");
 
 		//赋值法线数据
 		_.mov(animatedNormal, _.normal_va_3);

@@ -10,6 +10,6 @@ module feng3d
 		/**
 		 * 寄存器长度
 		 */
-		get regLen():number;
+		regLen:number;
 	}
 }

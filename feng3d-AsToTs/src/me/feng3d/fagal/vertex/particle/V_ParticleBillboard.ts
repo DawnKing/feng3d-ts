@@ -9,7 +9,7 @@ module feng3d
 	 * @param animatedPosition				动画后的顶点坐标数据
 	 * @author feng 2014-12-26
 	 */
-	public V_ParticleBillboard(particleBillboardMtx:Register, animatedPosition:Register)
+	export function V_ParticleBillboard(particleBillboardMtx:Register, animatedPosition)
 	{
 		var _ = FagalRE.instance.space;
 

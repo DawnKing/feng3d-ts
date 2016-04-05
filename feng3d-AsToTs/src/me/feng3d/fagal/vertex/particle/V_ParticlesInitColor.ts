@@ -10,7 +10,7 @@ module feng3d
 	 * @param colorAddTarget		粒子颜色偏移值，在片段渲染的最终颜色值上偏移
 	 * @author feng 2015-1-20
 	 */
-	public V_ParticlesInitColor(particleCommon:Register, colorMulTarget:Register, colorAddTarget:Register)
+	export function V_ParticlesInitColor(particleCommon, colorMulTarget:Register, colorAddTarget:Register)
 	{
 		var _ = FagalRE.instance.space;
 

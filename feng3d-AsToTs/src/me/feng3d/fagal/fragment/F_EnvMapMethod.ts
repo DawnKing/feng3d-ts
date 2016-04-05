@@ -9,16 +9,16 @@ module feng3d
 	 *
 	 * @author feng 2015-9-5
 	 */
-	public F_EnvMapMethod()
+	export function F_EnvMapMethod()
 	{
 		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var envShaderParams:EnvShaderParams = shaderParams.getOrCreateComponentByClass(EnvShaderParams);
 
-		var dataRegister:Register = _.envMapData_fc_vector;
-		var temp:Register = _.getFreeTemp("");
+		var dataRegister = _.envMapData_fc_vector;
+		var temp = _.getFreeTemp("");
 		var cubeMapReg:Register = _.envMapcubeTexture_fs;
-		var temp2:Register = _.getFreeTemp("");
+		var temp2 = _.getFreeTemp("");
 
 		var targetReg:Register = _.finalColor_ft_4;
 

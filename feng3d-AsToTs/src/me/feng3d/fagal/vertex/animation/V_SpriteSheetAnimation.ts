@@ -7,13 +7,13 @@ module feng3d
 	 * Sprite动画顶点渲染程序
 	 * @author feng 2015-9-5
 	 */
-	public V_SpriteSheetAnimation(UVSource:Register, UVTarget:Register)
+	export function V_SpriteSheetAnimation(UVSource:Register, UVTarget:Register)
 	{
 		var _ = FagalRE.instance.space;
 
-		var tempUV:Register = _.getFreeTemp();
+		var tempUV:any = _.getFreeTemp();
 
-		var constantRegID:Register = _.spriteSheetVectorFrame_vc_vector;
+		var constantRegID:any = _.spriteSheetVectorFrame_vc_vector;
 
 		//计算平移缩放
 		_.mov(tempUV, UVSource);

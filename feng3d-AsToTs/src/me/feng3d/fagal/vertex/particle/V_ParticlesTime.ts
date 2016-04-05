@@ -8,10 +8,10 @@ module feng3d
 	 * 粒子时间节点顶点渲染程序
 	 * @author feng 2014-12-26
 	 */
-	public V_ParticlesTime(particleCommon:Register, animatedPosition:Register, particleTimeVA:Register, particleTimeVC:Register, inCycleTimeTemp:Register)
+	export function V_ParticlesTime(particleCommon, animatedPosition, particleTimeVA, particleTimeVC, inCycleTimeTemp)
 	{
 		var _ = FagalRE.instance.space;
-		var vt3:Register = _.getFreeTemp();
+		var vt3 = _.getFreeTemp();
 
 		//计算时间
 		_.sub(inCycleTimeTemp.x, particleTimeVC, particleTimeVA.x); //生存了的时间  = 粒子特效时间 - 粒子出生时间

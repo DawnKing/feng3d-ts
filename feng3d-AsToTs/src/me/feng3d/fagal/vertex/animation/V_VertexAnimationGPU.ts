@@ -8,7 +8,7 @@ module feng3d
 	 * 顶点动画渲染程序(GPU)
 	 * @author feng 2014-11-3
 	 */
-	public V_VertexAnimationGPU()
+	export function V_VertexAnimationGPU()
 	{
 		var _ = FagalRE.instance.space;
 

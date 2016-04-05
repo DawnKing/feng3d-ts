@@ -1,17 +1,15 @@
 module feng3d
 {
 	
-	
-
 	/**
 	 * 雾片段着色器
 	 * @author feng 2015-8-27
 	 */
-	public F_Fog()
+	export function F_Fog()
 	{
 		var _ = FagalRE.instance.space;
 
-		var temp2:Register = _.getFreeTemp("");
+		var temp2 = _.getFreeTemp("");
 		var temp:Register = _.getFreeTemp("");
 
 		//计算雾因子

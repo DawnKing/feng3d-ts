@@ -15,6 +15,7 @@ module feng3d
 	{
 		constructor()
 		{
+            super();
 			this._shaderType = Context3DProgramType.VERTEX;
 		}
 

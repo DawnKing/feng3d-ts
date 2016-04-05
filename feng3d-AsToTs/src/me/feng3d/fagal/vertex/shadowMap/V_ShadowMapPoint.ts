@@ -1,11 +1,11 @@
-module feng3dMap
+module feng3d
 {
 
 	/**
 	 * 点光源阴影映射
 	 * @author feng 2015-7-17
 	 */
-	public V_ShadowMapPoint()
+	export function V_ShadowMapPoint()
 	{
 	}
 }

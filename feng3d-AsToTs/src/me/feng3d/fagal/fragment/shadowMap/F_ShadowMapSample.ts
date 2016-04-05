@@ -1,4 +1,4 @@
-module feng3dMap
+module feng3d
 {
 	
 	
