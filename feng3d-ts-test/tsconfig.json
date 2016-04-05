@@ -1,22 +1,23 @@
-// {
-//     "compilerOptions": {
-//         "target": "es5",
-//         "noImplicitAny": false,
-//         "module": "amd",
-//         "removeComments": false,
-//         "outDir": "bin",
-//         "sourceMap": true
-//     }
-// }
 {
     "compilerOptions": {
         "target": "es5",
         "noImplicitAny": false,
         "module": "amd",
         "removeComments": false,
-        "out": "feng3d.js",
+        "outDir": "bin",
         "sourceMap": true
-    },
-    "files": [
-    ]
+    }
 }
+// {
+//     "compilerOptions": {
+//         "target": "es5",
+//         "noImplicitAny": false,
+//         "module": "amd",
+//         "removeComments": false,
+//         "out": "feng3d.js",
+//         "sourceMap": true
+//     },
+//     "files": [
+//         "src/utils/loadjs.ts"
+//     ]
+// }

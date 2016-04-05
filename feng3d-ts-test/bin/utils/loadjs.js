@@ -18,4 +18,21 @@ function getClassName(url) {
     return url.split("/").pop().split(".")[0];
 }
 loadjs("../libs/feng3d.js", onFeng3dInited);
+// var requestAnimationFrame1 =
+//     window["requestAnimationFrame"] ||
+//     window["webkitRequestAnimationFrame"] ||
+//     window["mozRequestAnimationFrame"] ||
+//     window["oRequestAnimationFrame"] ||
+//     window["msRequestAnimationFrame"];
+// if (!requestAnimationFrame) {
+//     requestAnimationFrame1 = function(callback) {
+//         return window.setTimeout(callback, 1000 / 60);
+//     };
+// }
+// var n:number = 0;
+// requestAnimationFrame.call(window, onTick);
+// function onTick(): void {
+//     console.log(n++);
+//     requestAnimationFrame.call(window, onTick)
+// } 
 //# sourceMappingURL=loadjs.js.map

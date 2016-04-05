@@ -4,7 +4,7 @@ module feng3d {
 	 * 分区横越者
 	 * @author feng 2015-3-1
 	 */
-    export class PartitionTraverser {
+    export abstract class PartitionTraverser {
 		/**
 		 * 3D场景
 		 */
@@ -41,32 +41,24 @@ module feng3d {
 		 * 应用天空盒
 		 * @param skyBox		天空盒
 		 */
-        public applySkyBox(skyBox: SkyBox) {
-            throw new AbstractMethodError();
-        }
+        public abstract applySkyBox(skyBox: SkyBox);
 
 		/**
 		 * 应用渲染对象
 		 * @param renderable		被横越者通过的可渲染对象
 		 */
-        public applyRenderable(renderable: IRenderable) {
-            throw new AbstractMethodError();
-        }
+        public abstract applyRenderable(renderable: IRenderable);
 
 		/**
 		 * 应用方向光源
 		 * @param light		被横越者通过的方向光源
 		 */
-        public applyDirectionalLight(light: DirectionalLight) {
-            throw new AbstractMethodError();
-        }
+        public abstract applyDirectionalLight(light: DirectionalLight);
 
 		/**
 		 * 应用点光源
 		 * @param light		被横越者通过的点光源
 		 */
-        public applyPointLight(light: PointLight) {
-            throw new AbstractMethodError();
-        }
+        public abstract applyPointLight(light: PointLight);
     }
 }
