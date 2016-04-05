@@ -8,26 +8,26 @@ module feng3d {
 		/**
 		 * 是否可响应鼠标事件
 		 */
-        getMouseEnabled(): boolean;
+        mouseEnabled: boolean;
 
         /**
          * 三角形数量
          */
-        getNumTriangles(): number;
+        numTriangles: number;
 
         /**
          * 渲染缓存
          */
-        getContext3dCache(): Context3DCache;
+        context3dCache: Context3DCache;
 
         /**
          * 渲染实体
          */
-        getSourceEntity(): Entity;
+        sourceEntity: Entity;
 
         /**
          * 渲染对象是投射阴影
          */
-        getCastsShadows(): boolean;
+        castsShadows: boolean;
     }
 }

@@ -9,11 +9,11 @@ module feng3d {
 		/**
 		 * 当前帧数据
 		 */
-        getCurrentFrameData(): SpriteSheetAnimationFrame;
+        currentFrameData(): SpriteSheetAnimationFrame;
 
 		/**
 		 * 当前帧数
 		 */
-        getCurrentFrameNumber(): number;
+        currentFrameNumber(): number;
     }
 }

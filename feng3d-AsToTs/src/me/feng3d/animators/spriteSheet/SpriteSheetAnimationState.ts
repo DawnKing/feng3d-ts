@@ -42,7 +42,7 @@ module feng3d {
 		/**
 		 * @inheritDoc
 		 */
-        public getCurrentFrameData(): SpriteSheetAnimationFrame {
+        public get currentFrameData(): SpriteSheetAnimationFrame {
             if (this._framesDirty)
                 this.updateFrames();
 

@@ -1,15 +1,5 @@
 module feng3d {
 
-
-
-
-
-
-
-
-
-
-
 	/**
 	 * AGAL程序缓冲
 	 * @author feng 2014-8-20
@@ -18,7 +8,7 @@ module feng3d {
 		/**
 		 * 实例字典
 		 */
-        private static _instanceDic = {};
+        private static _instanceDic = new Map<Context3D, AGALProgram3DCache>();
 
 		/**
 		 * 字符串与二进制字典
@@ -37,27 +27,25 @@ module feng3d {
 		/**
 		 * 程序使用计数
 		 */
-        private _usages;
+        private _usages = new Map<Program3D, number>();
 		/**
 		 * 程序与字符串字典
 		 */
-        private _keys;
+        private _keys = new Map<Program3D, string>();
 
 		/**
 		 * 创建AGAL程序缓冲
 		 * @param context3D			3D环境
 		 */
         constructor(context3D: Context3D) {
-            if (AGALProgram3DCache._instanceDic[context3D])
+            if (AGALProgram3DCache._instanceDic.get(context3D))
                 throw new Error("已经存在对应的实例，请使用GetInstance方法获取。");
 
-            AGALProgram3DCache._instanceDic[context3D] = this;
+            AGALProgram3DCache._instanceDic.push(context3D, this);
 
             this._context3D = context3D;
 
             this._program3Ds = {};
-            this._usages = {};
-            this._keys = {};
         }
 
 		/**
@@ -66,7 +54,12 @@ module feng3d {
 		 * @return					AGAL程序缓冲实例
 		 */
         public static getInstance(context3D: Context3D): AGALProgram3DCache {
-            return AGALProgram3DCache._instanceDic[context3D] ||= new AGALProgram3DCache(context3D);
+            var cache = AGALProgram3DCache._instanceDic.get(context3D);
+            if (cache == null) {
+                AGALProgram3DCache._instanceDic.push(context3D, new AGALProgram3DCache(context3D));
+            }
+
+            return cache;
         }
 
 		/**
@@ -101,14 +94,14 @@ module feng3d {
                 program.upload(vertexByteCode, fragmentByteCode);
 
                 this._program3Ds[key] = program;
-                this._keys[program] = key;
-                this._usages[program] = 0;
+                this._keys.push(program, key);
+                this._usages.push(program, 0);
             }
 
             if (oldProgram3D != program) {
                 if (oldProgram3D)
                     this.freeProgram3D(oldProgram3D);
-                this._usages[program]++;
+                this._usages.push(program, this._usages.get(program) + 1);
             }
 
             return program;
@@ -121,7 +114,7 @@ module feng3d {
 		 */
         private getFragmentByteCode(fragmentCode: string): ByteArray {
             var noCommentCode: string = this.filterComment(fragmentCode);
-            return AGALProgram3DCache.shaderByteCodeDic[fragmentCode] ||= new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
+            return AGALProgram3DCache.shaderByteCodeDic[fragmentCode] = AGALProgram3DCache.shaderByteCodeDic[fragmentCode] || new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.FRAGMENT, noCommentCode);
         }
 
 		/**
@@ -131,7 +124,7 @@ module feng3d {
 		 */
         private getVertexByteCode(vertexCode: string): ByteArray {
             var noCommentCode: string = this.filterComment(vertexCode);
-            return AGALProgram3DCache.shaderByteCodeDic[vertexCode] ||= new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
+            return AGALProgram3DCache.shaderByteCodeDic[vertexCode] = AGALProgram3DCache.shaderByteCodeDic[vertexCode] || new AGALMiniAssembler(Debug.agalDebug).assemble(Context3DProgramType.VERTEX, noCommentCode);
         }
 
 		/**

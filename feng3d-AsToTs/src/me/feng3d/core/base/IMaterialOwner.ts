@@ -9,11 +9,11 @@ module feng3d {
 		/**
 		 * 渲染材质
 		 */
-        getMaterial(): MaterialBase;
+        material: MaterialBase;
 
 		/**
 		 * 动画
 		 */
-        getAnimator(): AnimatorBase;
+        animator: AnimatorBase;
     }
 }
