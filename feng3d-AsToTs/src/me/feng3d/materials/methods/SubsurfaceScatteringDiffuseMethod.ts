@@ -1,23 +1,6 @@
 module feng3d
 {
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
+		
 
 	/**
 	 * SubsurfaceScatteringDiffuseMethod provides a depth map-based diffuse shading method that mimics the scattering of
@@ -27,22 +10,22 @@ module feng3d
 	export class SubsurfaceScatteringDiffuseMethod extends CompositeDiffuseMethod
 	{
 		private _depthPass:SingleObjectDepthPass;
-		private _propReg:Register;
+		private _propReg;
 		private _scattering:number;
 		private _translucency:number = 1;
-		private _lightColorReg:Register;
+		private _lightColorReg;
 		private _scatterColor:number = 0xffffff;
-		private _decReg:Register;
+		private _decReg;
 		private _scatterR:number = 1.0;
 		private _scatterG:number = 1.0;
 		private _scatterB:number = 1.0;
-		private _targetReg:Register;
+		private _targetReg;
 
-		private vertexToTexData:number[] = number[]([0.5, -0.5, 0, 1]);
-		private f$ColorData:number[] = number[]([1.0, 1.0, 1.0, 1.0]);
+		private vertexToTexData:number[] = [0.5, -0.5, 0, 1];
+		private f$ColorData:number[] = [1.0, 1.0, 1.0, 1.0];
 
-		private fragmentData0:number[] = number[]([1.0, 1.0 / 255, 1.0 / 65025, 1.0 / 16581375]);
-		private fragmentData1:number[] = number[]([0.2, 1, 0.5, -0.1]);
+		private fragmentData0:number[] = [1.0, 1.0 / 255, 1.0 / 65025, 1.0 / 16581375];
+		private fragmentData1:number[] = [0.2, 1, 0.5, -0.1];
 
 		private _isFirstLight:boolean;
 		private _depthMap:TextureProxyBase;
@@ -281,9 +264,9 @@ module feng3d
 				return;
 			this._isFirstLight = false;
 
-			var targetReg:Register;
+			var targetReg;
 
-			var depthReg:Register = _.SSD$depthMap_fs;
+			var depthReg = _.SSD$depthMap_fs;
 
 			if (lightShaderParams.needsViewDir > 0)
 				this._targetReg = _.viewDir_ft_4;
@@ -292,10 +275,10 @@ module feng3d
 				this._targetReg = _.getFreeTemp();
 			}
 
-			var _lightProjVarying:Register = _.SSD$LightProj_v;
-			var _colorReg:Register = _.SSD$Color_fc_vector;
+			var _lightProjVarying = _.SSD$LightProj_v;
+			var _colorReg = _.SSD$Color_fc_vector;
 
-			var temp:Register = _.getFreeTemp();
+			var temp = _.getFreeTemp();
 			"tex " + temp + ", " + _lightProjVarying + ", " + depthReg + " <2d,nearest,clamp>\n";
 			// reencode RGBA
 			_.dp4(targetReg.z, temp, this._decReg);

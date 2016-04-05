@@ -1,16 +1,6 @@
 module feng3d
 {
 	
-	
-	
-	
-	
-	
-	
-	
-
-	
-
 	/**
 	 * 灯光采集器
 	 * @author feng 2014-9-11

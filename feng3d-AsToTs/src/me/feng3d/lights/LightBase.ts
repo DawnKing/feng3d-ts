@@ -1,24 +1,10 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
-
 	/**
 	 * 灯光基类
 	 * @author feng 2014-9-11
 	 */
-	export class LightBase extends Entity
+	export abstract class LightBase extends Entity
 	{
 		private _color:number = 0xffffff;
 		private _colorR:number = 1;
@@ -68,7 +54,7 @@ module feng3d
 
 			if (value)
 			{
-				this._shadowMapper ||= this.createShadowMapper();
+				this._shadowMapper =this._shadowMapper || this.createShadowMapper();
 				this._shadowMapper.light = this;
 			}
 			else
@@ -80,10 +66,7 @@ module feng3d
 			this.dispatchEvent(new LightEvent(LightEvent.CASTS_SHADOW_CHANGE));
 		}
 
-		protected createShadowMapper():ShadowMapperBase
-		{
-			throw new AbstractMethodError();
-		}
+		protected abstract createShadowMapper():ShadowMapperBase;
 
 		/**
 		 * 灯光颜色。默认为<code>0xffffff</code>。
@@ -215,9 +198,6 @@ module feng3d
 		 * @param target An optional target Matrix3D object. If not provided, an instance will be created.
 		 * @return A Matrix3D object containing the projection transformation.
 		 */
-		public getObjectProjectionMatrix(renderable:IRenderable, target:Matrix3D = null):Matrix3D
-		{
-			throw new AbstractMethodError();
-		}
+		public abstract getObjectProjectionMatrix(renderable:IRenderable, target:Matrix3D):Matrix3D;
 	}
 }

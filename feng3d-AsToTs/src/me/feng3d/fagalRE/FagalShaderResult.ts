@@ -56,10 +56,9 @@ module feng3d
 
 			logger("------------Compiling Register info------------------");
 
-			for each (var register:Register in this.regDic)
-			{
+            this.regDic.forEach(register => {
 				logger(register.desc);
-			}
+            });
 
 			logger("Compiling FAGAL Code:");
 			logger("--------------------");
@@ -99,7 +98,7 @@ module feng3d
 				for (regId in regCountDic)
 				{
 					//记录寄存器使用次数
-					useRegDic[regId] = number(useRegDic[regId]) + number(regCountDic[regId]);
+					useRegDic[regId] = useRegDic[regId] + regCountDic[regId];
 				}
 			}
 
@@ -119,7 +118,7 @@ module feng3d
 				for (regId in regCountDic)
 				{
 					//记录寄存器使用次数
-					useRegDic[regId] = number(useRegDic[regId]) - number(regCountDic[regId]);
+					useRegDic[regId] = useRegDic[regId] - regCountDic[regId];
 
 					//移除临时寄存器
 					if (useRegDic[regId] == 0)

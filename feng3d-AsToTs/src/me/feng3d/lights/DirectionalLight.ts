@@ -1,14 +1,5 @@
 module feng3d
 {
-	
-
-	
-	
-	
-	
-	
-	
-
 	/**
 	 * 方向灯光
 	 * @author feng 2014-9-11
@@ -29,8 +20,8 @@ module feng3d
 		{
 			super();
 
-			direction = new Vector3D(xDir, yDir, zDir);
-			_sceneDirection = new Vector3D();
+			this.direction = new Vector3D(xDir, yDir, zDir);
+			this._sceneDirection = new Vector3D();
 		}
 
 		/**

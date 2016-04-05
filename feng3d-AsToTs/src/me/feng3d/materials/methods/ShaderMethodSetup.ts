@@ -30,6 +30,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 			this.context3DBufferOwner = new Context3DBufferOwner();
 			this.initBuffers();
 

@@ -42,7 +42,7 @@ module feng3d
 				return;
 			this._baseMethod.removeEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated);
 			this._baseMethod = value;
-			this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated, false, 0, true);
+			this._baseMethod.addEventListener(ShadingMethodEvent.SHADER_INVALIDATED, this.onShaderInvalidated,  0, true);
 			this.invalidateShaderProgram();
 		}
 

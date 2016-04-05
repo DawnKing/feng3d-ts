@@ -32,13 +32,12 @@ module feng3d
 		 */
 		public FagalRESpace()
 		{
-			super();
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		override flash_proxy function getProperty(name)
+		public getProperty(name)
 		{
 			var attr:string = name;
 
@@ -47,9 +46,9 @@ module feng3d
 				return FagalRESpace.prototype[attr];
 			}
 
-			if (registerCenter.hasOwnProperty(attr))
+			if (this.registerCenter.hasOwnProperty(attr))
 			{
-				var value = FagalRESpace.prototype[attr] = registerCenter[attr];
+				var value = FagalRESpace.prototype[attr] = this.registerCenter[attr];
 				return value;
 			}
 
@@ -59,13 +58,13 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		override flash_proxy function callProperty(name, ... parameters)
+		public callProperty(name, ... parameters)
 		{
-			var funcName:string = string(name);
-			var func:Function = math[funcName];
-			assert(func != null, "在Fagal中尝试调用" + getQualifiedClassName(math) + "." + funcName + "中不存在的函数");
+			var funcName:string = name;
+			var func:Function = this.math[funcName];
+			assert(func != null, "在Fagal中尝试调用" + getQualifiedClassName(this.math) + "." + funcName + "中不存在的函数");
 
-			callLog.push(new FagalItem(funcName, parameters));
+			this.callLog.push(new FagalItem(funcName, parameters));
 		}
 
 		/**

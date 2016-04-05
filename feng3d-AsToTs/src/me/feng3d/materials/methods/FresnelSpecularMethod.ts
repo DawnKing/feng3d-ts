@@ -1,12 +1,6 @@
 module feng3d
 {
 	
-	
-	_FresnelSpecular;
-	
-
-	
-
 	/**
 	 * FresnelSpecularMethod provides a specular shading method that causes stronger highlights on grazing view angles.
 	 */
@@ -16,7 +10,7 @@ module feng3d
 		private _fresnelPower:number = 5;
 		private _normalReflectance:number = .028; // default value for skin
 
-		private data:number[] = number[]([0, 0, 1, 0]);
+		private data:number[] = [0, 0, 1, 0];
 
 		/**
 		 * Creates a new FresnelSpecularMethod object.

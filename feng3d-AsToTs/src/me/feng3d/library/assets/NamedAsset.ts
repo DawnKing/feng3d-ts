@@ -1,11 +1,5 @@
 module feng3d
 {
-	
-
-
-	
-
-
 
 	/**
 	 * 拥有名字的对象
@@ -24,7 +18,6 @@ module feng3d
 		 */
 		constructor(asset:IAsset, assetType:string)
 		{
-			super();
 			this._asset = asset;
 			this._assetType = assetType;
 		}
@@ -37,8 +30,8 @@ module feng3d
 			if (!this._name)
 			{
 				var defaultName:string = ClassUtils.getDefaultName(this);
-				this._name = defaultName + number(NamedAsset.nameDic[defaultName]);
-				NamedAsset.nameDic[defaultName] = number(NamedAsset.nameDic[defaultName]) + 1;
+				this._name = defaultName + NamedAsset.nameDic[defaultName];
+				NamedAsset.nameDic[defaultName] = NamedAsset.nameDic[defaultName] + 1;
 			}
 			return this._name;
 		}

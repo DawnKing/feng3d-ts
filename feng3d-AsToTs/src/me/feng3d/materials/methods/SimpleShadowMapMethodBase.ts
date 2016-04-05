@@ -1,23 +1,6 @@
 module feng3d
 {
 	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
 
 	/**
 	 * 简单阴影映射函数基类
@@ -33,22 +16,22 @@ module feng3d
 		/**
 		 * 顶点常量数据0
 		 */
-		protected shadowCommonsVCData0:number[] = number[]([0.5, -0.5, 0.0, 1.0]);
+		protected shadowCommonsVCData0:number[] = [0.5, -0.5, 0.0, 1.0];
 
 		/**
 		 * 通用数据0
 		 */
-		protected shadowCommonsData0:number[] = number[]([1.0, 1 / 255.0, 1 / 65025.0, 1 / 16581375.0]);
+		protected shadowCommonsData0:number[] = [1.0, 1 / 255.0, 1 / 65025.0, 1 / 16581375.0];
 
 		/**
 		 * 通用数据1
 		 */
-		protected shadowCommonsData1:number[] = number[]([0, 0, 0, 1]);
+		protected shadowCommonsData1:number[] = [0, 0, 0, 1];
 
 		/**
 		 * 通用数据2
 		 */
-		protected shadowCommonsData2:number[] = number[]([0.5, 2048, 1.0 / 2048, 0]);
+		protected shadowCommonsData2:number[] = [0.5, 2048, 1.0 / 2048, 0];
 
 		/**
 		 * 深度投影矩阵
@@ -61,9 +44,9 @@ module feng3d
 		 */
 		constructor(castingLight:LightBase)
 		{
-			this._usePoint = castingLight is PointLight;
-
 			super(castingLight);
+			this._usePoint =is(castingLight,PointLight);
+
 		}
 
 		/**
@@ -126,12 +109,13 @@ module feng3d
 			super.activate(shaderParams);
 
 			var shadowShaderParams:ShadowShaderParams = shaderParams.getOrCreateComponentByClass(ShadowShaderParams);
-			shadowShaderParams.usePoint += this._usePoint;
+            if(this._usePoint)
+			shadowShaderParams.usePoint += 1;
 
 			if (this._usePoint)
 				this.shadowCommonsData1[0] = -Math.pow(1 / ((this._castingLight as PointLight).fallOff * this._epsilon), 2);
 			else
-				this.shadowCommonsVCData0[3] = -1 / (DirectionalShadowMapper(this._shadowMapper).depth * this._epsilon);
+				this.shadowCommonsVCData0[3] = -1 / (as(this._shadowMapper,DirectionalShadowMapper).depth * this._epsilon);
 
 			this.shadowCommonsData1[1] = 1 - this._alpha;
 
@@ -151,7 +135,7 @@ module feng3d
 		{
 			if (!this._usePoint)
 			{
-				this.depthProjection.copyFrom(DirectionalShadowMapper(this._shadowMapper).depthProjection);
+				this.depthProjection.copyFrom(as(this._shadowMapper,DirectionalShadowMapper).depthProjection);
 			}
 		}
 

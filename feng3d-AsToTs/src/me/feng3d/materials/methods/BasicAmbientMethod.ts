@@ -1,17 +1,6 @@
 module feng3d
 {
 	
-	
-	
-	
-	
-	
-	
-	
-
-
-	
-
 	/**
 	 * 环境光函数
 	 *
@@ -38,13 +27,14 @@ module feng3d
 		public _lightAmbientB:number = 0;
 
 		/** 环境光分量数据 */
-		private ambientColorData:number[] = new number[](4);
+		private ambientColorData:number[] = [0,0,0,0];
 
 		/**
 		 * 创建一个基础环境光函数
 		 */
 		constructor()
 		{
+            super();
 			this.methodType = BasicAmbientMethod.METHOD_TYPE;
 			this.typeUnique = true;
 		}

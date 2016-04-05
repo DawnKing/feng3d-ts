@@ -1,18 +1,5 @@
 module feng3d
 {
-	
-
-	
-	
-	
-	
-	_TerrainDiffusePostLighting;
-	
-	
-	
-	
-
-	
 
 	/**
 	 * 地形渲染函数
@@ -20,7 +7,7 @@ module feng3d
 	 */
 	export class TerrainDiffuseMethod extends BasicDiffuseMethod
 	{
-		private tileData:number[] = new number[](4);
+		private tileData:number[] = [0,0,0,0];
 		private _blendingTexture:Texture2DBase;
 		private _splats;
 		private _numSplattingLayers:number;

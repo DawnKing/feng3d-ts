@@ -58,7 +58,7 @@ module feng3d
 		/**
 		 * Fagal编号中心
 		 */
-		public get _():FagalIdCenter
+		public get _():any
 		{
 			return FagalIdCenter.instance;
 		}

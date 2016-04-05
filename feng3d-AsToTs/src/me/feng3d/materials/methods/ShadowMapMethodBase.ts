@@ -33,9 +33,9 @@ module feng3d
 		 */
 		constructor(castingLight:LightBase)
 		{
+			super();
 			this.methodType = ShadowMapMethodBase.METHOD_TYPE;
 			this.typeUnique = true;
-			super();
 			this._namedAsset = new NamedAsset(this,AssetType.SHADOW_MAP_METHOD);
 			this._castingLight = castingLight;
 			castingLight.castsShadows = true;

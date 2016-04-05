@@ -24,7 +24,7 @@ module feng3d
 		private _specularColor:number = 0xffffff;
 
 		/** 镜面反射数据 */
-		protected _specularData:number[] = number[]([1, 1, 1, 50]);
+		protected _specularData:number[] = [1, 1, 1, 50];
 
 		private _texture:Texture2DBase;
 
@@ -33,9 +33,9 @@ module feng3d
 		 */
 		constructor()
 		{
+			super();
 			this.methodType = BasicSpecularMethod.METHOD_TYPE;
 			this.typeUnique = true;
-			super();
 		}
 
 		/**
@@ -68,7 +68,7 @@ module feng3d
 
 		public set texture(value:Texture2DBase)
 		{
-			if (boolean(value) != boolean(this._texture) || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
+			if ((value!=null) != (this._texture!=null) || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
 			{
 				this.invalidateShaderProgram();
 			}

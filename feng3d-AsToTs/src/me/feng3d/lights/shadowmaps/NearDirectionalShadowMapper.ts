@@ -51,7 +51,7 @@ module feng3d
 			{
 				var v:number = corners[i];
 				this._localFrustum[i] = v;
-				this._localFrustum[number(i + 12)] = v + (corners[number(i + 12)] - v) * this._coverageRatio;
+				this._localFrustum[i + 12] = v + (corners[i + 12] - v) * this._coverageRatio;
 			}
 
 			this.updateProjectionFromFrustumCorners(viewCamera, this._localFrustum, this._matrix);

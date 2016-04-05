@@ -1,13 +1,5 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-
-	
-
 	/**
 	 * 基础法线函数
 	 * @author feng 2014-7-16
@@ -23,6 +15,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 			this.methodType = BasicNormalMethod.METHOD_TYPE;
 			this.typeUnique = true;
 		}
@@ -51,7 +44,7 @@ module feng3d
 
 		public set normalMap(value:Texture2DBase)
 		{
-			if (boolean(value) != boolean(this._texture) || //
+			if ((value!=null) != (this._texture!=null) || //
 				(value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format))) //
 			{
 				this.invalidateShaderProgram();
@@ -68,7 +61,7 @@ module feng3d
 		 */
 		public get hasOutput():boolean
 		{
-			return boolean(this._texture);
+			return (this._texture!=null);
 		}
 
 		/**
@@ -76,7 +69,7 @@ module feng3d
 		 */
 		public copyFrom(method:ShadingMethodBase)
 		{
-			this.normalMap = BasicNormalMethod(method).normalMap;
+			this.normalMap = as(method,BasicNormalMethod).normalMap;
 		}
 
 		public activate(shaderParams:ShaderParams)
