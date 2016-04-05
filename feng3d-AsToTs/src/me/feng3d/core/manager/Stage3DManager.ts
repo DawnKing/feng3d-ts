@@ -1,14 +1,6 @@
 module feng3d
 {
 	
-	
-	
-
-	
-	
-
-	
-
 	/**
 	 * The Stage3DManager class provides a multiton object that handles management for Stage3D objects. Stage3D objects
 	 * should not be requested directly, but are exposed by a Stage3DProxy.
@@ -57,13 +49,13 @@ module feng3d
 		 */
 		public getStage3DProxy(index:number, forceSoftware:boolean = false, profile:string = "baseline"):Stage3DProxy
 		{
-			if (!Stage3DManager._stageProxies[index])
+			if (!_stageProxies[index])
 			{
-				Stage3DManager._numStageProxies++;
-				Stage3DManager._stageProxies[index] = new Stage3DProxy(index, this._stage.stage3Ds[index], this, forceSoftware, profile);
+				_numStageProxies++;
+				_stageProxies[index] = new Stage3DProxy(index, this._stage.stage3Ds[index], this, forceSoftware, profile);
 			}
 
-			return Stage3DManager._stageProxies[index];
+			return _stageProxies[index];
 		}
 
 		/**
@@ -73,8 +65,8 @@ module feng3d
 		 */
 		public removeStage3DProxy(stage3DProxy:Stage3DProxy)
 		{
-			Stage3DManager._numStageProxies--;
-			Stage3DManager._stageProxies[stage3DProxy.stage3DIndex] = null;
+			_numStageProxies--;
+			_stageProxies[stage3DProxy.stage3DIndex] = null;
 		}
 
 		/**
@@ -86,16 +78,16 @@ module feng3d
 		public getFreeStage3DProxy(forceSoftware:boolean = false, profile:string = Context3DProfile.STANDARD):Stage3DProxy
 		{
 			var i:number;
-			var len:number = Stage3DManager._stageProxies.length;
+			var len:number = _stageProxies.length;
 
 			while (i < len)
 			{
-				if (!Stage3DManager._stageProxies[i])
+				if (!_stageProxies[i])
 				{
 					this.getStage3DProxy(i, forceSoftware, profile);
-					Stage3DManager._stageProxies[i].width = this._stage.stageWidth;
-					Stage3DManager._stageProxies[i].height = this._stage.stageHeight;
-					return Stage3DManager._stageProxies[i];
+					_stageProxies[i].width = this._stage.stageWidth;
+					_stageProxies[i].height = this._stage.stageHeight;
+					return _stageProxies[i];
 				}
 				++i;
 			}
@@ -110,7 +102,7 @@ module feng3d
 		 */
 		public get hasFreeStage3DProxy():boolean
 		{
-			return Stage3DManager._numStageProxies < Stage3DManager._stageProxies.length ? true : false;
+			return _numStageProxies < _stageProxies.length ? true : false;
 		}
 
 		/**
@@ -119,7 +111,7 @@ module feng3d
 		 */
 		public get numProxySlotsFree():number
 		{
-			return Stage3DManager._stageProxies.length - Stage3DManager._numStageProxies;
+			return _stageProxies.length - _numStageProxies;
 		}
 
 		/**
@@ -128,7 +120,7 @@ module feng3d
 		 */
 		public get numProxySlotsUsed():number
 		{
-			return Stage3DManager._numStageProxies;
+			return _numStageProxies;
 		}
 
 		/**
@@ -137,7 +129,7 @@ module feng3d
 		 */
 		public get numProxySlotsTotal():number
 		{
-			return Stage3DManager._stageProxies.length;
+			return _stageProxies.length;
 		}
 	}
 

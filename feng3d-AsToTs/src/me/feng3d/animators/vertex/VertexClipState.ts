@@ -1,9 +1,6 @@
 module feng3d
 {
 	
-	
-	
-
 	/**
 	 * 顶点动画剪辑状态
 	 * @author feng 2015-9-18
@@ -18,7 +15,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get currentGeometry():Geometry
+		public getCurrentGeometry():Geometry
 		{
 			if (this._framesDirty)
 				this.updateFrames();
@@ -29,7 +26,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get nextGeometry():Geometry
+		public getNextGeometry():Geometry
 		{
 			if (this._framesDirty)
 				this.updateFrames();
@@ -46,8 +43,8 @@ module feng3d
 		{
 			super(animator, vertexClipNode);
 
-			_vertexClipNode = vertexClipNode;
-			_frames = _vertexClipNode.frames;
+			this._vertexClipNode = vertexClipNode;
+			this._frames = this._vertexClipNode.frames;
 		}
 
 		/**
@@ -62,7 +59,7 @@ module feng3d
 			if (this._vertexClipNode.looping && this._nextFrame >= this._vertexClipNode.lastFrame)
 			{
 				this._nextGeometry = this._frames[0];
-				VertexAnimator(this._animator).dispatchCycleEvent();
+				this._animator.dispatchCycleEvent();
 			}
 			else
 				this._nextGeometry = this._frames[this._nextFrame];
