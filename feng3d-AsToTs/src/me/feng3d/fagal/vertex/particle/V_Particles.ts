@@ -8,9 +8,9 @@ module feng3d
 	 * 粒子顶点渲染程序
 	 * @author feng 2014-11-14
 	 */
-	constructor()
+	public V_Particles()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var particleShaderParams:ParticleShaderParams = shaderParams.getOrCreateComponentByClass(ParticleShaderParams);

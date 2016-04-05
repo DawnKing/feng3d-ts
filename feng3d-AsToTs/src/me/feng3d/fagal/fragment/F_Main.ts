@@ -27,7 +27,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			_shaderType = Context3DProgramType.FRAGMENT;
+			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 
 		/**

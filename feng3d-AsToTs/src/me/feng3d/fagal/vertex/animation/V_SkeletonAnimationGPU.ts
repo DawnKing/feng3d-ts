@@ -9,9 +9,9 @@ module feng3d
 	 * 骨骼动画渲染程序(GPU)
 	 * @author feng 2014-11-3
 	 */
-	constructor():Register
+	public V_SkeletonAnimationGPU():Register
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var animationShaderParams:AnimationShaderParams = shaderParams.getOrCreateComponentByClass(AnimationShaderParams);

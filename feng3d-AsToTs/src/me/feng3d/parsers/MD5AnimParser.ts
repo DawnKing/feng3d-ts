@@ -109,7 +109,7 @@ module feng3d
 		 * @param data 需要解析的数据
 		 * @return
 		 */
-		public static supportsData(data:*):boolean
+		public static supportsData(data):boolean
 		{
 			data = data;
 			return false;
@@ -121,55 +121,55 @@ module feng3d
 
 			if (!this._startedParsing)
 			{
-				this._textData = getTextData();
+				this._textData = this.getTextData();
 				this._startedParsing = true;
 			}
 
-			while (hasTime())
+			while (this.hasTime())
 			{
 				token = this.getNextToken();
 				switch (token)
 				{
-					case COMMENT_TOKEN:
+					case MD5AnimParser.COMMENT_TOKEN:
 						this.ignoreLine();
 						break;
 					case "":
 						// can occur at the end of a file
 						break;
-					case VERSION_TOKEN:
+					case MD5AnimParser.VERSION_TOKEN:
 						this._version = this.getNextInt();
 						if (this._version != 10)
 							throw new Error("Unknown version number encountered!");
 						break;
-					case COMMAND_LINE_TOKEN:
+					case MD5AnimParser.COMMAND_LINE_TOKEN:
 						this.parseCMD();
 						break;
-					case NUM_FRAMES_TOKEN:
+					case MD5AnimParser.NUM_FRAMES_TOKEN:
 						this._numFrames = this.getNextInt();
-						this._bounds = new BoundsData[]();
-						this._frameData = new FrameData[]();
+						this._bounds = [];
+						this._frameData = [];
 						break;
-					case NUM_JOINTS_TOKEN:
+					case MD5AnimParser.NUM_JOINTS_TOKEN:
 						this._numJoints = this.getNextInt();
 						this._hierarchy = new HierarchyData[](this._numJoints, true);
 						this._baseFrameData = new BaseFrameData[](this._numJoints, true);
 						break;
-					case FRAME_RATE_TOKEN:
+					case MD5AnimParser.FRAME_RATE_TOKEN:
 						this._frameRate = this.getNextInt();
 						break;
-					case NUM_ANIMATED_COMPONENTS_TOKEN:
+					case MD5AnimParser.NUM_ANIMATED_COMPONENTS_TOKEN:
 						this._numAnimatedComponents = this.getNextInt();
 						break;
-					case HIERARCHY_TOKEN:
+					case MD5AnimParser.HIERARCHY_TOKEN:
 						this.parseHierarchy();
 						break;
-					case BOUNDS_TOKEN:
+					case MD5AnimParser.BOUNDS_TOKEN:
 						this.parseBounds();
 						break;
-					case BASE_FRAME_TOKEN:
+					case MD5AnimParser.BASE_FRAME_TOKEN:
 						this.parseBaseFrame();
 						break;
-					case FRAME_TOKEN:
+					case MD5AnimParser.FRAME_TOKEN:
 						this.parseFrame();
 						break;
 					default:
@@ -182,7 +182,7 @@ module feng3d
 				{
 					this._clip = new SkeletonClipNode();
 					this.translateClip();
-					finalizeAsset(this._clip);
+					this.finalizeAsset(this._clip);
 					return ParserBase.PARSING_DONE;
 				}
 			}
@@ -309,7 +309,7 @@ module feng3d
 				{
 					this.putBack();
 					ch = this.getNextToken();
-					if (ch == COMMENT_TOKEN)
+					if (ch == MD5AnimParser.COMMENT_TOKEN)
 						this.ignoreLine();
 					ch = this.getNextChar();
 				}
@@ -348,7 +348,7 @@ module feng3d
 				{
 					this.putBack();
 					ch = this.getNextToken();
-					if (ch == COMMENT_TOKEN)
+					if (ch == MD5AnimParser.COMMENT_TOKEN)
 						this.ignoreLine();
 					ch = this.getNextChar();
 				}
@@ -387,7 +387,7 @@ module feng3d
 				{
 					this.putBack();
 					ch = this.getNextToken();
-					if (ch == COMMENT_TOKEN)
+					if (ch == MD5AnimParser.COMMENT_TOKEN)
 						this.ignoreLine();
 					ch = this.getNextChar();
 				}
@@ -432,7 +432,7 @@ module feng3d
 				{
 					this.putBack();
 					ch = this.getNextToken();
-					if (ch == COMMENT_TOKEN)
+					if (ch == MD5AnimParser.COMMENT_TOKEN)
 						this.ignoreLine();
 					ch = this.getNextChar();
 				}
@@ -466,7 +466,7 @@ module feng3d
 				ch = this.getNextChar();
 				if (ch == " " || ch == "\r" || ch == "\n" || ch == "\t")
 				{
-					if (token != COMMENT_TOKEN)
+					if (token != MD5AnimParser.COMMENT_TOKEN)
 						this.skipWhiteSpace();
 					if (token != "")
 						return token;
@@ -474,7 +474,7 @@ module feng3d
 				else
 					token += ch;
 
-				if (token == COMMENT_TOKEN)
+				if (token == MD5AnimParser.COMMENT_TOKEN)
 					return token;
 			}
 

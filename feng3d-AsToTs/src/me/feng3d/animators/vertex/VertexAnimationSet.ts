@@ -1,5 +1,15 @@
 module feng3d
 {
+	
+	
+	
+	
+	
+	
+	
+
+	
+
 	/**
 	 * 顶点动画集合
 	 * @author feng 2014-5-30
@@ -32,7 +42,7 @@ module feng3d
 		public activate(shaderParams:ShaderParams, pass:MaterialPassBase)
 		{
 			var animationShaderParams:AnimationShaderParams = shaderParams.getOrCreateComponentByClass(AnimationShaderParams);
-			if (this.getUsesCPU())
+			if (this.usesCPU)
 				animationShaderParams.animationType = AnimationType.VERTEX_CPU;
 			else
 				animationShaderParams.animationType = AnimationType.VERTEX_GPU;

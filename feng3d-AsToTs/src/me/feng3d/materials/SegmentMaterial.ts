@@ -14,7 +14,7 @@ module feng3d
 		{
 			super();
 			this.bothSides = true;
-			addPass(this._screenPass = new SegmentPass(thickness));
+			this.addPass(this._screenPass = new SegmentPass(thickness));
 		}
 	}
 }

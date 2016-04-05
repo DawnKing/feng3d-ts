@@ -72,7 +72,7 @@ module feng3d
 		 * @param data The data block to potentially be parsed.
 		 * @return Whether or not the given data is supported.
 		 */
-		public static supportsData(data:*):boolean
+		public static supportsData(data):boolean
 		{
 			var ba:ByteArray;
 
@@ -90,7 +90,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function resolveDependency(resourceDependency:ResourceDependency)
+		public resolveDependency(resourceDependency:ResourceDependency)
 		{
 			if (resourceDependency.assets.length == 1)
 			{
@@ -110,7 +110,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function resolveDependencyFailure(resourceDependency:ResourceDependency)
+		public resolveDependencyFailure(resourceDependency:ResourceDependency)
 		{
 			// TODO: Implement
 		}
@@ -122,7 +122,7 @@ module feng3d
 		{
 			super.startParsing(frameLimit);
 
-			this._byteData = ParserUtil.toByteArray(_data);
+			this._byteData = ParserUtil.toByteArray(this._data);
 			this._byteData.position = 0;
 			this._byteData.endian = Endian.LITTLE_ENDIAN;
 
@@ -142,7 +142,7 @@ module feng3d
 			// way to stop loop when byte array is empty, without putting it in
 			// the while-conditional, which will prevent finalizations from
 			// happening after the last chunk.
-			while (hasTime())
+			while (this.hasTime())
 			{
 
 				// If we are currently working on an object, and the most recent chunk was
@@ -190,7 +190,7 @@ module feng3d
 							this._cur_obj_end = end;
 							this._cur_obj = new ObjectVO();
 							this._cur_obj.name = this.readNulTermString();
-							this._cur_obj.materials = new string[]();
+							this._cur_obj.materials = [];
 							this._cur_obj.materialFaces = {};
 							break;
 
@@ -237,7 +237,7 @@ module feng3d
 						// retrieved at this time.)
 //					if (this.dependencies.length)
 //					{
-//						pauseAndRetrieveDependencies();
+//						this.pauseAndRetrieveDependencies();
 //						break;
 //					}
 				}
@@ -258,7 +258,7 @@ module feng3d
 					var obj:Container3D;
 					obj = this.constructObject(this._unfinalized_objects[name]);
 					if (obj)
-						finalizeAsset(obj, name);
+						this.finalizeAsset(obj, name);
 				}
 
 				return PARSING_DONE;
@@ -348,7 +348,7 @@ module feng3d
 			}
 
 			this._textures[tex.url] = tex;
-			addDependency(tex.url, new URLRequest(tex.url));
+			this.addDependency(tex.url, new URLRequest(tex.url));
 
 			return tex;
 		}
@@ -504,7 +504,7 @@ module feng3d
 				obj = this.constructObject(vo, pivot);
 
 				if (obj)
-					finalizeAsset(obj, vo.name);
+					this.finalizeAsset(obj, vo.name);
 
 				delete this._unfinalized_objects[name];
 			}
@@ -615,7 +615,7 @@ module feng3d
 
 				// Final this.transform applied to geometry. Finalize the geometry,
 				// which will no longer be modified after this point.
-				finalizeAsset(geom, obj.name.concat('_geom'));
+				this.finalizeAsset(geom, obj.name.concat('_geom'));
 
 				// Build mesh and return it
 				mesh = new Mesh(geom, mat);
@@ -778,7 +778,7 @@ module feng3d
 
 			mat.bothSides = this._cur_mat.twoSided;
 
-			finalizeAsset(mat, this._cur_mat.name);
+			this.finalizeAsset(mat, this._cur_mat.name);
 
 			this._materials[this._cur_mat.name] = this._cur_mat;
 			this._cur_mat.material = mat;

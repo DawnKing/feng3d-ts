@@ -1,20 +1,22 @@
-module feng3d {
-
-
+module feng3d
+{
+	
+	
 
 	/**
 	 * 顶点缓冲项
 	 * @author feng 2014-8-26
 	 */
-    export class VertexBufferItem {
-        /** 是否无效 */
-        public invalid: boolean = true;
+	export class VertexBufferItem
+	{
+		/** 是否无效 */
+		public invalid:boolean = true;
 
-        /** 顶点缓冲 */
-        private vertexBuffer3D: VertexBuffer3D;
+		/** 顶点缓冲 */
+		private vertexBuffer3D:VertexBuffer3D;
 
-        /** 3d环境 */
-        private context3D: Context3D;
+		/** 3d环境 */
+		private context3D:Context3D;
 
 		/**
 		 * 创建顶点缓冲项
@@ -22,11 +24,12 @@ module feng3d {
 		 * @param numVertices			要在缓冲区中存储的顶点数量。单个缓冲区中的最大顶点数为 65535。
 		 * @param data32PerVertex		与每个顶点关联的 32 位（4 字节）数据值的数量。每个顶点的 32 位数据元素数量最多为 64 个（或 256 个字节）。请注意，顶点着色器程序在任何给定时间只能访问 8 个属性寄存器。使用 SetVertextBufferAt() 在顶点缓冲区内选择属性。
 		 */
-        constructor(context3D: Context3D, numVertices: number, data32PerVertex: number) {
-            this.context3D = context3D;
-            this.vertexBuffer3D = context3D.createVertexBuffer(numVertices, data32PerVertex);
-            this.invalid = true;
-        }
+		constructor(context3D:Context3D, numVertices:number, data32PerVertex:number)
+		{
+			this.context3D = context3D;
+			this.vertexBuffer3D = context3D.createVertexBuffer(numVertices, data32PerVertex);
+			this.invalid = true;
+		}
 
 		/**
 		 * 从矢量数组上载一组顶点的数据到渲染上下文。
@@ -34,10 +37,11 @@ module feng3d {
 		 * @param startVertex			要加载的第一个顶点的索引。startVertex 的非零值可用于加载顶点数据的子区域。
 		 * @param numVertices			data 表示的顶点数量。
 		 */
-        public uploadFromVector(data: number[], startVertex: number, numVertices: number) {
-            this.vertexBuffer3D.uploadFromVector(data, startVertex, numVertices);
-            this.invalid = false;
-        }
+		public uploadFromVector(data:number[], startVertex:number, numVertices:number)
+		{
+			this.vertexBuffer3D.uploadFromVector(data, startVertex, numVertices);
+			this.invalid = false;
+		}
 
 		/**
 		 * 指定与单个着色器程序输入相对应的顶点数据组件。
@@ -63,8 +67,9 @@ module feng3d {
 		 * @param bufferOffset		单个顶点的起始数据偏移量，从此处开始读取此属性。在上例中，位置数据的偏移量为 0，因为它是第一个属性；颜色的偏移量为 3，因为颜色属性跟在 3 个 32 位位置值之后。以 32 位为单位指定偏移量。
 		 * @param format			来自<code>Context3DVertexBufferFormat</code>类的值，指定此属性的数据类型。
 		 */
-        public setVertexBufferAt(index: number, bufferOffset: number, format: string) {
-            this.context3D.setVertexBufferAt(index, this.vertexBuffer3D, bufferOffset, format);
-        }
-    }
+		public setVertexBufferAt(index:number, bufferOffset:number, format:string)
+		{
+			this.context3D.setVertexBufferAt(index, this.vertexBuffer3D, bufferOffset, format);
+		}
+	}
 }

@@ -51,33 +51,33 @@ module feng3d
 		{
 			super();
 			
-			_namedAsset._assetType = AssetType.LIGHT;
+			this._namedAsset._assetType = AssetType.LIGHT;
 		}
 
 		public get castsShadows():boolean
 		{
-			return _castsShadows;
+			return this._castsShadows;
 		}
 
 		public set castsShadows(value:boolean)
 		{
-			if (_castsShadows == value)
+			if (this._castsShadows == value)
 				return;
 
-			_castsShadows = value;
+			this._castsShadows = value;
 
 			if (value)
 			{
-				_shadowMapper ||= createShadowMapper();
-				_shadowMapper.light = this;
+				this._shadowMapper ||= this.createShadowMapper();
+				this._shadowMapper.light = this;
 			}
 			else
 			{
-				_shadowMapper.dispose();
-				_shadowMapper = null;
+				this._shadowMapper.dispose();
+				this._shadowMapper = null;
 			}
 
-			dispatchEvent(new LightEvent(LightEvent.CASTS_SHADOW_CHANGE));
+			this.dispatchEvent(new LightEvent(LightEvent.CASTS_SHADOW_CHANGE));
 		}
 
 		protected createShadowMapper():ShadowMapperBase
@@ -90,17 +90,17 @@ module feng3d
 		 */
 		public get color():number
 		{
-			return _color;
+			return this._color;
 		}
 
 		public set color(value:number)
 		{
-			_color = value;
-			_colorR = ((_color >> 16) & 0xff) / 0xff;
-			_colorG = ((_color >> 8) & 0xff) / 0xff;
-			_colorB = (_color & 0xff) / 0xff;
-			updateDiffuse();
-			updateSpecular();
+			this._color = value;
+			this._colorR = ((this._color >> 16) & 0xff) / 0xff;
+			this._colorG = ((this._color >> 8) & 0xff) / 0xff;
+			this._colorB = (this._color & 0xff) / 0xff;
+			this.updateDiffuse();
+			this.updateSpecular();
 		}
 
 		/**
@@ -108,7 +108,7 @@ module feng3d
 		 */
 		public get ambient():number
 		{
-			return _ambient;
+			return this._ambient;
 		}
 
 		public set ambient(value:number)
@@ -117,8 +117,8 @@ module feng3d
 				value = 0;
 			else if (value > 1)
 				value = 1;
-			_ambient = value;
-			updateAmbient();
+			this._ambient = value;
+			this.updateAmbient();
 		}
 
 		/**
@@ -126,13 +126,13 @@ module feng3d
 		 */
 		public get ambientColor():number
 		{
-			return _ambientColor;
+			return this._ambientColor;
 		}
 
 		public set ambientColor(value:number)
 		{
-			_ambientColor = value;
-			updateAmbient();
+			this._ambientColor = value;
+			this.updateAmbient();
 		}
 
 		/**
@@ -140,15 +140,15 @@ module feng3d
 		 */
 		public get diffuse():number
 		{
-			return _diffuse;
+			return this._diffuse;
 		}
 
 		public set diffuse(value:number)
 		{
 			if (value < 0)
 				value = 0;
-			_diffuse = value;
-			updateDiffuse();
+			this._diffuse = value;
+			this.updateDiffuse();
 		}
 
 		/**
@@ -156,15 +156,15 @@ module feng3d
 		 */
 		public get specular():number
 		{
-			return _specular;
+			return this._specular;
 		}
 
 		public set specular(value:number)
 		{
 			if (value < 0)
 				value = 0;
-			_specular = value;
-			updateSpecular();
+			this._specular = value;
+			this.updateSpecular();
 		}
 
 		/**
@@ -199,13 +199,13 @@ module feng3d
 
 		public get shadowMapper():ShadowMapperBase
 		{
-			return _shadowMapper;
+			return this._shadowMapper;
 		}
 
 		public set shadowMapper(value:ShadowMapperBase)
 		{
-			_shadowMapper = value;
-			_shadowMapper.light = this;
+			this._shadowMapper = value;
+			this._shadowMapper.light = this;
 		}
 
 		/**

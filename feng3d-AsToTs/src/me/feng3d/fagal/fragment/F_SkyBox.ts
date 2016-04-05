@@ -13,12 +13,12 @@ module feng3d
 	{
 		constructor()
 		{
-			_shaderType = Context3DProgramType.FRAGMENT;
+			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 
 		public runFunc()
 		{
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 
 			//获取纹理数据
 			_.tex(_._oc, _.uv_v, _.skyboxTexture_fs);

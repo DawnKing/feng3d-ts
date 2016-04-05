@@ -16,7 +16,7 @@ module feng3dMap
 		 */
 		constructor()
 		{
-			_shaderType = Context3DProgramType.FRAGMENT;
+			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 
 		/**
@@ -24,7 +24,7 @@ module feng3dMap
 		 */
 		public runFunc()
 		{
-			var _:* = FagalRE.instance.space;
+			var _ = FagalRE.instance.space;
 
 			_.mov(_._oc, _.shadowColorCommonsData_fc_vector);
 		}

@@ -12,9 +12,9 @@ module feng3d
 	 */
 	export class StaticLightPicker extends LightPickerBase
 	{
-		private _lights:Array;
+		private _lights;
 
-		constructor(lights:Array)
+		constructor(lights)
 		{
 			this.lights = lights;
 		}
@@ -22,21 +22,21 @@ module feng3d
 		/**
 		 * 需要渲染的灯光
 		 */
-		public get lights():Array
+		public get lights()
 		{
-			return _lights;
+			return this._lights;
 		}
 
-		public set lights(value:Array)
+		public set lights(value)
 		{
 			var numPointLights:number = 0;
 			var numDirectionalLights:number = 0;
 			var light:LightBase;
 
-			_lights = value;
+			this._lights = value;
 
-			_directionalLights = new DirectionalLight[]();
-			_pointLights = new PointLight[]();
+			this._directionalLights = [];
+			this._pointLights = [];
 
 			//灯光分类
 			var len:number = value.length;
@@ -45,18 +45,18 @@ module feng3d
 				light = value[i];
 				if (light is PointLight)
 				{
-					_pointLights[numPointLights++] = PointLight(light);
+					this._pointLights[numPointLights++] = PointLight(light);
 				}
 				else if (light is DirectionalLight)
 				{
-					_directionalLights[numDirectionalLights++] = DirectionalLight(light);
+					this._directionalLights[numDirectionalLights++] = DirectionalLight(light);
 				}
 			}
 
-			_numDirectionalLights = numDirectionalLights;
-			_numPointLights = numPointLights;
+			this._numDirectionalLights = numDirectionalLights;
+			this._numPointLights = numPointLights;
 
-			dispatchEvent(new Event(Event.CHANGE));
+			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 
 	}

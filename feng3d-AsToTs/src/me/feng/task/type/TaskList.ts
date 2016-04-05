@@ -1,4 +1,7 @@
-module feng3d {
+module feng3d
+{
+	
+
 
 	/**
 	 * 任务列表
@@ -8,26 +11,30 @@ module feng3d {
 	 *
 	 * @author feng 2014-7-24
 	 */
-    export class TaskList extends TaskCollection {
+	export class TaskList extends TaskCollection
+	{
 		/**
 		 * 创建一个任务队列
 		 */
-        constructor() {
-            super();
-        }
+		constructor()
+		{
+			super();
+		}
 
 		/**
 		 * 执行任务
 		 * @param params	执行参数
 		 */
-        public execute(params = null) {
-            super.execute(params);
+		public execute(params = null)
+		{
+			super.execute(params);
 
-            //执行所有子任务
-            for (var i: number = 0; i < this.waitingItemList.length; i++) {
-                this.executeItem(this.waitingItemList[i], params);
-            }
-            this.waitingItemList.length = 0;
-        }
-    }
+			//执行所有子任务
+			for (var i:number = 0; i < this.waitingItemList.length; i++)
+			{
+				this.executeItem(this.waitingItemList[i], params);
+			}
+			this.waitingItemList.length = 0;
+		}
+	}
 }

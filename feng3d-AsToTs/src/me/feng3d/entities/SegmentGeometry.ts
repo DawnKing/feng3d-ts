@@ -11,7 +11,7 @@ module feng3d
 	 */
 	export class SegmentGeometry extends Geometry
 	{
-		private _segments:Segment[] = new Segment[]();
+		private _segments:Segment[] = [];
 
 		constructor()
 		{
@@ -34,7 +34,7 @@ module feng3d
 
 		public updateGeometry()
 		{
-			removeAllSubGeometry();
+			this.removeAllSubGeometry();
 
 			var _segmentSubGeometry:SegmentSubGeometry = SegmentUtils.getSegmentSubGeometrys(this._segments);
 			this.addSubGeometry(_segmentSubGeometry);
@@ -59,7 +59,7 @@ module feng3d
 		{
 			this.segments.length = 0;
 
-			removeAllSubGeometry();
+			this.removeAllSubGeometry();
 		}
 
 		/**
@@ -67,7 +67,7 @@ module feng3d
 		 */
 		public get segments():Segment[]
 		{
-			return _segments;
+			return this._segments;
 		}
 	}
 }

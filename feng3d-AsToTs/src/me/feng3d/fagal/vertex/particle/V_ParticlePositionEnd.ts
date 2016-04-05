@@ -9,9 +9,9 @@ module feng3d
 	 * @param positionTemp				偏移坐标临时寄存器
 	 * @author feng 2014-12-26
 	 */
-	constructor(animatedPosition:Register, positionTemp:Register)
+	public V_ParticlePositionEnd(animatedPosition:Register, positionTemp:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		//得到最终坐标
 		_.add(animatedPosition.xyz, animatedPosition.xyz, positionTemp.xyz);

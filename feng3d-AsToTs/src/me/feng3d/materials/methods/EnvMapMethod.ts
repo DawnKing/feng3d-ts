@@ -41,18 +41,18 @@ module feng3d
 		 */
 		public get mask():Texture2DBase
 		{
-			return _mask;
+			return this._mask;
 		}
 
 		public set mask(value:Texture2DBase)
 		{
-			if (boolean(value) != boolean(_mask) || (value && _mask && (value.hasMipMaps != _mask.hasMipMaps || value.format != _mask.format)))
+			if (boolean(value) != boolean(this._mask) || (value && this._mask && (value.hasMipMaps != this._mask.hasMipMaps || value.format != this._mask.format)))
 			{
-				invalidateShaderProgram();
+				this.invalidateShaderProgram();
 			}
-			_mask = value;
+			this._mask = value;
 
-			context3DBufferOwner.markBufferDirty(_.envMapMaskTexture_fs);
+			this.context3DBufferOwner.markBufferDirty(this._.envMapMaskTexture_fs);
 		}
 
 		/**
@@ -60,14 +60,14 @@ module feng3d
 		 */
 		public get envMap():CubeTextureBase
 		{
-			return _cubeTexture;
+			return this._cubeTexture;
 		}
 
 		public set envMap(value:CubeTextureBase)
 		{
-			_cubeTexture = value;
+			this._cubeTexture = value;
 
-			context3DBufferOwner.markBufferDirty(_.envMapcubeTexture_fs);
+			this.context3DBufferOwner.markBufferDirty(this._.envMapcubeTexture_fs);
 		}
 
 		/**
@@ -75,13 +75,13 @@ module feng3d
 		 */
 		public get alpha():number
 		{
-			return _alpha;
+			return this._alpha;
 		}
 
 		public set alpha(value:number)
 		{
-			_alpha = value;
-			_envMapData[0] = _alpha;
+			this._alpha = value;
+			this._envMapData[0] = this._alpha;
 		}
 
 		/**
@@ -113,7 +113,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public override function activate(shaderParams:ShaderParams)
+		public activate(shaderParams:ShaderParams)
 		{
 			var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);
 			commonShaderParams.needsUV += this._mask != null;

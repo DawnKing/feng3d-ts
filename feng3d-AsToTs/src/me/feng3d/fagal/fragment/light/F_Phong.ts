@@ -7,9 +7,9 @@ module feng3d
 	 * phong model
 	 * @author feng 2015-9-24
 	 */
-	constructor(singleSpecularColorReg:Register, lightDirReg:Register)
+	public F_Phong(singleSpecularColorReg:Register, lightDirReg:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		// phong model
 		_.dp3(singleSpecularColorReg.w, lightDirReg, _.normal_ft_4); // sca1 = light.normal

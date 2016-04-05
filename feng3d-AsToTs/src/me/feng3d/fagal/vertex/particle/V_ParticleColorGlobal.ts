@@ -8,9 +8,9 @@ module feng3d
 	 * 粒子颜色节点顶点渲染程序
 	 * @author feng 2015-1-20
 	 */
-	constructor(startMultiplierValue:Register, deltaMultiplierValue:Register, startOffsetValue:Register, deltaOffsetValue:Register, inCycleTimeTemp:Register, colorMulTarget:Register, colorAddTarget:Register)
+	public V_ParticleColorGlobal(startMultiplierValue:Register, deltaMultiplierValue:Register, startOffsetValue:Register, deltaOffsetValue:Register, inCycleTimeTemp:Register, colorMulTarget:Register, colorAddTarget:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var temp:Register = _.getFreeTemp();
 

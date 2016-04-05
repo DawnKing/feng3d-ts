@@ -118,7 +118,7 @@ module feng3d
 		 */
 		public get passes():MaterialPassBase[]
 		{
-			return _passes;
+			return this._passes;
 		}
 
 		/**

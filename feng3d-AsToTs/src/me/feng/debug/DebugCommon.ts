@@ -10,6 +10,6 @@ module feng3d
 		/**
 		 * 日志方法
 		 */
-		public static loggerFunc:Function = console.log;
+		public static loggerFunc:Function = trace;
 	}
 }

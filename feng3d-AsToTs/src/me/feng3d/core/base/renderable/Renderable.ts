@@ -1,61 +1,94 @@
-module feng3d {
+module feng3d
+{
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+
 	/**
 	 * 可渲染对象基类
 	 * @author feng 2015-5-27
 	 */
-    export abstract class Renderable extends Component implements IRenderable {
-        protected _context3dCache: Context3DCache;
+	export class Renderable extends Component implements IRenderable
+	{
+		protected _context3dCache:Context3DCache;
 
 		/**
 		 * 创建一个可渲染对象基类
 		 */
-        constructor() {
-            super();
-            this._context3dCache = new Context3DCache();
-        }
+		constructor()
+		{
+			this._context3dCache = new Context3DCache();
+		}
 
 		/**
 		 * Fagal编号中心
 		 */
-        public get _(): FagalIdCenter {
-            return FagalIdCenter.instance;
-        }
+		public get _():FagalIdCenter
+		{
+			return FagalIdCenter.instance;
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public getContext3dCache(): Context3DCache {
-            return this._context3dCache;
-        }
+		public get context3dCache():Context3DCache
+		{
+			return this._context3dCache;
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getMouseEnabled(): boolean;
+		public get mouseEnabled():boolean
+		{
+			throw new AbstractMethodError();
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getNumTriangles(): number;
+		public get numTriangles():number
+		{
+			throw new AbstractMethodError();
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getSourceEntity(): Entity;
+		public get sourceEntity():Entity
+		{
+			throw new AbstractMethodError();
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getMaterial(): MaterialBase;
+		public get material():MaterialBase
+		{
+			throw new AbstractMethodError();
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getAnimator(): AnimatorBase;
+		public get animator():AnimatorBase
+		{
+			throw new AbstractMethodError();
+		}
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getCastsShadows(): boolean;
-    }
+		public get castsShadows():boolean
+		{
+			throw new AbstractMethodError();
+		}
+	}
 }

@@ -9,9 +9,9 @@ module feng3d
 	 * @param animatedPosition				动画后的顶点坐标数据
 	 * @author feng 2014-12-26
 	 */
-	constructor(particleBillboardMtx:Register, animatedPosition:Register)
+	public V_ParticleBillboard(particleBillboardMtx:Register, animatedPosition:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		//使用广告牌 朝向摄像机
 		_.m33(animatedPosition.xyz, animatedPosition.xyz, particleBillboardMtx); //计算旋转

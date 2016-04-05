@@ -24,7 +24,7 @@ module feng3d
 		/** 方向光源数量 */
 		public get numDirectionalLights():number
 		{
-			return _numDirectionalLights;
+			return this._numDirectionalLights;
 		}
 
 		/**
@@ -32,7 +32,7 @@ module feng3d
 		 */
 		public set numDirectionalLights(value:number)
 		{
-			_numDirectionalLights = value;
+			this._numDirectionalLights = value;
 		}
 
 		/** 漫反射函数 */
@@ -86,19 +86,19 @@ module feng3d
 		/** 灯光数量 */
 		public get numLights():number
 		{
-			return numPointLights + numDirectionalLights;
+			return this.numPointLights + this.numDirectionalLights;
 		}
 
 		/** 是否需要世界坐标 */
 		public get needWorldPosition():boolean
 		{
-			return needsViewDir || numPointLights > 0;
+			return this.needsViewDir || this.numPointLights > 0;
 		}
 
 		/** 片段程序是否需要世界坐标 */
 		public get usesGlobalPosFragment():boolean
 		{
-			return numPointLights > 0;
+			return this.numPointLights > 0;
 		}
 	}
 }

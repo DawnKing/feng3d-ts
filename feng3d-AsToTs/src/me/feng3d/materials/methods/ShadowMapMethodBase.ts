@@ -33,7 +33,7 @@ module feng3d
 		 */
 		constructor(castingLight:LightBase)
 		{
-			this.methodType = METHOD_TYPE;
+			this.methodType = ShadowMapMethodBase.METHOD_TYPE;
 			this.typeUnique = true;
 			super();
 			this._namedAsset = new NamedAsset(this,AssetType.SHADOW_MAP_METHOD);
@@ -47,7 +47,7 @@ module feng3d
 		 */
 		public get castingLight():LightBase
 		{
-			return _castingLight;
+			return this._castingLight;
 		}
 
 		/**
@@ -55,12 +55,12 @@ module feng3d
 		 */
 		public get alpha():number
 		{
-			return _alpha;
+			return this._alpha;
 		}
 
 		public set alpha(value:number)
 		{
-			_alpha = value;
+			this._alpha = value;
 		}
 
 		/**
@@ -69,12 +69,12 @@ module feng3d
 		 */
 		public get epsilon():number
 		{
-			return _epsilon;
+			return this._epsilon;
 		}
 
 		public set epsilon(value:number)
 		{
-			_epsilon = value;
+			this._epsilon = value;
 		}
 
 		/**
@@ -89,7 +89,7 @@ module feng3d
 		
 		public get namedAsset():NamedAsset
 		{
-			return _namedAsset;
+			return this._namedAsset;
 		}
 	}
 }

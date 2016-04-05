@@ -10,9 +10,9 @@ module feng3d
 	 * 环境光片段渲染程序
 	 * @author feng 2014-11-7
 	 */
-	constructor()
+	public F_Ambient()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);

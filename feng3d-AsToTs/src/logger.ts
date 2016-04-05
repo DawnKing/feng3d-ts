@@ -1,4 +1,4 @@
-module feng3d
+package
 {
 	
 
@@ -7,7 +7,7 @@ module feng3d
 	 * <p>此处使用CommonDebug.loggerFunc方法输出日志</p>
 	 * @see	me.feng.debug.CommonDebug
 	 */
-	export function logger(... args)
+	public logger(... args)
 	{
 		if (DebugCommon.loggerFunc != null)
 			DebugCommon.loggerFunc.apply(null, args);

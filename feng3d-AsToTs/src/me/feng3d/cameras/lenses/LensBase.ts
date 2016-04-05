@@ -1,11 +1,21 @@
 module feng3d
 {
 	
+	
+	
+
+	
+	
+	
+	
+	
+	
+
 	/**
 	 * 摄像机镜头
 	 * @author feng 2014-10-14
 	 */
-	export abstract class LensBase extends EventDispatcher
+	export class LensBase extends EventDispatcher
 	{
 		protected _matrix:Matrix3D;
 		protected _scissorRect:Rectangle = new Rectangle();
@@ -15,7 +25,7 @@ module feng3d
 		protected _aspectRatio:number = 1;
 
 		protected _matrixInvalid:boolean = true;
-		protected _frustumCorners:number[] = [];
+		protected _frustumCorners:number[] = new number[](8 * 3, true);
 
 		private _unprojection:Matrix3D;
 		private _unprojectionInvalid:boolean = true;
@@ -25,8 +35,9 @@ module feng3d
 		 */
 		constructor()
 		{
-            super();
 			this._matrix = new Matrix3D();
+
+			AbstractClassError.check(this);
 		}
 
 		/**
@@ -136,8 +147,7 @@ module feng3d
 		{
 			if (this._unprojectionInvalid)
 			{
-                if(this._unprojection == null)
-				this._unprojection = new Matrix3D();
+				this._unprojection ||= new Matrix3D();
 				this._unprojection.copyFrom(this.matrix);
 				this._unprojection.invert();
 				this._unprojectionInvalid = false;
@@ -154,7 +164,10 @@ module feng3d
 		 * @param v 场景坐标（输出）
 		 * @return 场景坐标
 		 */
-		public abstract unproject(nX:number, nY:number, sZ:number, v:Vector3D):Vector3D;
+		public unproject(nX:number, nY:number, sZ:number, v:Vector3D = null):Vector3D
+		{
+			throw new AbstractMethodError();
+		}
 
 		/**
 		 * 投影矩阵失效
@@ -172,6 +185,9 @@ module feng3d
 		/**
 		 * 更新投影矩阵
 		 */
-		protected abstract updateMatrix();
+		protected updateMatrix()
+		{
+			throw new AbstractMethodError();
+		}
 	}
 }

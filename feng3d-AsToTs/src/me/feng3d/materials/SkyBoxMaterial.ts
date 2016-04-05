@@ -22,7 +22,7 @@ module feng3d
 		constructor(cubeMap:CubeTextureBase)
 		{
 			this._cubeMap = cubeMap;
-			addPass(this._skyboxPass = new SkyBoxPass());
+			this.addPass(this._skyboxPass = new SkyBoxPass());
 			this._skyboxPass.cubeTexture = this._cubeMap;
 		}
 
@@ -31,17 +31,17 @@ module feng3d
 		 */
 		public get cubeMap():CubeTextureBase
 		{
-			return _cubeMap;
+			return this._cubeMap;
 		}
 
 		public set cubeMap(value:CubeTextureBase)
 		{
-			if (value && _cubeMap && (value.hasMipMaps != _cubeMap.hasMipMaps || value.format != _cubeMap.format))
-				invalidatePasses(null);
+			if (value && this._cubeMap && (value.hasMipMaps != this._cubeMap.hasMipMaps || value.format != this._cubeMap.format))
+				this.invalidatePasses(null);
 
-			_cubeMap = value;
+			this._cubeMap = value;
 
-			_skyboxPass.cubeTexture = _cubeMap;
+			this._skyboxPass.cubeTexture = this._cubeMap;
 		}
 	}
 }

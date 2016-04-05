@@ -22,7 +22,7 @@ module feng3d
 		 */
 		public get alpha():number
 		{
-			return _screenPass.diffuseMethod.diffuseAlpha;
+			return this._screenPass.diffuseMethod.diffuseAlpha;
 		}
 
 		public set alpha(value:number)
@@ -31,8 +31,8 @@ module feng3d
 				value = 1;
 			else if (value < 0)
 				value = 0;
-			_screenPass.diffuseMethod.diffuseAlpha = _diffuseAlpha = value;
-			_screenPass.setBlendMode(blendMode == BlendMode.NORMAL && requiresBlending ? BlendMode.LAYER : blendMode);
+			this._screenPass.diffuseMethod.diffuseAlpha = this._diffuseAlpha = value;
+			this._screenPass.setBlendMode(this.blendMode == BlendMode.NORMAL && this.requiresBlending ? BlendMode.LAYER : this.blendMode);
 		}
 
 		/**
@@ -40,17 +40,17 @@ module feng3d
 		 */
 		public get color():number
 		{
-			return _screenPass.diffuseMethod.diffuseColor;
+			return this._screenPass.diffuseMethod.diffuseColor;
 		}
 
 		public set color(value:number)
 		{
-			_screenPass.diffuseMethod.diffuseColor = value;
+			this._screenPass.diffuseMethod.diffuseColor = value;
 		}
 		
 		public get requiresBlending():boolean
 		{
-			return super.requiresBlending || _diffuseAlpha < 1;
+			return super.requiresBlending || this._diffuseAlpha < 1;
 		}
 	}
 }

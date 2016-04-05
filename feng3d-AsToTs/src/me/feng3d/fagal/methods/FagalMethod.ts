@@ -37,7 +37,7 @@ module feng3d
 		 */
 		public get shaderType():string
 		{
-			return _shaderType;
+			return this._shaderType;
 		}
 
 		/**

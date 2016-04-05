@@ -35,17 +35,17 @@ module feng3d
 		 */
 		public get basedOnSurface():boolean
 		{
-			return !_incidentLight;
+			return !this._incidentLight;
 		}
 
 		public set basedOnSurface(value:boolean)
 		{
-			if (_incidentLight != value)
+			if (this._incidentLight != value)
 				return;
 
-			_incidentLight = !value;
+			this._incidentLight = !value;
 
-			invalidateShaderProgram();
+			this.invalidateShaderProgram();
 		}
 
 		/**
@@ -53,12 +53,12 @@ module feng3d
 		 */
 		public get fresnelPower():number
 		{
-			return _fresnelPower;
+			return this._fresnelPower;
 		}
 
 		public set fresnelPower(value:number)
 		{
-			_fresnelPower = value;
+			this._fresnelPower = value;
 		}
 
 		/**
@@ -66,12 +66,12 @@ module feng3d
 		 */
 		public get normalReflectance():number
 		{
-			return _normalReflectance;
+			return this._normalReflectance;
 		}
 
 		public set normalReflectance(value:number)
 		{
-			_normalReflectance = value;
+			this._normalReflectance = value;
 		}
 
 		protected initBuffers()

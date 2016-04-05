@@ -9,9 +9,9 @@ module feng3dMap
 	 * 阴影图采样比较计算阴影值
 	 * @author feng 2015-7-17
 	 */
-	constructor()
+	public F_ShadowMapSample()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var depthCol:Register = _.getFreeTemp("深度值临时寄存器");
 		var uvReg:Register = _.getFreeTemp("深度图uv临时寄存器");

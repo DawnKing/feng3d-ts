@@ -1,17 +1,19 @@
-module feng3d {
-
-
+module feng3d
+{
+	
+	
 
 	/**
 	 *
 	 * @author feng 2014-4-30
 	 */
-    export interface IPickingCollider {
+	export interface IPickingCollider
+	{
 		/**
 		 * 设置本地射线
 		 * @param ray3D		射线
 		 */
-        setLocalRay(ray3D: Ray3D);
+		setLocalRay(ray3D:Ray3D);
 
 		/**
 		 * 测试几何体的碰撞
@@ -21,6 +23,6 @@ module feng3d {
 		 * @param bothSides 					是否三角形双面判定
 		 * @return 								是否碰撞
 		 */
-        testSubMeshCollision(subMesh: SubMesh, pickingCollisionVO: PickingCollisionVO, shortestCollisionDistance: number, bothSides: boolean = true): boolean;
-    }
+		testSubMeshCollision(subMesh:SubMesh, pickingCollisionVO:PickingCollisionVO, shortestCollisionDistance:number, bothSides:boolean = true):boolean;
+	}
 }

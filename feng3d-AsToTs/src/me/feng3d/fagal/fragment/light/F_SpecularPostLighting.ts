@@ -9,9 +9,9 @@ module feng3d
 	 * 结算镜面反射光
 	 * @author feng 2014-11-7
 	 */
-	constructor()
+	public F_SpecularPostLighting()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var lightShaderParams:LightShaderParams = shaderParams.getOrCreateComponentByClass(LightShaderParams);
 		var shadowShaderParams:ShadowShaderParams = shaderParams.getOrCreateComponentByClass(ShadowShaderParams);

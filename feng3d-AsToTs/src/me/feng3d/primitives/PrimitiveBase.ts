@@ -33,10 +33,10 @@ module feng3d
 		 */
 		public get subGeometries():SubGeometry[]
 		{
-			if (_geomDirty)
-				updateGeometry();
-			if (_uvDirty)
-				updateUVs();
+			if (this._geomDirty)
+				this.updateGeometry();
+			if (this._uvDirty)
+				this.updateUVs();
 
 			return super.subGeometries;
 		}

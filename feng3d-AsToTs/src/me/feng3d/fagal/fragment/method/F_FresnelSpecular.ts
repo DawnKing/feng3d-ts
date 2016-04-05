@@ -8,9 +8,9 @@ module feng3d
 	 *
 	 * @author feng 2015-9-24
 	 */
-	constructor(target:Register)
+	public F_FresnelSpecular(target:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 
 		var _dataReg:Register = _.fresnelSpecularData_fc_vector;

@@ -66,7 +66,7 @@ module feng3d
 		{
 			this.init();
 
-			for each (var shaderParam:Object in components)
+			for each (var shaderParam:Object in this.components)
 			{
 				if (shaderParam.hasOwnProperty("this.init"))
 				{
@@ -82,7 +82,7 @@ module feng3d
 		{
 			this.preRun();
 
-			for each (var shaderParam:Object in components)
+			for each (var shaderParam:Object in this.components)
 			{
 				if (shaderParam.hasOwnProperty("this.preRun"))
 				{
@@ -117,7 +117,7 @@ module feng3d
 			this.sampleFlagsDic[dataTypeId] = null;
 			if (texture)
 			{
-				var flags:Array = TextureUtils.getFlags(this.useMipmapping, this.useSmoothTextures, this.repeatTextures, texture, forceWrap);
+				var flags = TextureUtils.getFlags(this.useMipmapping, this.useSmoothTextures, this.repeatTextures, texture, forceWrap);
 				this.sampleFlagsDic[dataTypeId] = flags;
 			}
 		}
@@ -127,7 +127,7 @@ module feng3d
 		 * @param dataTypeId		纹理数据缓冲类型编号
 		 * @param flags				纹理取样标记
 		 */
-		public setSampleFlags(dataTypeId:string, flags:Array)
+		public setSampleFlags(dataTypeId:string, flags)
 		{
 			this.sampleFlagsDic[dataTypeId] = flags;
 		}
@@ -137,7 +137,7 @@ module feng3d
 		 * @param dataTypeId		纹理数据缓冲类型编号
 		 * @return					纹理取样标记
 		 */
-		public getFlags(dataTypeId:string):Array
+		public getFlags(dataTypeId:string)
 		{
 			return this.sampleFlagsDic[dataTypeId];
 		}

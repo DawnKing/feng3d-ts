@@ -51,7 +51,7 @@ module feng3d
 		 */
 		public get numTriangles():number
 		{
-			return _numIndices / 3;
+			return this._numIndices / 3;
 		}
 
 		/**

@@ -10,9 +10,9 @@ module feng3d
 	 * 方向光渲染函数
 	 * @author feng 2014-11-7
 	 */
-	constructor()
+	public F_DirectionalLight()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var commonShaderParams:CommonShaderParams = shaderParams.getOrCreateComponentByClass(CommonShaderParams);

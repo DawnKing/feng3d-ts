@@ -29,7 +29,7 @@ module feng3d
 			var particles:ParticleData[] = particleGeometry.particles = new ParticleData[](numParticles, true);
 
 			/** 当前粒子子几何体 */
-			var particleSubGeometry:SubGeometry = createParticleSubGeometry();
+			var particleSubGeometry:SubGeometry = ParticleGeometryHelper.createParticleSubGeometry();
 			particleGeometry.addSubGeometry(particleSubGeometry);
 
 			//单个粒子几何体
@@ -50,16 +50,16 @@ module feng3d
 			for (i = 0; i < numParticles; i++)
 			{
 				sourceGeometry = geometries[i];
-				if (sourceGeometry.numVertices > MAX_VERTEX)
-					throw new Error("不支持顶点数大于" + MAX_VERTEX + "的粒子");
+				if (sourceGeometry.numVertices > ParticleGeometryHelper.MAX_VERTEX)
+					throw new Error("不支持顶点数大于" + ParticleGeometryHelper.MAX_VERTEX + "的粒子");
 
 				sourceSubGeometries = geometries[i].subGeometries;
 				numSubGeometries = sourceSubGeometries.length;
 
 				//判断 当前单个粒子子网格 是否会使当前粒子子几何体顶点数量超出最大值 ,如果超出就创建一个新的粒子子几何体
-				if (sourceGeometry.numVertices + particleSubGeometry.numVertices > MAX_VERTEX)
+				if (sourceGeometry.numVertices + particleSubGeometry.numVertices > ParticleGeometryHelper.MAX_VERTEX)
 				{
-					particleSubGeometry = createParticleSubGeometry();
+					particleSubGeometry = ParticleGeometryHelper.createParticleSubGeometry();
 					particleGeometry.addSubGeometry(particleSubGeometry);
 				}
 
@@ -87,7 +87,7 @@ module feng3d
 		{
 			/** 当前粒子子几何体 */
 			var particleSubGeometry:SubGeometry = new SubGeometry();
-			particleSubGeometry.updateIndexData(new number[]());
+			particleSubGeometry.updateIndexData([]);
 			return particleSubGeometry;
 		}
 

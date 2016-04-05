@@ -9,9 +9,9 @@ module feng3d
 	 * 计算单个镜面反射光
 	 * @author feng 2015-4-24
 	 */
-	constructor(lightDirReg:Register, specularColorReg:Register)
+	public getSpecCodePerLight(lightDirReg:Register, specularColorReg:Register)
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 		var lightShaderParams:LightShaderParams = shaderParams.getOrCreateComponentByClass(LightShaderParams);
 

@@ -40,7 +40,7 @@ module feng3d
 		constructor()
 		{
 			super();
-			this._cullPlanes = new Plane3D[]();
+			this._cullPlanes = [];
 			this._overallDepthLens = new FreeMatrixLens();
 			this._overallDepthCamera = new Camera3D(this._overallDepthLens);
 			this._localFrustum = new number[](8 * 3);
@@ -53,7 +53,7 @@ module feng3d
 		 */
 		public get depthProjection():Matrix3D
 		{
-			return _overallDepthCamera.viewProjection;
+			return this._overallDepthCamera.viewProjection;
 		}
 
 		/**
@@ -62,7 +62,7 @@ module feng3d
 		 */
 		public get depth():number
 		{
-			return _maxZ - _minZ;
+			return this._maxZ - this._minZ;
 		}
 
 		/**
@@ -70,11 +70,11 @@ module feng3d
 		 */
 		protected drawDepthMap(target:TextureProxyBase, stage3DProxy:Stage3DProxy, scene:Scene3D, renderer:DepthRenderer)
 		{
-			_casterCollector.camera = this._overallDepthCamera;
-			_casterCollector.cullPlanes = this._cullPlanes;
-			_casterCollector.clear();
-			scene.traversePartitions(_casterCollector);
-			renderer.render(stage3DProxy, _casterCollector, target);
+			this._casterCollector.camera = this._overallDepthCamera;
+			this._casterCollector.cullPlanes = this._cullPlanes;
+			this._casterCollector.clear();
+			scene.traversePartitions(this._casterCollector);
+			renderer.render(stage3DProxy, this._casterCollector, target);
 		}
 
 		protected updateCullPlanes(viewCamera:Camera3D)
@@ -88,7 +88,7 @@ module feng3d
 			this._cullPlanes[2] = lightFrustumPlanes[2];
 			this._cullPlanes[3] = lightFrustumPlanes[3];
 
-			var dir:Vector3D = DirectionalLight(_light).sceneDirection;
+			var dir:Vector3D = DirectionalLight(this._light).sceneDirection;
 			var dirX:number = dir.x;
 			var dirY:number = dir.y;
 			var dirZ:number = dir.z;
@@ -123,8 +123,8 @@ module feng3d
 			var maxX:number, maxY:number;
 			var i:number;
 
-			dir = DirectionalLight(_light).sceneDirection;
-			this._overallDepthCamera.transform3D.transform = _light.sceneTransform;
+			dir = DirectionalLight(this._light).sceneDirection;
+			this._overallDepthCamera.transform3D.transform = this._light.sceneTransform;
 			x = number((viewCamera.transform3D.x - dir.x * this._lightOffset) / this._snap) * this._snap;
 			y = number((viewCamera.transform3D.y - dir.y * this._lightOffset) / this._snap) * this._snap;
 			z = number((viewCamera.transform3D.z - dir.z * this._lightOffset) / this._snap) * this._snap;

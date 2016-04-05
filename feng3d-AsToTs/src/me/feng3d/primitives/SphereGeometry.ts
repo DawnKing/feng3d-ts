@@ -61,7 +61,7 @@ module feng3d
 				vertexNormalData = new number[](numVerts * vertexNormalStride, true);
 				vertexTangentData = new number[](numVerts * vertexTangentStride, true);
 				indices = new number[]((this._segmentsH - 1) * this._segmentsW * 6, true);
-				invalidateGeometry();
+				this.invalidateGeometry();
 			}
 
 			var startPositionIndex:number;
@@ -185,7 +185,7 @@ module feng3d
 			if (data == null || numUvs != data.length)
 			{
 				data = new number[](numUvs, true);
-				invalidateGeometry();
+				this.invalidateGeometry();
 			}
 
 			var index:number = 0;
@@ -207,13 +207,13 @@ module feng3d
 		 */
 		public get radius():number
 		{
-			return _radius;
+			return this._radius;
 		}
 
 		public set radius(value:number)
 		{
-			_radius = value;
-			invalidateGeometry();
+			this._radius = value;
+			this.invalidateGeometry();
 		}
 
 		/**
@@ -221,14 +221,14 @@ module feng3d
 		 */
 		public get segmentsW():number
 		{
-			return _segmentsW;
+			return this._segmentsW;
 		}
 
 		public set segmentsW(value:number)
 		{
-			_segmentsW = value;
-			invalidateGeometry();
-			invalidateUVs();
+			this._segmentsW = value;
+			this.invalidateGeometry();
+			this.invalidateUVs();
 		}
 
 		/**
@@ -236,14 +236,14 @@ module feng3d
 		 */
 		public get segmentsH():number
 		{
-			return _segmentsH;
+			return this._segmentsH;
 		}
 
 		public set segmentsH(value:number)
 		{
-			_segmentsH = value;
-			invalidateGeometry();
-			invalidateUVs();
+			this._segmentsH = value;
+			this.invalidateGeometry();
+			this.invalidateUVs();
 		}
 
 		/**
@@ -251,13 +251,13 @@ module feng3d
 		 */
 		public get yUp():boolean
 		{
-			return _yUp;
+			return this._yUp;
 		}
 
 		public set yUp(value:boolean)
 		{
-			_yUp = value;
-			invalidateGeometry();
+			this._yUp = value;
+			this.invalidateGeometry();
 		}
 	}
 }

@@ -1,5 +1,15 @@
-module feng3d
+module feng3dRE
 {
+	
+
+	
+	
+	
+	
+	
+
+	
+
 	/**
 	 * Fagal函数运行环境(FagalMethodRuntimeEnvironment)
 	 * @author feng 2014-10-24
@@ -19,7 +29,7 @@ module feng3d
 		/**
 		 * 数据id字典
 		 */
-		public static idDic = {};
+		internal static var idDic = {};
 
 		/**
 		 * 添加3d缓冲编号配置

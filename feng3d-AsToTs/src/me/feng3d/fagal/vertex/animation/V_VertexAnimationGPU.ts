@@ -8,9 +8,9 @@ module feng3d
 	 * 顶点动画渲染程序(GPU)
 	 * @author feng 2014-11-3
 	 */
-	constructor()
+	public V_VertexAnimationGPU()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 		//		
 		var tempVts0:Register = _.getFreeTemp();

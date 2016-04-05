@@ -7,9 +7,9 @@ module feng3d
 	 *
 	 * @author feng 2015-1-21
 	 */
-	constructor()
+	public F_ParticleColorCombination()
 	{
-		var _:* = FagalRE.instance.space;
+		var _ = FagalRE.instance.space;
 
 //			if (hasColorMulNode)
 		_.mul(_.finalColor_ft_4, _.finalColor_ft_4, _.particleColorMultiplier_v);

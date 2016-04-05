@@ -1,4 +1,4 @@
-module feng3d
+module feng3dRE
 {
 	
 	_proxy;
