@@ -50,11 +50,11 @@ module feng3d
 			{
 				Sprite3D._sprite3DGeometry = new SubGeometry();
 				Sprite3D._sprite3DGeometry.numVertices = 4;
-				Sprite3D._sprite3DGeometry.updateVertexPositionData(number[]([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]));
-				Sprite3D._sprite3DGeometry.updateUVData(number[]([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]));
-				Sprite3D._sprite3DGeometry.updateIndexData(number[]([0, 1, 2, 0, 2, 3]));
-				Sprite3D._sprite3DGeometry.updateVertexTangentData(number[]([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]));
-				Sprite3D._sprite3DGeometry.updateVertexNormalData(number[]([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]));
+				Sprite3D._sprite3DGeometry.updateVertexPositionData([-.5, .5, .0, .5, .5, .0, .5, -.5, .0, -.5, -.5, .0]);
+				Sprite3D._sprite3DGeometry.updateUVData([.0, .0, 1.0, .0, 1.0, 1.0, .0, 1.0]);
+				Sprite3D._sprite3DGeometry.updateIndexData([0, 1, 2, 0, 2, 3]);
+				Sprite3D._sprite3DGeometry.updateVertexTangentData([1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
+				Sprite3D._sprite3DGeometry.updateVertexNormalData([.0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0, .0, .0, -1.0]);
 			}
 			this.geometry.addSubGeometry(Sprite3D._sprite3DGeometry);
 		}

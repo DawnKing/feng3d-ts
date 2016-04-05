@@ -26,7 +26,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get mouseEnabled():boolean
+		public getMouseEnabled():boolean
 		{
 			return this.segmentSet.mouseEnabled;
 		}
@@ -34,7 +34,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get numTriangles():number
+		public getNumTriangles():number
 		{
 			return this.segmentSet.numTriangles;
 		}
@@ -42,7 +42,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get sourceEntity():Entity
+		public getSourceEntity():Entity
 		{
 			return this.segmentSet.sourceEntity;
 		}
@@ -50,7 +50,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get material():MaterialBase
+		public getMaterial():MaterialBase
 		{
 			return this.segmentSet.material;
 		}
@@ -58,7 +58,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get animator():AnimatorBase
+		public getAnimator():AnimatorBase
 		{
 			return this.segmentSet.animator;
 		}
@@ -66,7 +66,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public get castsShadows():boolean
+		public getCastsShadows():boolean
 		{
 			return this.segmentSet.castsShadows;
 		}
