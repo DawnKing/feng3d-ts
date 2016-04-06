@@ -8,23 +8,6 @@ module feng3d
 	export class ParserUtil
 	{
 		/**
-		 * 把数据转换为二进制
-		 * @param data 数据
-		 * @return
-		 *
-		 */
-		public static toByteArray(data):ByteArray
-		{
-			if (data is Class)
-				data = new data();
-
-			if (data is ByteArray)
-				return data;
-			else
-				return null;
-		}
-
-		/**
 		 * 把数据转换为字符串
 		 * @param data 数据
 		 * @param length 需要转换的长度
@@ -34,12 +17,12 @@ module feng3d
 		{
 			var ba:ByteArray;
 
-			length ||= number.MAX_VALUE;
+			length =length || Number.MAX_VALUE;
 
-			if (data is string)
-				return string(data).substr(0, length);
+			if (is(data , String))
+				return as(data,String).substr(0, length);
 
-			ba = ParserUtil.toByteArray(data);
+			ba = as(data,ByteArray);
 			if (ba)
 			{
 				ba.position = 0;

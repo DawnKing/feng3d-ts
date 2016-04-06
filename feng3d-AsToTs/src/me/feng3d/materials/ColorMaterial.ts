@@ -34,7 +34,7 @@ module feng3d
 			this._screenPass.diffuseMethod.diffuseAlpha = this._diffuseAlpha = value;
 			this._screenPass.setBlendMode(this.blendMode == BlendMode.NORMAL && this.requiresBlending ? BlendMode.LAYER : this.blendMode);
 		}
-
+ 
 		/**
 		 * 颜色
 		 */
@@ -50,7 +50,7 @@ module feng3d
 		
 		public get requiresBlending():boolean
 		{
-			return super.requiresBlending || this._diffuseAlpha < 1;
+			return super.getRequiresBlending() || this._diffuseAlpha < 1;
 		}
 	}
 }

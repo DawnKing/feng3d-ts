@@ -1,11 +1,6 @@
 module feng3d
 {
 	
-	
-	
-
-	
-
 	/**
 	 * 纹理材质
 	 * @author feng 2014-4-15

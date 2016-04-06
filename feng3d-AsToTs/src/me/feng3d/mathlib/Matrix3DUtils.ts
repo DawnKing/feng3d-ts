@@ -1,7 +1,5 @@
 module feng3d
 {
-	*;
-
 	/**
 	 * 矩阵工具类
 	 * Matrix3DUtils provides additional Matrix3D math functions.
@@ -11,11 +9,11 @@ module feng3d
 		/**
 		 * A reference to a Vector to be used as a temporary raw data container, to prevent object creation.
 		 */
-		public static RAW_DATA_CONTAINER:number[] = new number[](16);
+		public static RAW_DATA_CONTAINER:number[] = [];
 
 		public static CALCULATION_MATRIX:Matrix3D = new Matrix3D();
 		public static CALCULATION_VECTOR3D:Vector3D = new Vector3D();
-		public static CALCULATION_DECOMPOSE:Vector3D[] = Vector3D[]([new Vector3D(), new Vector3D(), new Vector3D()]);
+		public static CALCULATION_DECOMPOSE:Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
 
 		/**
 		 * Fills the 3d matrix object with values representing the transformation made by the given quaternion.
@@ -170,7 +168,7 @@ module feng3d
 
 		public static reflection(plane:Plane3D, target:Matrix3D = null):Matrix3D
 		{
-			target ||= new Matrix3D();
+			target =target || new Matrix3D();
 			var a:number = plane.a, b:number = plane.b, c:number = plane.c, d:number = plane.d;
 			var rawData:number[] = Matrix3DUtils.RAW_DATA_CONTAINER;
 			var ab2:number = -2 * a * b;

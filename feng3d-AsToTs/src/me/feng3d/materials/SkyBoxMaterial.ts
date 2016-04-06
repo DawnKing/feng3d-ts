@@ -21,6 +21,7 @@ module feng3d
 		 */
 		constructor(cubeMap:CubeTextureBase)
 		{
+            super();
 			this._cubeMap = cubeMap;
 			this.addPass(this._skyboxPass = new SkyBoxPass());
 			this._skyboxPass.cubeTexture = this._cubeMap;
