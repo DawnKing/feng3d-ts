@@ -40,6 +40,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 //			_namedAsset = new NamedAsset(this, AssetType.TEXTURE);
 		}
 

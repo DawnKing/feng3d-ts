@@ -1,15 +1,5 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-	
-	
-
-	
-
 	/**
 	 * 资源处理
 	 * @author feng 2014-3-24
@@ -36,11 +26,11 @@ module feng3d
 
 			try
 			{
-				result = getDefinitionByName(name) as Class;
+				result = getDefinitionByName(name);
 				Cast._classes[name] = result;
 				return result;
 			}
-			catch (error:ReferenceError)
+			catch (error)
 			{
 			}
 
@@ -59,31 +49,31 @@ module feng3d
 			if (data == null)
 				return null;
 
-			if (data is string)
+			if (is(data , String))
 				data = Cast.tryClass(data);
 
-			if (data is Class)
+			if (is(data , Function))
 			{
 				try
 				{
 					data = new data;
 				}
-				catch (bitmapError:ArgumentError)
+				catch (bitmapError)
 				{
 					data = new data(0, 0);
 				}
 			}
 
-			if (data is BitmapData)
+			if (is(data , BitmapData))
 				return data;
 
-			if (data is Bitmap)
+			if (is(data , Bitmap))
 			{
 				if ((data as Bitmap).hasOwnProperty("Cast.bitmapData")) // if (data is BitmapAsset)
-					return (data as Bitmap).bitmapData;
+					return as(data , Bitmap).bitmapData;
 			}
 
-			if (data is DisplayObject)
+			if (is(data , DisplayObject))
 			{
 				var ds:DisplayObject = data as DisplayObject;
 				var bmd:BitmapData = new BitmapData(ds.width, ds.height, true, 0x00FFFFFF);
@@ -107,22 +97,22 @@ module feng3d
 			if (data == null)
 				return null;
 
-			if (data is string)
+			if (is(data , String))
 				data = Cast.tryClass(data);
 
-			if (data is Class)
+			if (is(data , Function))
 			{
 				try
 				{
 					data = new data;
 				}
-				catch (materialError:ArgumentError)
+				catch (materialError)
 				{
 					data = new data(0, 0);
 				}
 			}
 
-			if (data is Texture)
+			if (is(data , Texture))
 				return data;
 
 			try
@@ -130,7 +120,7 @@ module feng3d
 				var bmd:BitmapData = Cast.bitmapData(data);
 				return new BitmapTexture(bmd);
 			}
-			catch (error:Error)
+			catch (error)
 			{
 			}
 

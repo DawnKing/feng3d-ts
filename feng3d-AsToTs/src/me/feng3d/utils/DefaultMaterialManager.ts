@@ -30,7 +30,7 @@ module feng3d
 			return DefaultMaterialManager._defaultTexture;
 		}
 		
-		private static function createDefaultTexture(color:number = 0XFFFFFF)
+		private static createDefaultTexture(color:number = 0XFFFFFF)
 		{
 			DefaultMaterialManager._defaultTextureBitmapData = new BitmapData(8, 8, false, 0x0);
 			
@@ -46,7 +46,7 @@ module feng3d
 			DefaultMaterialManager._defaultTexture = new BitmapTexture(DefaultMaterialManager._defaultTextureBitmapData);
 		}
 		
-		private static function createDefaultMaterial()
+		private static createDefaultMaterial()
 		{
 			DefaultMaterialManager._defaultMaterial = new TextureMaterial(DefaultMaterialManager._defaultTexture);
 			DefaultMaterialManager._defaultMaterial.mipmap = false;

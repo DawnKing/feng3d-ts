@@ -125,7 +125,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		protected override function buildGeometry(target:SubGeometry)
+		protected buildGeometry(target:SubGeometry)
 		{
 			var vertexPositionData:number[];
 			var vertexNormalData:number[];
@@ -151,14 +151,19 @@ module feng3d
 				vertexPositionData = target.vertexPositionData;
 				vertexNormalData = target.vertexNormalData;
 				vertexTangentData = target.vertexTangentData;
-				indices = target.indexData || new number[](numIndices, true);
+				indices = target.indexData || [];
+                indices.length = numIndices;
 			}
 			else
 			{
-				vertexPositionData = new number[](numVertices * vertexPositionStride, true);
-				vertexNormalData = new number[](numVertices * vertexNormalStride, true);
-				vertexTangentData = new number[](numVertices * vertexTangentStride, true);
-				indices = new number[](numIndices, true);
+				vertexPositionData = [];
+                vertexPositionData.length = numVertices * vertexPositionStride;
+				vertexNormalData = [];
+                vertexNormalData.length = numVertices * vertexNormalStride;
+				vertexTangentData = [];
+                vertexTangentData.length = numVertices * vertexTangentStride;
+				indices = [];
+                indices.length = numIndices;
 				this.invalidateUVs();
 			}
 			target.numVertices = numVertices;
@@ -269,7 +274,8 @@ module feng3d
 			data = target.UVData;
 			if (data == null || numUvs != data.length)
 			{
-				data = new number[](numUvs, true);
+				data = [];
+                data.length = numUvs;
 				this.invalidateGeometry();
 			}
 

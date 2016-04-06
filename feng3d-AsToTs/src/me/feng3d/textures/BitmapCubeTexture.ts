@@ -28,7 +28,7 @@ module feng3d
 		{
 			super();
 
-			this._bitmapDatas = new BitmapData[](6, true);
+			this._bitmapDatas = [];
 			this.testSize(this._bitmapDatas[0] = posX);
 			this.testSize(this._bitmapDatas[1] = negX);
 			this.testSize(this._bitmapDatas[2] = posY);

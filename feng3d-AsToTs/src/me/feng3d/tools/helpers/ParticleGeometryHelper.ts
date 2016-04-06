@@ -1,11 +1,5 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-
 	/**
 	 * 粒子几何体帮助类
 	 */
@@ -26,7 +20,8 @@ module feng3d
 			/** 粒子数量 */
 			var numParticles:number = particleGeometry.numParticles = geometries.length;
 			/** 粒子数据 */
-			var particles:ParticleData[] = particleGeometry.particles = new ParticleData[](numParticles, true);
+			var particles:ParticleData[] = particleGeometry.particles = [];
+            particles.length = numParticles;
 
 			/** 当前粒子子几何体 */
 			var particleSubGeometry:SubGeometry = ParticleGeometryHelper.createParticleSubGeometry();

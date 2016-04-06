@@ -59,7 +59,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		protected override function buildGeometry(target:SubGeometry)
+		protected buildGeometry(target:SubGeometry)
 		{
 			var i:number, j:number;
 			var x:number, y:number, z:number, nx:number, ny:number, nz:number, revolutionAngleR:number, revolutionAngleT:number;
@@ -82,14 +82,19 @@ module feng3d
 				this.vertexPositionData = target.vertexPositionData;
 				this.vertexNormalData = target.vertexNormalData;
 				this.vertexTangentData = target.vertexTangentData;
-				this._rawIndices = target.indexData || new number[](numTriangles * 3, true);
+				this._rawIndices = target.indexData || [];
+                this._rawIndices.length = numTriangles * 3;
 			}
 			else
 			{
-				this.vertexPositionData = new number[](this._numVertices * this.vertexPositionStride, true);
-				this.vertexNormalData = new number[](this._numVertices * this.vertexNormalStride, true);
-				this.vertexTangentData = new number[](this._numVertices * this.vertexTangentStride, true);
-				this._rawIndices = new number[](numTriangles * 3, true);
+				this.vertexPositionData = [];
+                this.vertexPositionData.length = this._numVertices * this.vertexPositionStride;
+				this.vertexNormalData = [];
+                this.vertexNormalData.length = this._numVertices * this.vertexNormalStride;
+				this.vertexTangentData = [];
+                this.vertexTangentData.length = this._numVertices * this.vertexTangentStride;
+				this._rawIndices = [];
+                this._rawIndices.length = numTriangles * 3;
 				this.invalidateUVs();
 			}
 
@@ -178,7 +183,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		protected override function buildUVs(target:SubGeometry)
+		protected buildUVs(target:SubGeometry)
 		{
 			var i:number, j:number;
 			var data:number[];
@@ -191,7 +196,8 @@ module feng3d
 			data = target.UVData;
 			if (data == null || numUvs != data.length)
 			{
-				data = new number[](numUvs, true);
+				data = [];
+                data.length = numUvs;
 			}
 
 			// current uv component index

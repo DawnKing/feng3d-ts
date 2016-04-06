@@ -1,27 +1,6 @@
 module feng3d
 {
 
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-
 	/**
 	 * 编译通道
 	 * <p>用于处理复杂的渲染通道</p>
@@ -58,12 +37,12 @@ module feng3d
 		/**
 		 * 通用数据
 		 */
-		protected commonsData:number[] = number[]([0.5, 0, 1 / 255, 1]);
+		protected commonsData:number[] = [0.5, 0, 1 / 255, 1];
 
 		/**
 		 * 摄像机世界坐标
 		 */
-		protected cameraPosition:number[] = new number[](4);
+		protected cameraPosition:number[] = [0,0,0,0];
 
 		/**
 		 * 是否开启灯光衰减
@@ -75,6 +54,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 			this.init();
 		}
 

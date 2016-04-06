@@ -1,36 +1,5 @@
 module feng3d
-{
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	_Main;
-	
-	_Main;
-	
-	
-	
-	
-	
-	
-	
-
-	
+{	
 
 	/**
 	 * 纹理通道基类
@@ -78,7 +47,7 @@ module feng3d
 		 */
 		constructor()
 		{
-			AbstractClassError.check(this);
+            super();
 
 			this.context3DBufferOwner = new Context3DBufferOwner();
 			this.initBuffers();
@@ -87,7 +56,7 @@ module feng3d
 		/**
 		 * Fagal编号中心
 		 */
-		public get _():FagalIdCenter
+		public get _():any
 		{
 			return FagalIdCenter.instance;
 		}
@@ -110,7 +79,7 @@ module feng3d
 		 */
 		public get shaderParams():ShaderParams
 		{
-			return this._shaderParams ||= new ShaderParams();
+			return this._shaderParams =this._shaderParams || new ShaderParams();
 		}
 
 		/**

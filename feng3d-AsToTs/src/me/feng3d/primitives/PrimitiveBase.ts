@@ -2,19 +2,11 @@ module feng3d
 {
 	
 
-	
-	
-	
-	
-	
-
-	
-
 	/**
 	 * 基础网格
 	 * @author feng 2014-10-11
 	 */
-	export class PrimitiveBase extends Geometry
+	export abstract class PrimitiveBase extends Geometry
 	{
 		protected _geomDirty:boolean = true;
 		protected _uvDirty:boolean = true;
@@ -23,9 +15,9 @@ module feng3d
 
 		constructor()
 		{
+            super();
 			this._subGeometry = new SubGeometry();
 			this.addSubGeometry(this._subGeometry);
-			AbstractClassError.check(this);
 		}
 
 		/**
@@ -38,7 +30,7 @@ module feng3d
 			if (this._uvDirty)
 				this.updateUVs();
 
-			return super.subGeometries;
+			return super.getSubGeometries();
 		}
 
 		/**
@@ -89,18 +81,12 @@ module feng3d
 		/**
 		 * 创建几何体
 		 */
-		protected buildGeometry(target:SubGeometry)
-		{
-			throw new AbstractMethodError();
-		}
+		protected abstract buildGeometry(target:SubGeometry);
 
 		/**
 		 * 创建uv
 		 */
-		protected buildUVs(target:SubGeometry)
-		{
-			throw new AbstractMethodError();
-		}
+		protected abstract buildUVs(target:SubGeometry);
 
 		/**
 		 * 几何体失效

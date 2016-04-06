@@ -1,6 +1,6 @@
 module feng3d
 {
-    export class Bitmap
+    export class Bitmap extends DisplayObject
     {
         
     }

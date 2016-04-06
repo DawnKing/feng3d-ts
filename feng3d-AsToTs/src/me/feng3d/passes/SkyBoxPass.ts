@@ -1,26 +1,5 @@
 module feng3d
-{
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	_SkyBox;
-	_SkyBox;
-	
-	
-	
-	
-
-	
+{	
 
 	/**
 	 * 天空盒通道
@@ -28,8 +7,8 @@ module feng3d
 	 */
 	export class SkyBoxPass extends MaterialPassBase
 	{
-		private cameraPos:number[] = new number[](4);
-		private scaleSkybox:number[] = new number[](4);
+		private cameraPos:number[] = [0,0,0,0];
+		private scaleSkybox:number[] =[0,0,0,0];
 		private modelViewProjection:Matrix3D = new Matrix3D();
 
 		private _cubeTexture:CubeTextureBase;

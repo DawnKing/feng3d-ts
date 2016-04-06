@@ -11,6 +11,10 @@ module feng3d {
         public get subGeometries(): SubGeometry[] {
             return this._subGeometries;
         }
+        
+        public getSubGeometries(): SubGeometry[] {
+            return this._subGeometries;
+        }
 
         constructor() {
             super();

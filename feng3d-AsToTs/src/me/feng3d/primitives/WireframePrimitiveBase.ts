@@ -1,16 +1,11 @@
 module feng3d
 {
-	
-
-	
-	
-	
 
 	/**
 	 * 线框基元基类
 	 * @author feng 2014-4-27
 	 */
-	export class WireframePrimitiveBase extends SegmentSet
+	export abstract class WireframePrimitiveBase extends SegmentSet
 	{
 		private _color:number = 0xffffff;
 		private _thickness:number = 1;
@@ -21,11 +16,11 @@ module feng3d
 		 */
 		constructor(color:number = 0xffffff, thickness:number = 1)
 		{
+            super();
 			if (thickness <= 0)
 				thickness = 1;
 			this.color = color;
 			this.thickness = thickness;
-			AbstractClassError.check(this);
 		}
 
 		/** 线框颜色 */
@@ -38,10 +33,9 @@ module feng3d
 		{
 			this._color = value;
 
-			for each (var segment:Segment in this.segmentGeometry.segments)
-			{
+            this.segmentGeometry.segments.forEach(segment => {
 				segment.startColor = segment.endColor = value;
-			}
+            });
 			this.segmentGeometry.updateGeometry();
 		}
 
@@ -54,11 +48,10 @@ module feng3d
 		public set thickness(value:number)
 		{
 			this._thickness = value;
-
-			for each (var segment:Segment in this.segmentGeometry.segments)
-			{
+            
+            this.segmentGeometry.segments.forEach(segment => {
 				segment.thickness = segment.thickness = value;
-			}
+            });
 			this.segmentGeometry.updateGeometry();
 		}
 

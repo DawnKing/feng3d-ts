@@ -1,28 +1,11 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
 
 	/**
 	 * 解析基类
 	 * @author feng 2014-5-16
 	 */
-	export class ParserBase extends EventDispatcher
+	export abstract class ParserBase extends EventDispatcher
 	{
 		protected static PARSING_DONE:boolean = true;
 		protected static MORE_TO_PARSE:boolean = false;
@@ -46,10 +29,10 @@ module feng3d
 
 		constructor(format:string)
 		{
+            super();
 			this._materialMode = 0;
 			this._dataFormat = format;
 			this._dependencies = [];
-			AbstractClassError.check(this);
 		}
 
 		protected getTextData():string
@@ -59,7 +42,7 @@ module feng3d
 
 		protected getByteData():ByteArray
 		{
-			return ParserUtil.toByteArray(this._data);
+			return this._data;
 		}
 
 		public set materialMode(newMaterialMode:number)
@@ -179,7 +162,6 @@ module feng3d
 					break;
 				default:
 					throw new Error('Unhandled asset type ' + asset.namedAsset.assetType + '. Report as bug!');
-					break;
 			}
 
 			//默认资源名为类型名
@@ -194,19 +176,13 @@ module feng3d
 		 * 解决依赖
 		 * @param resourceDependency 依赖资源
 		 */
-		public resolveDependency(resourceDependency:ResourceDependency)
-		{
-			throw new AbstractMethodError();
-		}
+		public abstract resolveDependency(resourceDependency:ResourceDependency);
 
 		/**
 		 * 解决依赖失败
 		 * @param resourceDependency 依赖资源
 		 */
-		public resolveDependencyFailure(resourceDependency:ResourceDependency)
-		{
-			throw new AbstractMethodError();
-		}
+		public abstract resolveDependencyFailure(resourceDependency:ResourceDependency);
 
 		public resolveDependencyName(resourceDependency:ResourceDependency, asset:IAsset):string
 		{
@@ -216,10 +192,7 @@ module feng3d
 		/**
 		 * 是否在解析中
 		 */
-		protected proceedParsing():boolean
-		{
-			throw new AbstractMethodError();
-		}
+		protected abstract proceedParsing():boolean;
 
 		/**
 		 * 是否暂停解析
