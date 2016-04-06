@@ -1,23 +1,5 @@
 module feng3d {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/**
 	 * 摄像机
 	 * @author feng 2014-3-17
@@ -253,6 +235,14 @@ module feng3d {
 		 */
         protected getDefaultBoundingVolume(): BoundingVolumeBase {
             return new NullBounds();
+        }
+        
+        		/**
+		 * 更新边界
+		 */
+        protected updateBounds()
+        {
+            
         }
     }
 }

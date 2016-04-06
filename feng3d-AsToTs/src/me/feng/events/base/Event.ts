@@ -11,6 +11,9 @@ module feng3d {
         public static ENTER_FRAME: string = "enterFrame";
         public static CHANGE: string = "change";
         public static COMPLETE: string = "complete";
+        public static ADDED_TO_STAGE: string = "ADDED_TO_STAGE";
+        public static ADDED: string = "ADDED";
+        public static REMOVED_FROM_STAGE: string = "REMOVED_FROM_STAGE";
         
 
         private _type: string;

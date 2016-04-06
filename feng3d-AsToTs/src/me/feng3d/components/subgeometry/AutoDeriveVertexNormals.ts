@@ -118,7 +118,7 @@ module feng3d {
             var dx2: number, dy2: number, dz2: number;
             var cx: number, cy: number, cz: number;
             var d: number;
-            var vertices: number[] = this.subGeometry.getVAData(_.position_va_3);
+            var vertices: number[] = this.subGeometry.getVAData(this._.position_va_3);
             var posStride: number = 3;
             var posOffset: number = 0;
 

@@ -86,9 +86,9 @@ module feng3d {
             this._mouse3DManager = new Mouse3DManager();
             this._mouse3DManager.enableMouseListeners(this);
 
-            this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage, false, 0, true);
-            this.addEventListener(Event.ADDED, this.onAdded, false, 0, true);
-            this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemoveFromeStage, false, 0, true);
+            this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage,  0, true);
+            this.addEventListener(Event.ADDED, this.onAdded,  0, true);
+            this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemoveFromeStage,  0, true);
 
             this._camera.partition = this._scene.partition;
         }
@@ -97,7 +97,7 @@ module feng3d {
             if (this.x == value)
                 return;
 
-            this._localPos.x = super.x = value;
+            this._localPos.x = this.x = value;
 
             this._globalPos.x = this.parent ? this.parent.localToGlobal(this._localPos).x : value;
             this._globalPosDirty = true;
@@ -107,14 +107,14 @@ module feng3d {
             if (this.y == value)
                 return;
 
-            this._localPos.y = super.y = value;
+            this._localPos.y = value;
 
             this._globalPos.y = this.parent ? this.parent.localToGlobal(this._localPos).y : value;
             this._globalPosDirty = true;
         }
 
         public set visible(value: boolean) {
-            super.visible = value;
+            var _visible = value;
 
             if (this._stage3DProxy && !this._shareContext)
                 this._stage3DProxy.visible = value;
