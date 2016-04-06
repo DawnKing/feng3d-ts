@@ -5,7 +5,7 @@ module feng3d
 	 * 3d环境常量数据缓存
 	 * @author feng 2014-8-20
 	 */
-	export class ConstantsBuffer extends RegisterBuffer
+	export abstract class ConstantsBuffer extends RegisterBuffer
 	{
 		/**
 		 * 创建3d环境常量数据缓存	

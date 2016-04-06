@@ -2,6 +2,10 @@ module feng3d
 {
     export class Context3D
     {
+        setProgramConstantsFromMatrix;
+        setProgramConstantsFromByteArray;
+        setCulling;
+        
         createTexture(width, height, format, b):Texture
         {
             return null;

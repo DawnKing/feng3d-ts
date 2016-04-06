@@ -19,7 +19,7 @@ module feng3d {
         private _maxTiltAngle: number = 90;
         private _yFactor: number = 2;
         private _wrapPanAngle: boolean = false;
-        private _pos: Vector3D = new Vector3D();
+        private _pos1: Vector3D = new Vector3D();
 
 		/**
 		 * 创建盘旋控制器
@@ -241,40 +241,40 @@ module feng3d {
                 return;
 
             if (this._lookAtPosition) {
-                this._pos.x = this._lookAtPosition.x;
-                this._pos.y = this._lookAtPosition.y;
-                this._pos.z = this._lookAtPosition.z;
+                this._pos1.x = this._lookAtPosition.x;
+                this._pos1.y = this._lookAtPosition.y;
+                this._pos1.z = this._lookAtPosition.z;
             }
             else if (this._lookAtObject) {
                 if (this._targetObject.parent && this._lookAtObject.parent) {
                     if (this._targetObject.parent != this._lookAtObject.parent) { // different spaces
-                        this._pos.x = this._lookAtObject.scenePosition.x;
-                        this._pos.y = this._lookAtObject.scenePosition.y;
-                        this._pos.z = this._lookAtObject.scenePosition.z;
-                        Matrix3DUtils.transformVector(this._targetObject.parent.inverseSceneTransform, this._pos, this._pos);
+                        this._pos1.x = this._lookAtObject.scenePosition.x;
+                        this._pos1.y = this._lookAtObject.scenePosition.y;
+                        this._pos1.z = this._lookAtObject.scenePosition.z;
+                        Matrix3DUtils.transformVector(this._targetObject.parent.inverseSceneTransform, this._pos1, this._pos1);
                     }
                     else { //one parent
-                        Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos);
+                        Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos1);
                     }
                 }
                 else if (this._lookAtObject.scene) {
-                    this._pos.x = this._lookAtObject.scenePosition.x;
-                    this._pos.y = this._lookAtObject.scenePosition.y;
-                    this._pos.z = this._lookAtObject.scenePosition.z;
+                    this._pos1.x = this._lookAtObject.scenePosition.x;
+                    this._pos1.y = this._lookAtObject.scenePosition.y;
+                    this._pos1.z = this._lookAtObject.scenePosition.z;
                 }
                 else {
-                    Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos);
+                    Matrix3DUtils.getTranslation(this._lookAtObject.transform3D.transform, this._pos1);
                 }
             }
             else {
-                this._pos.x = this._origin.x;
-                this._pos.y = this._origin.y;
-                this._pos.z = this._origin.z;
+                this._pos1.x = this._origin.x;
+                this._pos1.y = this._origin.y;
+                this._pos1.z = this._origin.z;
             }
 
-            this._targetObject.transform3D.x = this._pos.x + this._distance * Math.sin(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
-            this._targetObject.transform3D.z = this._pos.z + this._distance * Math.cos(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
-            this._targetObject.transform3D.y = this._pos.y + this._distance * Math.sin(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
+            this._targetObject.transform3D.x = this._pos1.x + this._distance * Math.sin(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
+            this._targetObject.transform3D.z = this._pos1.z + this._distance * Math.cos(this._currentPanAngle * MathConsts.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS);
+            this._targetObject.transform3D.y = this._pos1.y + this._distance * Math.sin(this._currentTiltAngle * MathConsts.DEGREES_TO_RADIANS) * this._yFactor;
             super.update();
         }
     }

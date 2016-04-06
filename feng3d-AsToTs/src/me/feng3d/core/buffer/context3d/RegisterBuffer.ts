@@ -4,7 +4,7 @@ module feng3d {
 	 * Context3D关联寄存器的数据缓存
 	 * @author feng 2014-8-14
 	 */
-    export class RegisterBuffer extends Context3DBuffer {
+    export abstract class RegisterBuffer extends Context3DBuffer {
         /** 需要寄存器的个数 */
         public numRegisters: number = 1;
 

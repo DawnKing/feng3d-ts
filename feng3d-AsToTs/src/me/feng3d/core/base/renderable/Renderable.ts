@@ -24,38 +24,38 @@ module feng3d {
 		/**
 		 * @inheritDoc
 		 */
-        public getContext3dCache(): Context3DCache {
+        public get context3dCache(): Context3DCache {
             return this._context3dCache;
         }
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getMouseEnabled(): boolean;
+        mouseEnabled: boolean;
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getNumTriangles(): number;
+        numTriangles: number;
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getSourceEntity(): Entity;
+        sourceEntity: Entity;
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getMaterial(): MaterialBase;
+        material: MaterialBase;
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getAnimator(): AnimatorBase;
+        animator: AnimatorBase;
 
 		/**
 		 * @inheritDoc
 		 */
-        public abstract getCastsShadows(): boolean;
+        castsShadows: boolean;
     }
 }
