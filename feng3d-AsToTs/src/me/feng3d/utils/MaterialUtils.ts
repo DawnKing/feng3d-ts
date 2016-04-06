@@ -2,13 +2,6 @@ module feng3d
 {
 	
 
-	
-	
-	
-	
-	
-	
-
 	/**
 	 * 纹理材质工厂
 	 * @author feng 2014-7-7
@@ -38,7 +31,7 @@ module feng3d
 			return textureMaterial;
 		}
 
-		protected static function onLoadSingleComplete(event:LoadUrlEvent)
+		protected static onLoadSingleComplete(event:LoadUrlEvent)
 		{
 			var loadData:LoadModuleEventData = event.target as LoadModuleEventData;
 			var textureMaterial:TextureMaterial = loadData.data.textureMaterial;

@@ -7,7 +7,7 @@ module feng3d {
 
         }
 
-        constructor(sclw, sclh, transparent, c) {
+        constructor(sclw, sclh, transparent, c?) {
 
         }
 

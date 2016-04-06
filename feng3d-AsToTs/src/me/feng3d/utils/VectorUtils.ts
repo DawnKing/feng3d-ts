@@ -17,10 +17,7 @@ module feng3d
 		{
 			var sourceLen:number = target.length;
 			var targetLen:number = source.length;
-			var sourceFixed:boolean = target.fixed;
-			target.fixed = false;
 			target.length = target.length + source.length;
-			target.fixed = sourceFixed;
 			for (var i:number = 0; i < targetLen; i++)
 			{
 				target[sourceLen + i] = source[i];
@@ -51,10 +48,7 @@ module feng3d
 		{
 			var sourceLen:number = target.length;
 			var targetLen:number = source.length;
-			var sourceFixed:boolean = target.fixed;
-			target.fixed = false;
 			target.length = target.length + source.length;
-			target.fixed = sourceFixed;
 			for (var i:number = 0; i < targetLen; i++)
 			{
 				target[sourceLen + i] = source[i] + addNum;

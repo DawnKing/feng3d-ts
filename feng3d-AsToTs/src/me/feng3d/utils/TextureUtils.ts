@@ -103,7 +103,7 @@ module feng3d
 			}
 			else
 			{
-				if (!(texture is BitmapCubeTexture))
+				if (!(is(texture , BitmapCubeTexture)))
 				{
 					if (repeatTextures)
 					{

@@ -1,12 +1,6 @@
 module feng3d
 {
-	
-	
-	
-	
-	
-	
-	
+    
 	/**
 	 * MipmapGenerator is a helper class that uploads BitmapData to a Texture including mipmap levels.
 	 */
@@ -28,30 +22,30 @@ module feng3d
 				h:number = source.height;
 			var i:number;
 			var regen:boolean = mipmap != null;
-			mipmap ||= new BitmapData(w, h, alpha);
+			mipmap =mipmap || new BitmapData(w, h, alpha);
 			
-			_rect.width = w;
-			_rect.height = h;
+			MipmapGenerator._rect.width = w;
+			MipmapGenerator._rect.height = h;
 			
 			while (w >= 1 || h >= 1) {
 				if (alpha)
-					mipmap.fillRect(_rect, 0);
+					mipmap.fillRect(MipmapGenerator._rect, 0);
 				
-				_matrix.a = _rect.width/source.width;
-				_matrix.d = _rect.height/source.height;
+				MipmapGenerator._matrix.a = MipmapGenerator._rect.width/source.width;
+				MipmapGenerator._matrix.d = MipmapGenerator._rect.height/source.height;
 				
-				mipmap.draw(source, _matrix, null, null, null, true);
+				mipmap.draw(source, MipmapGenerator._matrix, null, null, null, true);
 				
-				if (target is Texture)
-					Texture(target).uploadFromBitmapData(mipmap, i++);
+				if (is(target , Texture))
+					as(target,Texture).uploadFromBitmapData(mipmap, i++);
 				else
-					CubeTexture(target).uploadFromBitmapData(mipmap, side, i++);
+					as(target,CubeTexture).uploadFromBitmapData(mipmap, side, i++);
 				
-				w >>= 1;
-				h >>= 1;
+				w = w/2;
+				h = h/2;
 				
-				_rect.width = w > 1? w : 1;
-				_rect.height = h > 1? h : 1;
+				MipmapGenerator._rect.width = w > 1? w : 1;
+				MipmapGenerator._rect.height = h > 1? h : 1;
 			}
 			
 			if (!regen)

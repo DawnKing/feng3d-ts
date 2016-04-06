@@ -32,7 +32,8 @@ module feng3d
 			var posStride:number = 3;
 			var posOffset:number = 0;
 
-			_faceNormals ||= new number[](len, true);
+			_faceNormals =_faceNormals || [];
+            _faceNormals.length = len;
 
 			while (i < len)
 			{
@@ -94,7 +95,8 @@ module feng3d
 			var posStride:number = 3;
 			var texStride:number = 2;
 
-			_faceTangents ||= new number[](_indices.length, true);
+			_faceTangents =_faceTangents || [];
+            _faceTangents.length = _indices.length;
 
 			while (i < len)
 			{
@@ -111,16 +113,16 @@ module feng3d
 
 				vi = index1 * posStride;
 				x0 = vertices[vi];
-				y0 = vertices[number(vi + 1)];
-				z0 = vertices[number(vi + 2)];
+				y0 = vertices[vi + 1];
+				z0 = vertices[vi + 2];
 				vi = index2 * posStride;
-				dx1 = vertices[number(vi)] - x0;
-				dy1 = vertices[number(vi + 1)] - y0;
-				dz1 = vertices[number(vi + 2)] - z0;
+				dx1 = vertices[vi] - x0;
+				dy1 = vertices[vi + 1] - y0;
+				dz1 = vertices[vi + 2] - z0;
 				vi = index3 * posStride;
-				dx2 = vertices[number(vi)] - x0;
-				dy2 = vertices[number(vi + 1)] - y0;
-				dz2 = vertices[number(vi + 2)] - z0;
+				dx2 = vertices[vi] - x0;
+				dy2 = vertices[vi + 1] - y0;
+				dz2 = vertices[vi + 2] - z0;
 
 				cx = dv2 * dx1 - dv1 * dx2;
 				cy = dv2 * dy1 - dv1 * dy2;
@@ -150,7 +152,8 @@ module feng3d
 			var lenV:number = numVertices * 3;
 			var normalStride:number = 3;
 
-			target ||= new number[](lenV, true);
+			target =target || [];
+            target.length = lenV;
 			v1 = 0;
 			while (v1 < lenV)
 			{
@@ -215,7 +218,8 @@ module feng3d
 			var lenV:number = numVertices * 3;
 			var tangentStride:number = 3;
 
-			target ||= new number[](lenV, true);
+			target =target || [];
+            target.length = lenV;
 
 			i = 0;
 			while (i < lenV)

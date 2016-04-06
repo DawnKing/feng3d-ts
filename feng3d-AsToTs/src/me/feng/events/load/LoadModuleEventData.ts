@@ -10,7 +10,7 @@ module feng3d {
 		/**
 		 * 自定义数据，可用于保存数据在加载资源后处理
 		 */
-        public data: Object;
+        public data: any;
 
         private _taskModuleEventData: TaskModuleEventDispatchTaskData;
 
@@ -19,7 +19,7 @@ module feng3d {
 		 * @param urls		加载路径列表
 		 * @param data		自定义数据，可用于保存数据在加载资源后处理
 		 */
-        constructor(urls: any[] = null, data: Object = null) {
+        constructor(urls: any[] = null, data = null) {
             super();
             this.urls = urls;
             this.data = data;

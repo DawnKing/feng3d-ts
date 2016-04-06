@@ -34,7 +34,9 @@ module feng3d
 		 * @return
 		 */
 		public static fromVectors(verts:number[], indices:number[], uvs:number[], weights:number[], jointIndices:number[], triangleOffset:number = 0):SubGeometry[]
-		{ LIMIT_VERTS:number = 3 * 0xffff; LIMIT_INDICES:number = 15 * 0xffff;
+		{ 
+            var LIMIT_VERTS = 3 * 0xffff; 
+            var LIMIT_INDICES:number = 15 * 0xffff;
 
 			var subs:SubGeometry[] = [];
 
@@ -56,7 +58,8 @@ module feng3d
 				var splitWeights:number[] = (weights != null) ? [] : null;
 				var splitJointIndices:number[] = (jointIndices != null) ? [] : null;
 
-				var mappings:number[] = new number[](verts.length / 3, true);
+				var mappings:number[] = [];
+                mappings.length = verts.length / 3;
 				i = mappings.length;
 				while (i-- > 0)
 					mappings[i] = -1;
@@ -223,15 +226,15 @@ module feng3d
 			/** 顶点数据字典 */
 			var sourceVertexDataDic = {};
 			var targetVertexDataDic = {};
-			for each (vaId in vaIdList)
-			{
+            vaIdList.forEach(vaId => {
+                
 				sourceVertexDataDic[vaId] = source.getVAData(vaId);
 				assert(sourceVertexDataDic[vaId].length == source.getVALen(vaId) * source.numVertices);
 
 				targetVertexDataDic[vaId] = target.getVAData(vaId);
 				assert(targetVertexDataDic[vaId].length == target.getVALen(vaId) * target.numVertices);
-			}
-
+            });
+            
 			//添加索引数据
 			var indices:number[] = VectorUtils.add1(source.indices, target.indices, target.numVertices);
 			target.updateIndexData(indices);
@@ -241,13 +244,13 @@ module feng3d
 
 			var vertexData:number[];
 			//添加顶点数据
-			for each (vaId in vaIdList)
-			{
+            vaIdList.forEach(vaId => {
 				//
 				vertexData = VectorUtils.add(sourceVertexDataDic[vaId], targetVertexDataDic[vaId]);
 				target.setVAData(vaId, vertexData);
-			}
-
+                
+            });
+            
 			return true;
 		}
 
