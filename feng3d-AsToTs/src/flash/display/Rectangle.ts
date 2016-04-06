@@ -4,5 +4,7 @@ module feng3d
     {
         width;
         height;
+        x;
+        y;
     }
 }

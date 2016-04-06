@@ -21,6 +21,14 @@ module feng3d {
             this._max.x = this._max.y = this._max.z = Number.POSITIVE_INFINITY;
             this._min.x = this._min.y = this._min.z = this._alwaysIn ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
         }
+        
+        /**
+		 * 更新边界渲染实体
+		 */
+        protected updateBoundingRenderable()
+        {
+            
+        }
 
 		/**
 		 * @inheritDoc

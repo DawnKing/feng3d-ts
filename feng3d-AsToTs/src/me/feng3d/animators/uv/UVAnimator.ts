@@ -104,7 +104,7 @@ module feng3d {
 		 * @inheritDoc
 		 */
         public setRenderState(renderable: IRenderable, camera: Camera3D) {
-            var material: TextureMaterial = as(renderable.getMaterial(), TextureMaterial);
+            var material: TextureMaterial = as(renderable.material, TextureMaterial);
             var subMesh: SubMesh = as(renderable, MeshRenderable).subMesh;
             if (!material || !subMesh)
                 return;
@@ -163,9 +163,9 @@ module feng3d {
             this._absoluteTime += dt;
             this._activeUVState.update(this._absoluteTime);
 
-            var currentUVFrame: UVAnimationFrame = this._activeUVState.getCurrentUVFrame();
-            var nextUVFrame: UVAnimationFrame = this._activeUVState.getNextUVFrame();
-            var blendWeight: number = this._activeUVState.getBlendWeight();
+            var currentUVFrame: UVAnimationFrame = this._activeUVState.currentUVFrame;
+            var nextUVFrame: UVAnimationFrame = this._activeUVState.nextUVFrame;
+            var blendWeight: number = this._activeUVState.blendWeight;
 
             if (currentUVFrame && nextUVFrame) {
                 this._deltaFrame.offsetU = currentUVFrame.offsetU + blendWeight * (nextUVFrame.offsetU - currentUVFrame.offsetU);

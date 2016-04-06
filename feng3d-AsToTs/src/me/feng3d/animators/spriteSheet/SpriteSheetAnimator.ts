@@ -108,7 +108,7 @@ module feng3d {
 		 * @inheritDoc
 		 */
         public setRenderState(renderable: IRenderable, camera: Camera3D) {
-            var material: MaterialBase = renderable.getMaterial();
+            var material: MaterialBase = renderable.material;
             if (!material || !is(material, TextureMaterial))
                 return;
 

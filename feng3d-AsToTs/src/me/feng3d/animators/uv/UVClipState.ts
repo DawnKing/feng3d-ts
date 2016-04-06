@@ -15,7 +15,7 @@ module feng3d {
 		/**
 		 * @inheritDoc
 		 */
-        public getCurrentUVFrame(): UVAnimationFrame {
+        public get currentUVFrame(): UVAnimationFrame {
             if (this._framesDirty)
                 this.updateFrames();
 
@@ -25,7 +25,7 @@ module feng3d {
 		/**
 		 * @inheritDoc
 		 */
-        public getNextUVFrame(): UVAnimationFrame {
+        public get nextUVFrame(): UVAnimationFrame {
             if (this._framesDirty)
                 this.updateFrames();
 

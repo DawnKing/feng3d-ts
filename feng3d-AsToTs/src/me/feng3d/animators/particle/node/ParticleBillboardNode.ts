@@ -53,7 +53,7 @@ module feng3d {
         public setRenderState(renderable: IRenderable, camera: Camera3D) {
             var comps: Vector3D[];
             if (this._billboardAxis) {
-                var pos: Vector3D = renderable.getSourceEntity().sceneTransform.position;
+                var pos: Vector3D = renderable.sourceEntity.sceneTransform.position;
                 var look: Vector3D = camera.sceneTransform.position.subtract(pos);
                 var right: Vector3D = look.crossProduct(this._billboardAxis);
                 right.normalize();
@@ -61,7 +61,7 @@ module feng3d {
                 look.normalize();
 
                 //create a quick inverse projection matrix
-                this._matrix.copyFrom(renderable.getSourceEntity().sceneTransform);
+                this._matrix.copyFrom(renderable.sourceEntity.sceneTransform);
                 comps = Matrix3DUtils.decompose(this._matrix, Orientation3D.AXIS_ANGLE);
                 this._matrix.copyColumnFrom(0, right);
                 this._matrix.copyColumnFrom(1, this._billboardAxis);
@@ -71,7 +71,7 @@ module feng3d {
             }
             else {
                 //create a quick inverse projection matrix
-                this._matrix.copyFrom(renderable.getSourceEntity().sceneTransform);
+                this._matrix.copyFrom(renderable.sourceEntity.sceneTransform);
                 this._matrix.append(camera.inverseSceneTransform);
 
                 //decompose using axis angle rotations

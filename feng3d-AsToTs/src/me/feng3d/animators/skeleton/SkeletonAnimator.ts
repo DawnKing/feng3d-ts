@@ -179,8 +179,10 @@ module feng3d {
             //invalidate pose matrices
             this._globalPropertiesDirty = true;
 
-            for (var key: Object in this._animationStates1)
-                this._animationStates1[key].dirty = true;
+            this._animationStates1.getKeys().forEach(key => {
+                this._animationStates1.get(key).dirty = true;
+            });
+
         }
 
 		/**
@@ -495,7 +497,7 @@ module feng3d {
         /**
          * 创建一个动画当前状态的数据类(用来保存动画顶点数据)
          */
-        public SubGeomAnimationState(subGeom: SubGeometry) {
+        constructor(subGeom: SubGeometry) {
             this.animatedVertexData = subGeom.vertexPositionData.concat();
         }
     }

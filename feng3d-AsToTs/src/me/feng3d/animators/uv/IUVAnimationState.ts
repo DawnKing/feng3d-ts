@@ -9,16 +9,16 @@ module feng3d {
 		/**
 		 * 当前UV帧编号
 		 */
-        getCurrentUVFrame(): UVAnimationFrame;
+        currentUVFrame: UVAnimationFrame;
 
 		/**
 		 * UV下帧编号
 		 */
-        getNextUVFrame(): UVAnimationFrame;
+        nextUVFrame: UVAnimationFrame;
 
 		/**
 		 * 混合权重
 		 */
-        getBlendWeight(): number;
+        blendWeight: number;
     }
 }
