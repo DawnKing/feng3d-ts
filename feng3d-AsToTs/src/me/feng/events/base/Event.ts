@@ -10,6 +10,8 @@ module feng3d {
          */
         public static ENTER_FRAME: string = "enterFrame";
         public static CHANGE: string = "change";
+        public static COMPLETE: string = "complete";
+        
 
         private _type: string;
 

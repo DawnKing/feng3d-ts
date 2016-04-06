@@ -1,19 +1,16 @@
 module feng3d
 {
 	
-	
-	
-
 	/**
 	 *
 	 * @author feng 2015-9-24
 	 */
-	public F_FresnelSpecular(target:Register)
+	export function F_FresnelSpecular(target)
 	{
 		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
 
-		var _dataReg:Register = _.fresnelSpecularData_fc_vector;
+		var _dataReg = _.fresnelSpecularData_fc_vector;
 		var _incidentLight:boolean = shaderParams.incidentLight;
 
 		_.dp3(target.y, _.viewDir_ft_4.xyz, _incidentLight ? target.xyz : _.normal_ft_4.xyz); // dot(V, H)

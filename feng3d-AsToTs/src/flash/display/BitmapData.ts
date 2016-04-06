@@ -1,5 +1,6 @@
 module feng3d {
     export class BitmapData {
+        transparent;
         height;
         width;
         rect;

@@ -9,7 +9,7 @@ module feng3d
 	 * 计算单个镜面反射光
 	 * @author feng 2015-4-24
 	 */
-	public getSpecCodePerLight(lightDirReg:Register, specularColorReg:Register)
+	export function getSpecCodePerLight(lightDirReg, specularColorReg)
 	{
 		var _ = FagalRE.instance.space;
 		var shaderParams:ShaderParams = FagalRE.instance.context3DCache.shaderParams;
@@ -21,7 +21,7 @@ module feng3d
 		//反射光方向与-视线 的 夹角 ---(代入1)--> (入射光方向 - 法线) 与 -视线 的 夹角 ----> 入射光方向+视线 与 法线的夹角
 		//反射光方向与-视线方向 的 夹角余弦值 == 入射光方向+视线 与 法线 的 夹角余弦值  == 反射光强度
 
-		var singleSpecularColorReg:Register;
+		var singleSpecularColorReg;
 		if (lightShaderParams.isFirstSpecLight)
 		{
 			singleSpecularColorReg = _.totalSpecularLightColor_ft_4;

@@ -10,7 +10,7 @@ module feng3d
 	 * 点光源渲染
 	 * @author feng 2014-11-8
 	 */
-	public F_PointLight()
+	export function F_PointLight()
 	{
 		var _ = FagalRE.instance.space;
 
@@ -21,13 +21,13 @@ module feng3d
 		var numPointLights:number = lightShaderParams.numPointLights;
 		//
 		//光线方向
-		var pointLightDirReg:Register;
+		var pointLightDirReg;
 		//点光源漫反射颜色寄存器
-		var pointLightdiffuseColorReg:Register;
+		var pointLightdiffuseColorReg;
 		//点光源镜面反射颜色寄存器
-		var pointLightSpecularColorReg:Register;
+		var pointLightSpecularColorReg;
 		//点光源世界坐标寄存器
-		var pointLightPosReg:Register;
+		var pointLightPosReg;
 
 		pointLightDirReg = _.getFreeTemp("光照方向");
 		//遍历点光源

@@ -57,9 +57,9 @@ module feng3d {
 		 * 创建渲染寄存器缓存
 		 */
         constructor() {
-            if (_instance)
+            if (ShaderRegisterCache._instance)
                 throw new Error("ShaderRegisterCache 单例");
-            _instance = this;
+            ShaderRegisterCache._instance = this;
 
             this.init();
         }
@@ -72,10 +72,10 @@ module feng3d {
             this.registerPoolDic = {};
             this.usedDataRegisterNum = 0;
 
-            for (var i: number = 0; i < this.registerConfig.length; i++) {
-                this.registerPoolDic[this.registerConfig[i][0]] = new RegisterPool(this.registerConfig[i][0], this.registerConfig[i][1]);
+            for (var i: number = 0; i < ShaderRegisterCache.registerConfig.length; i++) {
+                this.registerPoolDic[ShaderRegisterCache.registerConfig[i][0]] = new RegisterPool(as(ShaderRegisterCache.registerConfig[i][0], String), as(ShaderRegisterCache.registerConfig[i][1], Number));
             }
-            _dirty = false;
+            ShaderRegisterCache._dirty = false;
         }
 
 		/**
@@ -85,12 +85,10 @@ module feng3d {
             this._dataRegisterDic = {};
             this.usedDataRegisterNum = 0;
 
-            for each (var registerPool: RegisterPool in this.registerPoolDic)
-            {
+            this.registerPoolDic.forEach(registerPool => {
                 registerPool.reset();
-            }
-
-            _dirty = false;
+            });
+            ShaderRegisterCache._dirty = false;
         }
 
 		/**
@@ -143,10 +141,10 @@ module feng3d {
 		 * 注销
 		 */
         public dispose() {
-            for each (var registerPool: RegisterPool in this.registerPoolDic)
-            {
+
+            this.registerPoolDic.forEach(registerPool => {
                 registerPool.dispose();
-            }
+            });
 
             this._dataRegisterDic = null;
             this.registerPoolDic = null;
@@ -156,24 +154,24 @@ module feng3d {
 		 * 实例
 		 */
         public static get instance(): ShaderRegisterCache {
-            _instance || new ShaderRegisterCache();
-            if (_dirty)
-                _instance.reset();
-            return _instance;
+            ShaderRegisterCache._instance = ShaderRegisterCache._instance || new ShaderRegisterCache();
+            if (ShaderRegisterCache._dirty)
+                ShaderRegisterCache._instance.reset();
+            return ShaderRegisterCache._instance;
         }
 
 		/**
 		 * 使缓存失效
 		 */
         public static invalid() {
-            _dirty = true;
+            ShaderRegisterCache._dirty = true;
         }
 
 		/**
 		 * 数据寄存器缓存
 		 */
         public get dataRegisterDic() {
-            return _dataRegisterDic;
+            return this._dataRegisterDic;
         }
 
     }

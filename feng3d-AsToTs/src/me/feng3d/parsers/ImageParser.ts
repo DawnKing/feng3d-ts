@@ -19,6 +19,25 @@ module feng3d {
             super(ParserDataFormat.BINARY);
         }
 
+
+        /**
+		 * 解决依赖
+		 * @param resourceDependency 依赖资源
+		 */
+		public resolveDependency(resourceDependency:ResourceDependency)
+        {
+            
+        }
+
+		/**
+		 * 解决依赖失败
+		 * @param resourceDependency 依赖资源
+		 */
+		public resolveDependencyFailure(resourceDependency:ResourceDependency)
+        {
+            
+        }
+
 		/**
 		 * Indicates whether or not a given file extension is supported by the parser.
 		 * @param extension The file extension of a potential file to be parsed.

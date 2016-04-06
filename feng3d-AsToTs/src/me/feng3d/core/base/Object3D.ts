@@ -71,6 +71,7 @@ module feng3d {
             return this._scene;
         }
 
+
         public set scene(value: Scene3D) {
             if (this._scene != value) {
                 if (this._scene)
@@ -79,6 +80,9 @@ module feng3d {
                 if (this._scene)
                     this._scene.addedObject3d(this);
             }
+        }
+        public setScene(value: Scene3D) {
+            this.scene = value;
         }
 
 		/**

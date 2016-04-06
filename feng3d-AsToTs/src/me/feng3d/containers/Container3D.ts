@@ -79,12 +79,16 @@ module feng3d {
         }
 
         public set scene(scene: Scene3D) {
-            super.scene = scene;
+            super.setScene(scene);
 
             var len: number = this._children.length;
             for (var i: number = 0; i < len; i++) {
                 this._children[i].scene = scene;
             }
+        }
+        
+        public setScene(scene: Scene3D) {
+            this.scene = scene;
         }
 
 		/**
@@ -150,6 +154,10 @@ module feng3d {
                 if (!child._explicitPartition)
                     child.implicitPartition = value;
             }
+        }
+
+        public setImplicitPartition(value: Partition3D) {
+            this.implicitPartition = value;
         }
 
 		/**

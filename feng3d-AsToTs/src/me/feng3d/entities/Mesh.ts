@@ -1,22 +1,6 @@
 module feng3d {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/**
 	 * 材质发生变化时抛出
 	 */
@@ -140,7 +124,7 @@ module feng3d {
                 //var ignoreFacesLookingAway:boolean = _material ? !_material.bothSides : true;
                 if (this._pickingCollider.testSubMeshCollision(subMesh, this._pickingCollisionVO, shortestCollisionDistance)) {
                     shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
-                    this._pickingCollisionVO.renderable = subMesh.renderableBase;
+                    this._pickingCollisionVO.renderable = <any>subMesh.renderableBase;
                     if (!findClosest)
                         return true;
                 }

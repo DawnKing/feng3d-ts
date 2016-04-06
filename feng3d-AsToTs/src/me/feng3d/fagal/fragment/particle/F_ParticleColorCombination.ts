@@ -7,7 +7,7 @@ module feng3d
 	 *
 	 * @author feng 2015-1-21
 	 */
-	public F_ParticleColorCombination()
+	export function F_ParticleColorCombination()
 	{
 		var _ = FagalRE.instance.space;
 

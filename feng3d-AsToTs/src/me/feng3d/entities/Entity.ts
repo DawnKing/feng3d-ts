@@ -234,7 +234,7 @@ module feng3d {
             if (this._implicitPartition)
                 this.notifyPartitionUnassigned();
 
-            super.implicitPartition = value;
+            super.setImplicitPartition(value);
 
             this.notifyPartitionAssigned();
         }
@@ -268,7 +268,7 @@ module feng3d {
             if (value)
                 value.registerEntity(this);
 
-            super.scene = value;
+            super.setScene(value);
         }
 
 		/**

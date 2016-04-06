@@ -4,12 +4,13 @@ module feng3d {
      * 尝试获取可连接地址
      * @author feng 2015-12-15
      */
-    class TryConnectURLTaskItem extends TaskItem {
+    export class TryConnectURLTaskItem extends TaskItem {
         private loader: URLLoader;
         public result: boolean;
         public url: string;
 
-        constructorTaskItem(url: string) {
+        constructor(url: string) {
+            super();
             this.url = url;
         }
 
