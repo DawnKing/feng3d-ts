@@ -213,7 +213,10 @@ module feng3d {
         public set pickingCollider(value: IPickingCollider) {
             this._pickingCollider = value;
         }
-
+        
+        public setPickingCollider(value: IPickingCollider) {
+            this.pickingCollider = value;
+        }
 		/**
 		 * 碰撞前设置碰撞状态
 		 * @param shortestCollisionDistance 最短碰撞距离

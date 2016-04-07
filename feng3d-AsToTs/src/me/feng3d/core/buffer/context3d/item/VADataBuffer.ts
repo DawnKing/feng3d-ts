@@ -13,7 +13,7 @@ module feng3d {
         public data: number[];
 
         /** 缓存字典 可在多个寄存器共享数据缓存时使用同一个 */
-        private bufferItemDic = {};
+        private bufferItemDic = new Map<Context3D,VertexBufferItem>();
         /** 是否无效 */
         private invalid: boolean = true;
         /** 缓存是否无效 */
@@ -34,7 +34,6 @@ module feng3d {
             var vertexBufferItem: VertexBufferItem;
             //处理 缓存无效标记
             if (this.bufferInvalid) {
-                this.bufferItemDic = {};
                 this.bufferInvalid = false;
                 this.invalid = false;
             }
@@ -49,9 +48,10 @@ module feng3d {
                 this.invalid = false;
             }
 
-            vertexBufferItem = this.bufferItemDic[context3D];
+            vertexBufferItem = this.bufferItemDic.get(context3D);
             if (vertexBufferItem == null) {
-                vertexBufferItem = this.bufferItemDic[context3D] = new VertexBufferItem(context3D, this.numVertices, this.data32PerVertex);
+                vertexBufferItem = new VertexBufferItem(context3D, this.numVertices, this.data32PerVertex);
+                this.bufferItemDic.push(context3D,vertexBufferItem);
             }
 
             if (vertexBufferItem.invalid) {

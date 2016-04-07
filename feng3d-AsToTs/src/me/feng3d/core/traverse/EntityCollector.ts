@@ -136,12 +136,12 @@ module feng3d {
 		 */
         public applyRenderable(renderable: IRenderable) {
             var material: MaterialBase;
-            var entity: Entity = renderable.getSourceEntity();
-            if (renderable.getMouseEnabled())
+            var entity: Entity = renderable.sourceEntity;
+            if (renderable.mouseEnabled)
                 ++this._numMouseEnableds;
-            this._numTriangles += renderable.getNumTriangles();
+            this._numTriangles += renderable.numTriangles;
 
-            material = renderable.getMaterial();
+            material = renderable.material;
             if (material) {
                 var item: RenderableListItem = this._renderableListItemPool.getItem();
                 item.renderable = renderable;
@@ -153,7 +153,7 @@ module feng3d {
                 var dz: number = this._entryPoint.z - entityScenePos.z;
                 // project onto this.camera's z-axis
                 item.zIndex = dx * this._cameraForward.x + dy * this._cameraForward.y + dz * this._cameraForward.z + entity.zOffset;
-                item.renderSceneTransform = renderable.getSourceEntity().getRenderSceneTransform(this.camera);
+                item.renderSceneTransform = renderable.sourceEntity.getRenderSceneTransform(this.camera);
                 if (material.requiresBlending) {
                     item.next = this._blendedRenderableHead;
                     this._blendedRenderableHead = item;

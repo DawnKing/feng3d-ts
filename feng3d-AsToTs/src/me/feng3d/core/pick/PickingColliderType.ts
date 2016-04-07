@@ -11,11 +11,6 @@ module feng3d {
         public static BOUNDS_ONLY: IPickingCollider = null;
 
 		/**
-		 * 基于PixelBender计算与实体的相交
-		 */
-        public static PB_BEST_HIT: IPickingCollider = new PBPickingCollider(true);
-
-		/**
 		 * 使用纯AS3计算与实体相交
 		 */
         public static AS3_BEST_HIT: IPickingCollider = new AS3PickingCollider(true);

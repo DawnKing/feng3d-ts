@@ -84,7 +84,7 @@ module feng3d {
             var renderable: IRenderable = entityCollector.skyBox.subMeshes[0].renderableBase;
             var camera: Camera3D = entityCollector.camera;
 
-            var material: MaterialBase = renderable.getMaterial();
+            var material: MaterialBase = renderable.material;
 
             material.updateMaterial();
             var pass: MaterialPassBase = material.getPass(0);
@@ -108,7 +108,7 @@ module feng3d {
             var item2: RenderableListItem;
 
             while (item) {
-                this._activeMaterial = item.renderable.getMaterial();
+                this._activeMaterial = item.renderable.material;
                 this._activeMaterial.updateMaterial();
 
                 numPasses = this._activeMaterial.numPasses;
@@ -128,7 +128,7 @@ module feng3d {
                         pass.render(item2.renderable, stage3DProxy, camera, this._renderIndex++);
 
                         item2 = item2.next;
-                    } while (item2 && item2.renderable.getMaterial() == this._activeMaterial);
+                    } while (item2 && item2.renderable.material == this._activeMaterial);
                     this._activeMaterial.deactivatePass(j);
 
                 } while (++j < numPasses);

@@ -61,7 +61,7 @@ module feng3d
 
 		public set pickingCollider(value:IPickingCollider)
 		{
-			super.pickingCollider = value;
+			super.setPickingCollider(value);
 			if (value)
 			{ // this.bounds collider is the only null value
 				this._pickingSubMesh = new SubMesh(Sprite3D._sprite3DGeometry, null);
@@ -137,7 +137,7 @@ module feng3d
 			this._pickingCollider.setLocalRay(ray3D);
 
 			this._pickingCollisionVO.renderable = null;
-			if (this._pickingCollider.testSubMeshCollision(this._pickingSubMesh, this._pickingCollisionVO, shortestCollisionDistance))
+			if (this._pickingCollider.testSubMeshCollision(this._pickingSubMesh, this._pickingCollisionVO, shortestCollisionDistance,false))
 				this._pickingCollisionVO.renderable = this._pickingSubMesh.renderableBase;
 
 			return this._pickingCollisionVO.renderable != null;

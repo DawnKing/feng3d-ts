@@ -122,7 +122,7 @@ module feng3d {
             for (var i: number = 0; i < len; ++i) {
                 var subMesh: SubMesh = this._subMeshes[i];
                 //var ignoreFacesLookingAway:boolean = _material ? !_material.bothSides : true;
-                if (this._pickingCollider.testSubMeshCollision(subMesh, this._pickingCollisionVO, shortestCollisionDistance)) {
+                if (this._pickingCollider.testSubMeshCollision(subMesh, this._pickingCollisionVO, shortestCollisionDistance,false)) {
                     shortestCollisionDistance = this._pickingCollisionVO.rayEntryDistance;
                     this._pickingCollisionVO.renderable = <any>subMesh.renderableBase;
                     if (!findClosest)

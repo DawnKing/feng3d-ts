@@ -2,6 +2,13 @@ module feng3d
 {
     export class Context3D
     {
+        enableErrorChecking;
+        dispose;
+        driverInfo;
+        setScissorRectangle;
+        present;
+        clear;
+        configureBackBuffer;
         setRenderToTexture;
         setProgram;
         setProgramConstantsFromVector;
@@ -25,10 +32,6 @@ module feng3d
             return null;
         }
         
-        public clear(a, b, c)
-        {
-            
-        }
         
         public setRenderToBackBuffer()
         {

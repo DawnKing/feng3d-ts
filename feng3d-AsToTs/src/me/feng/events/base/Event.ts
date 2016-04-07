@@ -9,11 +9,13 @@ module feng3d {
          * [广播事件] 进入新的一帧,监听此事件将会在下一帧开始时触发一次回调。这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
          */
         public static ENTER_FRAME: string = "enterFrame";
+        public static EXIT_FRAME: string = "EXIT_FRAME";
         public static CHANGE: string = "change";
         public static COMPLETE: string = "complete";
         public static ADDED_TO_STAGE: string = "ADDED_TO_STAGE";
         public static ADDED: string = "ADDED";
         public static REMOVED_FROM_STAGE: string = "REMOVED_FROM_STAGE";
+        public static CONTEXT3D_CREATE: string = "CONTEXT3D_CREATE";
         
 
         private _type: string;
@@ -84,6 +86,10 @@ module feng3d {
 		 */
         public set data(value: any) {
             this._data = value;
+        }
+        
+        public setData(value: any) {
+            this.data = value;
         }
 
 		/**

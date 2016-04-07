@@ -13,7 +13,7 @@ module feng3d
 		
 		constructor(type:string, camera:Camera3D = null, bubbles:boolean=false)
 		{
-			super(type, this.data, bubbles);
+			super(type, camera, bubbles);
 		}
 		
 		public get camera():Camera3D

@@ -13,7 +13,7 @@ module feng3d {
         _.tex(_.mDiff_ft, _.uv_v, _.texture_fs);
 
         if (commonShaderParams.alphaThreshold > 0) {
-            var cutOffReg: Register = _.alphaThreshold_fc_vector;
+            var cutOffReg = _.alphaThreshold_fc_vector;
             _.sub(_.mDiff_ft.w, _.mDiff_ft.w, cutOffReg.x);
             _.kil(_.mDiff_ft.w);
             _.add(_.mDiff_ft.w, _.mDiff_ft.w, cutOffReg.x);

@@ -32,7 +32,7 @@ module feng3d
 		{
 			super(type);
 
-			_message = message;
+			this._message = message;
 		}
 
 		/**

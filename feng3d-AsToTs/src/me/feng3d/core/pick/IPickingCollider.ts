@@ -21,6 +21,6 @@ module feng3d {
 		 * @param bothSides 					是否三角形双面判定
 		 * @return 								是否碰撞
 		 */
-        testSubMeshCollision(subMesh: SubMesh, pickingCollisionVO: PickingCollisionVO, shortestCollisionDistance: number, bothSides: boolean = true): boolean;
+        testSubMeshCollision(subMesh: SubMesh, pickingCollisionVO: PickingCollisionVO, shortestCollisionDistance: number, bothSides: boolean): boolean;
     }
 }

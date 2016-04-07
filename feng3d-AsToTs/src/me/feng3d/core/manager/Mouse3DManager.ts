@@ -82,7 +82,7 @@ module feng3d {
                 return;
             }
 
-            var mouseEvent3DList: MouseEvent3D[] = new MouseEvent3D[]();
+            var mouseEvent3DList: MouseEvent3D[] = [];
 
             //计算得到鼠标射线相交的物体
             this._collidingObject = this._mousePicker.getViewCollision(mouseRay3D, mouseCollisionEntitys);

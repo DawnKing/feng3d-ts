@@ -49,7 +49,7 @@ module feng3d {
             this._stage3DManager = stage3DManager;
             this._viewPort = new Rectangle();
 
-            this._stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.onContext3DUpdate, false, 1000, false);
+            this._stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.onContext3DUpdate, 1000, false);
             this.requestContext(forceSoftware, profile);
         }
 

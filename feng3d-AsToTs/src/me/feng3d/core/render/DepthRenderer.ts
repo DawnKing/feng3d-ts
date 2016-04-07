@@ -41,7 +41,7 @@ module feng3d {
             var item2: RenderableListItem;
 
             while (item) {
-                this._activeMaterial = item.renderable.getMaterial();
+                this._activeMaterial = item.renderable.material;
 
                 var depthPass: DepthMapPass = this._activeMaterial.depthPass;
                 //初始化渲染参数
@@ -54,7 +54,7 @@ module feng3d {
                     depthPass.render(item2.renderable, stage3DProxy, camera, this._renderIndex++);
 
                     item2 = item2.next;
-                } while (item2 && item2.renderable.getMaterial() == this._activeMaterial);
+                } while (item2 && item2.renderable.material == this._activeMaterial);
 
                 depthPass.deactivate();
                 item = item2;

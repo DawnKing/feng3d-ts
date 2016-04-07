@@ -54,7 +54,7 @@ module feng3d {
             var item2: RenderableListItem;
 
             while (item) {
-                this._activeMaterial = item.renderable.getMaterial();
+                this._activeMaterial = item.renderable.material;
 
                 var planarShadowPass: PlanarShadowPass = this._activeMaterial.planarShadowPass;
 
@@ -65,11 +65,11 @@ module feng3d {
 
                 item2 = item;
                 do {
-                    if (item2.renderable.getCastsShadows()) {
+                    if (item2.renderable.castsShadows) {
                         planarShadowPass.render(item2.renderable, stage3DProxy, camera, this._renderIndex++);
                     }
                     item2 = item2.next;
-                } while (item2 && item2.renderable.getMaterial() == this._activeMaterial);
+                } while (item2 && item2.renderable.material == this._activeMaterial);
                 planarShadowPass.deactivate();
 
                 item = item2;
