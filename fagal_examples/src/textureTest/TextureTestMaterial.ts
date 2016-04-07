@@ -1,15 +1,5 @@
-module feng3dTest
-{
-	
-
-	_TextureTest;
-	_TextureTest;
-
-	
-	
-	
-	
-	
+module feng3d
+{	
 
 	/**
 	 * 颜色地形材质
@@ -21,8 +11,8 @@ module feng3dTest
 
 		constructor(texture:TextureProxyBase)
 		{
-			this._texture = texture;
 			super();
+			this._texture = texture;
 		}
 
 		protected initBuffers()

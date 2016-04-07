@@ -96,24 +96,24 @@ module feng3d
 									  height:number, 
 									  zNear:number, 
 									  zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0*zNear/width, 0.0, 0.0, 0.0,
 				0.0, 2.0*zNear/height, 0.0, 0.0,
 				0.0, 0.0, zFar/(zFar-zNear), 1.0,
 				0.0, 0.0, zNear*zFar/(zNear-zFar), 0.0
-			]));
+			]);
 		}
 
 		public perspectiveRH(width:number, 
 									  height:number, 
 									  zNear:number, 
 									  zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0*zNear/width, 0.0, 0.0, 0.0,
 				0.0, 2.0*zNear/height, 0.0, 0.0,
 				0.0, 0.0, zFar/(zNear-zFar), -1.0,
 				0.0, 0.0, zNear*zFar/(zNear-zFar), 0.0
-			]));
+			]);
 		}
 
 		public perspectiveFieldOfViewLH(fieldOfViewY:number, 
@@ -122,12 +122,12 @@ module feng3d
 												 zFar:number) {
 			var yScale:number = 1.0/Math.tan(fieldOfViewY/2.0);
 			var xScale:number = yScale / aspectRatio; 
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				xScale, 0.0, 0.0, 0.0,
 				0.0, yScale, 0.0, 0.0,
 				0.0, 0.0, zFar/(zFar-zNear), 1.0,
 				0.0, 0.0, (zNear*zFar)/(zNear-zFar), 0.0
-			]));
+			]);
 		}
 
 		public perspectiveFieldOfViewRH(fieldOfViewY:number, 
@@ -136,12 +136,12 @@ module feng3d
 												 zFar:number) {
 			var yScale:number = 1.0/Math.tan(fieldOfViewY/2.0);
 			var xScale:number = yScale / aspectRatio; 
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				xScale, 0.0, 0.0, 0.0,
 				0.0, yScale, 0.0, 0.0,
 				0.0, 0.0, zFar/(zNear-zFar), -1.0,
 				0.0, 0.0, (zNear*zFar)/(zNear-zFar), 0.0
-			]));
+			]);
 		}
 
 		public perspectiveOffCenterLH(left:number, 
@@ -150,12 +150,12 @@ module feng3d
 									           top:number,
 									  		   zNear:number, 
 									  		   zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0*zNear/(right-left), 0.0, 0.0, 0.0,
 				0.0, -2.0*zNear/(bottom-top), 0.0, 0.0,
 				-1.0-2.0*left/(right-left), 1.0+2.0*top/(bottom-top), -zFar/(zNear-zFar), 1.0,
 				0.0, 0.0, (zNear*zFar)/(zNear-zFar), 0.0
-			]));
+			]);
 		}
 
 		public perspectiveOffCenterRH(left:number, 
@@ -164,36 +164,36 @@ module feng3d
 											   top:number,
 											   zNear:number, 
 											   zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0*zNear/(right-left), 0.0, 0.0, 0.0,
 				0.0, -2.0*zNear/(bottom-top), 0.0, 0.0,
 				1.0+2.0*left/(right-left), -1.0-2.0*top/(bottom-top), zFar/(zNear-zFar), -1.0,
 				0.0, 0.0, (zNear*zFar)/(zNear-zFar), 0.0
-			]));
+			]);
 		}
 		
 		public orthoLH(width:number,
 								height:number,
 								zNear:number,
 								zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0/width, 0.0, 0.0, 0.0,
 				0.0, 2.0/height, 0.0, 0.0,
 				0.0, 0.0, 1.0/(zFar-zNear), 0.0,
 				0.0, 0.0, zNear/(zNear-zFar), 1.0
-			]));
+			]);
 		}
 
 		public orthoRH(width:number,
 								height:number,
 								zNear:number,
 								zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0/width, 0.0, 0.0, 0.0,
 				0.0, 2.0/height, 0.0, 0.0,
 				0.0, 0.0, 1.0/(zNear-zNear), 0.0,
 				0.0, 0.0, zNear/(zNear-zFar), 1.0
-			]));
+			]);
 		}
 
 		public orthoOffCenterLH(left:number, 
@@ -202,12 +202,12 @@ module feng3d
 									     top:number,
 										 zNear:number, 
 										 zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0/(right-left), 0.0, 0.0, 0.0,
 				0.0, 2.0*zNear/(top-bottom), 0.0, 0.0,
 				-1.0-2.0*left/(right-left), 1.0+2.0*top/(bottom-top), 1.0/(zFar-zNear), 0.0,
 				0.0, 0.0, zNear/(zNear-zFar), 1.0
-			]));
+			]);
 		}
 
 		public orthoOffCenterRH(left:number, 
@@ -216,12 +216,12 @@ module feng3d
 										 top:number,
 										 zNear:number, 
 										 zFar:number) {
-			this.copyRawDataFrom(number[]([
+			this.copyRawDataFrom([
 				2.0/(right-left), 0.0, 0.0, 0.0,
 				0.0, 2.0*zNear/(top-bottom), 0.0, 0.0,
 				-1.0-2.0*left/(right-left), 1.0+2.0*top/(bottom-top), 1.0/(zNear-zFar), 0.0,
 				0.0, 0.0, zNear/(zNear-zFar), 1.0
-			]));
+			]);
 		}
 
 		private _x:Vector3D = new Vector3D();

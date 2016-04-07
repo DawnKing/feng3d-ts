@@ -1,10 +1,6 @@
 module feng3d
 {
 	
-	
-
-	
-
 	/**
 	 *
 	 * @author feng 2014-10-27
@@ -38,7 +34,7 @@ module feng3d
 
 		protected get context3dCache():Context3DCache
 		{
-			return this._context3dCache ||= new Context3DCache();
+			return this._context3dCache =this._context3dCache || new Context3DCache();
 		}
 	}
 }

@@ -1,14 +1,5 @@
-module feng3dTerrain
-{
-	
-
-	_colorTerrain;
-	_colorTerrain;
-
-	
-	
-	
-	
+module feng3d
+{	
 
 	/**
 	 * 颜色地形材质
@@ -20,8 +11,8 @@ module feng3dTerrain
 
 		constructor(splats)
 		{
-			this._splats = splats;
 			super();
+			this._splats = splats;
 		}
 
 		protected initBuffers()

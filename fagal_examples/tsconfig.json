@@ -15,34 +15,33 @@
         "sourceMap": true,
         "declaration": true,
         // "outDir": "bin"
-        "out": "release/fagal_examples.js"
+        "out": "release/fagal.js"
         // "out": "../feng3d-ts-examples/libs/feng3d.js"
         // "out": "../feng3d-ts-test/libs/feng3d.js"
     },
     "files": [ //注：如果有继承关系的，父类必须排在子类前面
-        "TestBase.ts",
-        "BaseShaderTest.ts",
-        "ColorMapTest.ts",
-        "ColorTerrainShaderTest.ts",
-        "Context3DCacheDebugText.ts",
-        "TextureTest.ts",
-        "base\\BaseGeometry.ts",
-        "colorTerrain\\ColorTerrainGeometry.ts",
-        "textureTest\\TextureTestGeometry.ts",
-        "base\\BaseMaterial.ts",
-        "colorMap\\ColorMapMaterial.ts",
-        "colorTerrain\\ColorTerrainMaterial.ts",
-        "textureTest\\TextureTestMaterial.ts",
-        "base\\BaseMesh.ts",
-        "com\\adobe\\utils\\PerspectiveMatrix3D.ts",
-        "configs\\Context3DBufferIDConfig.ts",
-        "fagal\\F_TextureTest.ts",
-        "fagal\\F_baseShader.ts",
-        "fagal\\F_colorMap.ts",
-        "fagal\\F_colorTerrain.ts",
-        "fagal\\V_TextureTest.ts",
-        "fagal\\V_baseShader.ts",
-        "fagal\\V_colorMap.ts",
-        "fagal\\V_colorTerrain.ts"
+        "src\\BaseShaderTest.ts",
+        "src\\ColorMapTest.ts",
+        "src\\ColorTerrainShaderTest.ts",
+        "src\\Context3DCacheDebugText.ts",
+        "src\\TextureTest.ts",
+        "src\\base\\BaseGeometry.ts",
+        "src\\colorTerrain\\ColorTerrainGeometry.ts",
+        "src\\textureTest\\TextureTestGeometry.ts",
+        "src\\base\\BaseMaterial.ts",
+        "src\\colorMap\\ColorMapMaterial.ts",
+        "src\\colorTerrain\\ColorTerrainMaterial.ts",
+        "src\\textureTest\\TextureTestMaterial.ts",
+        "src\\base\\BaseMesh.ts",
+        "src\\com\\adobe\\utils\\PerspectiveMatrix3D.ts",
+        "src\\configs\\Context3DBufferIDConfig_Fagal.ts",
+        "src\\fagal\\F_TextureTest.ts",
+        "src\\fagal\\F_baseShader.ts",
+        "src\\fagal\\F_colorMap.ts",
+        "src\\fagal\\F_colorTerrain.ts",
+        "src\\fagal\\V_TextureTest.ts",
+        "src\\fagal\\V_baseShader.ts",
+        "src\\fagal\\V_colorMap.ts",
+        "src\\fagal\\V_colorTerrain.ts"
     ]
 }

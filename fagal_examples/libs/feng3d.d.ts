@@ -12,6 +12,18 @@ declare module feng3d {
 }
 declare module feng3d {
     /**
+     * 判断a对象是否为b类型
+     */
+    function is(a: any, b: Function): boolean;
+}
+declare module feng3d {
+    /**
+     * 如果a为b类型则返回，否则返回null
+     */
+    function as(a: any, b: Function): any;
+}
+declare module feng3d {
+    /**
      * 构建Map类代替Dictionary
      */
     class Map<K, V> {
@@ -3477,7 +3489,7 @@ declare module feng3d {
         /**
          * Fagal编号中心
          */
-        _: FagalIdCenter;
+        _: any;
         /**
          * @inheritDoc
          */
@@ -9477,11 +9489,11 @@ declare module feng3d {
         /**
          * @inheritDoc
          */
-        getCurrentGeometry(): Geometry;
+        currentGeometry: Geometry;
         /**
          * @inheritDoc
          */
-        getNextGeometry(): Geometry;
+        nextGeometry: Geometry;
         /**
          * 创建VertexClipState实例
          * @param animator				动画
@@ -9875,16 +9887,16 @@ declare module feng3d {
         /**
          * Returns the current geometry frame of animation in the clip based on the internal playhead position.
          */
-        getCurrentGeometry(): Geometry;
+        currentGeometry: Geometry;
         /**
          * Returns the current geometry frame of animation in the clip based on the internal playhead position.
          */
-        getNextGeometry(): Geometry;
+        nextGeometry: Geometry;
         /**
          * Returns a fractional value between 0 and 1 representing the blending ratio of the current playhead position
          * between the current geometry frame (0) and next geometry frame (1) of the animation.
          */
-        getBlendWeight(): number;
+        blendWeight: number;
     }
 }
 declare module feng3d {

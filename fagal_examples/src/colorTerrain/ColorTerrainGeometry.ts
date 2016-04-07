@@ -1,7 +1,6 @@
-module feng3dTerrain
+module feng3d
 {
 	
-
 	/**
 	 *
 	 * @author feng 2015-5-14

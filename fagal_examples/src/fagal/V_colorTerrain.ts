@@ -13,7 +13,8 @@ module feng3d
 	{
 		constructor()
 		{
-			_shaderType = Context3DProgramType.VERTEX;
+            super();
+			this._shaderType = Context3DProgramType.VERTEX;
 		}
 
 		public runFunc()

@@ -23,6 +23,36 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
+     * 判断a对象是否为b类型
+     */
+    function is(a, b) {
+        var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
+        while (prototype != null) {
+            //类型==自身原型的构造函数
+            if (prototype.constructor == b)
+                return true;
+            //父类就是原型的原型构造函数
+            prototype = Object.getPrototypeOf(prototype);
+        }
+        return false;
+    }
+    feng3d.is = is;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 如果a为b类型则返回，否则返回null
+     */
+    function as(a, b) {
+        if (!feng3d.is(a, b))
+            return null;
+        return a;
+    }
+    feng3d.as = as;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * 构建Map类代替Dictionary
      */
     var Map = (function () {
@@ -4833,15 +4863,15 @@ var feng3d;
          */
         SpriteSheetAnimator.prototype.setRenderState = function (renderable, camera) {
             var material = renderable.material;
-            if (!material || !is(material, feng3d.TextureMaterial))
+            if (!material || !feng3d.is(material, feng3d.TextureMaterial))
                 return;
-            var subMesh = as(renderable, feng3d.MeshRenderable).subMesh;
+            var subMesh = feng3d.as(renderable, feng3d.MeshRenderable).subMesh;
             if (!subMesh)
                 return;
             //because textures are already uploaded, we can't offset the uv's yet
             var swapped;
-            if (is(material, feng3d.SpriteSheetMaterial) && this._mapDirty)
-                swapped = as(material, feng3d.SpriteSheetMaterial).swap(this._frame.mapID);
+            if (feng3d.is(material, feng3d.SpriteSheetMaterial) && this._mapDirty)
+                swapped = feng3d.as(material, feng3d.SpriteSheetMaterial).swap(this._frame.mapID);
             if (!swapped) {
                 this._vectorFrame[0] = this._frame.offsetU;
                 this._vectorFrame[1] = this._frame.offsetV;
@@ -4864,7 +4894,7 @@ var feng3d;
                 throw new Error("Animation root node " + name + " not found!");
             this._activeNode = this._animationSet.getAnimation(name);
             this._activeState = this.getAnimationState(this._activeNode);
-            this._frame = as(this._activeState, feng3d.SpriteSheetAnimationState).currentFrameData;
+            this._frame = feng3d.as(this._activeState, feng3d.SpriteSheetAnimationState).currentFrameData;
             this._activeSpriteSheetState = this._activeState;
             this.start();
         };
@@ -4873,8 +4903,8 @@ var feng3d;
          */
         SpriteSheetAnimator.prototype.updateDeltaTime = function (dt) {
             if (this._specsDirty) {
-                as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).reverse = this._reverse;
-                as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).backAndForth = this._backAndForth;
+                feng3d.as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).reverse = this._reverse;
+                feng3d.as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).backAndForth = this._backAndForth;
                 this._specsDirty = false;
             }
             this._absoluteTime += dt;
@@ -4882,7 +4912,7 @@ var feng3d;
             if ((now - this._lastTime) > this._ms) {
                 this._mapDirty = true;
                 this._activeSpriteSheetState.update(this._absoluteTime);
-                this._frame = as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).currentFrameData;
+                this._frame = feng3d.as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).currentFrameData;
                 this._lastTime = now;
             }
             else
@@ -4902,9 +4932,9 @@ var feng3d;
         SpriteSheetAnimator.prototype.gotoFrame = function (frameNumber, doPlay) {
             if (!this._activeState)
                 return;
-            as(this._activeState, feng3d.SpriteSheetAnimationState).currentFrameNumber = (frameNumber == 0) ? frameNumber : frameNumber - 1;
+            feng3d.as(this._activeState, feng3d.SpriteSheetAnimationState).currentFrameNumber = (frameNumber == 0) ? frameNumber : frameNumber - 1;
             var currentMapID = this._frame.mapID;
-            this._frame = as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).currentFrameData;
+            this._frame = feng3d.as(this._activeSpriteSheetState, feng3d.SpriteSheetAnimationState).currentFrameData;
             if (doPlay)
                 this.start();
             else {
@@ -5021,8 +5051,8 @@ var feng3d;
          * @inheritDoc
          */
         UVAnimator.prototype.setRenderState = function (renderable, camera) {
-            var material = as(renderable.material, feng3d.TextureMaterial);
-            var subMesh = as(renderable, feng3d.MeshRenderable).subMesh;
+            var material = feng3d.as(renderable.material, feng3d.TextureMaterial);
+            var subMesh = feng3d.as(renderable, feng3d.MeshRenderable).subMesh;
             if (!material || !subMesh)
                 return;
             if (this.autoTranslate) {
@@ -5165,7 +5195,7 @@ var feng3d;
                 return;
             }
             // this type of animation can only be SubMesh
-            var subMesh = as(renderable, feng3d.MeshRenderable).subMesh;
+            var subMesh = feng3d.as(renderable, feng3d.MeshRenderable).subMesh;
             var subGeom = subMesh.subGeometry;
             var vertexSubGeom = subGeom.getOrCreateComponentByClass(feng3d.VertexSubGeometry);
             //				//获取默认姿势几何体数据
@@ -5179,7 +5209,7 @@ var feng3d;
          * @param renderable		渲染对象
          */
         VertexAnimator.prototype.setNullPose = function (renderable) {
-            var subMesh = as(renderable, feng3d.MeshRenderable).subMesh;
+            var subMesh = feng3d.as(renderable, feng3d.MeshRenderable).subMesh;
             var subGeom = subMesh.subGeometry;
         };
         VertexAnimator.prototype.addOwner = function (mesh) {
@@ -6064,7 +6094,7 @@ var feng3d;
          */
         ContainerTransform3D.prototype.onBeAddedComponet = function (event) {
             var data = event.data;
-            this.objectContainer3D = as(data.container, feng3d.Container3D);
+            this.objectContainer3D = feng3d.as(data.container, feng3d.Container3D);
             this.objectContainer3D.transform3D.addEventListener(feng3d.Transform3DEvent.TRANSFORM_CHANGED, this.onContainer3DTranformChange);
         };
         /**
@@ -9071,7 +9101,7 @@ var feng3d;
          * @inheritDoc
          */
         Object3D.prototype.dispatchEvent = function (event) {
-            if (is(event, feng3d.MouseEvent3D) && this.parent && !this.parent.ancestorsAllowMouseEnabled) {
+            if (feng3d.is(event, feng3d.MouseEvent3D) && this.parent && !this.parent.ancestorsAllowMouseEnabled) {
                 if (this.parent) {
                     return this.parent.dispatchEvent(event);
                 }
@@ -9098,7 +9128,7 @@ var feng3d;
              */
             get: function () {
                 //从这里开始一直找父容器到场景了，且visible全为true则为场景上可见
-                return this.visible && (this.scene != null) && ((is(this.parent, feng3d.Scene3D)) ? true : (this.parent ? this.parent.sceneVisible : false));
+                return this.visible && (this.scene != null) && ((feng3d.is(this.parent, feng3d.Scene3D)) ? true : (this.parent ? this.parent.sceneVisible : false));
             },
             enumerable: true,
             configurable: true
@@ -9319,7 +9349,7 @@ var feng3d;
          */
         InteractiveObject3D.prototype.dispatchEvent = function (event) {
             //处理3D鼠标事件禁用
-            if (is(event, feng3d.MouseEvent3D) && !this.mouseEnabled) {
+            if (feng3d.is(event, feng3d.MouseEvent3D) && !this.mouseEnabled) {
                 if (this.parent) {
                     return this.parent.dispatchEvent(event);
                 }
@@ -9660,7 +9690,7 @@ var feng3d;
          * @param object3D		3d对象
          */
         Scene3D.prototype.addedObject3d = function (object3D) {
-            if (is(object3D, feng3d.Entity)) {
+            if (feng3d.is(object3D, feng3d.Entity)) {
                 this._entityDic[object3D.name] = object3D;
                 if (object3D.visible) {
                     this._displayEntityDic[object3D.name] = object3D;
@@ -10787,7 +10817,7 @@ var feng3d;
             ];
             var segmentX;
             for (var i = 0; i < arr.length; i++) {
-                segmentX = new feng3d.Segment(as(arr[i][0], feng3d.Vector3D), as(arr[i][1], feng3d.Vector3D), Number(arr[i][2]), Number(arr[i][3]), Number(arr[i][4]));
+                segmentX = new feng3d.Segment(feng3d.as(arr[i][0], feng3d.Vector3D), feng3d.as(arr[i][1], feng3d.Vector3D), Number(arr[i][2]), Number(arr[i][3]), Number(arr[i][4]));
                 this.segmentGeometry.addSegment(segmentX);
             }
         };
@@ -12926,11 +12956,11 @@ var feng3d;
                 var len = value.length;
                 for (var i = 0; i < len; ++i) {
                     light = value[i];
-                    if (is(light, feng3d.PointLight)) {
-                        this._pointLights[numPointLights++] = as(light, feng3d.PointLight);
+                    if (feng3d.is(light, feng3d.PointLight)) {
+                        this._pointLights[numPointLights++] = feng3d.as(light, feng3d.PointLight);
                     }
-                    else if (is(light, feng3d.DirectionalLight)) {
-                        this._directionalLights[numDirectionalLights++] = as(light, feng3d.DirectionalLight);
+                    else if (feng3d.is(light, feng3d.DirectionalLight)) {
+                        this._directionalLights[numDirectionalLights++] = feng3d.as(light, feng3d.DirectionalLight);
                     }
                 }
                 this._numDirectionalLights = numDirectionalLights;
@@ -13373,7 +13403,7 @@ var feng3d;
             }
         };
         BasicAmbientMethod.prototype.copyFrom = function (method) {
-            var diff = as(method, BasicAmbientMethod);
+            var diff = feng3d.as(method, BasicAmbientMethod);
             this.ambient = diff.ambient;
             this.ambientColor = diff.ambientColor;
         };
@@ -13441,7 +13471,7 @@ var feng3d;
          * @inheritDoc
          */
         BasicNormalMethod.prototype.copyFrom = function (method) {
-            this.normalMap = as(method, BasicNormalMethod).normalMap;
+            this.normalMap = feng3d.as(method, BasicNormalMethod).normalMap;
         };
         BasicNormalMethod.prototype.activate = function (shaderParams) {
             var lightShaderParams = shaderParams.getOrCreateComponentByClass(feng3d.LightShaderParams);
@@ -13850,7 +13880,7 @@ var feng3d;
          * @inheritDoc
          */
         BasicDiffuseMethod.prototype.copyFrom = function (method) {
-            var diff = as(method, BasicDiffuseMethod);
+            var diff = feng3d.as(method, BasicDiffuseMethod);
             this.texture = diff.texture;
             this.diffuseAlpha = diff.diffuseAlpha;
             this.diffuseColor = diff.diffuseColor;
@@ -14752,7 +14782,7 @@ var feng3d;
              * 深度投影矩阵
              */
             this.depthProjection = new feng3d.Matrix3D();
-            this._usePoint = is(castingLight, feng3d.PointLight);
+            this._usePoint = feng3d.is(castingLight, feng3d.PointLight);
         }
         /**
          * @inheritDoc
@@ -14802,7 +14832,7 @@ var feng3d;
             if (this._usePoint)
                 this.shadowCommonsData1[0] = -Math.pow(1 / (this._castingLight.fallOff * this._epsilon), 2);
             else
-                this.shadowCommonsVCData0[3] = -1 / (as(this._shadowMapper, feng3d.DirectionalShadowMapper).depth * this._epsilon);
+                this.shadowCommonsVCData0[3] = -1 / (feng3d.as(this._shadowMapper, feng3d.DirectionalShadowMapper).depth * this._epsilon);
             this.shadowCommonsData1[1] = 1 - this._alpha;
             var size = this.castingLight.shadowMapper.depthMapSize;
             this.shadowCommonsData2[1] = size;
@@ -14816,7 +14846,7 @@ var feng3d;
          */
         SimpleShadowMapMethodBase.prototype.setRenderState = function (renderable, camera) {
             if (!this._usePoint) {
-                this.depthProjection.copyFrom(as(this._shadowMapper, feng3d.DirectionalShadowMapper).depthProjection);
+                this.depthProjection.copyFrom(feng3d.as(this._shadowMapper, feng3d.DirectionalShadowMapper).depthProjection);
             }
         };
         return SimpleShadowMapMethodBase;
@@ -19241,11 +19271,11 @@ var feng3d;
          */
         ImageParser.supportsData = function (data) {
             //shortcut if asset is IFlexAsset
-            if (is(data, feng3d.Bitmap))
+            if (feng3d.is(data, feng3d.Bitmap))
                 return true;
-            if (is(data, feng3d.BitmapData))
+            if (feng3d.is(data, feng3d.BitmapData))
                 return true;
-            if (!is(data, feng3d.ByteArray))
+            if (!feng3d.is(data, feng3d.ByteArray))
                 return false;
             var ba = data;
             ba.position = 0;
@@ -19270,12 +19300,12 @@ var feng3d;
          */
         ImageParser.prototype.proceedParsing = function () {
             var asset;
-            if (is(this._data, feng3d.Bitmap)) {
-                asset = new feng3d.BitmapTexture(as(this._data, feng3d.Bitmap).bitmapData);
+            if (feng3d.is(this._data, feng3d.Bitmap)) {
+                asset = new feng3d.BitmapTexture(feng3d.as(this._data, feng3d.Bitmap).bitmapData);
                 this.finalizeAsset(asset, this._fileName);
                 return ImageParser.PARSING_DONE;
             }
-            if (is(this._data, feng3d.BitmapData)) {
+            if (feng3d.is(this._data, feng3d.BitmapData)) {
                 asset = new feng3d.BitmapTexture(this._data);
                 this.finalizeAsset(asset, this._fileName);
                 return ImageParser.PARSING_DONE;
@@ -20462,7 +20492,7 @@ var feng3d;
                 if (asset.namedAsset.assetType == feng3d.AssetType.TEXTURE) {
                     var tex;
                     tex = this._textures[resourceDependency.id];
-                    tex.texture = as(asset, feng3d.Texture2DBase);
+                    tex.texture = feng3d.as(asset, feng3d.Texture2DBase);
                 }
             }
         };
@@ -20900,7 +20930,7 @@ var feng3d;
             for (i = 0; i < numVerts; i++)
                 vGroups[i] = [];
             for (i = 0; i < numFaces; i++) {
-                var face = as(faces[i], FaceVO);
+                var face = feng3d.as(faces[i], FaceVO);
                 for (j = 0; j < 3; j++) {
                     var groups = vGroups[(j == 0) ? face.a : ((j == 1) ? face.b : face.c)];
                     var group = face.smoothGroup;
@@ -20938,7 +20968,7 @@ var feng3d;
             }
             numVerts = vertices.length;
             for (i = 0; i < numFaces; i++) {
-                face = as(faces[i], FaceVO);
+                face = feng3d.as(faces[i], FaceVO);
                 group = face.smoothGroup;
                 for (j = 0; j < 3; j++) {
                     k = (j == 0) ? face.a : ((j == 1) ? face.b : face.c);
@@ -20972,8 +21002,8 @@ var feng3d;
                     mat = new feng3d.TextureMaterial(this._cur_mat.colorMap.texture || feng3d.DefaultMaterialManager.getDefaultTexture());
                 else
                     mat = new feng3d.ColorMaterial(this._cur_mat.diffuseColor);
-                as(mat, feng3d.SinglePassMaterialBase).ambientColor = this._cur_mat.ambientColor;
-                as(mat, feng3d.SinglePassMaterialBase).specularColor = this._cur_mat.specularColor;
+                feng3d.as(mat, feng3d.SinglePassMaterialBase).ambientColor = this._cur_mat.ambientColor;
+                feng3d.as(mat, feng3d.SinglePassMaterialBase).specularColor = this._cur_mat.specularColor;
             }
             else {
                 if (this._cur_mat.colorMap)
@@ -21139,7 +21169,7 @@ var feng3d;
                 if (asset.namedAsset.assetType == feng3d.AssetType.TEXTURE) {
                     var lm = new LoadedMaterial();
                     lm.materialID = resourceDependency.id;
-                    lm.texture = as(asset, feng3d.Texture2DBase);
+                    lm.texture = feng3d.as(asset, feng3d.Texture2DBase);
                     this._materialLoaded.push(lm);
                     if (this._meshes.length > 0)
                         this.applyMaterial(lm);
@@ -21708,7 +21738,7 @@ var feng3d;
                     }
                     else if (lm.texture) {
                         if (this.materialMode < 2) {
-                            var textMat = as(mesh.material, feng3d.TextureMaterial);
+                            var textMat = feng3d.as(mesh.material, feng3d.TextureMaterial);
                             textMat.texture = lm.texture;
                             textMat.ambientColor = lm.ambientColor;
                             textMat.alpha = lm.alpha;
@@ -21735,7 +21765,7 @@ var feng3d;
                             }
                         }
                         else {
-                            var multMat = as(mesh.material, feng3d.TextureMultiPassMaterial);
+                            var multMat = feng3d.as(mesh.material, feng3d.TextureMultiPassMaterial);
                             multMat.texture = lm.texture;
                             multMat.ambientColor = lm.ambientColor;
                             multMat.repeat = true;
@@ -22776,22 +22806,30 @@ var feng3d;
             this._vertexClipNode = vertexClipNode;
             this._frames = this._vertexClipNode.frames;
         }
-        /**
-         * @inheritDoc
-         */
-        VertexClipState.prototype.getCurrentGeometry = function () {
-            if (this._framesDirty)
-                this.updateFrames();
-            return this._currentGeometry;
-        };
-        /**
-         * @inheritDoc
-         */
-        VertexClipState.prototype.getNextGeometry = function () {
-            if (this._framesDirty)
-                this.updateFrames();
-            return this._nextGeometry;
-        };
+        Object.defineProperty(VertexClipState.prototype, "currentGeometry", {
+            /**
+             * @inheritDoc
+             */
+            get: function () {
+                if (this._framesDirty)
+                    this.updateFrames();
+                return this._currentGeometry;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(VertexClipState.prototype, "nextGeometry", {
+            /**
+             * @inheritDoc
+             */
+            get: function () {
+                if (this._framesDirty)
+                    this.updateFrames();
+                return this._nextGeometry;
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * @inheritDoc
          */
@@ -23514,7 +23552,7 @@ var feng3d;
          * @see http://www.cppblog.com/lovedday/archive/2008/02/23/43122.html
          */
         AxisAlignedBoundingBox.prototype.transformFrom = function (bounds, matrix) {
-            var aabb = as(bounds, AxisAlignedBoundingBox);
+            var aabb = feng3d.as(bounds, AxisAlignedBoundingBox);
             var cx = aabb._centerX;
             var cy = aabb._centerY;
             var cz = aabb._centerZ;
@@ -23619,7 +23657,7 @@ var feng3d;
          */
         NullBounds.prototype.transformFrom = function (bounds, matrix) {
             matrix = matrix;
-            this._alwaysIn = as(bounds, NullBounds)._alwaysIn;
+            this._alwaysIn = feng3d.as(bounds, NullBounds)._alwaysIn;
         };
         return NullBounds;
     }(feng3d.BoundingVolumeBase));
@@ -26573,11 +26611,11 @@ var feng3d;
         Context3DCache.prototype.addDataBuffer = function (context3DDataBuffer) {
             _super.prototype.addDataBuffer.call(this, context3DDataBuffer);
             var dataTypeId = context3DDataBuffer.dataTypeId;
-            if (is(context3DDataBuffer, feng3d.RegisterBuffer))
+            if (feng3d.is(context3DDataBuffer, feng3d.RegisterBuffer))
                 this.regBufferDic[dataTypeId] = context3DDataBuffer;
-            else if (is(context3DDataBuffer, feng3d.ProgramBuffer))
+            else if (feng3d.is(context3DDataBuffer, feng3d.ProgramBuffer))
                 this.programBuffer = context3DDataBuffer;
-            else if (is(context3DDataBuffer, feng3d.IndexBuffer))
+            else if (feng3d.is(context3DDataBuffer, feng3d.IndexBuffer))
                 this.indexBuffer = context3DDataBuffer;
             else
                 this.otherBufferDic[dataTypeId] = context3DDataBuffer;
@@ -26590,7 +26628,7 @@ var feng3d;
             var dataTypeId = context3DDataBuffer.dataTypeId;
             delete this.regBufferDic[dataTypeId];
             delete this.otherBufferDic[dataTypeId];
-            if (is(context3DDataBuffer, feng3d.ProgramBuffer)) {
+            if (feng3d.is(context3DDataBuffer, feng3d.ProgramBuffer)) {
                 this.programBuffer = null;
             }
         };
@@ -26680,7 +26718,7 @@ var feng3d;
                         }
                     }
                     if (registerBuffer != null) {
-                        if (is(registerBuffer, feng3d.OCBuffer)) {
+                        if (feng3d.is(registerBuffer, feng3d.OCBuffer)) {
                             this.ocBuffer = registerBuffer;
                         }
                         else {
@@ -26776,7 +26814,7 @@ var feng3d;
             var cls = this.typeClassDic[typeId];
             if (cls == null) {
                 for (var i = 0; i < Context3DBufferTypeManager.config.length; i++) {
-                    var result = typeId.match(as(Context3DBufferTypeManager.config[i][0], String));
+                    var result = typeId.match(feng3d.as(Context3DBufferTypeManager.config[i][0], String));
                     if (result != null && result.input == result[0]) {
                         return Context3DBufferTypeManager.config[i][1];
                     }
@@ -27609,7 +27647,7 @@ var feng3d;
          * @param mesh The mesh to be contained in the node.
          */
         function RenderableNode(renderable) {
-            _super.call(this, as(renderable, feng3d.Entity));
+            _super.call(this, feng3d.as(renderable, feng3d.Entity));
             this._renderable = renderable; // also keep a stronger typed reference
         }
         /**
@@ -28798,7 +28836,7 @@ var feng3d;
             var index = 0;
             var complexArgs = [];
             for (var i = 0; i < args.length; i++) {
-                if (is(args[i], Number)) {
+                if (feng3d.is(args[i], Number)) {
                     index += args[i];
                 }
                 else {
@@ -29244,7 +29282,7 @@ var feng3d;
             this.registerPoolDic = {};
             this.usedDataRegisterNum = 0;
             for (var i = 0; i < ShaderRegisterCache.registerConfig.length; i++) {
-                this.registerPoolDic[ShaderRegisterCache.registerConfig[i][0]] = new feng3d.RegisterPool(as(ShaderRegisterCache.registerConfig[i][0], String), as(ShaderRegisterCache.registerConfig[i][1], Number));
+                this.registerPoolDic[ShaderRegisterCache.registerConfig[i][0]] = new feng3d.RegisterPool(feng3d.as(ShaderRegisterCache.registerConfig[i][0], String), feng3d.as(ShaderRegisterCache.registerConfig[i][1], Number));
             }
             ShaderRegisterCache._dirty = false;
         };
@@ -30293,7 +30331,7 @@ var feng3d;
          */
         Context3DBufferDebug.getContext3DCache = function (obj) {
             var context3DCache = new feng3d.Context3DCache();
-            var arr = as(obj, Array);
+            var arr = feng3d.as(obj, Array);
             for (var i = 0; i < arr.length; i++) {
                 var item = arr[i];
                 var cla = feng3d.ClassUtils.getClass(item.className);
@@ -30301,7 +30339,7 @@ var feng3d;
                 feng3d.ClassUtils.decodeParams(item.updateParams);
                 feng3d.ClassUtils.call(buff, "update", item.updateParams);
                 context3DCache.addDataBuffer(buff);
-                if (is(buff, feng3d.RegisterBuffer)) {
+                if (feng3d.is(buff, feng3d.RegisterBuffer)) {
                     var regBuff = buff;
                     var regStr = item.shaderRegister;
                     var myPattern = /([a-z]+)(\d+)/;
@@ -33364,7 +33402,7 @@ var feng3d;
             this._cullPlanes[1] = lightFrustumPlanes[1];
             this._cullPlanes[2] = lightFrustumPlanes[2];
             this._cullPlanes[3] = lightFrustumPlanes[3];
-            var dir = as(this._light, feng3d.DirectionalLight).sceneDirection;
+            var dir = feng3d.as(this._light, feng3d.DirectionalLight).sceneDirection;
             var dirX = dir.x;
             var dirY = dir.y;
             var dirZ = dir.z;
@@ -33393,7 +33431,7 @@ var feng3d;
             var minX, minY;
             var maxX, maxY;
             var i;
-            dir = as(this._light, feng3d.DirectionalLight).sceneDirection;
+            dir = feng3d.as(this._light, feng3d.DirectionalLight).sceneDirection;
             this._overallDepthCamera.transform3D.transform = this._light.sceneTransform;
             x = Math.floor((viewCamera.transform3D.x - dir.x * this._lightOffset) / this._snap) * this._snap;
             y = Math.floor((viewCamera.transform3D.y - dir.y * this._lightOffset) / this._snap) * this._snap;
@@ -35385,9 +35423,9 @@ var feng3d;
             if (length === void 0) { length = 0; }
             var ba;
             length = length || Number.MAX_VALUE;
-            if (is(data, String))
-                return as(data, String).substr(0, length);
-            ba = as(data, feng3d.ByteArray);
+            if (feng3d.is(data, String))
+                return feng3d.as(data, String).substr(0, length);
+            ba = feng3d.as(data, feng3d.ByteArray);
             if (ba) {
                 ba.position = 0;
                 return ba.readUTFBytes(Math.min(ba.bytesAvailable, length));
@@ -35775,7 +35813,7 @@ var feng3d;
             var loadObj = new feng3d.LoadModuleEventData();
             loadObj.urls = [];
             for (var i = 0; this.resourceList != null && i < this.resourceList.length; i++) {
-                if (is(this.resourceList[i], String)) {
+                if (feng3d.is(this.resourceList[i], String)) {
                     loadObj.urls.push(this.rootPath + this.resourceList[i]);
                 }
                 else {
@@ -36250,7 +36288,7 @@ var feng3d;
         Bounds.parseObjectBounds = function (oC, parentTransform, resetBounds) {
             if (parentTransform === void 0) { parentTransform = null; }
             if (resetBounds === void 0) { resetBounds = false; }
-            if (is(oC, feng3d.LightBase))
+            if (feng3d.is(oC, feng3d.LightBase))
                 return;
             var e = oC;
             var corners;
@@ -36346,9 +36384,9 @@ var feng3d;
         Cast.bitmapData = function (data) {
             if (data == null)
                 return null;
-            if (is(data, String))
+            if (feng3d.is(data, String))
                 data = Cast.tryClass(data);
-            if (is(data, Function)) {
+            if (feng3d.is(data, Function)) {
                 try {
                     data = new data;
                 }
@@ -36356,13 +36394,13 @@ var feng3d;
                     data = new data(0, 0);
                 }
             }
-            if (is(data, feng3d.BitmapData))
+            if (feng3d.is(data, feng3d.BitmapData))
                 return data;
-            if (is(data, feng3d.Bitmap)) {
+            if (feng3d.is(data, feng3d.Bitmap)) {
                 if (data.hasOwnProperty("Cast.bitmapData"))
-                    return as(data, feng3d.Bitmap).bitmapData;
+                    return feng3d.as(data, feng3d.Bitmap).bitmapData;
             }
-            if (is(data, feng3d.DisplayObject)) {
+            if (feng3d.is(data, feng3d.DisplayObject)) {
                 var ds = data;
                 var bmd = new feng3d.BitmapData(ds.width, ds.height, true, 0x00FFFFFF);
                 var mat = ds.transform.matrix.clone();
@@ -36381,9 +36419,9 @@ var feng3d;
         Cast.bitmapTexture = function (data) {
             if (data == null)
                 return null;
-            if (is(data, String))
+            if (feng3d.is(data, String))
                 data = Cast.tryClass(data);
-            if (is(data, Function)) {
+            if (feng3d.is(data, Function)) {
                 try {
                     data = new data;
                 }
@@ -36391,7 +36429,7 @@ var feng3d;
                     data = new data(0, 0);
                 }
             }
-            if (is(data, feng3d.Texture))
+            if (feng3d.is(data, feng3d.Texture))
                 return data;
             try {
                 var bmd = Cast.bitmapData(data);
@@ -36798,10 +36836,10 @@ var feng3d;
                 MipmapGenerator._matrix.a = MipmapGenerator._rect.width / source.width;
                 MipmapGenerator._matrix.d = MipmapGenerator._rect.height / source.height;
                 mipmap.draw(source, MipmapGenerator._matrix, null, null, null, true);
-                if (is(target, feng3d.Texture))
-                    as(target, feng3d.Texture).uploadFromBitmapData(mipmap, i++);
+                if (feng3d.is(target, feng3d.Texture))
+                    feng3d.as(target, feng3d.Texture).uploadFromBitmapData(mipmap, i++);
                 else
-                    as(target, feng3d.CubeTexture).uploadFromBitmapData(mipmap, side, i++);
+                    feng3d.as(target, feng3d.CubeTexture).uploadFromBitmapData(mipmap, side, i++);
                 w = w / 2;
                 h = h / 2;
                 MipmapGenerator._rect.width = w > 1 ? w : 1;
@@ -37131,7 +37169,7 @@ var feng3d;
                 flags.push(forceWrap);
             }
             else {
-                if (!(is(texture, feng3d.BitmapCubeTexture))) {
+                if (!(feng3d.is(texture, feng3d.BitmapCubeTexture))) {
                     if (repeatTextures) {
                         flags.push(feng3d.Context3DWrapMode.REPEAT);
                     }

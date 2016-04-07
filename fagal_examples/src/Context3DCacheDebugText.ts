@@ -1,15 +1,5 @@
-package
+module feng3d
 {
-	
-	
-	
-	
-	
-	
-
-	
-	
-
 	/**
 	 * 测试3D环境缓存类
 	 * @author feng 2015-7-1
@@ -25,8 +15,8 @@ package
 
 		constructor()
 		{
-			this.resourceList = [this.debugTextPath];
 			super();
+			this.resourceList = [this.debugTextPath];
 		}
 
 		/**
@@ -42,14 +32,13 @@ package
 
 			//Add event listener before requesting the context
 			this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextCreated);
-			this.stage3D.addEventListener(ErrorEvent.ERROR, this.contextCreationError);
 			this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
 		}
 
 		//Note, context3DCreate event can happen at any time, such as when the hardware resources are taken by another process
 		private contextCreated(event:Event)
 		{
-			this.renderContext = Stage3D(event.target).context3D;
+			this.renderContext = as(event.target,Stage3D).context3D;
 			logger("3D driver: " + this.renderContext.driverInfo);
 			this.setupScene();
 		}
@@ -75,7 +64,7 @@ package
 
 		private contextCreationError(error:ErrorEvent)
 		{
-			logger(error.errorID + ": " + error.text);
+			logger(error);
 		}
 
 	}

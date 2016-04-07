@@ -13,7 +13,8 @@ module feng3d
 	{
 		constructor()
 		{
-			_shaderType = Context3DProgramType.FRAGMENT;
+            super();
+			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 
 		public runFunc()

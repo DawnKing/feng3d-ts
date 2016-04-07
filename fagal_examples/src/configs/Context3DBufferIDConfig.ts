@@ -5,7 +5,7 @@ module feng3d
 	 * 缓冲编号配置文件
 	 * @author feng 2015-7-23
 	 */
-	export class Context3DBufferIDConfig
+	export class Context3DBufferIDConfig_Fagal
 	{
 		public static bufferIdConfigs = [ //
 			["index", "索引数据"], //
