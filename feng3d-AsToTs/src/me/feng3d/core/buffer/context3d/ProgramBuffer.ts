@@ -43,16 +43,16 @@ module feng3d {
             var program3D: Program3D;
 
             if (this.bufferInvalid) {
-                this.bufferItemDic.getKeys.forEach(key => {
+                this.bufferItemDic.getKeys().forEach(key => {
                     var contextTemp: Context3D = key as Context3D;
-                    AGALProgram3DCache.getInstance(contextTemp).freeProgram3D(this.bufferItemDic[contextTemp]);
+                    AGALProgram3DCache.getInstance(contextTemp).freeProgram3D(this.bufferItemDic.get(contextTemp));
                 });
 
                 this.bufferItemDic.clear();
                 this.bufferInvalid = false;
             }
 
-            var oldProgram3D: Program3D = this.bufferItemDic[context3D];
+            var oldProgram3D: Program3D = this.bufferItemDic.get(context3D);
             program3D = AGALProgram3DCache.getInstance(context3D).getProgram3D(oldProgram3D, this.vertexCode, this.fragmentCode);
             this.bufferItemDic.push(context3D, program3D);
 

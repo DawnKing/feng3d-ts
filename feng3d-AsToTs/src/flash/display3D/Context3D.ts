@@ -2,6 +2,14 @@ module feng3d
 {
     export class Context3D
     {
+        setRenderToTexture;
+        setProgram;
+        setProgramConstantsFromVector;
+        createVertexBuffer;
+        drawTriangles;
+        createIndexBuffer;
+        setDepthTest;
+        setBlendFactors;
         setProgramConstantsFromMatrix;
         setProgramConstantsFromByteArray;
         setCulling;
@@ -27,10 +35,7 @@ module feng3d
             
         }
         
-        public setVertexBufferAt(a, b)
-        {
-            
-        }
+        public setVertexBufferAt;
         
         public setTextureAt(i, b)
         {

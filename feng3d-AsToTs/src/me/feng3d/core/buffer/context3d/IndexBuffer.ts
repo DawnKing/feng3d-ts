@@ -5,7 +5,7 @@ module feng3d {
 	 * @author feng 2014-8-21
 	 */
     export class IndexBuffer extends Context3DBuffer {
-        private _bufferItemDic = {};
+        private _bufferItemDic = new Map<Context3D,IndexBufferItem>();
 
         /** data 中索引的数量。 */
         public count: number;
@@ -46,7 +46,6 @@ module feng3d {
             var indexBufferItem: IndexBufferItem;
             //处理 缓存无效标记
             if (this.bufferInvalid) {
-                this._bufferItemDic = {};
                 this.bufferInvalid = false;
                 this.dicInvalid = false;
             }
@@ -61,9 +60,10 @@ module feng3d {
                 this.dicInvalid = false;
             }
 
-            indexBufferItem = this._bufferItemDic[context3D];
+            indexBufferItem = this._bufferItemDic.get(context3D);
             if (indexBufferItem == null) {
-                indexBufferItem = this._bufferItemDic[context3D] = new IndexBufferItem(context3D, this.numIndices);
+                indexBufferItem = new IndexBufferItem(context3D, this.numIndices);
+                this._bufferItemDic.push(context3D,indexBufferItem); 
             }
 
             if (indexBufferItem.invalid) {
