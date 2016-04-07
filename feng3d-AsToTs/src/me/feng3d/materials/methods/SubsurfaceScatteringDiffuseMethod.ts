@@ -38,7 +38,8 @@ module feng3d
 		 */
 		constructor(depthMapSize:number = 512, depthMapOffset:number = 15)
 		{
-			super(this.scatterLight);
+			super();
+            this._baseMethod._modulateMethod = this.scatterLight;
 			this._passes = [];
 			this._depthPass = new SingleObjectDepthPass(depthMapSize, depthMapOffset);
 			this._passes.push(this._depthPass);
@@ -168,11 +169,11 @@ module feng3d
 
 			var _ = FagalRE.instance.space;
 
-			var lightProjection:Register;
-			var toTexRegister:Register = _.SSD$ToTex_vc_vector;
-			var temp:Register = _.getFreeTemp();
+			var lightProjection;
+			var toTexRegister = _.SSD$ToTex_vc_vector;
+			var temp = _.getFreeTemp();
 
-			var _lightProjVarying:Register = _.SSD$LightProj_v;
+			var _lightProjVarying = _.SSD$LightProj_v;
 
 			lightProjection = _.SSD$LightProjection_vc_matrix;
 
@@ -211,13 +212,13 @@ module feng3d
 		 */
 		public getFragmentPostLightingCode()
 		{
-			var targetReg:Register;
+			var targetReg;
 
 			var _ = FagalRE.instance.space;
 
-			var temp:Register = _.getFreeTemp();
+			var temp = _.getFreeTemp();
 
-			var _colorReg:Register = _.SSD$Color_fc_vector;
+			var _colorReg = _.SSD$Color_fc_vector;
 
 			_.mul(temp.xyz, this._lightColorReg.xyz, this._targetReg.w); //
 			_.mul(temp.xyz, temp.xyz, _colorReg.xyz); //

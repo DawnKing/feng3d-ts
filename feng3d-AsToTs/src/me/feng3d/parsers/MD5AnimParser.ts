@@ -599,6 +599,23 @@ module feng3d {
         private sendUnknownKeywordError() {
             throw new Error("Unknown keyword at line " + (this._line + 1) + ", character " + this._charLineIndex + ". ");
         }
+        
+        /**
+		 * 解决依赖
+		 * @param resourceDependency 依赖资源
+		 */
+		public resolveDependency(resourceDependency:ResourceDependency)
+        {
+            
+        }
+
+		/**
+		 * 解决依赖失败
+		 * @param resourceDependency 依赖资源
+		 */
+		public resolveDependencyFailure(resourceDependency:ResourceDependency){
+            
+        }
     }
 
 

@@ -183,8 +183,12 @@ module feng3d {
                     }
                 }
             }
-
-            this.runRegBufferList.sortOn("dataTypeId");
+            
+            this.runRegBufferList.sort(function(a,b):number
+            {
+                "dataTypeId"
+                return 0;
+            });
         }
 
 		/**

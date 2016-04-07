@@ -13,7 +13,7 @@ module feng3d
 
 		constructor(type:string, lens:LensBase = null, bubbles:boolean = false, cancelable:boolean = false)
 		{
-			super(type, this.data, bubbles, cancelable);
+			super(type, lens, bubbles, cancelable);
 		}
 
 		public get lens():LensBase

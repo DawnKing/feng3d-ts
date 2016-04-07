@@ -93,5 +93,10 @@ module feng3d
 		{
 			return new DirectionalShadowMapper();
 		}
+        
+        public getObjectProjectionMatrix(renderable:IRenderable, target:Matrix3D):Matrix3D
+        {
+            return null;
+        }
 	}
 }

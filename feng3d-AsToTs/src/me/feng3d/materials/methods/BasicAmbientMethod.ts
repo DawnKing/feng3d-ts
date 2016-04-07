@@ -116,11 +116,11 @@ module feng3d
 
 		public set texture(value:Texture2DBase)
 		{
-			if (boolean(value) != this._useTexture || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
+			if ((value!=null) != this._useTexture || (value && this._texture && (value.hasMipMaps != this._texture.hasMipMaps || value.format != this._texture.format)))
 			{
 				this.invalidateShaderProgram();
 			}
-			this._useTexture = boolean(value);
+			this._useTexture = (value != null);
 			this._texture = value;
 
 			this.context3DBufferOwner.markBufferDirty(this._.ambientTexture_fs);
@@ -139,7 +139,7 @@ module feng3d
 
 		public copyFrom(method:ShadingMethodBase)
 		{
-			var diff:BasicAmbientMethod = BasicAmbientMethod(method);
+			var diff:BasicAmbientMethod = as(method,BasicAmbientMethod);
 			this.ambient = diff.ambient;
 			this.ambientColor = diff.ambientColor;
 		}

@@ -17,6 +17,7 @@ module feng3d
 		 */
 		constructor()
 		{
+            super();
 			this._shaderType = Context3DProgramType.FRAGMENT;
 		}
 
@@ -27,9 +28,9 @@ module feng3d
 		{
 			var _ = FagalRE.instance.space;
 
-			var positionReg:Register = _.getFreeTemp("坐标"); //ft2
+			var positionReg = _.getFreeTemp("坐标"); //ft2
 			//深度的（乘以1,255,255*255,255*255*255后）不同值
-			var depthValueReg:Register = _.getFreeTemp("深度值");
+			var depthValueReg = _.getFreeTemp("深度值");
 
 			var ft1:Register = _.getFreeTemp("");
 

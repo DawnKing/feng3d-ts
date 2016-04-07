@@ -75,15 +75,5 @@ module feng3d
 			super(type, data, bubbles, cancelable);
 		}
 
-		/**
-		 * @inheritDoc
-		 */
-		public clone():Event
-		{
-			var cl:MouseEvent3D = super.clone() as MouseEvent3D;
-			cl.object = this.object;
-			cl.collider = cl.collider;
-			return cl;
-		}
 	}
 }

@@ -71,10 +71,10 @@ module feng3d
 		protected initBuffers()
 		{
 			super.initBuffers();
-			this.context3DBufferOwner.mapContext3DBuffer(this._.fresnelSpecularData_fc_vector, this.updateSpecularDataBuffer);
+			this.context3DBufferOwner.mapContext3DBuffer(this._.fresnelSpecularData_fc_vector, this.updateSpecularDataBuffer1);
 		}
 
-		private updateSpecularDataBuffer(fcVectorBuffer:FCVectorBuffer)
+		private updateSpecularDataBuffer1(fcVectorBuffer:FCVectorBuffer)
 		{
 			fcVectorBuffer.update(this.data);
 		}

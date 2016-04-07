@@ -1,23 +1,5 @@
 module feng3d
 {
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	_Main_DepthMap;
-	_Main_DepthMap;
-	
-	
-	
-
-	
-
 	/**
 	 * 深度映射通道
 	 * @author feng 2015-5-29
@@ -32,12 +14,12 @@ module feng3d
 		/**
 		 * 通用数据
 		 */
-		private depthCommonsData0:number[] = number[]([1.0, 255.0, 255.0 * 255.0, 255.0 * 255.0 * 255.0]);
+		private depthCommonsData0:number[] = [1.0, 255.0, 255.0 * 255.0, 255.0 * 255.0 * 255.0];
 
 		/**
 		 * 通用数据
 		 */
-		private depthCommonsData1:number[] = number[]([1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0]);
+		private depthCommonsData1:number[] = [1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0];
 
 		private _depthMap:TextureProxyBase;
 
