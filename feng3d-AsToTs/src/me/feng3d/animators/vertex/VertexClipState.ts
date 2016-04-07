@@ -15,7 +15,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public getCurrentGeometry():Geometry
+		public get currentGeometry():Geometry
 		{
 			if (this._framesDirty)
 				this.updateFrames();
@@ -26,7 +26,7 @@ module feng3d
 		/**
 		 * @inheritDoc
 		 */
-		public getNextGeometry():Geometry
+		public get nextGeometry():Geometry
 		{
 			if (this._framesDirty)
 				this.updateFrames();
