@@ -3,6 +3,43 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var testSources = [];
+function loadjs(jsPath, onLoad) {
+    if (onLoad === void 0) { onLoad = null; }
+    var oHead = document.getElementsByTagName('HEAD').item(0);
+    var loadedJs = document.createElement("script");
+    loadedJs.onload = onLoad;
+    loadedJs.src = jsPath + "?version=" + Math.random();
+    oHead.appendChild(loadedJs);
+}
+function onFeng3dInited(ev) {
+    testSources.forEach(function (element) {
+        loadjs("../bin/" + element);
+        var className = getClassName(element);
+        document.write('<input type="submit" value="' + className + '" onclick="(new ' + className + '()).init()">');
+    });
+}
+function getClassName(url) {
+    return url.split("/").pop().split(".")[0];
+}
+loadjs("../libs/feng3d.js", onFeng3dInited);
+// var requestAnimationFrame1 =
+//     window["requestAnimationFrame"] ||
+//     window["webkitRequestAnimationFrame"] ||
+//     window["mozRequestAnimationFrame"] ||
+//     window["oRequestAnimationFrame"] ||
+//     window["msRequestAnimationFrame"];
+// if (!requestAnimationFrame) {
+//     requestAnimationFrame1 = function(callback) {
+//         return window.setTimeout(callback, 1000 / 60);
+//     };
+// }
+// var n:number = 0;
+// requestAnimationFrame.call(window, onTick);
+// function onTick(): void {
+//     console.log(n++);
+//     requestAnimationFrame.call(window, onTick)
+// } 
 var feng3d;
 (function (feng3d) {
     /**
