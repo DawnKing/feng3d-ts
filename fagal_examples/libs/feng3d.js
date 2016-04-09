@@ -37267,6 +37267,23 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var DisplayObject = (function (_super) {
+        __extends(DisplayObject, _super);
+        function DisplayObject() {
+            _super.apply(this, arguments);
+        }
+        DisplayObject.prototype.getx = function () {
+            return this.x;
+        };
+        DisplayObject.prototype.gety = function () {
+            return this.y;
+        };
+        return DisplayObject;
+    }(feng3d.EventDispatcher));
+    feng3d.DisplayObject = DisplayObject;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     var Bitmap = (function (_super) {
         __extends(Bitmap, _super);
         function Bitmap() {
@@ -37432,23 +37449,6 @@ var feng3d;
         return CubeTexture;
     }());
     feng3d.CubeTexture = CubeTexture;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var DisplayObject = (function (_super) {
-        __extends(DisplayObject, _super);
-        function DisplayObject() {
-            _super.apply(this, arguments);
-        }
-        DisplayObject.prototype.getx = function () {
-            return this.x;
-        };
-        DisplayObject.prototype.gety = function () {
-            return this.y;
-        };
-        return DisplayObject;
-    }(feng3d.EventDispatcher));
-    feng3d.DisplayObject = DisplayObject;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {

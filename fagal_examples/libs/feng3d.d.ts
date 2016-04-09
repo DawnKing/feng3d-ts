@@ -16040,6 +16040,23 @@ declare module feng3d {
     }
 }
 declare module feng3d {
+    class DisplayObject extends EventDispatcher {
+        alpha: any;
+        localToGlobal: any;
+        stage: Stage;
+        visible: any;
+        parent: any;
+        x: any;
+        getx(): any;
+        gety(): any;
+        y: any;
+        width: any;
+        height: any;
+        transform: any;
+        blendMode: any;
+    }
+}
+declare module feng3d {
     class Bitmap extends DisplayObject {
     }
 }
@@ -16150,23 +16167,6 @@ declare module feng3d {
 }
 declare module feng3d {
     class CubeTexture {
-    }
-}
-declare module feng3d {
-    class DisplayObject extends EventDispatcher {
-        alpha: any;
-        localToGlobal: any;
-        stage: Stage;
-        visible: any;
-        parent: any;
-        x: any;
-        getx(): any;
-        gety(): any;
-        y: any;
-        width: any;
-        height: any;
-        transform: any;
-        blendMode: any;
     }
 }
 declare module feng3d {

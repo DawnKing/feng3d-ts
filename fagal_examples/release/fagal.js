@@ -24,13 +24,13 @@ var feng3d;
         BaseShaderTest.prototype.init = function () {
             // Request a 3D this.context instance
             this.stage3D = this.stage.stage3Ds[0];
-            this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
-            this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
-            logger("Awaiting this.context...");
+            this.stage3D.addEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
+            this.stage3D.requestContext3D(feng3d.Context3DRenderMode.AUTO, feng3d.Context3DProfile.STANDARD);
+            feng3d.logger("Awaiting this.context...");
         };
         BaseShaderTest.prototype.contextReady = function (event) {
-            this.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.contextReady);
-            logger("Got this.context!");
+            this.stage3D.removeEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady);
+            feng3d.logger("Got this.context!");
             // Get the new this.context
             this.context = this.stage3D.context3D;
             // Configure back buffer
@@ -51,7 +51,7 @@ var feng3d;
             this.baseGem.setGeometry(vertexPositionData, vertexColorData, indexData);
             this.baseMesh = new feng3d.BaseMesh(this.baseGem);
             // ...and start rendering frames!
-            this.addEventListener(Event.ENTER_FRAME, this.renderFrame, 0, true);
+            this.addEventListener(feng3d.Event.ENTER_FRAME, this.renderFrame, 0, true);
         };
         BaseShaderTest.prototype.renderFrame = function (e) {
             // Clear away the old frame render
@@ -68,14 +68,14 @@ var feng3d;
             var fov = 45 * this.DEGS_TO_RADIANS;
             var view = new feng3d.PerspectiveMatrix3D();
             view.perspectiveFieldOfViewLH(fov, aspect, zNear, zFar);
-            var m = new Matrix3D();
-            m.appendRotation(Date.now() / 30, Vector3D.Z_AXIS);
+            var m = new feng3d.Matrix3D();
+            m.appendRotation(Date.now() / 30, feng3d.Vector3D.Z_AXIS);
             m.appendTranslation(0, 0, 2);
             m.append(view);
             return m;
         };
         return BaseShaderTest;
-    }(TestBase));
+    }(feng3d.TestBase));
     feng3d.BaseShaderTest = BaseShaderTest;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -96,15 +96,15 @@ var feng3d;
          * Global initialise function
          */
         ColorMapTest.prototype.init = function () {
-            Debug.agalDebug = true;
+            feng3d.Debug.agalDebug = true;
             // Request a 3D this.context instance
             this.stage3D = this.stage.stage3Ds[0];
-            this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
-            this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
+            this.stage3D.addEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
+            this.stage3D.requestContext3D(feng3d.Context3DRenderMode.AUTO, feng3d.Context3DProfile.STANDARD);
             console.log("Awaiting this.context...");
         };
         ColorMapTest.prototype.contextReady = function (event) {
-            this.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.contextReady);
+            this.stage3D.removeEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady);
             console.log("Got this.context!");
             // Get the new this.context
             this.context = this.stage3D.context3D;
@@ -132,7 +132,7 @@ var feng3d;
             //创建网格
             this.baseMesh = new feng3d.BaseMesh(this.baseGem, colorMapMaterial);
             // ...and start rendering frames!
-            this.addEventListener(Event.ENTER_FRAME, this.renderFrame, 0, true);
+            this.addEventListener(feng3d.Event.ENTER_FRAME, this.renderFrame, 0, true);
         };
         ColorMapTest.prototype.renderFrame = function (e) {
             // Clear away the old frame render
@@ -143,7 +143,7 @@ var feng3d;
             this.context.present();
         };
         return ColorMapTest;
-    }(TestBase));
+    }(feng3d.TestBase));
     feng3d.ColorMapTest = ColorMapTest;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -172,12 +172,12 @@ var feng3d;
         ColorTerrainShaderTest.prototype.init = function () {
             // Request a 3D this.context instance
             this.stage3D = this.stage.stage3Ds[0];
-            this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
-            this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
+            this.stage3D.addEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
+            this.stage3D.requestContext3D(feng3d.Context3DRenderMode.AUTO, feng3d.Context3DProfile.STANDARD);
             console.log("Awaiting this.context...");
         };
         ColorTerrainShaderTest.prototype.contextReady = function (event) {
-            this.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.contextReady);
+            this.stage3D.removeEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady);
             console.log("Got this.context!");
             // Get the new this.context
             this.context = this.stage3D.context3D;
@@ -207,12 +207,12 @@ var feng3d;
             this.baseGem.setGeometry(vertexPositionData, vertexColorData, indexData);
             this.baseGem.vertexUVData = vertexUVData;
             //创建材质
-            var _splats = [Cast.bitmapTexture(this.resourceDic[this.beachPath]), Cast.bitmapTexture(this.resourceDic[this.grassPath]), Cast.bitmapTexture(this.resourceDic[this.rockPath])];
+            var _splats = [feng3d.Cast.bitmapTexture(this.resourceDic[this.beachPath]), feng3d.Cast.bitmapTexture(this.resourceDic[this.grassPath]), feng3d.Cast.bitmapTexture(this.resourceDic[this.rockPath])];
             var colorTerrainMaterial = new feng3d.ColorTerrainMaterial(_splats);
             //创建网格
             this.baseMesh = new feng3d.BaseMesh(this.baseGem, colorTerrainMaterial);
             // ...and start rendering frames!
-            this.addEventListener(Event.ENTER_FRAME, this.renderFrame, 0, true);
+            this.addEventListener(feng3d.Event.ENTER_FRAME, this.renderFrame, 0, true);
         };
         ColorTerrainShaderTest.prototype.renderFrame = function (e) {
             // Clear away the old frame render
@@ -229,14 +229,14 @@ var feng3d;
             var fov = 45 * this.DEGS_TO_RADIANS;
             var view = new feng3d.PerspectiveMatrix3D();
             view.perspectiveFieldOfViewLH(fov, aspect, zNear, zFar);
-            var m = new Matrix3D();
+            var m = new feng3d.Matrix3D();
             //			m.appendRotation(getTimer() / 30, Vector3D.Z_AXIS);
             m.appendTranslation(0, 0, 2);
             m.append(view);
             return m;
         };
         return ColorTerrainShaderTest;
-    }(TestBase));
+    }(feng3d.TestBase));
     feng3d.ColorTerrainShaderTest = ColorTerrainShaderTest;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -257,16 +257,16 @@ var feng3d;
          */
         Context3DCacheDebugText.prototype.init = function () {
             var obj = JSON.parse(this.resourceDic[this.debugTextPath]);
-            this.context3DCache = Context3DBufferDebug.getContext3DCache(obj);
+            this.context3DCache = feng3d.Context3DBufferDebug.getContext3DCache(obj);
             this.stage3D = this.stage.stage3Ds[0];
             //Add event listener before requesting the context
-            this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextCreated);
-            this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
+            this.stage3D.addEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextCreated);
+            this.stage3D.requestContext3D(feng3d.Context3DRenderMode.AUTO, feng3d.Context3DProfile.STANDARD);
         };
         //Note, context3DCreate event can happen at any time, such as when the hardware resources are taken by another process
         Context3DCacheDebugText.prototype.contextCreated = function (event) {
-            this.renderContext = as(event.target, Stage3D).context3D;
-            logger("3D driver: " + this.renderContext.driverInfo);
+            this.renderContext = feng3d.as(event.target, feng3d.Stage3D).context3D;
+            feng3d.logger("3D driver: " + this.renderContext.driverInfo);
             this.setupScene();
         };
         Context3DCacheDebugText.prototype.setupScene = function () {
@@ -282,10 +282,10 @@ var feng3d;
             this.renderContext.present();
         };
         Context3DCacheDebugText.prototype.contextCreationError = function (error) {
-            logger(error);
+            feng3d.logger(error);
         };
         return Context3DCacheDebugText;
-    }(TestBase));
+    }(feng3d.TestBase));
     feng3d.Context3DCacheDebugText = Context3DCacheDebugText;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -311,13 +311,13 @@ var feng3d;
         TextureTest.prototype.init = function () {
             // Request a 3D this.context instance
             this.stage3D = this.stage.stage3Ds[0];
-            this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
-            this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
-            logger("Awaiting this.context...");
+            this.stage3D.addEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
+            this.stage3D.requestContext3D(feng3d.Context3DRenderMode.AUTO, feng3d.Context3DProfile.STANDARD);
+            feng3d.logger("Awaiting this.context...");
         };
         TextureTest.prototype.contextReady = function (event) {
-            this.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.contextReady);
-            logger("Got this.context!");
+            this.stage3D.removeEventListener(feng3d.Event.CONTEXT3D_CREATE, this.contextReady);
+            feng3d.logger("Got this.context!");
             // Get the new this.context
             this.context = this.stage3D.context3D;
             // Configure back buffer
@@ -345,11 +345,11 @@ var feng3d;
             this.baseGem = new feng3d.TextureTestGeometry();
             this.baseGem.setGeometry(vertexPositionData, vertexColorData, indexData);
             this.baseGem.vertexUVData = vertexUVData;
-            var textureData = Cast.bitmapTexture(this.resourceDic[this.texturePath]);
+            var textureData = feng3d.Cast.bitmapTexture(this.resourceDic[this.texturePath]);
             var textureMaterial = new feng3d.TextureTestMaterial(textureData);
             this.baseMesh = new feng3d.BaseMesh(this.baseGem, textureMaterial);
             // ...and start rendering frames!
-            this.addEventListener(Event.ENTER_FRAME, this.renderFrame, 0, true);
+            this.addEventListener(feng3d.Event.ENTER_FRAME, this.renderFrame, 0, true);
         };
         TextureTest.prototype.renderFrame = function (e) {
             // Clear away the old frame render
@@ -366,14 +366,14 @@ var feng3d;
             var fov = 45 * this.DEGS_TO_RADIANS;
             var view = new feng3d.PerspectiveMatrix3D();
             view.perspectiveFieldOfViewLH(fov, aspect, zNear, zFar);
-            var m = new Matrix3D();
-            m.appendRotation(Date.now() / 30, Vector3D.Z_AXIS);
+            var m = new feng3d.Matrix3D();
+            m.appendRotation(Date.now() / 30, feng3d.Vector3D.Z_AXIS);
             m.appendTranslation(0, 0, 2);
             m.append(view);
             return m;
         };
         return TextureTest;
-    }(TestBase));
+    }(feng3d.TestBase));
     feng3d.TextureTest = TextureTest;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -404,7 +404,7 @@ var feng3d;
             this.numIndices = this._indices.length;
         };
         return BaseGeometry;
-    }(VertexBufferOwner));
+    }(feng3d.VertexBufferOwner));
     feng3d.BaseGeometry = BaseGeometry;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -475,12 +475,12 @@ var feng3d;
         __extends(BaseMaterial, _super);
         function BaseMaterial() {
             _super.call(this);
-            this.modelViewProjection = new Matrix3D();
-            this.mre = FagalRE.instance;
+            this.modelViewProjection = new feng3d.Matrix3D();
+            this.mre = feng3d.FagalRE.instance;
         }
         Object.defineProperty(BaseMaterial.prototype, "shaderParams", {
             get: function () {
-                return this._shaderParams = this._shaderParams || new ShaderParams();
+                return this._shaderParams = this._shaderParams || new feng3d.ShaderParams();
             },
             enumerable: true,
             configurable: true
@@ -503,12 +503,12 @@ var feng3d;
          * 更新（编译）渲染程序
          */
         BaseMaterial.prototype.updateProgramBuffer = function (programBuffer) {
-            var result = FagalRE.runShader(feng3d.V_baseShader, feng3d.F_baseShader);
+            var result = feng3d.FagalRE.runShader(feng3d.V_baseShader, feng3d.F_baseShader);
             //上传程序
             programBuffer.update(result.vertexCode, result.fragmentCode);
         };
         return BaseMaterial;
-    }(Context3DBufferOwner));
+    }(feng3d.Context3DBufferOwner));
     feng3d.BaseMaterial = BaseMaterial;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -550,7 +550,7 @@ var feng3d;
          * @inheritDoc
          */
         ColorMapMaterial.prototype.updateProgramBuffer = function (programBuffer) {
-            var result = FagalRE.runShader(feng3d.V_colorMap, feng3d.F_colorMap);
+            var result = feng3d.FagalRE.runShader(feng3d.V_colorMap, feng3d.F_colorMap);
             //上传程序
             programBuffer.update(result.vertexCode, result.fragmentCode);
         };
@@ -578,7 +578,7 @@ var feng3d;
             terrainTextureBufferArr.update(this._splats);
         };
         ColorTerrainMaterial.prototype.updateProgramBuffer = function (programBuffer) {
-            var result = FagalRE.runShader(feng3d.V_colorTerrain, feng3d.F_colorTerrain);
+            var result = feng3d.FagalRE.runShader(feng3d.V_colorTerrain, feng3d.F_colorTerrain);
             //上传程序
             programBuffer.update(result.vertexCode, result.fragmentCode);
         };
@@ -607,7 +607,7 @@ var feng3d;
         };
         TextureTestMaterial.prototype.updateProgramBuffer = function (programBuffer) {
             this.shaderParams.addSampleFlags(this._.texture_fs, this._texture);
-            var result = FagalRE.runShader(feng3d.V_TextureTest, feng3d.F_TextureTest);
+            var result = feng3d.FagalRE.runShader(feng3d.V_TextureTest, feng3d.F_TextureTest);
             //上传程序
             programBuffer.update(result.vertexCode, result.fragmentCode);
         };
@@ -639,7 +639,7 @@ var feng3d;
         };
         Object.defineProperty(BaseMesh.prototype, "context3dCache", {
             get: function () {
-                return this._context3dCache = this._context3dCache || new Context3DCache();
+                return this._context3dCache = this._context3dCache || new feng3d.Context3DCache();
             },
             enumerable: true,
             configurable: true
@@ -684,10 +684,10 @@ var feng3d;
         function PerspectiveMatrix3D(v) {
             if (v === void 0) { v = null; }
             _super.call(this, v);
-            this._x = new Vector3D();
-            this._y = new Vector3D();
-            this._z = new Vector3D();
-            this._w = new Vector3D();
+            this._x = new feng3d.Vector3D();
+            this._y = new feng3d.Vector3D();
+            this._z = new feng3d.Vector3D();
+            this._w = new feng3d.Vector3D();
         }
         PerspectiveMatrix3D.prototype.lookAtLH = function (eye, at, up) {
             this._z.copyFrom(at);
@@ -823,7 +823,7 @@ var feng3d;
             a.copyFrom(this._w);
         };
         return PerspectiveMatrix3D;
-    }(Matrix3D));
+    }(feng3d.Matrix3D));
     feng3d.PerspectiveMatrix3D = PerspectiveMatrix3D;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -836,10 +836,10 @@ var feng3d;
         __extends(F_TextureTest, _super);
         function F_TextureTest() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.FRAGMENT;
+            this._shaderType = feng3d.Context3DProgramType.FRAGMENT;
         }
         F_TextureTest.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             //最终颜色寄存器（输出到oc寄存器的颜色）
             var finalColorReg = _.getFreeTemp("最终颜色寄存器（输出到oc寄存器的颜色）");
             var currentColorReg = _.getFreeTemp("当前纹理颜色值");
@@ -848,7 +848,7 @@ var feng3d;
             _.mov(_._oc, finalColorReg);
         };
         return F_TextureTest;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.F_TextureTest = F_TextureTest;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -861,15 +861,15 @@ var feng3d;
         __extends(F_baseShader, _super);
         function F_baseShader() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.FRAGMENT;
+            this._shaderType = feng3d.Context3DProgramType.FRAGMENT;
         }
         F_baseShader.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             _.comment("传递顶点颜色数据", _._oc, "到片段寄存器", _.color_v);
             _.mov(_._oc, _.color_v);
         };
         return F_baseShader;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.F_baseShader = F_baseShader;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -882,15 +882,15 @@ var feng3d;
         __extends(F_colorMap, _super);
         function F_colorMap() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.FRAGMENT;
+            this._shaderType = feng3d.Context3DProgramType.FRAGMENT;
         }
         F_colorMap.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             //颜色输出
             _.mov(_._oc, _.color_v);
         };
         return F_colorMap;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.F_colorMap = F_colorMap;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -903,10 +903,10 @@ var feng3d;
         __extends(F_colorTerrain, _super);
         function F_colorTerrain() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.FRAGMENT;
+            this._shaderType = feng3d.Context3DProgramType.FRAGMENT;
         }
         F_colorTerrain.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             var numSplattingLayers = 3;
             //最终颜色寄存器（输出到oc寄存器的颜色）
             var finalColorReg = _.getFreeTemp("最终颜色寄存器（输出到oc寄存器的颜色）");
@@ -927,7 +927,7 @@ var feng3d;
             _.mov(_._oc, finalColorReg);
         };
         return F_colorTerrain;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.F_colorTerrain = F_colorTerrain;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -940,17 +940,17 @@ var feng3d;
         __extends(V_TextureTest, _super);
         function V_TextureTest() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.VERTEX;
+            this._shaderType = feng3d.Context3DProgramType.VERTEX;
         }
         V_TextureTest.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             _.comment("应用投影矩阵", _.projection_vc_matrix, "使世界坐标", _.position_va_3, "转换为投影坐标 并输出到顶点寄存器", _._op);
             _.m44(_._op, _.position_va_3, _.projection_vc_matrix);
             _.comment("传递顶点uv数据", _.uv_va_2, "到变量寄存器", _.uv_v);
             _.mov(_.uv_v, _.uv_va_2);
         };
         return V_TextureTest;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.V_TextureTest = V_TextureTest;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -963,17 +963,17 @@ var feng3d;
         __extends(V_baseShader, _super);
         function V_baseShader() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.VERTEX;
+            this._shaderType = feng3d.Context3DProgramType.VERTEX;
         }
         V_baseShader.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             _.comment("应用投影矩阵", _.projection_vc_matrix, "使世界坐标", _.position_va_3, "转换为投影坐标 并输出到顶点寄存器", _._op);
             _.m44(_._op, _.position_va_3, _.projection_vc_matrix);
             _.comment("传递顶点颜色数据", _.color_va_3, "到变量寄存器", _.color_v);
             _.mov(_.color_v, _.color_va_3);
         };
         return V_baseShader;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.V_baseShader = V_baseShader;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -986,10 +986,10 @@ var feng3d;
         __extends(V_colorMap, _super);
         function V_colorMap() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.VERTEX;
+            this._shaderType = feng3d.Context3DProgramType.VERTEX;
         }
         V_colorMap.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             //公用数据片段常量数据
             _.comment("传递顶点颜色数据", _.color_va_3, "到变量寄存器", _.color_v);
             _.mov(_.color_v, _.color_va_3);
@@ -1001,7 +1001,7 @@ var feng3d;
             _.mov(_._op, uvTemp);
         };
         return V_colorMap;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.V_colorMap = V_colorMap;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -1014,10 +1014,10 @@ var feng3d;
         __extends(V_colorTerrain, _super);
         function V_colorTerrain() {
             _super.call(this);
-            this._shaderType = Context3DProgramType.VERTEX;
+            this._shaderType = feng3d.Context3DProgramType.VERTEX;
         }
         V_colorTerrain.prototype.runFunc = function () {
-            var _ = FagalRE.instance.space;
+            var _ = feng3d.FagalRE.instance.space;
             _.comment("应用投影矩阵", _.projection_vc_matrix, "使世界坐标", _.position_va_3, "转换为投影坐标 并输出到顶点寄存器", _._op);
             _.m44(_._op, _.position_va_3, _.projection_vc_matrix);
             _.comment("传递顶点颜色数据", _.color_va_3, "到变量寄存器", _.color_v);
@@ -1026,7 +1026,7 @@ var feng3d;
             _.mov(_.uv_v, _.uv_va_2);
         };
         return V_colorTerrain;
-    }(FagalMethod));
+    }(feng3d.FagalMethod));
     feng3d.V_colorTerrain = V_colorTerrain;
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=fagal.js.map
