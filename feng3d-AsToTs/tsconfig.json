@@ -473,6 +473,7 @@
         "src/me/feng3d/Fagal.ts",
         //
         //以下文件都需要修改或者删除
+        "src/flash/display/DisplayObject.ts",
         "src/flash/display/Bitmap.ts",
         "src/flash/display/BitmapData.ts",
         "src/flash/display/BlendMode.ts",
@@ -486,7 +487,6 @@
         "src/flash/display/Context3DTextureFormat.ts",
         "src/flash/display/Context3DTriangleFace.ts",
         "src/flash/display/CubeTexture.ts",
-        "src/flash/display/DisplayObject.ts",
         "src/flash/display/Endian.ts",
         "src/flash/display/ImageItem.ts",
         "src/flash/display/IOErrorEvent.ts",
