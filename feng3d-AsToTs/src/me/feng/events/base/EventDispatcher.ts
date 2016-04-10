@@ -65,7 +65,7 @@ module feng3d {
 
             //处理当前事件(目标阶段)
             var listeners: Function[] = this._eventListeners[event.type];
-            if (!event.stopsImmediatePropagation) {
+            if (!event.stopsImmediatePropagation && listeners != null) {
                 listeners.forEach(listener => {
                     //设置当前目标
                     event.setCurrentTarget(this._target);

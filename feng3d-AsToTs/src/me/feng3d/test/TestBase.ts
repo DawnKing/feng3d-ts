@@ -4,13 +4,9 @@ module feng3d {
 	 * @author feng 2014-4-9
 	 */
     export class TestBase extends Sprite {
-        protected rootPaths = [ //
-            "http://127.0.0.1:9080/", //
-            "http://images.feng3d.me/feng3dDemo/assets/", //
-        ];
 
         //资源根路径
-        protected rootPath: string = "http://127.0.0.1:9080/";
+        protected rootPath: string = "http://images.feng3d.me/feng3dDemo/assets/";
 
 		/**
 		 * 资源列表
@@ -23,32 +19,13 @@ module feng3d {
         constructor() {
             super();
             this.initModules();
-
-            this.tryConnect();
         }
 
         private initModules() {
             Task.init();
             Load.init();
-        }
-
-        private tryConnect() {
-            var tryRootPath: TryConnectURL = new TryConnectURL();
-            tryRootPath.addEventListener(TaskEvent.COMPLETED, this.tryRootPathComplete);
-            tryRootPath.tryConnect(this.rootPaths);
-        }
-
-        private tryRootPathComplete(event: Event) {
-            var tryConnectURL: TryConnectURL = event.currentTarget as TryConnectURL;
-            if (tryConnectURL.connectedUrls.length == 0) {
-                console.log("没有可连接的资源路径！");
-            }
-            else {
-                console.log("以下为可连接的资源路径：");
-                console.log(tryConnectURL.connectedUrls);
-                this.rootPath = tryConnectURL.connectedUrls[0];
-                this.loadTextures();
-            }
+            // this.loadTextures();
+            this["init"]();
         }
 
 		/**
