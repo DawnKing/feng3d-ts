@@ -16,6 +16,9 @@ module feng3d
 		private CONTEXT_HEIGHT:number = 380;
 
 		private DEGS_TO_RADIANS:number = Math.PI / 180;
+        
+        private canvas;
+        private gl:WebGLRenderingContext;
 
 		constructor()
 		{
@@ -28,18 +31,14 @@ module feng3d
 		 */
 		public init()
 		{
-
-			// Request a 3D this.context instance
-			this.stage3D = this.stage.stage3Ds[0];
-			this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.contextReady, 0, true);
-			this.stage3D.requestContext3D(Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
+           this.canvas = document.getElementById("glcanvas");
 
 			logger("Awaiting this.context...");
+            this.contextReady();
 		}
 
-		private contextReady(event:Event)
+		private contextReady()
 		{
-			this.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.contextReady);
 			logger("Got this.context!");
 
 			// Get the new this.context

@@ -14,13 +14,7 @@ function loadjs(jsPath: string, onLoad = null) {
 }
 
 function onFeng3dInited(ev: Event) {
-
-    testSources.forEach(element => {
-
-        loadjs("../bin/" + element);
-        var className = getClassName(element);
-        document.write('<input type="submit" value="' + className + '" onclick="(new ' + className + '()).init()">');
-    });
+        loadjs("../../libs/fagal.js");
 }
 
 function getClassName(url: string): string {
