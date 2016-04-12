@@ -9,7 +9,7 @@ module feng3d {
         /**
          * 使用 EventDispatcher 对象注册事件侦听器对象，以使侦听器能够接收事件通知。
          */
-        addEventListener(type: string, listener: Function, priority?: number, useWeakReference?: boolean): void;
+        addEventListener(type: string, listener: (event:Event)=>any, priority?: number, useWeakReference?: boolean): void;
 
         /**
          * 将事件调度到事件流中。
@@ -24,7 +24,7 @@ module feng3d {
         /**
          * 从 EventDispatcher 对象中删除侦听器。
          */
-        removeEventListener(type: string, listener: Function): void;
+        removeEventListener(type: string, listener: (event:Event)=>any): void;
 
         /**
          * 检查是否用此 EventDispatcher 对象或其任何祖代为指定事件类型注册了事件侦听器。
