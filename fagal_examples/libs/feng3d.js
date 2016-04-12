@@ -364,6 +364,1865 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var Point = (function () {
+        function Point(x, y) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            this.x = x;
+            this.y = y;
+        }
+        return Point;
+    }());
+    feng3d.Point = Point;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * Matrix3D 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
+     * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）。
+     * Matrix3D 类还可以执行透视投影，这会将 3D 坐标空间中的点映射到二维 (2D) 视图。
+     *
+     *  ---            方向              平移 ---
+     *  |   scaleX      0         0       tx    |
+     *  |     0       scaleY      0       ty    |
+     *  |     0         0       scaleZ    tz    |
+     *  |     0         0         0       tw    |
+     *  ---  x轴        y轴      z轴          ---
+     *
+     *  ---            方向              平移 ---
+     *  |     0         4         8       12    |
+     *  |     1         5         9       13    |
+     *  |     2         6        10       14    |
+     *  |     3         7        11       15    |
+     *  ---  x轴        y轴      z轴          ---
+     */
+    var Matrix3D = (function () {
+        /**
+         * 创建 Matrix3D 对象。
+         * @param   datas    一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
+         */
+        function Matrix3D(datas) {
+            if (datas === void 0) { datas = null; }
+            if (datas) {
+                this.rawData = datas.concat();
+            }
+            else
+                this.rawData = [
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1 //
+                ];
+        }
+        Object.defineProperty(Matrix3D.prototype, "position", {
+            /**
+             * 一个保存显示对象在转换参照帧中的 3D 坐标 (x,y,z) 位置的 Vector3D 对象。
+             */
+            get: function () {
+                return new feng3d.Vector3D(this.rawData[12], this.rawData[13], this.rawData[14]);
+            },
+            set: function (value) {
+                this.rawData[12] = value.x;
+                this.rawData[13] = value.y;
+                this.rawData[14] = value.z;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Matrix3D.prototype, "determinant", {
+            /**
+             * 一个用于确定矩阵是否可逆的数字。
+             */
+            get: function () {
+                return ((this.rawData[0] * this.rawData[5] - this.rawData[4] * this.rawData[1]) * (this.rawData[10] * this.rawData[15] - this.rawData[14] * this.rawData[11]) //
+                    - (this.rawData[0] * this.rawData[9] - this.rawData[8] * this.rawData[1]) * (this.rawData[6] * this.rawData[15] - this.rawData[14] * this.rawData[7]) //
+                    + (this.rawData[0] * this.rawData[13] - this.rawData[12] * this.rawData[1]) * (this.rawData[6] * this.rawData[11] - this.rawData[10] * this.rawData[7]) //
+                    + (this.rawData[4] * this.rawData[9] - this.rawData[8] * this.rawData[5]) * (this.rawData[2] * this.rawData[15] - this.rawData[14] * this.rawData[3]) //
+                    - (this.rawData[4] * this.rawData[13] - this.rawData[12] * this.rawData[5]) * (this.rawData[2] * this.rawData[11] - this.rawData[10] * this.rawData[3]) //
+                    + (this.rawData[8] * this.rawData[13] - this.rawData[12] * this.rawData[9]) * (this.rawData[2] * this.rawData[7] - this.rawData[6] * this.rawData[3]) //
+                );
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Matrix3D.prototype, "forward", {
+            /**
+             * 前方（+Z轴方向）
+             */
+            get: function () {
+                var v = new feng3d.Vector3D(0.0, 0.0, 0.0);
+                this.copyColumnTo(2, v);
+                v.normalize();
+                return v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Matrix3D.prototype, "up", {
+            /**
+             * 上方（+y轴方向）
+             */
+            get: function () {
+                var v = new feng3d.Vector3D();
+                this.copyColumnTo(1, v);
+                v.normalize();
+                return v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Matrix3D.prototype, "right", {
+            /**
+             * 右方（+x轴方向）
+             */
+            get: function () {
+                var v = new feng3d.Vector3D();
+                this.copyColumnTo(0, v);
+                v.normalize();
+                return v;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 创建旋转矩阵
+         * @param   degrees         角度
+         * @param   axis            旋转轴
+         * @param   pivotPoint      旋转中心点
+         */
+        Matrix3D.createRotationMatrix3D = function (degrees, axis) {
+            var n = axis.clone();
+            n.normalize();
+            var q = degrees * Math.PI / 180;
+            var sinq = Math.sin(q);
+            var cosq = Math.cos(q);
+            var lcosq = 1 - cosq;
+            var rotationMat = new Matrix3D([
+                n.x * n.x * lcosq + cosq, n.x * n.y * lcosq + n.z * sinq, n.x * n.z * lcosq - n.y * sinq, 0,
+                n.x * n.y * lcosq - n.z * sinq, n.y * n.y * lcosq + cosq, n.y * n.z * lcosq + n.x * sinq, 0,
+                n.x * n.z * lcosq + n.y * sinq, n.y * n.z * lcosq - n.x * sinq, n.z * n.z * lcosq + cosq, 0,
+                0, 0, 0, 1 //
+            ]);
+            return rotationMat;
+        };
+        /**
+         * 创建缩放矩阵
+         * @param   xScale      用于沿 x 轴缩放对象的乘数。
+         * @param   yScale      用于沿 y 轴缩放对象的乘数。
+         * @param   zScale      用于沿 z 轴缩放对象的乘数。
+         */
+        Matrix3D.createScaleMatrix3D = function (xScale, yScale, zScale) {
+            var rotationMat = new Matrix3D([
+                xScale, 0.0000, 0.0000, 0,
+                0.0000, yScale, 0.0000, 0,
+                0.0000, 0.0000, zScale, 0,
+                0.0000, 0.0000, 0.0000, 1 //
+            ]);
+            return rotationMat;
+        };
+        /**
+         * 创建位移矩阵
+         * @param   x   沿 x 轴的增量平移。
+         * @param   y   沿 y 轴的增量平移。
+         * @param   z   沿 z 轴的增量平移。
+         */
+        Matrix3D.createTranslationMatrix3D = function (x, y, z) {
+            var rotationMat = new Matrix3D([
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                x, y, z, 1 //
+            ]);
+            return rotationMat;
+        };
+        /**
+         * 通过将另一个 Matrix3D 对象与当前 Matrix3D 对象相乘来后置一个矩阵。
+         */
+        Matrix3D.prototype.append = function (lhs) {
+            var //
+            m111 = this.rawData[0], m121 = this.rawData[4], m131 = this.rawData[8], m141 = this.rawData[12], //
+            m112 = this.rawData[1], m122 = this.rawData[5], m132 = this.rawData[9], m142 = this.rawData[13], //
+            m113 = this.rawData[2], m123 = this.rawData[6], m133 = this.rawData[10], m143 = this.rawData[14], //
+            m114 = this.rawData[3], m124 = this.rawData[7], m134 = this.rawData[11], m144 = this.rawData[15], //
+            m211 = lhs.rawData[0], m221 = lhs.rawData[4], m231 = lhs.rawData[8], m241 = lhs.rawData[12], //
+            m212 = lhs.rawData[1], m222 = lhs.rawData[5], m232 = lhs.rawData[9], m242 = lhs.rawData[13], //
+            m213 = lhs.rawData[2], m223 = lhs.rawData[6], m233 = lhs.rawData[10], m243 = lhs.rawData[14], //
+            m214 = lhs.rawData[3], m224 = lhs.rawData[7], m234 = lhs.rawData[11], m244 = lhs.rawData[15];
+            this.rawData[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
+            this.rawData[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
+            this.rawData[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
+            this.rawData[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
+            this.rawData[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
+            this.rawData[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
+            this.rawData[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
+            this.rawData[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
+            this.rawData[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
+            this.rawData[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
+            this.rawData[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
+            this.rawData[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
+            this.rawData[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
+            this.rawData[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
+            this.rawData[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
+            this.rawData[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
+        };
+        /**
+         * 在 Matrix3D 对象上后置一个增量旋转。
+         * @param   degrees         角度
+         * @param   axis            旋转轴
+         * @param   pivotPoint      旋转中心点
+         */
+        Matrix3D.prototype.appendRotation = function (degrees, axis, pivotPoint) {
+            if (pivotPoint === void 0) { pivotPoint = new feng3d.Vector3D(); }
+            var rotationMat = Matrix3D.createRotationMatrix3D(degrees, axis);
+            if (pivotPoint != null) {
+                this.appendTranslation(-pivotPoint.x, -pivotPoint.y, -pivotPoint.z);
+            }
+            this.append(rotationMat);
+            if (pivotPoint != null) {
+                this.appendTranslation(pivotPoint.x, pivotPoint.y, pivotPoint.z);
+            }
+        };
+        /**
+         * 在 Matrix3D 对象上后置一个增量缩放，沿 x、y 和 z 轴改变位置。
+         * @param   xScale      用于沿 x 轴缩放对象的乘数。
+         * @param   yScale      用于沿 y 轴缩放对象的乘数。
+         * @param   zScale      用于沿 z 轴缩放对象的乘数。
+         */
+        Matrix3D.prototype.appendScale = function (xScale, yScale, zScale) {
+            var scaleMat = Matrix3D.createScaleMatrix3D(xScale, yScale, zScale);
+            this.append(scaleMat);
+        };
+        /**
+         * 在 Matrix3D 对象上后置一个增量平移，沿 x、y 和 z 轴重新定位。
+         * @param   x   沿 x 轴的增量平移。
+         * @param   y   沿 y 轴的增量平移。
+         * @param   z   沿 z 轴的增量平移。
+         */
+        Matrix3D.prototype.appendTranslation = function (x, y, z) {
+            this.rawData[12] += x;
+            this.rawData[13] += y;
+            this.rawData[14] += z;
+        };
+        /**
+         * 返回一个新 Matrix3D 对象，它是与当前 Matrix3D 对象完全相同的副本。
+         */
+        Matrix3D.prototype.clone = function () {
+            var ret = new Matrix3D();
+            ret.copyFrom(this);
+            return ret;
+        };
+        /**
+         * 将 Vector3D 对象复制到调用方 Matrix3D 对象的特定列中。
+         * @param   column      副本的目标列。
+         * @param   vector3D    要从中复制数据的 Vector3D 对象。
+         */
+        Matrix3D.prototype.copyColumnFrom = function (column, vector3D) {
+            this.rawData[column * 4 + 0] = vector3D.x;
+            this.rawData[column * 4 + 1] = vector3D.y;
+            this.rawData[column * 4 + 2] = vector3D.z;
+            this.rawData[column * 4 + 3] = vector3D.w;
+        };
+        /**
+         * 将调用方 Matrix3D 对象的特定列复制到 Vector3D 对象中。
+         * @param   column       要从中复制数据的列。
+         * @param   vector3D     副本的目标 Vector3D 对象。
+         */
+        Matrix3D.prototype.copyColumnTo = function (column, vector3D) {
+            vector3D.x = this.rawData[column * 4 + 0];
+            vector3D.y = this.rawData[column * 4 + 1];
+            vector3D.z = this.rawData[column * 4 + 2];
+            vector3D.w = this.rawData[column * 4 + 3];
+        };
+        /**
+         * 将源 Matrix3D 对象中的所有矩阵数据复制到调用方 Matrix3D 对象中。
+         * @param   sourceMatrix3D      要从中复制数据的 Matrix3D 对象。
+         */
+        Matrix3D.prototype.copyFrom = function (sourceMatrix3D) {
+            for (var i = 0; i < 16; i++) {
+                this.rawData[i] = sourceMatrix3D.rawData[i];
+            }
+        };
+        /**
+         * 将源 Vector 对象中的所有矢量数据复制到调用方 Matrix3D 对象中。利用可选索引参数，您可以选择矢量中的任何起始文字插槽。
+         * @param   vector      要从中复制数据的 Vector 对象。
+         * @param   index       vector中的起始位置
+         * @param   transpose   是否转置当前矩阵
+         */
+        Matrix3D.prototype.copyRawDataFrom = function (vector, index, transpose) {
+            if (index === void 0) { index = 0; }
+            if (transpose === void 0) { transpose = false; }
+            if (vector.length - index < 16) {
+                throw new ArgumentError();
+            }
+            for (var i = 0; i < 16; i++) {
+                this.rawData[i] = vector[index + i];
+            }
+            if (transpose) {
+                this.transpose();
+            }
+        };
+        /**
+         * 将调用方 Matrix3D 对象中的所有矩阵数据复制到提供的矢量中。
+         * @param   vector      要将数据复制到的 Vector 对象。
+         * @param   index       vector中的起始位置
+         * @param   transpose   是否转置当前矩阵
+         */
+        Matrix3D.prototype.copyRawDataTo = function (vector, index, transpose) {
+            if (index === void 0) { index = 0; }
+            if (transpose === void 0) { transpose = false; }
+            if (transpose) {
+                this.transpose();
+            }
+            for (var i = 0; i < 16; i++) {
+                vector[i + index] = this.rawData[i];
+            }
+            if (transpose) {
+                this.transpose();
+            }
+        };
+        /**
+         * 将 Vector3D 对象复制到调用方 Matrix3D 对象的特定行中。
+         * @param   row         要将数据复制到的行。
+         * @param   vector3D    要从中复制数据的 Vector3D 对象。
+         */
+        Matrix3D.prototype.copyRowFrom = function (row, vector3D) {
+            this.rawData[row + 4 * 0] = vector3D.x;
+            this.rawData[row + 4 * 1] = vector3D.y;
+            this.rawData[row + 4 * 2] = vector3D.z;
+            this.rawData[row + 4 * 3] = vector3D.w;
+        };
+        /**
+         * 将调用方 Matrix3D 对象的特定行复制到 Vector3D 对象中。
+         * @param   row         要从中复制数据的行。
+         * @param   vector3D    将作为数据复制目的地的 Vector3D 对象。
+         */
+        Matrix3D.prototype.copyRowTo = function (row, vector3D) {
+            vector3D.x = this.rawData[row + 4 * 0];
+            vector3D.y = this.rawData[row + 4 * 1];
+            vector3D.z = this.rawData[row + 4 * 2];
+            vector3D.w = this.rawData[row + 4 * 3];
+        };
+        /**
+         * 拷贝当前矩阵
+         * @param   dest    目标矩阵
+         */
+        Matrix3D.prototype.copyToMatrix3D = function (dest) {
+            dest.rawData = this.rawData.slice(0);
+        };
+        /**
+         * 将转换矩阵的平移、旋转和缩放设置作为由三个 Vector3D 对象组成的矢量返回。
+         * @return      一个由三个 Vector3D 对象组成的矢量，其中，每个对象分别容纳平移、旋转和缩放设置。
+         */
+        Matrix3D.prototype.decompose = function () {
+            var vec = [];
+            var m = this.clone();
+            var mr = m.rawData;
+            var pos = new feng3d.Vector3D(mr[12], mr[13], mr[14]);
+            mr[12] = 0;
+            mr[13] = 0;
+            mr[14] = 0;
+            var scale = new feng3d.Vector3D();
+            scale.x = Math.sqrt(mr[0] * mr[0] + mr[1] * mr[1] + mr[2] * mr[2]);
+            scale.y = Math.sqrt(mr[4] * mr[4] + mr[5] * mr[5] + mr[6] * mr[6]);
+            scale.z = Math.sqrt(mr[8] * mr[8] + mr[9] * mr[9] + mr[10] * mr[10]);
+            if (mr[0] * (mr[5] * mr[10] - mr[6] * mr[9]) - mr[1] * (mr[4] * mr[10] - mr[6] * mr[8]) + mr[2] * (mr[4] * mr[9] - mr[5] * mr[8]) < 0)
+                scale.z = -scale.z;
+            mr[0] /= scale.x;
+            mr[1] /= scale.x;
+            mr[2] /= scale.x;
+            mr[4] /= scale.y;
+            mr[5] /= scale.y;
+            mr[6] /= scale.y;
+            mr[8] /= scale.z;
+            mr[9] /= scale.z;
+            mr[10] /= scale.z;
+            var rot = new feng3d.Vector3D();
+            rot.y = Math.asin(-mr[2]);
+            if (mr[2] != 1 && mr[2] != -1) {
+                rot.x = Math.atan2(mr[6], mr[10]);
+                rot.z = Math.atan2(mr[1], mr[0]);
+            }
+            else {
+                rot.z = 0;
+                rot.x = Math.atan2(mr[4], mr[5]);
+            }
+            vec.push(pos);
+            vec.push(rot);
+            vec.push(scale);
+            return vec;
+        };
+        /**
+         * 使用不含平移元素的转换矩阵将 Vector3D 对象从一个空间坐标转换到另一个空间坐标。
+         * @param   v   一个容纳要转换的坐标的 Vector3D 对象。
+         * @return  一个包含转换后的坐标的 Vector3D 对象。
+         */
+        Matrix3D.prototype.deltaTransformVector = function (v) {
+            var tempx = this.rawData[12];
+            var tempy = this.rawData[13];
+            var tempz = this.rawData[14];
+            this.rawData[12] = 0;
+            this.rawData[13] = 0;
+            this.rawData[14] = 0;
+            var result = this.transformVector(v);
+            this.rawData[12] = tempx;
+            this.rawData[13] = tempy;
+            this.rawData[14] = tempz;
+            return result;
+        };
+        /**
+         * 将当前矩阵转换为恒等或单位矩阵。
+         */
+        Matrix3D.prototype.identity = function () {
+            this.rawData[1] = 0;
+            this.rawData[2] = 0;
+            this.rawData[3] = 0;
+            this.rawData[4] = 0;
+            this.rawData[6] = 0;
+            this.rawData[7] = 0;
+            this.rawData[8] = 0;
+            this.rawData[9] = 0;
+            this.rawData[11] = 0;
+            this.rawData[12] = 0;
+            this.rawData[13] = 0;
+            this.rawData[14] = 0;
+            this.rawData[0] = 1;
+            this.rawData[5] = 1;
+            this.rawData[10] = 1;
+            this.rawData[15] = 1;
+        };
+        /**
+         * 反转当前矩阵。逆矩阵
+         * @return      如果成功反转矩阵，则返回 true。
+         */
+        Matrix3D.prototype.invert = function () {
+            var d = this.determinant;
+            var invertable = Math.abs(d) > 0.00000000001;
+            if (invertable) {
+                d = 1 / d;
+                var m11 = this.rawData[0];
+                var m21 = this.rawData[4];
+                var m31 = this.rawData[8];
+                var m41 = this.rawData[12];
+                var m12 = this.rawData[1];
+                var m22 = this.rawData[5];
+                var m32 = this.rawData[9];
+                var m42 = this.rawData[13];
+                var m13 = this.rawData[2];
+                var m23 = this.rawData[6];
+                var m33 = this.rawData[10];
+                var m43 = this.rawData[14];
+                var m14 = this.rawData[3];
+                var m24 = this.rawData[7];
+                var m34 = this.rawData[11];
+                var m44 = this.rawData[15];
+                this.rawData[0] = d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
+                this.rawData[1] = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
+                this.rawData[2] = d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
+                this.rawData[3] = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
+                this.rawData[4] = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
+                this.rawData[5] = d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
+                this.rawData[6] = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
+                this.rawData[7] = d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
+                this.rawData[8] = d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
+                this.rawData[9] = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
+                this.rawData[10] = d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
+                this.rawData[11] = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
+                this.rawData[12] = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
+                this.rawData[13] = d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
+                this.rawData[14] = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
+                this.rawData[15] = d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
+            }
+            return invertable;
+        };
+        /**
+         * 通过将当前 Matrix3D 对象与另一个 Matrix3D 对象相乘来前置一个矩阵。得到的结果将合并两个矩阵转换。
+         * @param   rhs     个右侧矩阵，它与当前 Matrix3D 对象相乘。
+         */
+        Matrix3D.prototype.prepend = function (rhs) {
+            var mat = this.clone();
+            this.copyFrom(rhs);
+            this.append(mat);
+        };
+        /**
+         * 在 Matrix3D 对象上前置一个增量旋转。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行旋转，然后再执行其他转换。
+         * @param   degrees     旋转的角度。
+         * @param   axis        旋转的轴或方向。常见的轴为 X_AXIS (Vector3D(1,0,0))、Y_AXIS (Vector3D(0,1,0)) 和 Z_AXIS (Vector3D(0,0,1))。此矢量的长度应为 1。
+         * @param   pivotPoint  一个用于确定旋转中心的点。对象的默认轴点为该对象的注册点。
+         */
+        Matrix3D.prototype.prependRotation = function (degrees, axis, pivotPoint) {
+            if (pivotPoint === void 0) { pivotPoint = new feng3d.Vector3D(); }
+            var rotationMat = Matrix3D.createRotationMatrix3D(degrees, axis);
+            this.prepend(rotationMat);
+        };
+        /**
+         * 在 Matrix3D 对象上前置一个增量缩放，沿 x、y 和 z 轴改变位置。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行缩放更改，然后再执行其他转换。
+         * @param   xScale      用于沿 x 轴缩放对象的乘数。
+         * @param   yScale      用于沿 y 轴缩放对象的乘数。
+         * @param   zScale      用于沿 z 轴缩放对象的乘数。
+         */
+        Matrix3D.prototype.prependScale = function (xScale, yScale, zScale) {
+            var scaleMat = Matrix3D.createScaleMatrix3D(xScale, yScale, zScale);
+            this.prepend(scaleMat);
+        };
+        /**
+         * 在 Matrix3D 对象上前置一个增量平移，沿 x、y 和 z 轴重新定位。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行平移更改，然后再执行其他转换。
+         * @param   x   沿 x 轴的增量平移。
+         * @param   y   沿 y 轴的增量平移。
+         * @param   z   沿 z 轴的增量平移。
+         */
+        Matrix3D.prototype.prependTranslation = function (x, y, z) {
+            var translationMat = Matrix3D.createTranslationMatrix3D(x, y, z);
+            this.prepend(translationMat);
+        };
+        /**
+         * 设置转换矩阵的平移、旋转和缩放设置。
+         * @param   components      一个由三个 Vector3D 对象组成的矢量，这些对象将替代 Matrix3D 对象的平移、旋转和缩放元素。
+         */
+        Matrix3D.prototype.recompose = function (components) {
+            this.identity();
+            this.appendRotation(components[1].x * feng3d.MathConsts.RADIANS_TO_DEGREES, feng3d.Vector3D.X_AXIS);
+            this.appendRotation(components[1].y * feng3d.MathConsts.RADIANS_TO_DEGREES, feng3d.Vector3D.Y_AXIS);
+            this.appendRotation(components[1].z * feng3d.MathConsts.RADIANS_TO_DEGREES, feng3d.Vector3D.Z_AXIS);
+            this.appendScale(components[2].x, components[2].y, components[2].z);
+            this.appendTranslation(components[0].x, components[0].y, components[0].z);
+            return true;
+        };
+        /**
+         * 使用转换矩阵将 Vector3D 对象从一个空间坐标转换到另一个空间坐标。
+         * @param   v   一个容纳要转换的坐标的 Vector3D 对象。
+         * @return  一个包含转换后的坐标的 Vector3D 对象。
+         */
+        Matrix3D.prototype.transformVector = function (v) {
+            if (v == null)
+                return new feng3d.Vector3D();
+            var x = v.x;
+            var y = v.y;
+            var z = v.z;
+            var out = new feng3d.Vector3D();
+            out.x = x * this.rawData[0] + y * this.rawData[4] + z * this.rawData[8] + this.rawData[12];
+            out.y = x * this.rawData[1] + y * this.rawData[5] + z * this.rawData[9] + this.rawData[13];
+            out.z = x * this.rawData[2] + y * this.rawData[6] + z * this.rawData[10] + this.rawData[14];
+            out.w = x * this.rawData[3] + y * this.rawData[7] + z * this.rawData[11] + this.rawData[15];
+            return out;
+        };
+        /**
+         * 使用转换矩阵将由数字构成的矢量从一个空间坐标转换到另一个空间坐标。
+         * @param   vin     一个由多个数字组成的矢量，其中每三个数字构成一个要转换的 3D 坐标 (x,y,z)。
+         * @param   vout    一个由多个数字组成的矢量，其中每三个数字构成一个已转换的 3D 坐标 (x,y,z)。
+         */
+        Matrix3D.prototype.transformVectors = function (vin, vout) {
+            var vec = new feng3d.Vector3D();
+            for (var i = 0; i < vin.length; i += 3) {
+                vec.setTo(vin[i], vin[i + 1], vin[i + 2]);
+                vec = this.transformVector(vec);
+                vout[i] = vec.x;
+                vout[i + 1] = vec.y;
+                vout[i + 2] = vec.z;
+            }
+        };
+        /**
+         * 将当前 Matrix3D 对象转换为一个矩阵，并将互换其中的行和列。
+         */
+        Matrix3D.prototype.transpose = function () {
+            var swap;
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    if (i > j) {
+                        swap = this.rawData[i * 4 + j];
+                        this.rawData[i * 4 + j] = this.rawData[j * 4 + i];
+                        this.rawData[j * 4 + i] = swap;
+                    }
+                }
+            }
+        };
+        /**
+         * 比较矩阵是否相等
+         */
+        Matrix3D.prototype.compare = function (matrix3D, precision) {
+            if (precision === void 0) { precision = 0.0001; }
+            var r2 = matrix3D.rawData;
+            for (var i = 0; i < 16; ++i) {
+                if (Math.abs(this.rawData[i] - r2[i]) > precision)
+                    return false;
+            }
+            return true;
+        };
+        /**
+         * 以字符串返回矩阵的值
+         */
+        Matrix3D.prototype.toString = function () {
+            var str = "";
+            var showLen = 5;
+            var precision = Math.pow(10, showLen - 1);
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    str += StringUtils.getString(Math.round(this.rawData[i * 4 + j] * precision) / precision, showLen, " ");
+                }
+                if (i != 3)
+                    str += "\n";
+            }
+            return str;
+        };
+        return Matrix3D;
+    }());
+    feng3d.Matrix3D = Matrix3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * Orientation3D 类是用于表示 Matrix3D 对象的方向样式的常量值枚举。方向的三个类型分别为欧拉角、轴角和四元数。Matrix3D 对象的 decompose 和 recompose 方法采用其中的某一个枚举类型来标识矩阵的旋转组件。
+     * @author feng 2016-3-21
+     */
+    var Orientation3D = (function () {
+        function Orientation3D() {
+        }
+        /**
+        * 轴角方向结合使用轴和角度来确定方向。
+        */
+        Orientation3D.AXIS_ANGLE = "axisAngle";
+        /**
+        * 欧拉角（decompose() 和 recompose() 方法的默认方向）通过三个不同的对应于每个轴的旋转角来定义方向。
+        */
+        Orientation3D.EULER_ANGLES = "eulerAngles";
+        /**
+        * 四元数方向使用复数。
+        */
+        Orientation3D.QUATERNION = "quaternion";
+        return Orientation3D;
+    }());
+    feng3d.Orientation3D = Orientation3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * A Quaternion object which can be used to represent rotations.
+     */
+    var Quaternion = (function () {
+        /**
+         * Creates a new Quaternion object.
+         * @param x The x value of the quaternion.
+         * @param y The y value of the quaternion.
+         * @param z The z value of the quaternion.
+         * @param w The w value of the quaternion.
+         */
+        function Quaternion(x, y, z, w) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (z === void 0) { z = 0; }
+            if (w === void 0) { w = 1; }
+            /**
+             * The x value of the quaternion.
+             */
+            this.x = 0;
+            /**
+             * The y value of the quaternion.
+             */
+            this.y = 0;
+            /**
+             * The z value of the quaternion.
+             */
+            this.z = 0;
+            /**
+             * The w value of the quaternion.
+             */
+            this.w = 1;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+        Object.defineProperty(Quaternion.prototype, "magnitude", {
+            /**
+             * Returns the magnitude of the quaternion object.
+             */
+            get: function () {
+                return Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Fills the quaternion object with the result from a multiplication of two quaternion objects.
+         *
+         * @param    qa    The first quaternion in the multiplication.
+         * @param    qb    The second quaternion in the multiplication.
+         */
+        Quaternion.prototype.multiply = function (qa, qb) {
+            var w1 = qa.w, x1 = qa.x, y1 = qa.y, z1 = qa.z;
+            var w2 = qb.w, x2 = qb.x, y2 = qb.y, z2 = qb.z;
+            this.w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
+            this.x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
+            this.y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
+            this.z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;
+        };
+        Quaternion.prototype.multiplyVector = function (vector, target) {
+            if (target === void 0) { target = null; }
+            target = target || new Quaternion();
+            var x2 = vector.x;
+            var y2 = vector.y;
+            var z2 = vector.z;
+            target.w = -this.x * x2 - this.y * y2 - this.z * z2;
+            target.x = this.w * x2 + this.y * z2 - this.z * y2;
+            target.y = this.w * y2 - this.x * z2 + this.z * x2;
+            target.z = this.w * z2 + this.x * y2 - this.y * x2;
+            return target;
+        };
+        /**
+         * Fills the quaternion object with values representing the given rotation around a vector.
+         *
+         * @param    axis    The axis around which to rotate
+         * @param    angle    The angle in radians of the rotation.
+         */
+        Quaternion.prototype.fromAxisAngle = function (axis, angle) {
+            var sin_a = Math.sin(angle / 2);
+            var cos_a = Math.cos(angle / 2);
+            this.x = axis.x * sin_a;
+            this.y = axis.y * sin_a;
+            this.z = axis.z * sin_a;
+            this.w = cos_a;
+            this.normalize();
+        };
+        /**
+         * Spherically interpolates between two quaternions, providing an interpolation between rotations with constant angle change rate.
+         * @param qa The first quaternion to interpolate.
+         * @param qb The second quaternion to interpolate.
+         * @param t The interpolation weight, a value between 0 and 1.
+         */
+        Quaternion.prototype.slerp = function (qa, qb, t) {
+            var w1 = qa.w, x1 = qa.x, y1 = qa.y, z1 = qa.z;
+            var w2 = qb.w, x2 = qb.x, y2 = qb.y, z2 = qb.z;
+            var dot = w1 * w2 + x1 * x2 + y1 * y2 + z1 * z2;
+            // shortest direction
+            if (dot < 0) {
+                dot = -dot;
+                w2 = -w2;
+                x2 = -x2;
+                y2 = -y2;
+                z2 = -z2;
+            }
+            if (dot < 0.95) {
+                // interpolate angle linearly
+                var angle = Math.acos(dot);
+                var s = 1 / Math.sin(angle);
+                var s1 = Math.sin(angle * (1 - t)) * s;
+                var s2 = Math.sin(angle * t) * s;
+                this.w = w1 * s1 + w2 * s2;
+                this.x = x1 * s1 + x2 * s2;
+                this.y = y1 * s1 + y2 * s2;
+                this.z = z1 * s1 + z2 * s2;
+            }
+            else {
+                // nearly identical angle, interpolate linearly
+                this.w = w1 + t * (w2 - w1);
+                this.x = x1 + t * (x2 - x1);
+                this.y = y1 + t * (y2 - y1);
+                this.z = z1 + t * (z2 - z1);
+                var len = 1.0 / Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
+                this.w *= len;
+                this.x *= len;
+                this.y *= len;
+                this.z *= len;
+            }
+        };
+        /**
+         * 线性求插值
+         * @param qa 第一个四元素
+         * @param qb 第二个四元素
+         * @param t 权重
+         */
+        Quaternion.prototype.lerp = function (qa, qb, t) {
+            var w1 = qa.w, x1 = qa.x, y1 = qa.y, z1 = qa.z;
+            var w2 = qb.w, x2 = qb.x, y2 = qb.y, z2 = qb.z;
+            var len;
+            // shortest direction
+            if (w1 * w2 + x1 * x2 + y1 * y2 + z1 * z2 < 0) {
+                w2 = -w2;
+                x2 = -x2;
+                y2 = -y2;
+                z2 = -z2;
+            }
+            this.w = w1 + t * (w2 - w1);
+            this.x = x1 + t * (x2 - x1);
+            this.y = y1 + t * (y2 - y1);
+            this.z = z1 + t * (z2 - z1);
+            len = 1.0 / Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
+            this.w *= len;
+            this.x *= len;
+            this.y *= len;
+            this.z *= len;
+        };
+        /**
+         * Fills the quaternion object with values representing the given euler rotation.
+         *
+         * @param    ax        The angle in radians of the rotation around the ax axis.
+         * @param    ay        The angle in radians of the rotation around the ay axis.
+         * @param    az        The angle in radians of the rotation around the az axis.
+         */
+        Quaternion.prototype.fromEulerAngles = function (ax, ay, az) {
+            var halfX = ax * .5, halfY = ay * .5, halfZ = az * .5;
+            var cosX = Math.cos(halfX), sinX = Math.sin(halfX);
+            var cosY = Math.cos(halfY), sinY = Math.sin(halfY);
+            var cosZ = Math.cos(halfZ), sinZ = Math.sin(halfZ);
+            this.w = cosX * cosY * cosZ + sinX * sinY * sinZ;
+            this.x = sinX * cosY * cosZ - cosX * sinY * sinZ;
+            this.y = cosX * sinY * cosZ + sinX * cosY * sinZ;
+            this.z = cosX * cosY * sinZ - sinX * sinY * cosZ;
+        };
+        /**
+         * Fills a target Vector3D object with the Euler angles that form the rotation represented by this quaternion.
+         * @param target An optional Vector3D object to contain the Euler angles. If not provided, a new object is created.
+         * @return The Vector3D containing the Euler angles.
+         */
+        Quaternion.prototype.toEulerAngles = function (target) {
+            if (target === void 0) { target = null; }
+            target = target || new feng3d.Vector3D();
+            target.x = Math.atan2(2 * (this.w * this.x + this.y * this.z), 1 - 2 * (this.x * this.x + this.y * this.y));
+            target.y = Math.asin(2 * (this.w * this.y - this.z * this.x));
+            target.z = Math.atan2(2 * (this.w * this.z + this.x * this.y), 1 - 2 * (this.y * this.y + this.z * this.z));
+            return target;
+        };
+        /**
+         * Normalises the quaternion object.
+         */
+        Quaternion.prototype.normalize = function (val) {
+            if (val === void 0) { val = 1; }
+            var mag = val / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
+            this.x *= mag;
+            this.y *= mag;
+            this.z *= mag;
+            this.w *= mag;
+        };
+        /**
+         * Used to trace the values of a quaternion.
+         *
+         * @return A string representation of the quaternion object.
+         */
+        Quaternion.prototype.toString = function () {
+            return "{this.x:" + this.x + " this.y:" + this.y + " this.z:" + this.z + " this.w:" + this.w + "}";
+        };
+        /**
+         * Converts the quaternion to a Matrix3D object representing an equivalent rotation.
+         * @param target An optional Matrix3D container to store the transformation in. If not provided, a new object is created.
+         * @return A Matrix3D object representing an equivalent rotation.
+         */
+        Quaternion.prototype.toMatrix3D = function (target) {
+            if (target === void 0) { target = null; }
+            var rawData = feng3d.Matrix3DUtils.RAW_DATA_CONTAINER;
+            var xy2 = 2.0 * this.x * this.y, xz2 = 2.0 * this.x * this.z, xw2 = 2.0 * this.x * this.w;
+            var yz2 = 2.0 * this.y * this.z, yw2 = 2.0 * this.y * this.w, zw2 = 2.0 * this.z * this.w;
+            var xx = this.x * this.x, yy = this.y * this.y, zz = this.z * this.z, ww = this.w * this.w;
+            rawData[0] = xx - yy - zz + ww;
+            rawData[4] = xy2 - zw2;
+            rawData[8] = xz2 + yw2;
+            rawData[12] = 0;
+            rawData[1] = xy2 + zw2;
+            rawData[5] = -xx + yy - zz + ww;
+            rawData[9] = yz2 - xw2;
+            rawData[13] = 0;
+            rawData[2] = xz2 - yw2;
+            rawData[6] = yz2 + xw2;
+            rawData[10] = -xx - yy + zz + ww;
+            rawData[14] = 0;
+            rawData[3] = 0.0;
+            rawData[7] = 0.0;
+            rawData[11] = 0;
+            rawData[15] = 1;
+            if (!target)
+                return new feng3d.Matrix3D(rawData);
+            target.copyRawDataFrom(rawData);
+            return target;
+        };
+        /**
+         * Extracts a quaternion rotation matrix out of a given Matrix3D object.
+         * @param matrix The Matrix3D out of which the rotation will be extracted.
+         */
+        Quaternion.prototype.fromMatrix = function (matrix) {
+            var v = matrix.decompose()[1];
+            this.fromEulerAngles(v.x, v.y, v.z);
+        };
+        /**
+         * Converts the quaternion to a Vector.&lt;number&gt; matrix representation of a rotation equivalent to this quaternion.
+         * @param target The Vector.&lt;number&gt; to contain the raw matrix data.
+         * @param exclude4thRow If true, the last row will be omitted, and a 4x3 matrix will be generated instead of a 4x4.
+         */
+        Quaternion.prototype.toRawData = function (target, exclude4thRow) {
+            if (exclude4thRow === void 0) { exclude4thRow = false; }
+            var xy2 = 2.0 * this.x * this.y, xz2 = 2.0 * this.x * this.z, xw2 = 2.0 * this.x * this.w;
+            var yz2 = 2.0 * this.y * this.z, yw2 = 2.0 * this.y * this.w, zw2 = 2.0 * this.z * this.w;
+            var xx = this.x * this.x, yy = this.y * this.y, zz = this.z * this.z, ww = this.w * this.w;
+            target[0] = xx - yy - zz + ww;
+            target[1] = xy2 - zw2;
+            target[2] = xz2 + yw2;
+            target[4] = xy2 + zw2;
+            target[5] = -xx + yy - zz + ww;
+            target[6] = yz2 - xw2;
+            target[8] = xz2 - yw2;
+            target[9] = yz2 + xw2;
+            target[10] = -xx - yy + zz + ww;
+            target[3] = target[7] = target[11] = 0;
+            if (!exclude4thRow) {
+                target[12] = target[13] = target[14] = 0;
+                target[15] = 1;
+            }
+        };
+        /**
+         * Clones the quaternion.
+         * @return An exact duplicate of the current Quaternion.
+         */
+        Quaternion.prototype.clone = function () {
+            return new Quaternion(this.x, this.y, this.z, this.w);
+        };
+        /**
+         * Rotates a point.
+         * @param vector The Vector3D object to be rotated.
+         * @param target An optional Vector3D object that will contain the rotated coordinates. If not provided, a new object will be created.
+         * @return A Vector3D object containing the rotated point.
+         */
+        Quaternion.prototype.rotatePoint = function (vector, target) {
+            if (target === void 0) { target = null; }
+            var x1, y1, z1, w1;
+            var x2 = vector.x, y2 = vector.y, z2 = vector.z;
+            target = target || new feng3d.Vector3D();
+            // p*q'
+            w1 = -this.x * x2 - this.y * y2 - this.z * z2;
+            x1 = this.w * x2 + this.y * z2 - this.z * y2;
+            y1 = this.w * y2 - this.x * z2 + this.z * x2;
+            z1 = this.w * z2 + this.x * y2 - this.y * x2;
+            target.x = -w1 * this.x + x1 * this.w - y1 * this.z + z1 * this.y;
+            target.y = -w1 * this.y + x1 * this.z + y1 * this.w - z1 * this.x;
+            target.z = -w1 * this.z - x1 * this.y + y1 * this.x + z1 * this.w;
+            return target;
+        };
+        /**
+         * Copies the data from a quaternion into this instance.
+         * @param q The quaternion to copy from.
+         */
+        Quaternion.prototype.copyFrom = function (q) {
+            this.x = q.x;
+            this.y = q.y;
+            this.z = q.z;
+            this.w = q.w;
+        };
+        return Quaternion;
+    }());
+    feng3d.Quaternion = Quaternion;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * Vector3D 类使用笛卡尔坐标 x、y 和 z 表示三维空间中的点或位置
+     * @author feng 2016-3-21
+     */
+    var Vector3D = (function () {
+        /**
+         * 创建 Vector3D 对象的实例。如果未指定构造函数的参数，则将使用元素 (0,0,0,0) 创建 Vector3D 对象。
+         * @param x 第一个元素，例如 x 坐标。
+         * @param y 第二个元素，例如 y 坐标。
+         * @param z 第三个元素，例如 z 坐标。
+         * @param w 表示额外数据的可选元素，例如旋转角度
+         */
+        function Vector3D(x, y, z, w) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (z === void 0) { z = 0; }
+            if (w === void 0) { w = 0; }
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+        Object.defineProperty(Vector3D.prototype, "length", {
+            /**
+            * 当前 Vector3D 对象的长度（大小），即从原点 (0,0,0) 到该对象的 x、y 和 z 坐标的距离。w 属性将被忽略。单位矢量具有的长度或大小为一。
+            */
+            get: function () {
+                return Math.sqrt(this.lengthSquared);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Vector3D.prototype, "lengthSquared", {
+            /**
+            * 当前 Vector3D 对象长度的平方，它是使用 x、y 和 z 属性计算出来的。w 属性将被忽略。尽可能使用 lengthSquared() 方法，而不要使用 Vector3D.length() 方法的 Math.sqrt() 方法调用，后者速度较慢。
+            */
+            get: function () {
+                return this.x * this.x + this.y * this.y + this.z * this.z;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 将当前 Vector3D 对象的 x、y 和 z 元素的值与另一个 Vector3D 对象的 x、y 和 z 元素的值相加。
+         * @param a 要与当前 Vector3D 对象相加的 Vector3D 对象。
+         * @return 一个 Vector3D 对象，它是将当前 Vector3D 对象与另一个 Vector3D 对象相加所产生的结果。
+         */
+        Vector3D.prototype.add = function (a) {
+            return new Vector3D(this.x + a.x, this.y + a.y, this.z + a.z, this.w + a.w);
+        };
+        /**
+         * 返回一个新 Vector3D 对象，它是与当前 Vector3D 对象完全相同的副本。
+         * @return 一个新 Vector3D 对象，它是当前 Vector3D 对象的副本。
+         */
+        Vector3D.prototype.clone = function () {
+            return new Vector3D(this.x, this.y, this.z, this.w);
+        };
+        /**
+         * 将源 Vector3D 对象中的所有矢量数据复制到调用方 Vector3D 对象中。
+         * @return 要从中复制数据的 Vector3D 对象。
+         */
+        Vector3D.prototype.copyFrom = function (sourceVector3D) {
+            this.x = sourceVector3D.x;
+            this.y = sourceVector3D.y;
+            this.z = sourceVector3D.z;
+            this.w = sourceVector3D.w;
+        };
+        /**
+         * 返回一个新的 Vector3D 对象，它与当前 Vector3D 对象和另一个 Vector3D 对象垂直（成直角）。
+         */
+        Vector3D.prototype.crossProduct = function (a) {
+            return new Vector3D(this.y * a.z - this.z * a.y, this.z * a.x - this.x * a.z, this.x * a.y - this.y * a.x, 1);
+        };
+        /**
+         * 按照指定的 Vector3D 对象的 x、y 和 z 元素的值递减当前 Vector3D 对象的 x、y 和 z 元素的值。
+         */
+        Vector3D.prototype.decrementBy = function (a) {
+            this.x -= a.x;
+            this.y -= a.y;
+            this.z -= a.z;
+        };
+        /**
+         * 返回两个 Vector3D 对象之间的距离。
+         */
+        Vector3D.distance = function (pt1, pt2) {
+            var x = (pt1.x - pt2.x);
+            var y = (pt1.y - pt2.y);
+            var z = (pt1.z - pt2.z);
+            return Math.sqrt(x * x + y * y + z * z);
+        };
+        /**
+         * 如果当前 Vector3D 对象和作为参数指定的 Vector3D 对象均为单位顶点，此方法将返回这两个顶点之间所成角的余弦值。
+         */
+        Vector3D.prototype.dotProduct = function (a) {
+            return this.x * a.x + this.y * a.y + this.z * a.z;
+        };
+        /**
+         * 通过将当前 Vector3D 对象的 x、y 和 z 元素与指定的 Vector3D 对象的 x、y 和 z 元素进行比较，确定这两个对象是否相等。
+         */
+        Vector3D.prototype.equals = function (toCompare, allFour) {
+            if (allFour === void 0) { allFour = false; }
+            return (this.x == toCompare.x && this.y == toCompare.y && this.z == toCompare.z && (!allFour || this.w == toCompare.w));
+        };
+        /**
+         * 按照指定的 Vector3D 对象的 x、y 和 z 元素的值递增当前 Vector3D 对象的 x、y 和 z 元素的值。
+         */
+        Vector3D.prototype.incrementBy = function (a) {
+            this.x += a.x;
+            this.y += a.y;
+            this.z += a.z;
+        };
+        /**
+         * 将当前 Vector3D 对象设置为其逆对象。
+         */
+        Vector3D.prototype.negate = function () {
+            this.x = -this.x;
+            this.y = -this.y;
+            this.z = -this.z;
+        };
+        /**
+         * 通过将最前面的三个元素（x、y、z）除以矢量的长度可将 Vector3D 对象转换为单位矢量。
+         */
+        Vector3D.prototype.normalize = function (thickness) {
+            if (thickness === void 0) { thickness = 1; }
+            if (this.length != 0) {
+                var invLength = thickness / this.length;
+                this.x *= invLength;
+                this.y *= invLength;
+                this.z *= invLength;
+                return;
+            }
+        };
+        /**
+         * 按标量（大小）缩放当前的 Vector3D 对象。
+         */
+        Vector3D.prototype.scaleBy = function (s) {
+            this.x *= s;
+            this.y *= s;
+            this.z *= s;
+        };
+        /**
+         * 将 Vector3D 的成员设置为指定值
+         */
+        Vector3D.prototype.setTo = function (xa, ya, za) {
+            this.x = xa;
+            this.y = ya;
+            this.z = za;
+        };
+        /**
+         * 从另一个 Vector3D 对象的 x、y 和 z 元素的值中减去当前 Vector3D 对象的 x、y 和 z 元素的值。
+         */
+        Vector3D.prototype.subtract = function (a) {
+            return new Vector3D(this.x - a.x, this.y - a.y, this.z - a.z);
+        };
+        /**
+         * 返回当前 Vector3D 对象的字符串表示形式。
+         */
+        Vector3D.prototype.toString = function () {
+            return "<" + this.x + ", " + this.y + ", " + this.z + ">";
+        };
+        /**
+        * 定义为 Vector3D 对象的 x 轴，坐标为 (1,0,0)。
+        */
+        Vector3D.X_AXIS = new Vector3D(1, 0, 0);
+        /**
+        * 定义为 Vector3D 对象的 y 轴，坐标为 (0,1,0)
+        */
+        Vector3D.Y_AXIS = new Vector3D(0, 1, 0);
+        /**
+        * 定义为 Vector3D 对象的 z 轴，坐标为 (0,0,1)
+        */
+        Vector3D.Z_AXIS = new Vector3D(0, 0, 1);
+        return Vector3D;
+    }());
+    feng3d.Vector3D = Vector3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 3d直线
+     * @author feng 2013-6-13
+     */
+    var Line3D = (function () {
+        /**
+         * 根据直线某点与方向创建直线
+         * @param position 直线上某点
+         * @param direction 直线的方向
+         */
+        function Line3D(position, direction) {
+            if (position === void 0) { position = null; }
+            if (direction === void 0) { direction = null; }
+            this.position = position ? position : new feng3d.Vector3D();
+            this.direction = direction ? direction : new feng3d.Vector3D(0, 0, 1);
+        }
+        /**
+         * 根据直线上两点初始化直线
+         * @param p0 Vector3D
+         * @param p1 Vector3D
+         */
+        Line3D.prototype.fromPoints = function (p0, p1) {
+            this.position = p0;
+            this.direction = p1.subtract(p0);
+        };
+        /**
+         * 根据直线某点与方向初始化直线
+         * @param position 直线上某点
+         * @param direction 直线的方向
+         */
+        Line3D.prototype.fromPosAndDir = function (position, direction) {
+            this.position = position;
+            this.direction = direction;
+        };
+        /**
+         * 获取直线上的一个点
+         * @param length 与原点距离
+         */
+        Line3D.prototype.getPoint = function (length) {
+            if (length === void 0) { length = 0; }
+            var lengthDir = this.direction.clone();
+            lengthDir.scaleBy(length);
+            var newPoint = this.position.add(lengthDir);
+            return newPoint;
+        };
+        return Line3D;
+    }());
+    feng3d.Line3D = Line3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 3D射线
+     * @author feng 2013-6-13
+     */
+    var Ray3D = (function (_super) {
+        __extends(Ray3D, _super);
+        function Ray3D(position, direction) {
+            if (position === void 0) { position = null; }
+            if (direction === void 0) { direction = null; }
+            _super.call(this, position, direction);
+        }
+        return Ray3D;
+    }(feng3d.Line3D));
+    feng3d.Ray3D = Ray3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 数学常量类
+     */
+    var MathConsts = (function () {
+        function MathConsts() {
+        }
+        /**
+         * 弧度转角度因子
+         */
+        MathConsts.RADIANS_TO_DEGREES = 180 / Math.PI;
+        /**
+         * 角度转弧度因子
+         */
+        MathConsts.DEGREES_TO_RADIANS = Math.PI / 180;
+        return MathConsts;
+    }());
+    feng3d.MathConsts = MathConsts;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 矩阵工具类
+     * Matrix3DUtils provides additional Matrix3D math functions.
+     */
+    var Matrix3DUtils = (function () {
+        function Matrix3DUtils() {
+        }
+        /**
+         * Fills the 3d matrix object with values representing the transformation made by the given quaternion.
+         *
+         * @param    quarternion    The quarterion object to convert.
+         */
+        Matrix3DUtils.quaternion2matrix = function (quarternion, m) {
+            if (m === void 0) { m = null; }
+            var x = quarternion.x;
+            var y = quarternion.y;
+            var z = quarternion.z;
+            var w = quarternion.w;
+            var xx = x * x;
+            var xy = x * y;
+            var xz = x * z;
+            var xw = x * w;
+            var yy = y * y;
+            var yz = y * z;
+            var yw = y * w;
+            var zz = z * z;
+            var zw = z * w;
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            raw[0] = 1 - 2 * (yy + zz);
+            raw[1] = 2 * (xy + zw);
+            raw[2] = 2 * (xz - yw);
+            raw[4] = 2 * (xy - zw);
+            raw[5] = 1 - 2 * (xx + zz);
+            raw[6] = 2 * (yz + xw);
+            raw[8] = 2 * (xz + yw);
+            raw[9] = 2 * (yz - xw);
+            raw[10] = 1 - 2 * (xx + yy);
+            raw[3] = raw[7] = raw[11] = raw[12] = raw[13] = raw[14] = 0;
+            raw[15] = 1;
+            if (m) {
+                m.copyRawDataFrom(raw);
+                return m;
+            }
+            else
+                return new feng3d.Matrix3D(raw);
+        };
+        /**
+         *
+         * Returns a normalised <code>Vector3D</code> object representing the forward vector of the given matrix.
+         * @param    m        The Matrix3D object to use to get the forward vector
+         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
+         * @return            The forward vector
+         */
+        Matrix3DUtils.getForward = function (m, v) {
+            if (v === void 0) { v = null; }
+            if (!v)
+                v = new feng3d.Vector3D();
+            m.copyColumnTo(2, v);
+            v.normalize();
+            return v;
+        };
+        /**
+         * Returns a normalised <code>Vector3D</code> object representing the up vector of the given matrix.
+         * @param    m        The Matrix3D object to use to get the up vector
+         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
+         * @return            The up vector
+         */
+        Matrix3DUtils.getUp = function (m, v) {
+            if (v === void 0) { v = null; }
+            if (!v)
+                v = new feng3d.Vector3D();
+            m.copyColumnTo(1, v);
+            v.normalize();
+            return v;
+        };
+        /**
+         * Returns a normalised <code>Vector3D</code> object representing the right vector of the given matrix.
+         * @param    m        The Matrix3D object to use to get the right vector
+         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
+         * @return            The right vector
+         */
+        Matrix3DUtils.getRight = function (m, v) {
+            if (v === void 0) { v = null; }
+            if (!v)
+                v = new feng3d.Vector3D();
+            m.copyColumnTo(0, v);
+            v.normalize();
+            return v;
+        };
+        /**
+         * Returns a boolean value representing whether there is any significant difference between the two given 3d matrices.
+         */
+        Matrix3DUtils.compare = function (m1, m2) {
+            var r1 = Matrix3DUtils.RAW_DATA_CONTAINER;
+            var r2 = m2.rawData;
+            m1.copyRawDataTo(r1);
+            for (var i = 0; i < 16; ++i) {
+                if (r1[i] != r2[i])
+                    return false;
+            }
+            return true;
+        };
+        Matrix3DUtils.lookAt = function (matrix, pos, dir, up) {
+            var dirN;
+            var upN;
+            var lftN;
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            lftN = dir.crossProduct(up);
+            lftN.normalize();
+            upN = lftN.crossProduct(dir);
+            upN.normalize();
+            dirN = dir.clone();
+            dirN.normalize();
+            raw[0] = lftN.x;
+            raw[1] = upN.x;
+            raw[2] = -dirN.x;
+            raw[3] = 0.0;
+            raw[4] = lftN.y;
+            raw[5] = upN.y;
+            raw[6] = -dirN.y;
+            raw[7] = 0.0;
+            raw[8] = lftN.z;
+            raw[9] = upN.z;
+            raw[10] = -dirN.z;
+            raw[11] = 0.0;
+            raw[12] = -lftN.dotProduct(pos);
+            raw[13] = -upN.dotProduct(pos);
+            raw[14] = dirN.dotProduct(pos);
+            raw[15] = 1.0;
+            matrix.copyRawDataFrom(raw);
+        };
+        Matrix3DUtils.reflection = function (plane, target) {
+            if (target === void 0) { target = null; }
+            target = target || new feng3d.Matrix3D();
+            var a = plane.a, b = plane.b, c = plane.c, d = plane.d;
+            var rawData = Matrix3DUtils.RAW_DATA_CONTAINER;
+            var ab2 = -2 * a * b;
+            var ac2 = -2 * a * c;
+            var bc2 = -2 * b * c;
+            // Matrix3DUtils.reflection matrix
+            rawData[0] = 1 - 2 * a * a;
+            rawData[4] = ab2;
+            rawData[8] = ac2;
+            rawData[12] = -2 * a * d;
+            rawData[1] = ab2;
+            rawData[5] = 1 - 2 * b * b;
+            rawData[9] = bc2;
+            rawData[13] = -2 * b * d;
+            rawData[2] = ac2;
+            rawData[6] = bc2;
+            rawData[10] = 1 - 2 * c * c;
+            rawData[14] = -2 * c * d;
+            rawData[3] = 0;
+            rawData[7] = 0;
+            rawData[11] = 0;
+            rawData[15] = 1;
+            target.copyRawDataFrom(rawData);
+            return target;
+        };
+        Matrix3DUtils.decompose = function (sourceMatrix, orientationStyle) {
+            if (orientationStyle === void 0) { orientationStyle = "eulerAngles"; }
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            sourceMatrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var x = raw[12];
+            var y = raw[13];
+            var z = raw[14];
+            var tx = Math.sqrt(a * a + e * e + i * i);
+            var ty = Math.sqrt(b * b + f * f + j * j);
+            var tz = Math.sqrt(c * c + g * g + k * k);
+            var tw = 0;
+            var scaleX = tx;
+            var scaleY = ty;
+            var scaleZ = tz;
+            if (a * (f * k - j * g) - e * (b * k - j * c) + i * (b * g - f * c) < 0) {
+                scaleZ = -scaleZ;
+            }
+            a = a / scaleX;
+            e = e / scaleX;
+            i = i / scaleX;
+            b = b / scaleY;
+            f = f / scaleY;
+            j = j / scaleY;
+            c = c / scaleZ;
+            g = g / scaleZ;
+            k = k / scaleZ;
+            //from away3d-ts
+            if (orientationStyle == feng3d.Orientation3D.EULER_ANGLES) {
+                tx = Math.atan2(j, k);
+                ty = Math.atan2(-i, Math.sqrt(a * a + e * e));
+                var s1 = Math.sin(tx);
+                var c1 = Math.cos(tx);
+                tz = Math.atan2(s1 * c - c1 * b, c1 * f - s1 * g);
+            }
+            else if (orientationStyle == feng3d.Orientation3D.AXIS_ANGLE) {
+                tw = Math.acos((a + f + k - 1) / 2);
+                var len = Math.sqrt((j - g) * (j - g) + (c - i) * (c - i) + (e - b) * (e - b));
+                tx = (j - g) / len;
+                ty = (c - i) / len;
+                tz = (e - b) / len;
+            }
+            else {
+                var tr = a + f + k;
+                if (tr > 0) {
+                    tw = Math.sqrt(1 + tr) / 2;
+                    tx = (j - g) / (4 * tw);
+                    ty = (c - i) / (4 * tw);
+                    tz = (e - b) / (4 * tw);
+                }
+                else if ((a > f) && (a > k)) {
+                    tx = Math.sqrt(1 + a - f - k) / 2;
+                    tw = (j - g) / (4 * tx);
+                    ty = (e + b) / (4 * tx);
+                    tz = (c + i) / (4 * tx);
+                }
+                else if (f > k) {
+                    ty = Math.sqrt(1 + f - a - k) / 2;
+                    tx = (e + b) / (4 * ty);
+                    tw = (c - i) / (4 * ty);
+                    tz = (j + g) / (4 * ty);
+                }
+                else {
+                    tz = Math.sqrt(1 + k - a - f) / 2;
+                    tx = (c + i) / (4 * tz);
+                    ty = (j + g) / (4 * tz);
+                    tw = (e - b) / (4 * tz);
+                }
+            }
+            var v = Matrix3DUtils.CALCULATION_DECOMPOSE;
+            v[0].x = x;
+            v[0].y = y;
+            v[0].z = z;
+            v[1].x = tx;
+            v[1].y = ty;
+            v[1].z = tz;
+            v[1].w = tw;
+            v[2].x = scaleX;
+            v[2].y = scaleY;
+            v[2].z = scaleZ;
+            return v;
+        };
+        Matrix3DUtils.transformVector = function (matrix, vector, result) {
+            if (result === void 0) { result = null; }
+            if (!result)
+                result = new feng3d.Vector3D();
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            matrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var m = raw[3];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var n = raw[7];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var o = raw[11];
+            var d = raw[12];
+            var h = raw[13];
+            var l = raw[14];
+            var p = raw[15];
+            var x = vector.x;
+            var y = vector.y;
+            var z = vector.z;
+            result.x = a * x + b * y + c * z + d;
+            result.y = e * x + f * y + g * z + h;
+            result.z = i * x + j * y + k * z + l;
+            result.w = m * x + n * y + o * z + p;
+            return result;
+        };
+        Matrix3DUtils.deltaTransformVector = function (matrix, vector, result) {
+            if (result === void 0) { result = null; }
+            if (!result)
+                result = new feng3d.Vector3D();
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            matrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var m = raw[3];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var n = raw[7];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var o = raw[11];
+            var x = vector.x;
+            var y = vector.y;
+            var z = vector.z;
+            result.x = a * x + b * y + c * z;
+            result.y = e * x + f * y + g * z;
+            result.z = i * x + j * y + k * z;
+            result.w = m * x + n * y + o * z;
+            return result;
+        };
+        Matrix3DUtils.getTranslation = function (transform, result) {
+            if (result === void 0) { result = null; }
+            if (!result)
+                result = new feng3d.Vector3D();
+            transform.copyColumnTo(3, result);
+            return result;
+        };
+        Matrix3DUtils.deltaTransformVectors = function (matrix, vin, vout) {
+            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
+            matrix.copyRawDataTo(raw);
+            var a = raw[0];
+            var e = raw[1];
+            var i = raw[2];
+            var m = raw[3];
+            var b = raw[4];
+            var f = raw[5];
+            var j = raw[6];
+            var n = raw[7];
+            var c = raw[8];
+            var g = raw[9];
+            var k = raw[10];
+            var o = raw[11];
+            var outIndex = 0;
+            var length = vin.length;
+            for (var index = 0; index < length; index += 3) {
+                var x = vin[index];
+                var y = vin[index + 1];
+                var z = vin[index + 2];
+                vout[outIndex++] = a * x + b * y + c * z;
+                vout[outIndex++] = e * x + f * y + g * z;
+                vout[outIndex++] = i * x + j * y + k * z;
+            }
+        };
+        /**
+         * 更新本地射线
+         * @param inverseSceneTransform 逆场景变换矩阵
+         * @param ray3D 场景射线
+         * @param localRay 本地射线
+         */
+        Matrix3DUtils.updateLocalRay = function (inverseSceneTransform, ray3D, localRay) {
+            Matrix3DUtils.transformVector(inverseSceneTransform, ray3D.position, localRay.position);
+            Matrix3DUtils.deltaTransformVector(inverseSceneTransform, ray3D.direction, localRay.direction);
+        };
+        /**
+         * A reference to a Vector to be used as a temporary raw data container, to prevent object creation.
+         */
+        Matrix3DUtils.RAW_DATA_CONTAINER = [];
+        Matrix3DUtils.CALCULATION_MATRIX = new feng3d.Matrix3D();
+        Matrix3DUtils.CALCULATION_VECTOR3D = new feng3d.Vector3D();
+        Matrix3DUtils.CALCULATION_DECOMPOSE = [new feng3d.Vector3D(), new feng3d.Vector3D(), new feng3d.Vector3D()];
+        return Matrix3DUtils;
+    }());
+    feng3d.Matrix3DUtils = Matrix3DUtils;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 3d面
+     */
+    var Plane3D = (function () {
+        /**
+         * 创建一个平面
+         * @param a		A系数
+         * @param b		B系数
+         * @param c		C系数
+         * @param d		D系数
+         */
+        function Plane3D(a, b, c, d) {
+            if (a === void 0) { a = 0; }
+            if (b === void 0) { b = 0; }
+            if (c === void 0) { c = 0; }
+            if (d === void 0) { d = 0; }
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            if (a == 0 && b == 0)
+                this._alignment = Plane3D.ALIGN_XY_AXIS;
+            else if (b == 0 && c == 0)
+                this._alignment = Plane3D.ALIGN_YZ_AXIS;
+            else if (a == 0 && c == 0)
+                this._alignment = Plane3D.ALIGN_XZ_AXIS;
+            else
+                this._alignment = Plane3D.ALIGN_ANY;
+        }
+        /**
+         * 通过3顶点定义一个平面
+         * @param p0		点0
+         * @param p1		点1
+         * @param p2		点2
+         */
+        Plane3D.prototype.fromPoints = function (p0, p1, p2) {
+            //计算向量1
+            var d1x = p1.x - p0.x;
+            var d1y = p1.y - p0.y;
+            var d1z = p1.z - p0.z;
+            //计算向量2
+            var d2x = p2.x - p0.x;
+            var d2y = p2.y - p0.y;
+            var d2z = p2.z - p0.z;
+            //叉乘计算法线
+            this.a = d1y * d2z - d1z * d2y;
+            this.b = d1z * d2x - d1x * d2z;
+            this.c = d1x * d2y - d1y * d2x;
+            //平面上点与法线点乘计算D值
+            this.d = this.a * p0.x + this.b * p0.y + this.c * p0.z;
+            //法线平行z轴
+            if (this.a == 0 && this.b == 0)
+                this._alignment = Plane3D.ALIGN_XY_AXIS;
+            else if (this.b == 0 && this.c == 0)
+                this._alignment = Plane3D.ALIGN_YZ_AXIS;
+            else if (this.a == 0 && this.c == 0)
+                this._alignment = Plane3D.ALIGN_XZ_AXIS;
+            else
+                this._alignment = Plane3D.ALIGN_ANY;
+        };
+        /**
+         * 根据法线与点定义平面
+         * @param normal		平面法线
+         * @param point			平面上任意一点
+         */
+        Plane3D.prototype.fromNormalAndPoint = function (normal, point) {
+            this.a = normal.x;
+            this.b = normal.y;
+            this.c = normal.z;
+            this.d = this.a * point.x + this.b * point.y + this.c * point.z;
+            if (this.a == 0 && this.b == 0)
+                this._alignment = Plane3D.ALIGN_XY_AXIS;
+            else if (this.b == 0 && this.c == 0)
+                this._alignment = Plane3D.ALIGN_YZ_AXIS;
+            else if (this.a == 0 && this.c == 0)
+                this._alignment = Plane3D.ALIGN_XZ_AXIS;
+            else
+                this._alignment = Plane3D.ALIGN_ANY;
+        };
+        /**
+         * 标准化平面
+         * @return		标准化后的平面
+         */
+        Plane3D.prototype.normalize = function () {
+            var len = 1 / Math.sqrt(this.a * this.a + this.b * this.b + this.c * this.c);
+            this.a *= len;
+            this.b *= len;
+            this.c *= len;
+            this.d *= len;
+            return this;
+        };
+        /**
+         * 计算点与平面的距离
+         * @param p		点
+         * @returns		距离
+         */
+        Plane3D.prototype.distance = function (p) {
+            if (this._alignment == Plane3D.ALIGN_YZ_AXIS)
+                return this.a * p.x - this.d;
+            else if (this._alignment == Plane3D.ALIGN_XZ_AXIS)
+                return this.b * p.y - this.d;
+            else if (this._alignment == Plane3D.ALIGN_XY_AXIS)
+                return this.c * p.z - this.d;
+            else
+                return this.a * p.x + this.b * p.y + this.c * p.z - this.d;
+        };
+        /**
+         * 顶点分类
+         * <p>把顶点分为后面、前面、相交三类</p>
+         * @param p			顶点
+         * @return			顶点类型 PlaneClassification.BACK,PlaneClassification.FRONT,PlaneClassification.INTERSECT
+         * @see				me.feng3d.core.math.PlaneClassification
+         */
+        Plane3D.prototype.classifyPoint = function (p, epsilon) {
+            if (epsilon === void 0) { epsilon = 0.01; }
+            // check NaN
+            if (this.d != this.d)
+                return feng3d.PlaneClassification.FRONT;
+            var len;
+            if (this._alignment == Plane3D.ALIGN_YZ_AXIS)
+                len = this.a * p.x - this.d;
+            else if (this._alignment == Plane3D.ALIGN_XZ_AXIS)
+                len = this.b * p.y - this.d;
+            else if (this._alignment == Plane3D.ALIGN_XY_AXIS)
+                len = this.c * p.z - this.d;
+            else
+                len = this.a * p.x + this.b * p.y + this.c * p.z - this.d;
+            if (len < -epsilon)
+                return feng3d.PlaneClassification.BACK;
+            else if (len > epsilon)
+                return feng3d.PlaneClassification.FRONT;
+            else
+                return feng3d.PlaneClassification.INTERSECT;
+        };
+        /**
+         * 输出字符串
+         */
+        Plane3D.prototype.toString = function () {
+            return "Plane3D [this.a:" + this.a + ", this.b:" + this.b + ", this.c:" + this.c + ", this.d:" + this.d + "]";
+        };
+        /**
+         * 普通平面
+         * <p>不与对称轴平行或垂直</p>
+         */
+        Plane3D.ALIGN_ANY = 0;
+        /**
+         * XY方向平面
+         * <p>法线与Z轴平行</p>
+         */
+        Plane3D.ALIGN_XY_AXIS = 1;
+        /**
+         * YZ方向平面
+         * <p>法线与X轴平行</p>
+         */
+        Plane3D.ALIGN_YZ_AXIS = 2;
+        /**
+         * XZ方向平面
+         * <p>法线与Y轴平行</p>
+         */
+        Plane3D.ALIGN_XZ_AXIS = 3;
+        return Plane3D;
+    }());
+    feng3d.Plane3D = Plane3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 点与面的相对位置
+     * @author feng
+     */
+    var PlaneClassification = (function () {
+        function PlaneClassification() {
+        }
+        /**
+         * 在平面后面
+         * <p>等价于平面内</p>
+         * @see #IN
+         */
+        PlaneClassification.BACK = 0;
+        /**
+         * 在平面前面
+         * <p>等价于平面外</p>
+         * @see #OUT
+         */
+        PlaneClassification.FRONT = 1;
+        /**
+         * 在平面内
+         * <p>等价于在平面后</p>
+         * @see #BACK
+         */
+        PlaneClassification.IN = 0;
+        /**
+         * 在平面外
+         * <p>等价于平面前面</p>
+         * @see #FRONT
+         */
+        PlaneClassification.OUT = 1;
+        /**
+         * 与平面相交
+         */
+        PlaneClassification.INTERSECT = 2;
+        return PlaneClassification;
+    }());
+    feng3d.PlaneClassification = PlaneClassification;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
+     * 三角形
+     * @author feng 2014-5-4
+     */
+    var Triangle3D = (function () {
+        function Triangle3D(p0, p1, p2) {
+            this.p0 = p0;
+            this.p1 = p1;
+            this.p2 = p2;
+        }
+        /**
+         * 测试是否与直线相交
+         * @param line3D 直线
+         * @return 是否相交
+         */
+        Triangle3D.prototype.testLineCollision = function (line3D) {
+            return false;
+        };
+        Object.defineProperty(Triangle3D.prototype, "p0", {
+            /**
+             * 第1个点
+             */
+            get: function () {
+                return this._p0;
+            },
+            set: function (value) {
+                this._p0 = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Triangle3D.prototype, "p1", {
+            /**
+             * 第2个点
+             */
+            get: function () {
+                return this._p1;
+            },
+            set: function (value) {
+                this._p1 = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Triangle3D.prototype, "p2", {
+            /**
+             * 第3个点
+             */
+            get: function () {
+                return this._p2;
+            },
+            set: function (value) {
+                this._p2 = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Triangle3D.prototype, "normal", {
+            /**
+             * 法线
+             */
+            get: function () {
+                if (this._normal == null)
+                    this.updateNomal();
+                return this._normal;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Triangle3D.prototype.updateNomal = function () {
+            this._normal = this.p1.subtract(this.p0).crossProduct(this.p2.subtract(this.p0));
+        };
+        return Triangle3D;
+    }());
+    feng3d.Triangle3D = Triangle3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 自定义事件
      * @author warden_feng 2014-5-7
@@ -548,7 +2407,7 @@ var feng3d;
                 event.setTarget(this._target);
             //处理当前事件(目标阶段)
             var listeners = this._eventListeners[event.type];
-            if (!event.stopsImmediatePropagation) {
+            if (!event.stopsImmediatePropagation && listeners != null) {
                 listeners.forEach(function (listener) {
                     //设置当前目标
                     event.setCurrentTarget(_this._target);
@@ -609,6 +2468,556 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
+    var DisplayObject = (function (_super) {
+        __extends(DisplayObject, _super);
+        function DisplayObject() {
+            _super.apply(this, arguments);
+        }
+        DisplayObject.prototype.getx = function () {
+            return this.x;
+        };
+        DisplayObject.prototype.gety = function () {
+            return this.y;
+        };
+        return DisplayObject;
+    }(feng3d.EventDispatcher));
+    feng3d.DisplayObject = DisplayObject;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Shape = (function (_super) {
+        __extends(Shape, _super);
+        function Shape() {
+            _super.apply(this, arguments);
+        }
+        return Shape;
+    }(feng3d.DisplayObject));
+    feng3d.Shape = Shape;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Sprite = (function (_super) {
+        __extends(Sprite, _super);
+        function Sprite() {
+            _super.apply(this, arguments);
+        }
+        return Sprite;
+    }(feng3d.DisplayObject));
+    feng3d.Sprite = Sprite;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Bitmap = (function (_super) {
+        __extends(Bitmap, _super);
+        function Bitmap() {
+            _super.apply(this, arguments);
+        }
+        return Bitmap;
+    }(feng3d.DisplayObject));
+    feng3d.Bitmap = Bitmap;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var BitmapData = (function () {
+        function BitmapData(sclw, sclh, transparent, c) {
+        }
+        BitmapData.prototype.draw = function (sourceMC, t, s, dd, rect, d) {
+        };
+        BitmapData.prototype.copyPixels = function (tmpCache, rect, pastePoint) {
+        };
+        BitmapData.prototype.fillRect = function (rect, d) {
+        };
+        BitmapData.prototype.dispose = function () {
+        };
+        BitmapData.prototype.setPixel = function (i, j, k) {
+        };
+        return BitmapData;
+    }());
+    feng3d.BitmapData = BitmapData;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var BlendMode = (function () {
+        function BlendMode() {
+        }
+        // [静态] 将显示对象的原色值添加到它的背景颜色中，上限值为 0xFF。
+        BlendMode.ADD = "add";
+        // [静态] 将显示对象的每个像素的 Alpha 值应用于背景。
+        BlendMode.ALPHA = "alpha";
+        // [静态] 在显示对象原色和背景颜色中选择相对较暗的颜色（具有较小值的颜色）。
+        BlendMode.DARKEN = "darken";
+        // [静态] 将显示对象的原色与背景颜色进行比较，然后从较亮的原色值中减去较暗的原色值。
+        BlendMode.DIFFERENCE = "difference";
+        // [静态] 根据显示对象的 Alpha 值擦除背景。
+        BlendMode.ERASE = "erase";
+        // [静态] 根据显示对象的暗度调整每个像素的颜色。
+        BlendMode.HARDLIGHT = "hardlight";
+        // [静态] 反转背景。
+        BlendMode.INVERT = "invert";
+        // [静态] 强制为该显示对象创建一个透明度组。
+        BlendMode.LAYER = "layer";
+        // [静态] 在显示对象原色和背景颜色中选择相对较亮的颜色（具有较大值的颜色）。
+        BlendMode.LIGHTEN = "lighten";
+        // [静态] 将显示对象的原色值与背景颜色的原色值相乘，然后除以 0xFF 进行标准化，从而得到较暗的颜色。
+        BlendMode.MULTIPLY = "multiply";
+        // [静态] 该显示对象出现在背景前面。
+        BlendMode.NORMAL = "normal";
+        // [静态] 根据背景的暗度调整每个像素的颜色。
+        BlendMode.OVERLAY = "overlay";
+        // [静态] 将显示对象颜色的补色（反色）与背景颜色的补色相乘，会产生漂白效果。
+        BlendMode.SCREEN = "screen";
+        // [静态] 使用着色器来定义对象之间的混合。
+        BlendMode.SHADER = "shader";
+        // [静态] 从背景颜色的值中减去显示对象原色的值，下限值为 0。
+        BlendMode.SUBTRACT = "subtract";
+        return BlendMode;
+    }());
+    feng3d.BlendMode = BlendMode;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var BulkLoader = (function (_super) {
+        __extends(BulkLoader, _super);
+        function BulkLoader(a) {
+            _super.call(this);
+        }
+        BulkLoader.prototype.hasItem = function (_url) {
+        };
+        BulkLoader.prototype.add = function (_url, d) {
+        };
+        BulkLoader.prototype.get = function (_url) {
+            return null;
+        };
+        return BulkLoader;
+    }(feng3d.EventDispatcher));
+    feng3d.BulkLoader = BulkLoader;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var BulkProgressEvent = (function () {
+        function BulkProgressEvent() {
+        }
+        return BulkProgressEvent;
+    }());
+    feng3d.BulkProgressEvent = BulkProgressEvent;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var ColorTransform = (function () {
+        function ColorTransform() {
+        }
+        return ColorTransform;
+    }());
+    feng3d.ColorTransform = ColorTransform;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DBlendFactor = (function () {
+        function Context3DBlendFactor() {
+        }
+        return Context3DBlendFactor;
+    }());
+    feng3d.Context3DBlendFactor = Context3DBlendFactor;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DCompareMode = (function () {
+        function Context3DCompareMode() {
+        }
+        return Context3DCompareMode;
+    }());
+    feng3d.Context3DCompareMode = Context3DCompareMode;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DMipFilter = (function () {
+        function Context3DMipFilter() {
+        }
+        return Context3DMipFilter;
+    }());
+    feng3d.Context3DMipFilter = Context3DMipFilter;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DProfile = (function () {
+        function Context3DProfile() {
+        }
+        return Context3DProfile;
+    }());
+    feng3d.Context3DProfile = Context3DProfile;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DTextureFormat = (function () {
+        function Context3DTextureFormat() {
+        }
+        return Context3DTextureFormat;
+    }());
+    feng3d.Context3DTextureFormat = Context3DTextureFormat;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DTriangleFace = (function () {
+        function Context3DTriangleFace() {
+        }
+        return Context3DTriangleFace;
+    }());
+    feng3d.Context3DTriangleFace = Context3DTriangleFace;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var CubeTexture = (function () {
+        function CubeTexture() {
+        }
+        return CubeTexture;
+    }());
+    feng3d.CubeTexture = CubeTexture;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Endian = (function () {
+        function Endian() {
+        }
+        return Endian;
+    }());
+    feng3d.Endian = Endian;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var ImageItem = (function () {
+        function ImageItem() {
+        }
+        return ImageItem;
+    }());
+    feng3d.ImageItem = ImageItem;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var IOErrorEvent = (function () {
+        function IOErrorEvent() {
+        }
+        return IOErrorEvent;
+    }());
+    feng3d.IOErrorEvent = IOErrorEvent;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Loader = (function () {
+        function Loader() {
+        }
+        return Loader;
+    }());
+    feng3d.Loader = Loader;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var LoadingItem = (function (_super) {
+        __extends(LoadingItem, _super);
+        function LoadingItem() {
+            _super.apply(this, arguments);
+        }
+        return LoadingItem;
+    }(feng3d.EventDispatcher));
+    feng3d.LoadingItem = LoadingItem;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Matrix = (function () {
+        function Matrix() {
+        }
+        Matrix.prototype.scale = function (sclw, sclh) {
+        };
+        return Matrix;
+    }());
+    feng3d.Matrix = Matrix;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var MovieClip = (function (_super) {
+        __extends(MovieClip, _super);
+        function MovieClip() {
+            _super.apply(this, arguments);
+        }
+        MovieClip.prototype.gotoAndStop = function (a) {
+        };
+        MovieClip.prototype.draw = function (sourceMC, t, a, b, rect, d) {
+        };
+        return MovieClip;
+    }(feng3d.Sprite));
+    feng3d.MovieClip = MovieClip;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Rectangle = (function () {
+        function Rectangle() {
+        }
+        return Rectangle;
+    }());
+    feng3d.Rectangle = Rectangle;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var SecurityErrorEvent = (function () {
+        function SecurityErrorEvent() {
+        }
+        return SecurityErrorEvent;
+    }());
+    feng3d.SecurityErrorEvent = SecurityErrorEvent;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Stage = (function (_super) {
+        __extends(Stage, _super);
+        function Stage() {
+            _super.apply(this, arguments);
+        }
+        return Stage;
+    }(feng3d.DisplayObject));
+    feng3d.Stage = Stage;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Texture = (function () {
+        function Texture() {
+        }
+        Texture.prototype.uploadFromBitmapData = function (bitmapData, n) {
+        };
+        return Texture;
+    }());
+    feng3d.Texture = Texture;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var TextureBase = (function () {
+        function TextureBase() {
+        }
+        return TextureBase;
+    }());
+    feng3d.TextureBase = TextureBase;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Timer = (function (_super) {
+        __extends(Timer, _super);
+        function Timer(a, b) {
+            _super.call(this);
+        }
+        Timer.prototype.start = function () {
+        };
+        Timer.prototype.stop = function () {
+        };
+        return Timer;
+    }(feng3d.EventDispatcher));
+    feng3d.Timer = Timer;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var TimerEvent = (function () {
+        function TimerEvent() {
+        }
+        return TimerEvent;
+    }());
+    feng3d.TimerEvent = TimerEvent;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var URLLoader = (function (_super) {
+        __extends(URLLoader, _super);
+        function URLLoader() {
+            _super.apply(this, arguments);
+        }
+        return URLLoader;
+    }(feng3d.EventDispatcher));
+    feng3d.URLLoader = URLLoader;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var URLRequest = (function () {
+        function URLRequest(url) {
+        }
+        return URLRequest;
+    }());
+    feng3d.URLRequest = URLRequest;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3D = (function () {
+        function Context3D() {
+        }
+        Context3D.prototype.createTexture = function (width, height, format, b) {
+            return null;
+        };
+        Context3D.prototype.createProgram = function () {
+            return null;
+        };
+        Context3D.prototype.setRenderToBackBuffer = function () {
+        };
+        Context3D.prototype.setTextureAt = function (i, b) {
+        };
+        return Context3D;
+    }());
+    feng3d.Context3D = Context3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DProgramType = (function () {
+        function Context3DProgramType() {
+        }
+        Context3DProgramType.FRAGMENT = "fragment";
+        Context3DProgramType.VERTEX = "vertex";
+        return Context3DProgramType;
+    }());
+    feng3d.Context3DProgramType = Context3DProgramType;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DRenderMode = (function () {
+        function Context3DRenderMode() {
+        }
+        return Context3DRenderMode;
+    }());
+    feng3d.Context3DRenderMode = Context3DRenderMode;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DTextureFilter = (function () {
+        function Context3DTextureFilter() {
+        }
+        Context3DTextureFilter.ANISOTROPIC16X = "anisotropic16x";
+        Context3DTextureFilter.ANISOTROPIC2X = "anisotropic2x";
+        Context3DTextureFilter.ANISOTROPIC4X = "anisotropic4x";
+        Context3DTextureFilter.ANISOTROPIC8X = "anisotropic8x";
+        Context3DTextureFilter.LINEAR = "linear";
+        Context3DTextureFilter.NEAREST = "nearest";
+        return Context3DTextureFilter;
+    }());
+    feng3d.Context3DTextureFilter = Context3DTextureFilter;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DVertexBufferFormat = (function () {
+        function Context3DVertexBufferFormat() {
+        }
+        return Context3DVertexBufferFormat;
+    }());
+    feng3d.Context3DVertexBufferFormat = Context3DVertexBufferFormat;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Context3DWrapMode = (function () {
+        function Context3DWrapMode() {
+        }
+        Context3DWrapMode.CLAMP = "clamp";
+        Context3DWrapMode.CLAMP_U_REPEAT_V = "clamp_u_repeat_v";
+        Context3DWrapMode.REPEAT = "repeat";
+        Context3DWrapMode.REPEAT_U_CLAMP_V = "repeat_u_clamp_v";
+        return Context3DWrapMode;
+    }());
+    feng3d.Context3DWrapMode = Context3DWrapMode;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var IndexBuffer3D = (function () {
+        function IndexBuffer3D() {
+        }
+        return IndexBuffer3D;
+    }());
+    feng3d.IndexBuffer3D = IndexBuffer3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Program3D = (function () {
+        function Program3D() {
+        }
+        Program3D.prototype.upload = function (vertexByteCode, fragmentByteCode) {
+        };
+        return Program3D;
+    }());
+    feng3d.Program3D = Program3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Stage3D = (function (_super) {
+        __extends(Stage3D, _super);
+        function Stage3D() {
+            _super.apply(this, arguments);
+        }
+        return Stage3D;
+    }(feng3d.DisplayObject));
+    feng3d.Stage3D = Stage3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var VertexBuffer3D = (function () {
+        function VertexBuffer3D() {
+        }
+        return VertexBuffer3D;
+    }());
+    feng3d.VertexBuffer3D = VertexBuffer3D;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var AGALMiniAssembler = (function () {
+        function AGALMiniAssembler(b) {
+        }
+        AGALMiniAssembler.prototype.assemble = function (a, noCommentCode) {
+        };
+        return AGALMiniAssembler;
+    }());
+    feng3d.AGALMiniAssembler = AGALMiniAssembler;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var ByteArray = (function () {
+        function ByteArray() {
+        }
+        ByteArray.prototype.readUTFBytes = function (a) {
+            return "";
+        };
+        ByteArray.prototype.readUnsignedShort = function () {
+            return 0;
+        };
+        ByteArray.prototype.readFloat = function () {
+            return 0;
+        };
+        ByteArray.prototype.readUnsignedInt = function () {
+            return 0;
+        };
+        ByteArray.prototype.readShort = function () {
+            return 0;
+        };
+        ByteArray.prototype.readByte = function () {
+            return 0;
+        };
+        ByteArray.prototype.readUnsignedByte = function () {
+            return 0;
+        };
+        return ByteArray;
+    }());
+    feng3d.ByteArray = ByteArray;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var Proxy = (function () {
+        function Proxy() {
+        }
+        return Proxy;
+    }());
+    feng3d.Proxy = Proxy;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    var MouseEvent = (function (_super) {
+        __extends(MouseEvent, _super);
+        function MouseEvent() {
+            _super.apply(this, arguments);
+        }
+        return MouseEvent;
+    }(feng3d.Event));
+    feng3d.MouseEvent = MouseEvent;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 心跳计时器
      */
@@ -638,7 +3047,7 @@ var feng3d;
             }
             requestAnimationFrame.call(window, onTick);
             function onTick() {
-                this.update();
+                feng3d.$ticker.update();
                 requestAnimationFrame.call(window, onTick);
             }
         };
@@ -753,8 +3162,7 @@ var feng3d;
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i - 0] = arguments[_i];
         }
-        if (feng3d.DebugCommon.loggerFunc != null)
-            feng3d.DebugCommon.loggerFunc.apply(null, args);
+        console.log(args);
     }
     feng3d.logger = logger;
 })(feng3d || (feng3d = {}));
@@ -1139,23 +3547,6 @@ var feng3d;
         return TaskManager;
     }(feng3d.FModuleManager));
     feng3d.TaskManager = TaskManager;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 公共库调试类
-     * @author feng 2015-7-23
-     */
-    var DebugCommon = (function () {
-        function DebugCommon() {
-        }
-        /**
-         * 日志方法
-         */
-        DebugCommon.loggerFunc = console.log;
-        return DebugCommon;
-    }());
-    feng3d.DebugCommon = DebugCommon;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -18216,111 +20607,6 @@ var feng3d;
 var feng3d;
 (function (feng3d) {
     /**
-     * 尝试获取可连接地址
-     * @author feng 2015-12-15
-     */
-    var TryConnectURL = (function (_super) {
-        __extends(TryConnectURL, _super);
-        function TryConnectURL() {
-            _super.apply(this, arguments);
-        }
-        TryConnectURL.prototype.tryConnect = function (urls) {
-            this.connectedUrls = [];
-            for (var i = 0; i < urls.length; i++) {
-                this.addItem(new feng3d.TryConnectURLTaskItem(urls[i]));
-            }
-            this.execute();
-        };
-        /**
-         * @inheritDoc
-         */
-        TryConnectURL.prototype.onCompletedItem = function (event) {
-            var taskItem = event.target;
-            if (taskItem.result) {
-                this.connectedUrls.push(taskItem.url);
-            }
-            _super.prototype.onCompletedItem.call(this, event);
-        };
-        return TryConnectURL;
-    }(feng3d.TaskQueue));
-    feng3d.TryConnectURL = TryConnectURL;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 尝试获取可连接地址
-     * @author feng 2015-12-15
-     */
-    var TryConnectURLTaskItem = (function (_super) {
-        __extends(TryConnectURLTaskItem, _super);
-        function TryConnectURLTaskItem(url) {
-            _super.call(this);
-            this.url = url;
-        }
-        /**
-         * @inheritDoc
-         */
-        TryConnectURLTaskItem.prototype.execute = function (param) {
-            if (param === void 0) { param = null; }
-            this.tryConnect();
-        };
-        TryConnectURLTaskItem.prototype.tryConnect = function () {
-            this.loader = new feng3d.URLLoader();
-            this.addListeners();
-            var request = new feng3d.URLRequest(this.url + "?version=" + Math.random());
-            try {
-                this.loader.load(request);
-            }
-            catch (error) {
-                this.connectFailure();
-            }
-        };
-        TryConnectURLTaskItem.prototype.addListeners = function () {
-            this.loader.addEventListener(feng3d.Event.COMPLETE, this.connectSucceed);
-            this.loader.addEventListener(feng3d.SecurityErrorEvent.SECURITY_ERROR, this.connectFailure);
-            this.loader.addEventListener(feng3d.IOErrorEvent.IO_ERROR, this.ioErrorHandler);
-        };
-        TryConnectURLTaskItem.prototype.removeListeners = function () {
-            this.loader.removeEventListener(feng3d.Event.COMPLETE, this.connectSucceed);
-            this.loader.removeEventListener(feng3d.SecurityErrorEvent.SECURITY_ERROR, this.connectFailure);
-            this.loader.removeEventListener(feng3d.IOErrorEvent.IO_ERROR, this.ioErrorHandler);
-        };
-        TryConnectURLTaskItem.prototype.connectFailure = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            this.result = false;
-            this.connentEnd();
-        };
-        TryConnectURLTaskItem.prototype.connectSucceed = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            this.result = true;
-            this.connentEnd();
-        };
-        TryConnectURLTaskItem.prototype.connentEnd = function () {
-            this.removeListeners();
-            this.loader = null;
-            this.doComplete();
-        };
-        TryConnectURLTaskItem.prototype.ioErrorHandler = function (event) {
-            if (this.loader.bytesLoaded > 0) {
-                this.connectSucceed();
-            }
-            else {
-                this.connectFailure();
-            }
-        };
-        return TryConnectURLTaskItem;
-    }(feng3d.TaskItem));
-    feng3d.TryConnectURLTaskItem = TryConnectURLTaskItem;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 摄像机镜头
      * @author feng 2014-10-14
      */
@@ -33548,1865 +35834,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var Point = (function () {
-        function Point(x, y) {
-            if (x === void 0) { x = 0; }
-            if (y === void 0) { y = 0; }
-            this.x = x;
-            this.y = y;
-        }
-        return Point;
-    }());
-    feng3d.Point = Point;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * Matrix3D 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
-     * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）。
-     * Matrix3D 类还可以执行透视投影，这会将 3D 坐标空间中的点映射到二维 (2D) 视图。
-     *
-     *  ---            方向              平移 ---
-     *  |   scaleX      0         0       tx    |
-     *  |     0       scaleY      0       ty    |
-     *  |     0         0       scaleZ    tz    |
-     *  |     0         0         0       tw    |
-     *  ---  x轴        y轴      z轴          ---
-     *
-     *  ---            方向              平移 ---
-     *  |     0         4         8       12    |
-     *  |     1         5         9       13    |
-     *  |     2         6        10       14    |
-     *  |     3         7        11       15    |
-     *  ---  x轴        y轴      z轴          ---
-     */
-    var Matrix3D = (function () {
-        /**
-         * 创建 Matrix3D 对象。
-         * @param   datas    一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
-         */
-        function Matrix3D(datas) {
-            if (datas === void 0) { datas = null; }
-            if (datas) {
-                this.rawData = datas.concat();
-            }
-            else
-                this.rawData = [
-                    1, 0, 0, 0,
-                    0, 1, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1 //
-                ];
-        }
-        Object.defineProperty(Matrix3D.prototype, "position", {
-            /**
-             * 一个保存显示对象在转换参照帧中的 3D 坐标 (x,y,z) 位置的 Vector3D 对象。
-             */
-            get: function () {
-                return new feng3d.Vector3D(this.rawData[12], this.rawData[13], this.rawData[14]);
-            },
-            set: function (value) {
-                this.rawData[12] = value.x;
-                this.rawData[13] = value.y;
-                this.rawData[14] = value.z;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Matrix3D.prototype, "determinant", {
-            /**
-             * 一个用于确定矩阵是否可逆的数字。
-             */
-            get: function () {
-                return ((this.rawData[0] * this.rawData[5] - this.rawData[4] * this.rawData[1]) * (this.rawData[10] * this.rawData[15] - this.rawData[14] * this.rawData[11]) //
-                    - (this.rawData[0] * this.rawData[9] - this.rawData[8] * this.rawData[1]) * (this.rawData[6] * this.rawData[15] - this.rawData[14] * this.rawData[7]) //
-                    + (this.rawData[0] * this.rawData[13] - this.rawData[12] * this.rawData[1]) * (this.rawData[6] * this.rawData[11] - this.rawData[10] * this.rawData[7]) //
-                    + (this.rawData[4] * this.rawData[9] - this.rawData[8] * this.rawData[5]) * (this.rawData[2] * this.rawData[15] - this.rawData[14] * this.rawData[3]) //
-                    - (this.rawData[4] * this.rawData[13] - this.rawData[12] * this.rawData[5]) * (this.rawData[2] * this.rawData[11] - this.rawData[10] * this.rawData[3]) //
-                    + (this.rawData[8] * this.rawData[13] - this.rawData[12] * this.rawData[9]) * (this.rawData[2] * this.rawData[7] - this.rawData[6] * this.rawData[3]) //
-                );
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Matrix3D.prototype, "forward", {
-            /**
-             * 前方（+Z轴方向）
-             */
-            get: function () {
-                var v = new feng3d.Vector3D(0.0, 0.0, 0.0);
-                this.copyColumnTo(2, v);
-                v.normalize();
-                return v;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Matrix3D.prototype, "up", {
-            /**
-             * 上方（+y轴方向）
-             */
-            get: function () {
-                var v = new feng3d.Vector3D();
-                this.copyColumnTo(1, v);
-                v.normalize();
-                return v;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Matrix3D.prototype, "right", {
-            /**
-             * 右方（+x轴方向）
-             */
-            get: function () {
-                var v = new feng3d.Vector3D();
-                this.copyColumnTo(0, v);
-                v.normalize();
-                return v;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 创建旋转矩阵
-         * @param   degrees         角度
-         * @param   axis            旋转轴
-         * @param   pivotPoint      旋转中心点
-         */
-        Matrix3D.createRotationMatrix3D = function (degrees, axis) {
-            var n = axis.clone();
-            n.normalize();
-            var q = degrees * Math.PI / 180;
-            var sinq = Math.sin(q);
-            var cosq = Math.cos(q);
-            var lcosq = 1 - cosq;
-            var rotationMat = new Matrix3D([
-                n.x * n.x * lcosq + cosq, n.x * n.y * lcosq + n.z * sinq, n.x * n.z * lcosq - n.y * sinq, 0,
-                n.x * n.y * lcosq - n.z * sinq, n.y * n.y * lcosq + cosq, n.y * n.z * lcosq + n.x * sinq, 0,
-                n.x * n.z * lcosq + n.y * sinq, n.y * n.z * lcosq - n.x * sinq, n.z * n.z * lcosq + cosq, 0,
-                0, 0, 0, 1 //
-            ]);
-            return rotationMat;
-        };
-        /**
-         * 创建缩放矩阵
-         * @param   xScale      用于沿 x 轴缩放对象的乘数。
-         * @param   yScale      用于沿 y 轴缩放对象的乘数。
-         * @param   zScale      用于沿 z 轴缩放对象的乘数。
-         */
-        Matrix3D.createScaleMatrix3D = function (xScale, yScale, zScale) {
-            var rotationMat = new Matrix3D([
-                xScale, 0.0000, 0.0000, 0,
-                0.0000, yScale, 0.0000, 0,
-                0.0000, 0.0000, zScale, 0,
-                0.0000, 0.0000, 0.0000, 1 //
-            ]);
-            return rotationMat;
-        };
-        /**
-         * 创建位移矩阵
-         * @param   x   沿 x 轴的增量平移。
-         * @param   y   沿 y 轴的增量平移。
-         * @param   z   沿 z 轴的增量平移。
-         */
-        Matrix3D.createTranslationMatrix3D = function (x, y, z) {
-            var rotationMat = new Matrix3D([
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                x, y, z, 1 //
-            ]);
-            return rotationMat;
-        };
-        /**
-         * 通过将另一个 Matrix3D 对象与当前 Matrix3D 对象相乘来后置一个矩阵。
-         */
-        Matrix3D.prototype.append = function (lhs) {
-            var //
-            m111 = this.rawData[0], m121 = this.rawData[4], m131 = this.rawData[8], m141 = this.rawData[12], //
-            m112 = this.rawData[1], m122 = this.rawData[5], m132 = this.rawData[9], m142 = this.rawData[13], //
-            m113 = this.rawData[2], m123 = this.rawData[6], m133 = this.rawData[10], m143 = this.rawData[14], //
-            m114 = this.rawData[3], m124 = this.rawData[7], m134 = this.rawData[11], m144 = this.rawData[15], //
-            m211 = lhs.rawData[0], m221 = lhs.rawData[4], m231 = lhs.rawData[8], m241 = lhs.rawData[12], //
-            m212 = lhs.rawData[1], m222 = lhs.rawData[5], m232 = lhs.rawData[9], m242 = lhs.rawData[13], //
-            m213 = lhs.rawData[2], m223 = lhs.rawData[6], m233 = lhs.rawData[10], m243 = lhs.rawData[14], //
-            m214 = lhs.rawData[3], m224 = lhs.rawData[7], m234 = lhs.rawData[11], m244 = lhs.rawData[15];
-            this.rawData[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
-            this.rawData[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
-            this.rawData[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
-            this.rawData[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
-            this.rawData[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
-            this.rawData[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
-            this.rawData[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
-            this.rawData[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
-            this.rawData[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
-            this.rawData[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
-            this.rawData[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
-            this.rawData[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
-            this.rawData[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
-            this.rawData[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
-            this.rawData[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
-            this.rawData[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
-        };
-        /**
-         * 在 Matrix3D 对象上后置一个增量旋转。
-         * @param   degrees         角度
-         * @param   axis            旋转轴
-         * @param   pivotPoint      旋转中心点
-         */
-        Matrix3D.prototype.appendRotation = function (degrees, axis, pivotPoint) {
-            if (pivotPoint === void 0) { pivotPoint = new feng3d.Vector3D(); }
-            var rotationMat = Matrix3D.createRotationMatrix3D(degrees, axis);
-            if (pivotPoint != null) {
-                this.appendTranslation(-pivotPoint.x, -pivotPoint.y, -pivotPoint.z);
-            }
-            this.append(rotationMat);
-            if (pivotPoint != null) {
-                this.appendTranslation(pivotPoint.x, pivotPoint.y, pivotPoint.z);
-            }
-        };
-        /**
-         * 在 Matrix3D 对象上后置一个增量缩放，沿 x、y 和 z 轴改变位置。
-         * @param   xScale      用于沿 x 轴缩放对象的乘数。
-         * @param   yScale      用于沿 y 轴缩放对象的乘数。
-         * @param   zScale      用于沿 z 轴缩放对象的乘数。
-         */
-        Matrix3D.prototype.appendScale = function (xScale, yScale, zScale) {
-            var scaleMat = Matrix3D.createScaleMatrix3D(xScale, yScale, zScale);
-            this.append(scaleMat);
-        };
-        /**
-         * 在 Matrix3D 对象上后置一个增量平移，沿 x、y 和 z 轴重新定位。
-         * @param   x   沿 x 轴的增量平移。
-         * @param   y   沿 y 轴的增量平移。
-         * @param   z   沿 z 轴的增量平移。
-         */
-        Matrix3D.prototype.appendTranslation = function (x, y, z) {
-            this.rawData[12] += x;
-            this.rawData[13] += y;
-            this.rawData[14] += z;
-        };
-        /**
-         * 返回一个新 Matrix3D 对象，它是与当前 Matrix3D 对象完全相同的副本。
-         */
-        Matrix3D.prototype.clone = function () {
-            var ret = new Matrix3D();
-            ret.copyFrom(this);
-            return ret;
-        };
-        /**
-         * 将 Vector3D 对象复制到调用方 Matrix3D 对象的特定列中。
-         * @param   column      副本的目标列。
-         * @param   vector3D    要从中复制数据的 Vector3D 对象。
-         */
-        Matrix3D.prototype.copyColumnFrom = function (column, vector3D) {
-            this.rawData[column * 4 + 0] = vector3D.x;
-            this.rawData[column * 4 + 1] = vector3D.y;
-            this.rawData[column * 4 + 2] = vector3D.z;
-            this.rawData[column * 4 + 3] = vector3D.w;
-        };
-        /**
-         * 将调用方 Matrix3D 对象的特定列复制到 Vector3D 对象中。
-         * @param   column       要从中复制数据的列。
-         * @param   vector3D     副本的目标 Vector3D 对象。
-         */
-        Matrix3D.prototype.copyColumnTo = function (column, vector3D) {
-            vector3D.x = this.rawData[column * 4 + 0];
-            vector3D.y = this.rawData[column * 4 + 1];
-            vector3D.z = this.rawData[column * 4 + 2];
-            vector3D.w = this.rawData[column * 4 + 3];
-        };
-        /**
-         * 将源 Matrix3D 对象中的所有矩阵数据复制到调用方 Matrix3D 对象中。
-         * @param   sourceMatrix3D      要从中复制数据的 Matrix3D 对象。
-         */
-        Matrix3D.prototype.copyFrom = function (sourceMatrix3D) {
-            for (var i = 0; i < 16; i++) {
-                this.rawData[i] = sourceMatrix3D.rawData[i];
-            }
-        };
-        /**
-         * 将源 Vector 对象中的所有矢量数据复制到调用方 Matrix3D 对象中。利用可选索引参数，您可以选择矢量中的任何起始文字插槽。
-         * @param   vector      要从中复制数据的 Vector 对象。
-         * @param   index       vector中的起始位置
-         * @param   transpose   是否转置当前矩阵
-         */
-        Matrix3D.prototype.copyRawDataFrom = function (vector, index, transpose) {
-            if (index === void 0) { index = 0; }
-            if (transpose === void 0) { transpose = false; }
-            if (vector.length - index < 16) {
-                throw new ArgumentError();
-            }
-            for (var i = 0; i < 16; i++) {
-                this.rawData[i] = vector[index + i];
-            }
-            if (transpose) {
-                this.transpose();
-            }
-        };
-        /**
-         * 将调用方 Matrix3D 对象中的所有矩阵数据复制到提供的矢量中。
-         * @param   vector      要将数据复制到的 Vector 对象。
-         * @param   index       vector中的起始位置
-         * @param   transpose   是否转置当前矩阵
-         */
-        Matrix3D.prototype.copyRawDataTo = function (vector, index, transpose) {
-            if (index === void 0) { index = 0; }
-            if (transpose === void 0) { transpose = false; }
-            if (transpose) {
-                this.transpose();
-            }
-            for (var i = 0; i < 16; i++) {
-                vector[i + index] = this.rawData[i];
-            }
-            if (transpose) {
-                this.transpose();
-            }
-        };
-        /**
-         * 将 Vector3D 对象复制到调用方 Matrix3D 对象的特定行中。
-         * @param   row         要将数据复制到的行。
-         * @param   vector3D    要从中复制数据的 Vector3D 对象。
-         */
-        Matrix3D.prototype.copyRowFrom = function (row, vector3D) {
-            this.rawData[row + 4 * 0] = vector3D.x;
-            this.rawData[row + 4 * 1] = vector3D.y;
-            this.rawData[row + 4 * 2] = vector3D.z;
-            this.rawData[row + 4 * 3] = vector3D.w;
-        };
-        /**
-         * 将调用方 Matrix3D 对象的特定行复制到 Vector3D 对象中。
-         * @param   row         要从中复制数据的行。
-         * @param   vector3D    将作为数据复制目的地的 Vector3D 对象。
-         */
-        Matrix3D.prototype.copyRowTo = function (row, vector3D) {
-            vector3D.x = this.rawData[row + 4 * 0];
-            vector3D.y = this.rawData[row + 4 * 1];
-            vector3D.z = this.rawData[row + 4 * 2];
-            vector3D.w = this.rawData[row + 4 * 3];
-        };
-        /**
-         * 拷贝当前矩阵
-         * @param   dest    目标矩阵
-         */
-        Matrix3D.prototype.copyToMatrix3D = function (dest) {
-            dest.rawData = this.rawData.slice(0);
-        };
-        /**
-         * 将转换矩阵的平移、旋转和缩放设置作为由三个 Vector3D 对象组成的矢量返回。
-         * @return      一个由三个 Vector3D 对象组成的矢量，其中，每个对象分别容纳平移、旋转和缩放设置。
-         */
-        Matrix3D.prototype.decompose = function () {
-            var vec = [];
-            var m = this.clone();
-            var mr = m.rawData;
-            var pos = new feng3d.Vector3D(mr[12], mr[13], mr[14]);
-            mr[12] = 0;
-            mr[13] = 0;
-            mr[14] = 0;
-            var scale = new feng3d.Vector3D();
-            scale.x = Math.sqrt(mr[0] * mr[0] + mr[1] * mr[1] + mr[2] * mr[2]);
-            scale.y = Math.sqrt(mr[4] * mr[4] + mr[5] * mr[5] + mr[6] * mr[6]);
-            scale.z = Math.sqrt(mr[8] * mr[8] + mr[9] * mr[9] + mr[10] * mr[10]);
-            if (mr[0] * (mr[5] * mr[10] - mr[6] * mr[9]) - mr[1] * (mr[4] * mr[10] - mr[6] * mr[8]) + mr[2] * (mr[4] * mr[9] - mr[5] * mr[8]) < 0)
-                scale.z = -scale.z;
-            mr[0] /= scale.x;
-            mr[1] /= scale.x;
-            mr[2] /= scale.x;
-            mr[4] /= scale.y;
-            mr[5] /= scale.y;
-            mr[6] /= scale.y;
-            mr[8] /= scale.z;
-            mr[9] /= scale.z;
-            mr[10] /= scale.z;
-            var rot = new feng3d.Vector3D();
-            rot.y = Math.asin(-mr[2]);
-            if (mr[2] != 1 && mr[2] != -1) {
-                rot.x = Math.atan2(mr[6], mr[10]);
-                rot.z = Math.atan2(mr[1], mr[0]);
-            }
-            else {
-                rot.z = 0;
-                rot.x = Math.atan2(mr[4], mr[5]);
-            }
-            vec.push(pos);
-            vec.push(rot);
-            vec.push(scale);
-            return vec;
-        };
-        /**
-         * 使用不含平移元素的转换矩阵将 Vector3D 对象从一个空间坐标转换到另一个空间坐标。
-         * @param   v   一个容纳要转换的坐标的 Vector3D 对象。
-         * @return  一个包含转换后的坐标的 Vector3D 对象。
-         */
-        Matrix3D.prototype.deltaTransformVector = function (v) {
-            var tempx = this.rawData[12];
-            var tempy = this.rawData[13];
-            var tempz = this.rawData[14];
-            this.rawData[12] = 0;
-            this.rawData[13] = 0;
-            this.rawData[14] = 0;
-            var result = this.transformVector(v);
-            this.rawData[12] = tempx;
-            this.rawData[13] = tempy;
-            this.rawData[14] = tempz;
-            return result;
-        };
-        /**
-         * 将当前矩阵转换为恒等或单位矩阵。
-         */
-        Matrix3D.prototype.identity = function () {
-            this.rawData[1] = 0;
-            this.rawData[2] = 0;
-            this.rawData[3] = 0;
-            this.rawData[4] = 0;
-            this.rawData[6] = 0;
-            this.rawData[7] = 0;
-            this.rawData[8] = 0;
-            this.rawData[9] = 0;
-            this.rawData[11] = 0;
-            this.rawData[12] = 0;
-            this.rawData[13] = 0;
-            this.rawData[14] = 0;
-            this.rawData[0] = 1;
-            this.rawData[5] = 1;
-            this.rawData[10] = 1;
-            this.rawData[15] = 1;
-        };
-        /**
-         * 反转当前矩阵。逆矩阵
-         * @return      如果成功反转矩阵，则返回 true。
-         */
-        Matrix3D.prototype.invert = function () {
-            var d = this.determinant;
-            var invertable = Math.abs(d) > 0.00000000001;
-            if (invertable) {
-                d = 1 / d;
-                var m11 = this.rawData[0];
-                var m21 = this.rawData[4];
-                var m31 = this.rawData[8];
-                var m41 = this.rawData[12];
-                var m12 = this.rawData[1];
-                var m22 = this.rawData[5];
-                var m32 = this.rawData[9];
-                var m42 = this.rawData[13];
-                var m13 = this.rawData[2];
-                var m23 = this.rawData[6];
-                var m33 = this.rawData[10];
-                var m43 = this.rawData[14];
-                var m14 = this.rawData[3];
-                var m24 = this.rawData[7];
-                var m34 = this.rawData[11];
-                var m44 = this.rawData[15];
-                this.rawData[0] = d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
-                this.rawData[1] = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
-                this.rawData[2] = d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
-                this.rawData[3] = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
-                this.rawData[4] = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
-                this.rawData[5] = d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
-                this.rawData[6] = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
-                this.rawData[7] = d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
-                this.rawData[8] = d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
-                this.rawData[9] = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
-                this.rawData[10] = d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
-                this.rawData[11] = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
-                this.rawData[12] = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
-                this.rawData[13] = d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
-                this.rawData[14] = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
-                this.rawData[15] = d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
-            }
-            return invertable;
-        };
-        /**
-         * 通过将当前 Matrix3D 对象与另一个 Matrix3D 对象相乘来前置一个矩阵。得到的结果将合并两个矩阵转换。
-         * @param   rhs     个右侧矩阵，它与当前 Matrix3D 对象相乘。
-         */
-        Matrix3D.prototype.prepend = function (rhs) {
-            var mat = this.clone();
-            this.copyFrom(rhs);
-            this.append(mat);
-        };
-        /**
-         * 在 Matrix3D 对象上前置一个增量旋转。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行旋转，然后再执行其他转换。
-         * @param   degrees     旋转的角度。
-         * @param   axis        旋转的轴或方向。常见的轴为 X_AXIS (Vector3D(1,0,0))、Y_AXIS (Vector3D(0,1,0)) 和 Z_AXIS (Vector3D(0,0,1))。此矢量的长度应为 1。
-         * @param   pivotPoint  一个用于确定旋转中心的点。对象的默认轴点为该对象的注册点。
-         */
-        Matrix3D.prototype.prependRotation = function (degrees, axis, pivotPoint) {
-            if (pivotPoint === void 0) { pivotPoint = new feng3d.Vector3D(); }
-            var rotationMat = Matrix3D.createRotationMatrix3D(degrees, axis);
-            this.prepend(rotationMat);
-        };
-        /**
-         * 在 Matrix3D 对象上前置一个增量缩放，沿 x、y 和 z 轴改变位置。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行缩放更改，然后再执行其他转换。
-         * @param   xScale      用于沿 x 轴缩放对象的乘数。
-         * @param   yScale      用于沿 y 轴缩放对象的乘数。
-         * @param   zScale      用于沿 z 轴缩放对象的乘数。
-         */
-        Matrix3D.prototype.prependScale = function (xScale, yScale, zScale) {
-            var scaleMat = Matrix3D.createScaleMatrix3D(xScale, yScale, zScale);
-            this.prepend(scaleMat);
-        };
-        /**
-         * 在 Matrix3D 对象上前置一个增量平移，沿 x、y 和 z 轴重新定位。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行平移更改，然后再执行其他转换。
-         * @param   x   沿 x 轴的增量平移。
-         * @param   y   沿 y 轴的增量平移。
-         * @param   z   沿 z 轴的增量平移。
-         */
-        Matrix3D.prototype.prependTranslation = function (x, y, z) {
-            var translationMat = Matrix3D.createTranslationMatrix3D(x, y, z);
-            this.prepend(translationMat);
-        };
-        /**
-         * 设置转换矩阵的平移、旋转和缩放设置。
-         * @param   components      一个由三个 Vector3D 对象组成的矢量，这些对象将替代 Matrix3D 对象的平移、旋转和缩放元素。
-         */
-        Matrix3D.prototype.recompose = function (components) {
-            this.identity();
-            this.appendRotation(components[1].x * feng3d.MathConsts.RADIANS_TO_DEGREES, feng3d.Vector3D.X_AXIS);
-            this.appendRotation(components[1].y * feng3d.MathConsts.RADIANS_TO_DEGREES, feng3d.Vector3D.Y_AXIS);
-            this.appendRotation(components[1].z * feng3d.MathConsts.RADIANS_TO_DEGREES, feng3d.Vector3D.Z_AXIS);
-            this.appendScale(components[2].x, components[2].y, components[2].z);
-            this.appendTranslation(components[0].x, components[0].y, components[0].z);
-            return true;
-        };
-        /**
-         * 使用转换矩阵将 Vector3D 对象从一个空间坐标转换到另一个空间坐标。
-         * @param   v   一个容纳要转换的坐标的 Vector3D 对象。
-         * @return  一个包含转换后的坐标的 Vector3D 对象。
-         */
-        Matrix3D.prototype.transformVector = function (v) {
-            if (v == null)
-                return new feng3d.Vector3D();
-            var x = v.x;
-            var y = v.y;
-            var z = v.z;
-            var out = new feng3d.Vector3D();
-            out.x = x * this.rawData[0] + y * this.rawData[4] + z * this.rawData[8] + this.rawData[12];
-            out.y = x * this.rawData[1] + y * this.rawData[5] + z * this.rawData[9] + this.rawData[13];
-            out.z = x * this.rawData[2] + y * this.rawData[6] + z * this.rawData[10] + this.rawData[14];
-            out.w = x * this.rawData[3] + y * this.rawData[7] + z * this.rawData[11] + this.rawData[15];
-            return out;
-        };
-        /**
-         * 使用转换矩阵将由数字构成的矢量从一个空间坐标转换到另一个空间坐标。
-         * @param   vin     一个由多个数字组成的矢量，其中每三个数字构成一个要转换的 3D 坐标 (x,y,z)。
-         * @param   vout    一个由多个数字组成的矢量，其中每三个数字构成一个已转换的 3D 坐标 (x,y,z)。
-         */
-        Matrix3D.prototype.transformVectors = function (vin, vout) {
-            var vec = new feng3d.Vector3D();
-            for (var i = 0; i < vin.length; i += 3) {
-                vec.setTo(vin[i], vin[i + 1], vin[i + 2]);
-                vec = this.transformVector(vec);
-                vout[i] = vec.x;
-                vout[i + 1] = vec.y;
-                vout[i + 2] = vec.z;
-            }
-        };
-        /**
-         * 将当前 Matrix3D 对象转换为一个矩阵，并将互换其中的行和列。
-         */
-        Matrix3D.prototype.transpose = function () {
-            var swap;
-            for (var i = 0; i < 4; i++) {
-                for (var j = 0; j < 4; j++) {
-                    if (i > j) {
-                        swap = this.rawData[i * 4 + j];
-                        this.rawData[i * 4 + j] = this.rawData[j * 4 + i];
-                        this.rawData[j * 4 + i] = swap;
-                    }
-                }
-            }
-        };
-        /**
-         * 比较矩阵是否相等
-         */
-        Matrix3D.prototype.compare = function (matrix3D, precision) {
-            if (precision === void 0) { precision = 0.0001; }
-            var r2 = matrix3D.rawData;
-            for (var i = 0; i < 16; ++i) {
-                if (Math.abs(this.rawData[i] - r2[i]) > precision)
-                    return false;
-            }
-            return true;
-        };
-        /**
-         * 以字符串返回矩阵的值
-         */
-        Matrix3D.prototype.toString = function () {
-            var str = "";
-            var showLen = 5;
-            var precision = Math.pow(10, showLen - 1);
-            for (var i = 0; i < 4; i++) {
-                for (var j = 0; j < 4; j++) {
-                    str += StringUtils.getString(Math.round(this.rawData[i * 4 + j] * precision) / precision, showLen, " ");
-                }
-                if (i != 3)
-                    str += "\n";
-            }
-            return str;
-        };
-        return Matrix3D;
-    }());
-    feng3d.Matrix3D = Matrix3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * Orientation3D 类是用于表示 Matrix3D 对象的方向样式的常量值枚举。方向的三个类型分别为欧拉角、轴角和四元数。Matrix3D 对象的 decompose 和 recompose 方法采用其中的某一个枚举类型来标识矩阵的旋转组件。
-     * @author feng 2016-3-21
-     */
-    var Orientation3D = (function () {
-        function Orientation3D() {
-        }
-        /**
-        * 轴角方向结合使用轴和角度来确定方向。
-        */
-        Orientation3D.AXIS_ANGLE = "axisAngle";
-        /**
-        * 欧拉角（decompose() 和 recompose() 方法的默认方向）通过三个不同的对应于每个轴的旋转角来定义方向。
-        */
-        Orientation3D.EULER_ANGLES = "eulerAngles";
-        /**
-        * 四元数方向使用复数。
-        */
-        Orientation3D.QUATERNION = "quaternion";
-        return Orientation3D;
-    }());
-    feng3d.Orientation3D = Orientation3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * A Quaternion object which can be used to represent rotations.
-     */
-    var Quaternion = (function () {
-        /**
-         * Creates a new Quaternion object.
-         * @param x The x value of the quaternion.
-         * @param y The y value of the quaternion.
-         * @param z The z value of the quaternion.
-         * @param w The w value of the quaternion.
-         */
-        function Quaternion(x, y, z, w) {
-            if (x === void 0) { x = 0; }
-            if (y === void 0) { y = 0; }
-            if (z === void 0) { z = 0; }
-            if (w === void 0) { w = 1; }
-            /**
-             * The x value of the quaternion.
-             */
-            this.x = 0;
-            /**
-             * The y value of the quaternion.
-             */
-            this.y = 0;
-            /**
-             * The z value of the quaternion.
-             */
-            this.z = 0;
-            /**
-             * The w value of the quaternion.
-             */
-            this.w = 1;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.w = w;
-        }
-        Object.defineProperty(Quaternion.prototype, "magnitude", {
-            /**
-             * Returns the magnitude of the quaternion object.
-             */
-            get: function () {
-                return Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * Fills the quaternion object with the result from a multiplication of two quaternion objects.
-         *
-         * @param    qa    The first quaternion in the multiplication.
-         * @param    qb    The second quaternion in the multiplication.
-         */
-        Quaternion.prototype.multiply = function (qa, qb) {
-            var w1 = qa.w, x1 = qa.x, y1 = qa.y, z1 = qa.z;
-            var w2 = qb.w, x2 = qb.x, y2 = qb.y, z2 = qb.z;
-            this.w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2;
-            this.x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2;
-            this.y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2;
-            this.z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2;
-        };
-        Quaternion.prototype.multiplyVector = function (vector, target) {
-            if (target === void 0) { target = null; }
-            target = target || new Quaternion();
-            var x2 = vector.x;
-            var y2 = vector.y;
-            var z2 = vector.z;
-            target.w = -this.x * x2 - this.y * y2 - this.z * z2;
-            target.x = this.w * x2 + this.y * z2 - this.z * y2;
-            target.y = this.w * y2 - this.x * z2 + this.z * x2;
-            target.z = this.w * z2 + this.x * y2 - this.y * x2;
-            return target;
-        };
-        /**
-         * Fills the quaternion object with values representing the given rotation around a vector.
-         *
-         * @param    axis    The axis around which to rotate
-         * @param    angle    The angle in radians of the rotation.
-         */
-        Quaternion.prototype.fromAxisAngle = function (axis, angle) {
-            var sin_a = Math.sin(angle / 2);
-            var cos_a = Math.cos(angle / 2);
-            this.x = axis.x * sin_a;
-            this.y = axis.y * sin_a;
-            this.z = axis.z * sin_a;
-            this.w = cos_a;
-            this.normalize();
-        };
-        /**
-         * Spherically interpolates between two quaternions, providing an interpolation between rotations with constant angle change rate.
-         * @param qa The first quaternion to interpolate.
-         * @param qb The second quaternion to interpolate.
-         * @param t The interpolation weight, a value between 0 and 1.
-         */
-        Quaternion.prototype.slerp = function (qa, qb, t) {
-            var w1 = qa.w, x1 = qa.x, y1 = qa.y, z1 = qa.z;
-            var w2 = qb.w, x2 = qb.x, y2 = qb.y, z2 = qb.z;
-            var dot = w1 * w2 + x1 * x2 + y1 * y2 + z1 * z2;
-            // shortest direction
-            if (dot < 0) {
-                dot = -dot;
-                w2 = -w2;
-                x2 = -x2;
-                y2 = -y2;
-                z2 = -z2;
-            }
-            if (dot < 0.95) {
-                // interpolate angle linearly
-                var angle = Math.acos(dot);
-                var s = 1 / Math.sin(angle);
-                var s1 = Math.sin(angle * (1 - t)) * s;
-                var s2 = Math.sin(angle * t) * s;
-                this.w = w1 * s1 + w2 * s2;
-                this.x = x1 * s1 + x2 * s2;
-                this.y = y1 * s1 + y2 * s2;
-                this.z = z1 * s1 + z2 * s2;
-            }
-            else {
-                // nearly identical angle, interpolate linearly
-                this.w = w1 + t * (w2 - w1);
-                this.x = x1 + t * (x2 - x1);
-                this.y = y1 + t * (y2 - y1);
-                this.z = z1 + t * (z2 - z1);
-                var len = 1.0 / Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
-                this.w *= len;
-                this.x *= len;
-                this.y *= len;
-                this.z *= len;
-            }
-        };
-        /**
-         * 线性求插值
-         * @param qa 第一个四元素
-         * @param qb 第二个四元素
-         * @param t 权重
-         */
-        Quaternion.prototype.lerp = function (qa, qb, t) {
-            var w1 = qa.w, x1 = qa.x, y1 = qa.y, z1 = qa.z;
-            var w2 = qb.w, x2 = qb.x, y2 = qb.y, z2 = qb.z;
-            var len;
-            // shortest direction
-            if (w1 * w2 + x1 * x2 + y1 * y2 + z1 * z2 < 0) {
-                w2 = -w2;
-                x2 = -x2;
-                y2 = -y2;
-                z2 = -z2;
-            }
-            this.w = w1 + t * (w2 - w1);
-            this.x = x1 + t * (x2 - x1);
-            this.y = y1 + t * (y2 - y1);
-            this.z = z1 + t * (z2 - z1);
-            len = 1.0 / Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
-            this.w *= len;
-            this.x *= len;
-            this.y *= len;
-            this.z *= len;
-        };
-        /**
-         * Fills the quaternion object with values representing the given euler rotation.
-         *
-         * @param    ax        The angle in radians of the rotation around the ax axis.
-         * @param    ay        The angle in radians of the rotation around the ay axis.
-         * @param    az        The angle in radians of the rotation around the az axis.
-         */
-        Quaternion.prototype.fromEulerAngles = function (ax, ay, az) {
-            var halfX = ax * .5, halfY = ay * .5, halfZ = az * .5;
-            var cosX = Math.cos(halfX), sinX = Math.sin(halfX);
-            var cosY = Math.cos(halfY), sinY = Math.sin(halfY);
-            var cosZ = Math.cos(halfZ), sinZ = Math.sin(halfZ);
-            this.w = cosX * cosY * cosZ + sinX * sinY * sinZ;
-            this.x = sinX * cosY * cosZ - cosX * sinY * sinZ;
-            this.y = cosX * sinY * cosZ + sinX * cosY * sinZ;
-            this.z = cosX * cosY * sinZ - sinX * sinY * cosZ;
-        };
-        /**
-         * Fills a target Vector3D object with the Euler angles that form the rotation represented by this quaternion.
-         * @param target An optional Vector3D object to contain the Euler angles. If not provided, a new object is created.
-         * @return The Vector3D containing the Euler angles.
-         */
-        Quaternion.prototype.toEulerAngles = function (target) {
-            if (target === void 0) { target = null; }
-            target = target || new feng3d.Vector3D();
-            target.x = Math.atan2(2 * (this.w * this.x + this.y * this.z), 1 - 2 * (this.x * this.x + this.y * this.y));
-            target.y = Math.asin(2 * (this.w * this.y - this.z * this.x));
-            target.z = Math.atan2(2 * (this.w * this.z + this.x * this.y), 1 - 2 * (this.y * this.y + this.z * this.z));
-            return target;
-        };
-        /**
-         * Normalises the quaternion object.
-         */
-        Quaternion.prototype.normalize = function (val) {
-            if (val === void 0) { val = 1; }
-            var mag = val / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
-            this.x *= mag;
-            this.y *= mag;
-            this.z *= mag;
-            this.w *= mag;
-        };
-        /**
-         * Used to trace the values of a quaternion.
-         *
-         * @return A string representation of the quaternion object.
-         */
-        Quaternion.prototype.toString = function () {
-            return "{this.x:" + this.x + " this.y:" + this.y + " this.z:" + this.z + " this.w:" + this.w + "}";
-        };
-        /**
-         * Converts the quaternion to a Matrix3D object representing an equivalent rotation.
-         * @param target An optional Matrix3D container to store the transformation in. If not provided, a new object is created.
-         * @return A Matrix3D object representing an equivalent rotation.
-         */
-        Quaternion.prototype.toMatrix3D = function (target) {
-            if (target === void 0) { target = null; }
-            var rawData = feng3d.Matrix3DUtils.RAW_DATA_CONTAINER;
-            var xy2 = 2.0 * this.x * this.y, xz2 = 2.0 * this.x * this.z, xw2 = 2.0 * this.x * this.w;
-            var yz2 = 2.0 * this.y * this.z, yw2 = 2.0 * this.y * this.w, zw2 = 2.0 * this.z * this.w;
-            var xx = this.x * this.x, yy = this.y * this.y, zz = this.z * this.z, ww = this.w * this.w;
-            rawData[0] = xx - yy - zz + ww;
-            rawData[4] = xy2 - zw2;
-            rawData[8] = xz2 + yw2;
-            rawData[12] = 0;
-            rawData[1] = xy2 + zw2;
-            rawData[5] = -xx + yy - zz + ww;
-            rawData[9] = yz2 - xw2;
-            rawData[13] = 0;
-            rawData[2] = xz2 - yw2;
-            rawData[6] = yz2 + xw2;
-            rawData[10] = -xx - yy + zz + ww;
-            rawData[14] = 0;
-            rawData[3] = 0.0;
-            rawData[7] = 0.0;
-            rawData[11] = 0;
-            rawData[15] = 1;
-            if (!target)
-                return new feng3d.Matrix3D(rawData);
-            target.copyRawDataFrom(rawData);
-            return target;
-        };
-        /**
-         * Extracts a quaternion rotation matrix out of a given Matrix3D object.
-         * @param matrix The Matrix3D out of which the rotation will be extracted.
-         */
-        Quaternion.prototype.fromMatrix = function (matrix) {
-            var v = matrix.decompose()[1];
-            this.fromEulerAngles(v.x, v.y, v.z);
-        };
-        /**
-         * Converts the quaternion to a Vector.&lt;number&gt; matrix representation of a rotation equivalent to this quaternion.
-         * @param target The Vector.&lt;number&gt; to contain the raw matrix data.
-         * @param exclude4thRow If true, the last row will be omitted, and a 4x3 matrix will be generated instead of a 4x4.
-         */
-        Quaternion.prototype.toRawData = function (target, exclude4thRow) {
-            if (exclude4thRow === void 0) { exclude4thRow = false; }
-            var xy2 = 2.0 * this.x * this.y, xz2 = 2.0 * this.x * this.z, xw2 = 2.0 * this.x * this.w;
-            var yz2 = 2.0 * this.y * this.z, yw2 = 2.0 * this.y * this.w, zw2 = 2.0 * this.z * this.w;
-            var xx = this.x * this.x, yy = this.y * this.y, zz = this.z * this.z, ww = this.w * this.w;
-            target[0] = xx - yy - zz + ww;
-            target[1] = xy2 - zw2;
-            target[2] = xz2 + yw2;
-            target[4] = xy2 + zw2;
-            target[5] = -xx + yy - zz + ww;
-            target[6] = yz2 - xw2;
-            target[8] = xz2 - yw2;
-            target[9] = yz2 + xw2;
-            target[10] = -xx - yy + zz + ww;
-            target[3] = target[7] = target[11] = 0;
-            if (!exclude4thRow) {
-                target[12] = target[13] = target[14] = 0;
-                target[15] = 1;
-            }
-        };
-        /**
-         * Clones the quaternion.
-         * @return An exact duplicate of the current Quaternion.
-         */
-        Quaternion.prototype.clone = function () {
-            return new Quaternion(this.x, this.y, this.z, this.w);
-        };
-        /**
-         * Rotates a point.
-         * @param vector The Vector3D object to be rotated.
-         * @param target An optional Vector3D object that will contain the rotated coordinates. If not provided, a new object will be created.
-         * @return A Vector3D object containing the rotated point.
-         */
-        Quaternion.prototype.rotatePoint = function (vector, target) {
-            if (target === void 0) { target = null; }
-            var x1, y1, z1, w1;
-            var x2 = vector.x, y2 = vector.y, z2 = vector.z;
-            target = target || new feng3d.Vector3D();
-            // p*q'
-            w1 = -this.x * x2 - this.y * y2 - this.z * z2;
-            x1 = this.w * x2 + this.y * z2 - this.z * y2;
-            y1 = this.w * y2 - this.x * z2 + this.z * x2;
-            z1 = this.w * z2 + this.x * y2 - this.y * x2;
-            target.x = -w1 * this.x + x1 * this.w - y1 * this.z + z1 * this.y;
-            target.y = -w1 * this.y + x1 * this.z + y1 * this.w - z1 * this.x;
-            target.z = -w1 * this.z - x1 * this.y + y1 * this.x + z1 * this.w;
-            return target;
-        };
-        /**
-         * Copies the data from a quaternion into this instance.
-         * @param q The quaternion to copy from.
-         */
-        Quaternion.prototype.copyFrom = function (q) {
-            this.x = q.x;
-            this.y = q.y;
-            this.z = q.z;
-            this.w = q.w;
-        };
-        return Quaternion;
-    }());
-    feng3d.Quaternion = Quaternion;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * Vector3D 类使用笛卡尔坐标 x、y 和 z 表示三维空间中的点或位置
-     * @author feng 2016-3-21
-     */
-    var Vector3D = (function () {
-        /**
-         * 创建 Vector3D 对象的实例。如果未指定构造函数的参数，则将使用元素 (0,0,0,0) 创建 Vector3D 对象。
-         * @param x 第一个元素，例如 x 坐标。
-         * @param y 第二个元素，例如 y 坐标。
-         * @param z 第三个元素，例如 z 坐标。
-         * @param w 表示额外数据的可选元素，例如旋转角度
-         */
-        function Vector3D(x, y, z, w) {
-            if (x === void 0) { x = 0; }
-            if (y === void 0) { y = 0; }
-            if (z === void 0) { z = 0; }
-            if (w === void 0) { w = 0; }
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.w = w;
-        }
-        Object.defineProperty(Vector3D.prototype, "length", {
-            /**
-            * 当前 Vector3D 对象的长度（大小），即从原点 (0,0,0) 到该对象的 x、y 和 z 坐标的距离。w 属性将被忽略。单位矢量具有的长度或大小为一。
-            */
-            get: function () {
-                return Math.sqrt(this.lengthSquared);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Vector3D.prototype, "lengthSquared", {
-            /**
-            * 当前 Vector3D 对象长度的平方，它是使用 x、y 和 z 属性计算出来的。w 属性将被忽略。尽可能使用 lengthSquared() 方法，而不要使用 Vector3D.length() 方法的 Math.sqrt() 方法调用，后者速度较慢。
-            */
-            get: function () {
-                return this.x * this.x + this.y * this.y + this.z * this.z;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 将当前 Vector3D 对象的 x、y 和 z 元素的值与另一个 Vector3D 对象的 x、y 和 z 元素的值相加。
-         * @param a 要与当前 Vector3D 对象相加的 Vector3D 对象。
-         * @return 一个 Vector3D 对象，它是将当前 Vector3D 对象与另一个 Vector3D 对象相加所产生的结果。
-         */
-        Vector3D.prototype.add = function (a) {
-            return new Vector3D(this.x + a.x, this.y + a.y, this.z + a.z, this.w + a.w);
-        };
-        /**
-         * 返回一个新 Vector3D 对象，它是与当前 Vector3D 对象完全相同的副本。
-         * @return 一个新 Vector3D 对象，它是当前 Vector3D 对象的副本。
-         */
-        Vector3D.prototype.clone = function () {
-            return new Vector3D(this.x, this.y, this.z, this.w);
-        };
-        /**
-         * 将源 Vector3D 对象中的所有矢量数据复制到调用方 Vector3D 对象中。
-         * @return 要从中复制数据的 Vector3D 对象。
-         */
-        Vector3D.prototype.copyFrom = function (sourceVector3D) {
-            this.x = sourceVector3D.x;
-            this.y = sourceVector3D.y;
-            this.z = sourceVector3D.z;
-            this.w = sourceVector3D.w;
-        };
-        /**
-         * 返回一个新的 Vector3D 对象，它与当前 Vector3D 对象和另一个 Vector3D 对象垂直（成直角）。
-         */
-        Vector3D.prototype.crossProduct = function (a) {
-            return new Vector3D(this.y * a.z - this.z * a.y, this.z * a.x - this.x * a.z, this.x * a.y - this.y * a.x, 1);
-        };
-        /**
-         * 按照指定的 Vector3D 对象的 x、y 和 z 元素的值递减当前 Vector3D 对象的 x、y 和 z 元素的值。
-         */
-        Vector3D.prototype.decrementBy = function (a) {
-            this.x -= a.x;
-            this.y -= a.y;
-            this.z -= a.z;
-        };
-        /**
-         * 返回两个 Vector3D 对象之间的距离。
-         */
-        Vector3D.distance = function (pt1, pt2) {
-            var x = (pt1.x - pt2.x);
-            var y = (pt1.y - pt2.y);
-            var z = (pt1.z - pt2.z);
-            return Math.sqrt(x * x + y * y + z * z);
-        };
-        /**
-         * 如果当前 Vector3D 对象和作为参数指定的 Vector3D 对象均为单位顶点，此方法将返回这两个顶点之间所成角的余弦值。
-         */
-        Vector3D.prototype.dotProduct = function (a) {
-            return this.x * a.x + this.y * a.y + this.z * a.z;
-        };
-        /**
-         * 通过将当前 Vector3D 对象的 x、y 和 z 元素与指定的 Vector3D 对象的 x、y 和 z 元素进行比较，确定这两个对象是否相等。
-         */
-        Vector3D.prototype.equals = function (toCompare, allFour) {
-            if (allFour === void 0) { allFour = false; }
-            return (this.x == toCompare.x && this.y == toCompare.y && this.z == toCompare.z && (!allFour || this.w == toCompare.w));
-        };
-        /**
-         * 按照指定的 Vector3D 对象的 x、y 和 z 元素的值递增当前 Vector3D 对象的 x、y 和 z 元素的值。
-         */
-        Vector3D.prototype.incrementBy = function (a) {
-            this.x += a.x;
-            this.y += a.y;
-            this.z += a.z;
-        };
-        /**
-         * 将当前 Vector3D 对象设置为其逆对象。
-         */
-        Vector3D.prototype.negate = function () {
-            this.x = -this.x;
-            this.y = -this.y;
-            this.z = -this.z;
-        };
-        /**
-         * 通过将最前面的三个元素（x、y、z）除以矢量的长度可将 Vector3D 对象转换为单位矢量。
-         */
-        Vector3D.prototype.normalize = function (thickness) {
-            if (thickness === void 0) { thickness = 1; }
-            if (this.length != 0) {
-                var invLength = thickness / this.length;
-                this.x *= invLength;
-                this.y *= invLength;
-                this.z *= invLength;
-                return;
-            }
-        };
-        /**
-         * 按标量（大小）缩放当前的 Vector3D 对象。
-         */
-        Vector3D.prototype.scaleBy = function (s) {
-            this.x *= s;
-            this.y *= s;
-            this.z *= s;
-        };
-        /**
-         * 将 Vector3D 的成员设置为指定值
-         */
-        Vector3D.prototype.setTo = function (xa, ya, za) {
-            this.x = xa;
-            this.y = ya;
-            this.z = za;
-        };
-        /**
-         * 从另一个 Vector3D 对象的 x、y 和 z 元素的值中减去当前 Vector3D 对象的 x、y 和 z 元素的值。
-         */
-        Vector3D.prototype.subtract = function (a) {
-            return new Vector3D(this.x - a.x, this.y - a.y, this.z - a.z);
-        };
-        /**
-         * 返回当前 Vector3D 对象的字符串表示形式。
-         */
-        Vector3D.prototype.toString = function () {
-            return "<" + this.x + ", " + this.y + ", " + this.z + ">";
-        };
-        /**
-        * 定义为 Vector3D 对象的 x 轴，坐标为 (1,0,0)。
-        */
-        Vector3D.X_AXIS = new Vector3D(1, 0, 0);
-        /**
-        * 定义为 Vector3D 对象的 y 轴，坐标为 (0,1,0)
-        */
-        Vector3D.Y_AXIS = new Vector3D(0, 1, 0);
-        /**
-        * 定义为 Vector3D 对象的 z 轴，坐标为 (0,0,1)
-        */
-        Vector3D.Z_AXIS = new Vector3D(0, 0, 1);
-        return Vector3D;
-    }());
-    feng3d.Vector3D = Vector3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 3d直线
-     * @author feng 2013-6-13
-     */
-    var Line3D = (function () {
-        /**
-         * 根据直线某点与方向创建直线
-         * @param position 直线上某点
-         * @param direction 直线的方向
-         */
-        function Line3D(position, direction) {
-            if (position === void 0) { position = null; }
-            if (direction === void 0) { direction = null; }
-            this.position = position ? position : new feng3d.Vector3D();
-            this.direction = direction ? direction : new feng3d.Vector3D(0, 0, 1);
-        }
-        /**
-         * 根据直线上两点初始化直线
-         * @param p0 Vector3D
-         * @param p1 Vector3D
-         */
-        Line3D.prototype.fromPoints = function (p0, p1) {
-            this.position = p0;
-            this.direction = p1.subtract(p0);
-        };
-        /**
-         * 根据直线某点与方向初始化直线
-         * @param position 直线上某点
-         * @param direction 直线的方向
-         */
-        Line3D.prototype.fromPosAndDir = function (position, direction) {
-            this.position = position;
-            this.direction = direction;
-        };
-        /**
-         * 获取直线上的一个点
-         * @param length 与原点距离
-         */
-        Line3D.prototype.getPoint = function (length) {
-            if (length === void 0) { length = 0; }
-            var lengthDir = this.direction.clone();
-            lengthDir.scaleBy(length);
-            var newPoint = this.position.add(lengthDir);
-            return newPoint;
-        };
-        return Line3D;
-    }());
-    feng3d.Line3D = Line3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 3D射线
-     * @author feng 2013-6-13
-     */
-    var Ray3D = (function (_super) {
-        __extends(Ray3D, _super);
-        function Ray3D(position, direction) {
-            if (position === void 0) { position = null; }
-            if (direction === void 0) { direction = null; }
-            _super.call(this, position, direction);
-        }
-        return Ray3D;
-    }(feng3d.Line3D));
-    feng3d.Ray3D = Ray3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 数学常量类
-     */
-    var MathConsts = (function () {
-        function MathConsts() {
-        }
-        /**
-         * 弧度转角度因子
-         */
-        MathConsts.RADIANS_TO_DEGREES = 180 / Math.PI;
-        /**
-         * 角度转弧度因子
-         */
-        MathConsts.DEGREES_TO_RADIANS = Math.PI / 180;
-        return MathConsts;
-    }());
-    feng3d.MathConsts = MathConsts;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 矩阵工具类
-     * Matrix3DUtils provides additional Matrix3D math functions.
-     */
-    var Matrix3DUtils = (function () {
-        function Matrix3DUtils() {
-        }
-        /**
-         * Fills the 3d matrix object with values representing the transformation made by the given quaternion.
-         *
-         * @param    quarternion    The quarterion object to convert.
-         */
-        Matrix3DUtils.quaternion2matrix = function (quarternion, m) {
-            if (m === void 0) { m = null; }
-            var x = quarternion.x;
-            var y = quarternion.y;
-            var z = quarternion.z;
-            var w = quarternion.w;
-            var xx = x * x;
-            var xy = x * y;
-            var xz = x * z;
-            var xw = x * w;
-            var yy = y * y;
-            var yz = y * z;
-            var yw = y * w;
-            var zz = z * z;
-            var zw = z * w;
-            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-            raw[0] = 1 - 2 * (yy + zz);
-            raw[1] = 2 * (xy + zw);
-            raw[2] = 2 * (xz - yw);
-            raw[4] = 2 * (xy - zw);
-            raw[5] = 1 - 2 * (xx + zz);
-            raw[6] = 2 * (yz + xw);
-            raw[8] = 2 * (xz + yw);
-            raw[9] = 2 * (yz - xw);
-            raw[10] = 1 - 2 * (xx + yy);
-            raw[3] = raw[7] = raw[11] = raw[12] = raw[13] = raw[14] = 0;
-            raw[15] = 1;
-            if (m) {
-                m.copyRawDataFrom(raw);
-                return m;
-            }
-            else
-                return new feng3d.Matrix3D(raw);
-        };
-        /**
-         *
-         * Returns a normalised <code>Vector3D</code> object representing the forward vector of the given matrix.
-         * @param    m        The Matrix3D object to use to get the forward vector
-         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
-         * @return            The forward vector
-         */
-        Matrix3DUtils.getForward = function (m, v) {
-            if (v === void 0) { v = null; }
-            if (!v)
-                v = new feng3d.Vector3D();
-            m.copyColumnTo(2, v);
-            v.normalize();
-            return v;
-        };
-        /**
-         * Returns a normalised <code>Vector3D</code> object representing the up vector of the given matrix.
-         * @param    m        The Matrix3D object to use to get the up vector
-         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
-         * @return            The up vector
-         */
-        Matrix3DUtils.getUp = function (m, v) {
-            if (v === void 0) { v = null; }
-            if (!v)
-                v = new feng3d.Vector3D();
-            m.copyColumnTo(1, v);
-            v.normalize();
-            return v;
-        };
-        /**
-         * Returns a normalised <code>Vector3D</code> object representing the right vector of the given matrix.
-         * @param    m        The Matrix3D object to use to get the right vector
-         * @param    v        [optional] A vector holder to prevent make new Vector3D instance if already exists. Default is null.
-         * @return            The right vector
-         */
-        Matrix3DUtils.getRight = function (m, v) {
-            if (v === void 0) { v = null; }
-            if (!v)
-                v = new feng3d.Vector3D();
-            m.copyColumnTo(0, v);
-            v.normalize();
-            return v;
-        };
-        /**
-         * Returns a boolean value representing whether there is any significant difference between the two given 3d matrices.
-         */
-        Matrix3DUtils.compare = function (m1, m2) {
-            var r1 = Matrix3DUtils.RAW_DATA_CONTAINER;
-            var r2 = m2.rawData;
-            m1.copyRawDataTo(r1);
-            for (var i = 0; i < 16; ++i) {
-                if (r1[i] != r2[i])
-                    return false;
-            }
-            return true;
-        };
-        Matrix3DUtils.lookAt = function (matrix, pos, dir, up) {
-            var dirN;
-            var upN;
-            var lftN;
-            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-            lftN = dir.crossProduct(up);
-            lftN.normalize();
-            upN = lftN.crossProduct(dir);
-            upN.normalize();
-            dirN = dir.clone();
-            dirN.normalize();
-            raw[0] = lftN.x;
-            raw[1] = upN.x;
-            raw[2] = -dirN.x;
-            raw[3] = 0.0;
-            raw[4] = lftN.y;
-            raw[5] = upN.y;
-            raw[6] = -dirN.y;
-            raw[7] = 0.0;
-            raw[8] = lftN.z;
-            raw[9] = upN.z;
-            raw[10] = -dirN.z;
-            raw[11] = 0.0;
-            raw[12] = -lftN.dotProduct(pos);
-            raw[13] = -upN.dotProduct(pos);
-            raw[14] = dirN.dotProduct(pos);
-            raw[15] = 1.0;
-            matrix.copyRawDataFrom(raw);
-        };
-        Matrix3DUtils.reflection = function (plane, target) {
-            if (target === void 0) { target = null; }
-            target = target || new feng3d.Matrix3D();
-            var a = plane.a, b = plane.b, c = plane.c, d = plane.d;
-            var rawData = Matrix3DUtils.RAW_DATA_CONTAINER;
-            var ab2 = -2 * a * b;
-            var ac2 = -2 * a * c;
-            var bc2 = -2 * b * c;
-            // Matrix3DUtils.reflection matrix
-            rawData[0] = 1 - 2 * a * a;
-            rawData[4] = ab2;
-            rawData[8] = ac2;
-            rawData[12] = -2 * a * d;
-            rawData[1] = ab2;
-            rawData[5] = 1 - 2 * b * b;
-            rawData[9] = bc2;
-            rawData[13] = -2 * b * d;
-            rawData[2] = ac2;
-            rawData[6] = bc2;
-            rawData[10] = 1 - 2 * c * c;
-            rawData[14] = -2 * c * d;
-            rawData[3] = 0;
-            rawData[7] = 0;
-            rawData[11] = 0;
-            rawData[15] = 1;
-            target.copyRawDataFrom(rawData);
-            return target;
-        };
-        Matrix3DUtils.decompose = function (sourceMatrix, orientationStyle) {
-            if (orientationStyle === void 0) { orientationStyle = "eulerAngles"; }
-            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-            sourceMatrix.copyRawDataTo(raw);
-            var a = raw[0];
-            var e = raw[1];
-            var i = raw[2];
-            var b = raw[4];
-            var f = raw[5];
-            var j = raw[6];
-            var c = raw[8];
-            var g = raw[9];
-            var k = raw[10];
-            var x = raw[12];
-            var y = raw[13];
-            var z = raw[14];
-            var tx = Math.sqrt(a * a + e * e + i * i);
-            var ty = Math.sqrt(b * b + f * f + j * j);
-            var tz = Math.sqrt(c * c + g * g + k * k);
-            var tw = 0;
-            var scaleX = tx;
-            var scaleY = ty;
-            var scaleZ = tz;
-            if (a * (f * k - j * g) - e * (b * k - j * c) + i * (b * g - f * c) < 0) {
-                scaleZ = -scaleZ;
-            }
-            a = a / scaleX;
-            e = e / scaleX;
-            i = i / scaleX;
-            b = b / scaleY;
-            f = f / scaleY;
-            j = j / scaleY;
-            c = c / scaleZ;
-            g = g / scaleZ;
-            k = k / scaleZ;
-            //from away3d-ts
-            if (orientationStyle == feng3d.Orientation3D.EULER_ANGLES) {
-                tx = Math.atan2(j, k);
-                ty = Math.atan2(-i, Math.sqrt(a * a + e * e));
-                var s1 = Math.sin(tx);
-                var c1 = Math.cos(tx);
-                tz = Math.atan2(s1 * c - c1 * b, c1 * f - s1 * g);
-            }
-            else if (orientationStyle == feng3d.Orientation3D.AXIS_ANGLE) {
-                tw = Math.acos((a + f + k - 1) / 2);
-                var len = Math.sqrt((j - g) * (j - g) + (c - i) * (c - i) + (e - b) * (e - b));
-                tx = (j - g) / len;
-                ty = (c - i) / len;
-                tz = (e - b) / len;
-            }
-            else {
-                var tr = a + f + k;
-                if (tr > 0) {
-                    tw = Math.sqrt(1 + tr) / 2;
-                    tx = (j - g) / (4 * tw);
-                    ty = (c - i) / (4 * tw);
-                    tz = (e - b) / (4 * tw);
-                }
-                else if ((a > f) && (a > k)) {
-                    tx = Math.sqrt(1 + a - f - k) / 2;
-                    tw = (j - g) / (4 * tx);
-                    ty = (e + b) / (4 * tx);
-                    tz = (c + i) / (4 * tx);
-                }
-                else if (f > k) {
-                    ty = Math.sqrt(1 + f - a - k) / 2;
-                    tx = (e + b) / (4 * ty);
-                    tw = (c - i) / (4 * ty);
-                    tz = (j + g) / (4 * ty);
-                }
-                else {
-                    tz = Math.sqrt(1 + k - a - f) / 2;
-                    tx = (c + i) / (4 * tz);
-                    ty = (j + g) / (4 * tz);
-                    tw = (e - b) / (4 * tz);
-                }
-            }
-            var v = Matrix3DUtils.CALCULATION_DECOMPOSE;
-            v[0].x = x;
-            v[0].y = y;
-            v[0].z = z;
-            v[1].x = tx;
-            v[1].y = ty;
-            v[1].z = tz;
-            v[1].w = tw;
-            v[2].x = scaleX;
-            v[2].y = scaleY;
-            v[2].z = scaleZ;
-            return v;
-        };
-        Matrix3DUtils.transformVector = function (matrix, vector, result) {
-            if (result === void 0) { result = null; }
-            if (!result)
-                result = new feng3d.Vector3D();
-            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-            matrix.copyRawDataTo(raw);
-            var a = raw[0];
-            var e = raw[1];
-            var i = raw[2];
-            var m = raw[3];
-            var b = raw[4];
-            var f = raw[5];
-            var j = raw[6];
-            var n = raw[7];
-            var c = raw[8];
-            var g = raw[9];
-            var k = raw[10];
-            var o = raw[11];
-            var d = raw[12];
-            var h = raw[13];
-            var l = raw[14];
-            var p = raw[15];
-            var x = vector.x;
-            var y = vector.y;
-            var z = vector.z;
-            result.x = a * x + b * y + c * z + d;
-            result.y = e * x + f * y + g * z + h;
-            result.z = i * x + j * y + k * z + l;
-            result.w = m * x + n * y + o * z + p;
-            return result;
-        };
-        Matrix3DUtils.deltaTransformVector = function (matrix, vector, result) {
-            if (result === void 0) { result = null; }
-            if (!result)
-                result = new feng3d.Vector3D();
-            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-            matrix.copyRawDataTo(raw);
-            var a = raw[0];
-            var e = raw[1];
-            var i = raw[2];
-            var m = raw[3];
-            var b = raw[4];
-            var f = raw[5];
-            var j = raw[6];
-            var n = raw[7];
-            var c = raw[8];
-            var g = raw[9];
-            var k = raw[10];
-            var o = raw[11];
-            var x = vector.x;
-            var y = vector.y;
-            var z = vector.z;
-            result.x = a * x + b * y + c * z;
-            result.y = e * x + f * y + g * z;
-            result.z = i * x + j * y + k * z;
-            result.w = m * x + n * y + o * z;
-            return result;
-        };
-        Matrix3DUtils.getTranslation = function (transform, result) {
-            if (result === void 0) { result = null; }
-            if (!result)
-                result = new feng3d.Vector3D();
-            transform.copyColumnTo(3, result);
-            return result;
-        };
-        Matrix3DUtils.deltaTransformVectors = function (matrix, vin, vout) {
-            var raw = Matrix3DUtils.RAW_DATA_CONTAINER;
-            matrix.copyRawDataTo(raw);
-            var a = raw[0];
-            var e = raw[1];
-            var i = raw[2];
-            var m = raw[3];
-            var b = raw[4];
-            var f = raw[5];
-            var j = raw[6];
-            var n = raw[7];
-            var c = raw[8];
-            var g = raw[9];
-            var k = raw[10];
-            var o = raw[11];
-            var outIndex = 0;
-            var length = vin.length;
-            for (var index = 0; index < length; index += 3) {
-                var x = vin[index];
-                var y = vin[index + 1];
-                var z = vin[index + 2];
-                vout[outIndex++] = a * x + b * y + c * z;
-                vout[outIndex++] = e * x + f * y + g * z;
-                vout[outIndex++] = i * x + j * y + k * z;
-            }
-        };
-        /**
-         * 更新本地射线
-         * @param inverseSceneTransform 逆场景变换矩阵
-         * @param ray3D 场景射线
-         * @param localRay 本地射线
-         */
-        Matrix3DUtils.updateLocalRay = function (inverseSceneTransform, ray3D, localRay) {
-            Matrix3DUtils.transformVector(inverseSceneTransform, ray3D.position, localRay.position);
-            Matrix3DUtils.deltaTransformVector(inverseSceneTransform, ray3D.direction, localRay.direction);
-        };
-        /**
-         * A reference to a Vector to be used as a temporary raw data container, to prevent object creation.
-         */
-        Matrix3DUtils.RAW_DATA_CONTAINER = [];
-        Matrix3DUtils.CALCULATION_MATRIX = new feng3d.Matrix3D();
-        Matrix3DUtils.CALCULATION_VECTOR3D = new feng3d.Vector3D();
-        Matrix3DUtils.CALCULATION_DECOMPOSE = [new feng3d.Vector3D(), new feng3d.Vector3D(), new feng3d.Vector3D()];
-        return Matrix3DUtils;
-    }());
-    feng3d.Matrix3DUtils = Matrix3DUtils;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 3d面
-     */
-    var Plane3D = (function () {
-        /**
-         * 创建一个平面
-         * @param a		A系数
-         * @param b		B系数
-         * @param c		C系数
-         * @param d		D系数
-         */
-        function Plane3D(a, b, c, d) {
-            if (a === void 0) { a = 0; }
-            if (b === void 0) { b = 0; }
-            if (c === void 0) { c = 0; }
-            if (d === void 0) { d = 0; }
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.d = d;
-            if (a == 0 && b == 0)
-                this._alignment = Plane3D.ALIGN_XY_AXIS;
-            else if (b == 0 && c == 0)
-                this._alignment = Plane3D.ALIGN_YZ_AXIS;
-            else if (a == 0 && c == 0)
-                this._alignment = Plane3D.ALIGN_XZ_AXIS;
-            else
-                this._alignment = Plane3D.ALIGN_ANY;
-        }
-        /**
-         * 通过3顶点定义一个平面
-         * @param p0		点0
-         * @param p1		点1
-         * @param p2		点2
-         */
-        Plane3D.prototype.fromPoints = function (p0, p1, p2) {
-            //计算向量1
-            var d1x = p1.x - p0.x;
-            var d1y = p1.y - p0.y;
-            var d1z = p1.z - p0.z;
-            //计算向量2
-            var d2x = p2.x - p0.x;
-            var d2y = p2.y - p0.y;
-            var d2z = p2.z - p0.z;
-            //叉乘计算法线
-            this.a = d1y * d2z - d1z * d2y;
-            this.b = d1z * d2x - d1x * d2z;
-            this.c = d1x * d2y - d1y * d2x;
-            //平面上点与法线点乘计算D值
-            this.d = this.a * p0.x + this.b * p0.y + this.c * p0.z;
-            //法线平行z轴
-            if (this.a == 0 && this.b == 0)
-                this._alignment = Plane3D.ALIGN_XY_AXIS;
-            else if (this.b == 0 && this.c == 0)
-                this._alignment = Plane3D.ALIGN_YZ_AXIS;
-            else if (this.a == 0 && this.c == 0)
-                this._alignment = Plane3D.ALIGN_XZ_AXIS;
-            else
-                this._alignment = Plane3D.ALIGN_ANY;
-        };
-        /**
-         * 根据法线与点定义平面
-         * @param normal		平面法线
-         * @param point			平面上任意一点
-         */
-        Plane3D.prototype.fromNormalAndPoint = function (normal, point) {
-            this.a = normal.x;
-            this.b = normal.y;
-            this.c = normal.z;
-            this.d = this.a * point.x + this.b * point.y + this.c * point.z;
-            if (this.a == 0 && this.b == 0)
-                this._alignment = Plane3D.ALIGN_XY_AXIS;
-            else if (this.b == 0 && this.c == 0)
-                this._alignment = Plane3D.ALIGN_YZ_AXIS;
-            else if (this.a == 0 && this.c == 0)
-                this._alignment = Plane3D.ALIGN_XZ_AXIS;
-            else
-                this._alignment = Plane3D.ALIGN_ANY;
-        };
-        /**
-         * 标准化平面
-         * @return		标准化后的平面
-         */
-        Plane3D.prototype.normalize = function () {
-            var len = 1 / Math.sqrt(this.a * this.a + this.b * this.b + this.c * this.c);
-            this.a *= len;
-            this.b *= len;
-            this.c *= len;
-            this.d *= len;
-            return this;
-        };
-        /**
-         * 计算点与平面的距离
-         * @param p		点
-         * @returns		距离
-         */
-        Plane3D.prototype.distance = function (p) {
-            if (this._alignment == Plane3D.ALIGN_YZ_AXIS)
-                return this.a * p.x - this.d;
-            else if (this._alignment == Plane3D.ALIGN_XZ_AXIS)
-                return this.b * p.y - this.d;
-            else if (this._alignment == Plane3D.ALIGN_XY_AXIS)
-                return this.c * p.z - this.d;
-            else
-                return this.a * p.x + this.b * p.y + this.c * p.z - this.d;
-        };
-        /**
-         * 顶点分类
-         * <p>把顶点分为后面、前面、相交三类</p>
-         * @param p			顶点
-         * @return			顶点类型 PlaneClassification.BACK,PlaneClassification.FRONT,PlaneClassification.INTERSECT
-         * @see				me.feng3d.core.math.PlaneClassification
-         */
-        Plane3D.prototype.classifyPoint = function (p, epsilon) {
-            if (epsilon === void 0) { epsilon = 0.01; }
-            // check NaN
-            if (this.d != this.d)
-                return feng3d.PlaneClassification.FRONT;
-            var len;
-            if (this._alignment == Plane3D.ALIGN_YZ_AXIS)
-                len = this.a * p.x - this.d;
-            else if (this._alignment == Plane3D.ALIGN_XZ_AXIS)
-                len = this.b * p.y - this.d;
-            else if (this._alignment == Plane3D.ALIGN_XY_AXIS)
-                len = this.c * p.z - this.d;
-            else
-                len = this.a * p.x + this.b * p.y + this.c * p.z - this.d;
-            if (len < -epsilon)
-                return feng3d.PlaneClassification.BACK;
-            else if (len > epsilon)
-                return feng3d.PlaneClassification.FRONT;
-            else
-                return feng3d.PlaneClassification.INTERSECT;
-        };
-        /**
-         * 输出字符串
-         */
-        Plane3D.prototype.toString = function () {
-            return "Plane3D [this.a:" + this.a + ", this.b:" + this.b + ", this.c:" + this.c + ", this.d:" + this.d + "]";
-        };
-        /**
-         * 普通平面
-         * <p>不与对称轴平行或垂直</p>
-         */
-        Plane3D.ALIGN_ANY = 0;
-        /**
-         * XY方向平面
-         * <p>法线与Z轴平行</p>
-         */
-        Plane3D.ALIGN_XY_AXIS = 1;
-        /**
-         * YZ方向平面
-         * <p>法线与X轴平行</p>
-         */
-        Plane3D.ALIGN_YZ_AXIS = 2;
-        /**
-         * XZ方向平面
-         * <p>法线与Y轴平行</p>
-         */
-        Plane3D.ALIGN_XZ_AXIS = 3;
-        return Plane3D;
-    }());
-    feng3d.Plane3D = Plane3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 点与面的相对位置
-     * @author feng
-     */
-    var PlaneClassification = (function () {
-        function PlaneClassification() {
-        }
-        /**
-         * 在平面后面
-         * <p>等价于平面内</p>
-         * @see #IN
-         */
-        PlaneClassification.BACK = 0;
-        /**
-         * 在平面前面
-         * <p>等价于平面外</p>
-         * @see #OUT
-         */
-        PlaneClassification.FRONT = 1;
-        /**
-         * 在平面内
-         * <p>等价于在平面后</p>
-         * @see #BACK
-         */
-        PlaneClassification.IN = 0;
-        /**
-         * 在平面外
-         * <p>等价于平面前面</p>
-         * @see #FRONT
-         */
-        PlaneClassification.OUT = 1;
-        /**
-         * 与平面相交
-         */
-        PlaneClassification.INTERSECT = 2;
-        return PlaneClassification;
-    }());
-    feng3d.PlaneClassification = PlaneClassification;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 三角形
-     * @author feng 2014-5-4
-     */
-    var Triangle3D = (function () {
-        function Triangle3D(p0, p1, p2) {
-            this.p0 = p0;
-            this.p1 = p1;
-            this.p2 = p2;
-        }
-        /**
-         * 测试是否与直线相交
-         * @param line3D 直线
-         * @return 是否相交
-         */
-        Triangle3D.prototype.testLineCollision = function (line3D) {
-            return false;
-        };
-        Object.defineProperty(Triangle3D.prototype, "p0", {
-            /**
-             * 第1个点
-             */
-            get: function () {
-                return this._p0;
-            },
-            set: function (value) {
-                this._p0 = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Triangle3D.prototype, "p1", {
-            /**
-             * 第2个点
-             */
-            get: function () {
-                return this._p1;
-            },
-            set: function (value) {
-                this._p1 = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Triangle3D.prototype, "p2", {
-            /**
-             * 第3个点
-             */
-            get: function () {
-                return this._p2;
-            },
-            set: function (value) {
-                this._p2 = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Triangle3D.prototype, "normal", {
-            /**
-             * 法线
-             */
-            get: function () {
-                if (this._normal == null)
-                    this.updateNomal();
-                return this._normal;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Triangle3D.prototype.updateNomal = function () {
-            this._normal = this.p1.subtract(this.p0).crossProduct(this.p2.subtract(this.p0));
-        };
-        return Triangle3D;
-    }());
-    feng3d.Triangle3D = Triangle3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     /**
      * 解析工具类
      */
@@ -35774,35 +36201,15 @@ var feng3d;
         __extends(TestBase, _super);
         function TestBase() {
             _super.call(this);
-            this.rootPaths = [
-                "http://127.0.0.1:9080/",
-                "http://images.feng3d.me/feng3dDemo/assets/",
-            ];
             //资源根路径
-            this.rootPath = "http://127.0.0.1:9080/";
+            this.rootPath = "http://images.feng3d.me/feng3dDemo/assets/";
             this.initModules();
-            this.tryConnect();
         }
         TestBase.prototype.initModules = function () {
             feng3d.Task.init();
             feng3d.Load.init();
-        };
-        TestBase.prototype.tryConnect = function () {
-            var tryRootPath = new feng3d.TryConnectURL();
-            tryRootPath.addEventListener(feng3d.TaskEvent.COMPLETED, this.tryRootPathComplete);
-            tryRootPath.tryConnect(this.rootPaths);
-        };
-        TestBase.prototype.tryRootPathComplete = function (event) {
-            var tryConnectURL = event.currentTarget;
-            if (tryConnectURL.connectedUrls.length == 0) {
-                console.log("没有可连接的资源路径！");
-            }
-            else {
-                console.log("以下为可连接的资源路径：");
-                console.log(tryConnectURL.connectedUrls);
-                this.rootPath = tryConnectURL.connectedUrls[0];
-                this.loadTextures();
-            }
+            // this.loadTextures();
+            this["init"]();
         };
         /**
          * 加载纹理资源
@@ -37264,555 +37671,5 @@ var feng3d;
         return Fagal;
     }());
     feng3d.Fagal = Fagal;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Bitmap = (function (_super) {
-        __extends(Bitmap, _super);
-        function Bitmap() {
-            _super.apply(this, arguments);
-        }
-        return Bitmap;
-    }(feng3d.DisplayObject));
-    feng3d.Bitmap = Bitmap;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var BitmapData = (function () {
-        function BitmapData(sclw, sclh, transparent, c) {
-        }
-        BitmapData.prototype.draw = function (sourceMC, t, s, dd, rect, d) {
-        };
-        BitmapData.prototype.copyPixels = function (tmpCache, rect, pastePoint) {
-        };
-        BitmapData.prototype.fillRect = function (rect, d) {
-        };
-        BitmapData.prototype.dispose = function () {
-        };
-        BitmapData.prototype.setPixel = function (i, j, k) {
-        };
-        return BitmapData;
-    }());
-    feng3d.BitmapData = BitmapData;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var BlendMode = (function () {
-        function BlendMode() {
-        }
-        // [静态] 将显示对象的原色值添加到它的背景颜色中，上限值为 0xFF。
-        BlendMode.ADD = "add";
-        // [静态] 将显示对象的每个像素的 Alpha 值应用于背景。
-        BlendMode.ALPHA = "alpha";
-        // [静态] 在显示对象原色和背景颜色中选择相对较暗的颜色（具有较小值的颜色）。
-        BlendMode.DARKEN = "darken";
-        // [静态] 将显示对象的原色与背景颜色进行比较，然后从较亮的原色值中减去较暗的原色值。
-        BlendMode.DIFFERENCE = "difference";
-        // [静态] 根据显示对象的 Alpha 值擦除背景。
-        BlendMode.ERASE = "erase";
-        // [静态] 根据显示对象的暗度调整每个像素的颜色。
-        BlendMode.HARDLIGHT = "hardlight";
-        // [静态] 反转背景。
-        BlendMode.INVERT = "invert";
-        // [静态] 强制为该显示对象创建一个透明度组。
-        BlendMode.LAYER = "layer";
-        // [静态] 在显示对象原色和背景颜色中选择相对较亮的颜色（具有较大值的颜色）。
-        BlendMode.LIGHTEN = "lighten";
-        // [静态] 将显示对象的原色值与背景颜色的原色值相乘，然后除以 0xFF 进行标准化，从而得到较暗的颜色。
-        BlendMode.MULTIPLY = "multiply";
-        // [静态] 该显示对象出现在背景前面。
-        BlendMode.NORMAL = "normal";
-        // [静态] 根据背景的暗度调整每个像素的颜色。
-        BlendMode.OVERLAY = "overlay";
-        // [静态] 将显示对象颜色的补色（反色）与背景颜色的补色相乘，会产生漂白效果。
-        BlendMode.SCREEN = "screen";
-        // [静态] 使用着色器来定义对象之间的混合。
-        BlendMode.SHADER = "shader";
-        // [静态] 从背景颜色的值中减去显示对象原色的值，下限值为 0。
-        BlendMode.SUBTRACT = "subtract";
-        return BlendMode;
-    }());
-    feng3d.BlendMode = BlendMode;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var BulkLoader = (function (_super) {
-        __extends(BulkLoader, _super);
-        function BulkLoader(a) {
-            _super.call(this);
-        }
-        BulkLoader.prototype.hasItem = function (_url) {
-        };
-        BulkLoader.prototype.add = function (_url, d) {
-        };
-        BulkLoader.prototype.get = function (_url) {
-            return null;
-        };
-        return BulkLoader;
-    }(feng3d.EventDispatcher));
-    feng3d.BulkLoader = BulkLoader;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var BulkProgressEvent = (function () {
-        function BulkProgressEvent() {
-        }
-        return BulkProgressEvent;
-    }());
-    feng3d.BulkProgressEvent = BulkProgressEvent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var ColorTransform = (function () {
-        function ColorTransform() {
-        }
-        return ColorTransform;
-    }());
-    feng3d.ColorTransform = ColorTransform;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DBlendFactor = (function () {
-        function Context3DBlendFactor() {
-        }
-        return Context3DBlendFactor;
-    }());
-    feng3d.Context3DBlendFactor = Context3DBlendFactor;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DCompareMode = (function () {
-        function Context3DCompareMode() {
-        }
-        return Context3DCompareMode;
-    }());
-    feng3d.Context3DCompareMode = Context3DCompareMode;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DMipFilter = (function () {
-        function Context3DMipFilter() {
-        }
-        return Context3DMipFilter;
-    }());
-    feng3d.Context3DMipFilter = Context3DMipFilter;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DProfile = (function () {
-        function Context3DProfile() {
-        }
-        return Context3DProfile;
-    }());
-    feng3d.Context3DProfile = Context3DProfile;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DTextureFormat = (function () {
-        function Context3DTextureFormat() {
-        }
-        return Context3DTextureFormat;
-    }());
-    feng3d.Context3DTextureFormat = Context3DTextureFormat;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DTriangleFace = (function () {
-        function Context3DTriangleFace() {
-        }
-        return Context3DTriangleFace;
-    }());
-    feng3d.Context3DTriangleFace = Context3DTriangleFace;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var CubeTexture = (function () {
-        function CubeTexture() {
-        }
-        return CubeTexture;
-    }());
-    feng3d.CubeTexture = CubeTexture;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var DisplayObject = (function (_super) {
-        __extends(DisplayObject, _super);
-        function DisplayObject() {
-            _super.apply(this, arguments);
-        }
-        DisplayObject.prototype.getx = function () {
-            return this.x;
-        };
-        DisplayObject.prototype.gety = function () {
-            return this.y;
-        };
-        return DisplayObject;
-    }(feng3d.EventDispatcher));
-    feng3d.DisplayObject = DisplayObject;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Endian = (function () {
-        function Endian() {
-        }
-        return Endian;
-    }());
-    feng3d.Endian = Endian;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var ImageItem = (function () {
-        function ImageItem() {
-        }
-        return ImageItem;
-    }());
-    feng3d.ImageItem = ImageItem;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var IOErrorEvent = (function () {
-        function IOErrorEvent() {
-        }
-        return IOErrorEvent;
-    }());
-    feng3d.IOErrorEvent = IOErrorEvent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Loader = (function () {
-        function Loader() {
-        }
-        return Loader;
-    }());
-    feng3d.Loader = Loader;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var LoadingItem = (function (_super) {
-        __extends(LoadingItem, _super);
-        function LoadingItem() {
-            _super.apply(this, arguments);
-        }
-        return LoadingItem;
-    }(feng3d.EventDispatcher));
-    feng3d.LoadingItem = LoadingItem;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Matrix = (function () {
-        function Matrix() {
-        }
-        Matrix.prototype.scale = function (sclw, sclh) {
-        };
-        return Matrix;
-    }());
-    feng3d.Matrix = Matrix;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var MovieClip = (function (_super) {
-        __extends(MovieClip, _super);
-        function MovieClip() {
-            _super.apply(this, arguments);
-        }
-        MovieClip.prototype.gotoAndStop = function (a) {
-        };
-        MovieClip.prototype.draw = function (sourceMC, t, a, b, rect, d) {
-        };
-        return MovieClip;
-    }(feng3d.Sprite));
-    feng3d.MovieClip = MovieClip;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Rectangle = (function () {
-        function Rectangle() {
-        }
-        return Rectangle;
-    }());
-    feng3d.Rectangle = Rectangle;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var SecurityErrorEvent = (function () {
-        function SecurityErrorEvent() {
-        }
-        return SecurityErrorEvent;
-    }());
-    feng3d.SecurityErrorEvent = SecurityErrorEvent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Shape = (function (_super) {
-        __extends(Shape, _super);
-        function Shape() {
-            _super.apply(this, arguments);
-        }
-        return Shape;
-    }(feng3d.DisplayObject));
-    feng3d.Shape = Shape;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Sprite = (function (_super) {
-        __extends(Sprite, _super);
-        function Sprite() {
-            _super.apply(this, arguments);
-        }
-        return Sprite;
-    }(feng3d.DisplayObject));
-    feng3d.Sprite = Sprite;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Stage = (function (_super) {
-        __extends(Stage, _super);
-        function Stage() {
-            _super.apply(this, arguments);
-        }
-        return Stage;
-    }(feng3d.DisplayObject));
-    feng3d.Stage = Stage;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Texture = (function () {
-        function Texture() {
-        }
-        Texture.prototype.uploadFromBitmapData = function (bitmapData, n) {
-        };
-        return Texture;
-    }());
-    feng3d.Texture = Texture;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var TextureBase = (function () {
-        function TextureBase() {
-        }
-        return TextureBase;
-    }());
-    feng3d.TextureBase = TextureBase;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Timer = (function (_super) {
-        __extends(Timer, _super);
-        function Timer(a, b) {
-            _super.call(this);
-        }
-        Timer.prototype.start = function () {
-        };
-        Timer.prototype.stop = function () {
-        };
-        return Timer;
-    }(feng3d.EventDispatcher));
-    feng3d.Timer = Timer;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var TimerEvent = (function () {
-        function TimerEvent() {
-        }
-        return TimerEvent;
-    }());
-    feng3d.TimerEvent = TimerEvent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var URLLoader = (function (_super) {
-        __extends(URLLoader, _super);
-        function URLLoader() {
-            _super.apply(this, arguments);
-        }
-        return URLLoader;
-    }(feng3d.EventDispatcher));
-    feng3d.URLLoader = URLLoader;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var URLRequest = (function () {
-        function URLRequest(url) {
-        }
-        return URLRequest;
-    }());
-    feng3d.URLRequest = URLRequest;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3D = (function () {
-        function Context3D() {
-        }
-        Context3D.prototype.createTexture = function (width, height, format, b) {
-            return null;
-        };
-        Context3D.prototype.createProgram = function () {
-            return null;
-        };
-        Context3D.prototype.setRenderToBackBuffer = function () {
-        };
-        Context3D.prototype.setTextureAt = function (i, b) {
-        };
-        return Context3D;
-    }());
-    feng3d.Context3D = Context3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DProgramType = (function () {
-        function Context3DProgramType() {
-        }
-        Context3DProgramType.FRAGMENT = "fragment";
-        Context3DProgramType.VERTEX = "vertex";
-        return Context3DProgramType;
-    }());
-    feng3d.Context3DProgramType = Context3DProgramType;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DRenderMode = (function () {
-        function Context3DRenderMode() {
-        }
-        return Context3DRenderMode;
-    }());
-    feng3d.Context3DRenderMode = Context3DRenderMode;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DTextureFilter = (function () {
-        function Context3DTextureFilter() {
-        }
-        Context3DTextureFilter.ANISOTROPIC16X = "anisotropic16x";
-        Context3DTextureFilter.ANISOTROPIC2X = "anisotropic2x";
-        Context3DTextureFilter.ANISOTROPIC4X = "anisotropic4x";
-        Context3DTextureFilter.ANISOTROPIC8X = "anisotropic8x";
-        Context3DTextureFilter.LINEAR = "linear";
-        Context3DTextureFilter.NEAREST = "nearest";
-        return Context3DTextureFilter;
-    }());
-    feng3d.Context3DTextureFilter = Context3DTextureFilter;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DVertexBufferFormat = (function () {
-        function Context3DVertexBufferFormat() {
-        }
-        return Context3DVertexBufferFormat;
-    }());
-    feng3d.Context3DVertexBufferFormat = Context3DVertexBufferFormat;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Context3DWrapMode = (function () {
-        function Context3DWrapMode() {
-        }
-        Context3DWrapMode.CLAMP = "clamp";
-        Context3DWrapMode.CLAMP_U_REPEAT_V = "clamp_u_repeat_v";
-        Context3DWrapMode.REPEAT = "repeat";
-        Context3DWrapMode.REPEAT_U_CLAMP_V = "repeat_u_clamp_v";
-        return Context3DWrapMode;
-    }());
-    feng3d.Context3DWrapMode = Context3DWrapMode;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var IndexBuffer3D = (function () {
-        function IndexBuffer3D() {
-        }
-        return IndexBuffer3D;
-    }());
-    feng3d.IndexBuffer3D = IndexBuffer3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Program3D = (function () {
-        function Program3D() {
-        }
-        Program3D.prototype.upload = function (vertexByteCode, fragmentByteCode) {
-        };
-        return Program3D;
-    }());
-    feng3d.Program3D = Program3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Stage3D = (function (_super) {
-        __extends(Stage3D, _super);
-        function Stage3D() {
-            _super.apply(this, arguments);
-        }
-        return Stage3D;
-    }(feng3d.DisplayObject));
-    feng3d.Stage3D = Stage3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var VertexBuffer3D = (function () {
-        function VertexBuffer3D() {
-        }
-        return VertexBuffer3D;
-    }());
-    feng3d.VertexBuffer3D = VertexBuffer3D;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var AGALMiniAssembler = (function () {
-        function AGALMiniAssembler(b) {
-        }
-        AGALMiniAssembler.prototype.assemble = function (a, noCommentCode) {
-        };
-        return AGALMiniAssembler;
-    }());
-    feng3d.AGALMiniAssembler = AGALMiniAssembler;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var ByteArray = (function () {
-        function ByteArray() {
-        }
-        ByteArray.prototype.readUTFBytes = function (a) {
-            return "";
-        };
-        ByteArray.prototype.readUnsignedShort = function () {
-            return 0;
-        };
-        ByteArray.prototype.readFloat = function () {
-            return 0;
-        };
-        ByteArray.prototype.readUnsignedInt = function () {
-            return 0;
-        };
-        ByteArray.prototype.readShort = function () {
-            return 0;
-        };
-        ByteArray.prototype.readByte = function () {
-            return 0;
-        };
-        ByteArray.prototype.readUnsignedByte = function () {
-            return 0;
-        };
-        return ByteArray;
-    }());
-    feng3d.ByteArray = ByteArray;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var Proxy = (function () {
-        function Proxy() {
-        }
-        return Proxy;
-    }());
-    feng3d.Proxy = Proxy;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var MouseEvent = (function (_super) {
-        __extends(MouseEvent, _super);
-        function MouseEvent() {
-            _super.apply(this, arguments);
-        }
-        return MouseEvent;
-    }(feng3d.Event));
-    feng3d.MouseEvent = MouseEvent;
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=feng3d.js.map

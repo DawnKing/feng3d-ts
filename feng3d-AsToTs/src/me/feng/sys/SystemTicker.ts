@@ -32,7 +32,7 @@ module feng3d {
 
             requestAnimationFrame.call(window, onTick);
             function onTick(): void {
-                this.update();
+                $ticker.update();
                 requestAnimationFrame.call(window, onTick)
             }
         }

@@ -1,48 +1,51 @@
-{
-    "compilerOptions": {
-        "target": "es5",
-        "noImplicitAny": false,
-        "module": "amd",
-        "removeComments": false,
-        "outDir": "bin",
-        "sourceMap": true
-    }
-}
 // {
 //     "compilerOptions": {
 //         "target": "es5",
 //         "noImplicitAny": false,
-//         "sourceMap": true,
-//         "declaration": true,
-//         // "outDir": "bin"
-//         "out": "release/fagal.js"
-//         // "out": "../feng3d-ts-examples/libs/feng3d.js"
-//         // "out": "../feng3d-ts-test/libs/feng3d.js"
+//         "module": "amd",
+//         "removeComments": false,
+//         "outDir": "release/fagal.js",
+//         "sourceMap": true
 //     },
 //     "files": [ //注：如果有继承关系的，父类必须排在子类前面
-//         "src\\utils\\loadjs.ts",
-//         "src\\BaseShaderTest.ts",
-//         "src\\ColorMapTest.ts",
-//         "src\\ColorTerrainShaderTest.ts",
-//         "src\\Context3DCacheDebugText.ts",
-//         "src\\TextureTest.ts",
-//         "src\\base\\BaseGeometry.ts",
-//         "src\\colorTerrain\\ColorTerrainGeometry.ts",
-//         "src\\textureTest\\TextureTestGeometry.ts",
-//         "src\\base\\BaseMaterial.ts",
-//         "src\\colorMap\\ColorMapMaterial.ts",
-//         "src\\colorTerrain\\ColorTerrainMaterial.ts",
-//         "src\\textureTest\\TextureTestMaterial.ts",
-//         "src\\base\\BaseMesh.ts",
-//         "src\\com\\adobe\\utils\\PerspectiveMatrix3D.ts",
-//         "src\\configs\\Context3DBufferIDConfig_Fagal.ts",
-//         "src\\fagal\\F_TextureTest.ts",
-//         "src\\fagal\\F_baseShader.ts",
-//         "src\\fagal\\F_colorMap.ts",
-//         "src\\fagal\\F_colorTerrain.ts",
-//         "src\\fagal\\V_TextureTest.ts",
-//         "src\\fagal\\V_baseShader.ts",
-//         "src\\fagal\\V_colorMap.ts",
-//         "src\\fagal\\V_colorTerrain.ts"
+//         "src/utils/loadjs.ts"
 //     ]
 // }
+{
+    "compilerOptions": {
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "declaration": true,
+        // "outDir": "bin"
+        // "out": "release/fagal.js"
+        "out": "../libs/fagal.js"
+        // "out": "../feng3d-ts-test/libs/fagal.js"
+    },
+    "files": [ //注：如果有继承关系的，父类必须排在子类前面
+        "libs/feng3d.d.ts",
+        "src/BaseShaderTest.ts",
+        "src/ColorMapTest.ts",
+        "src/ColorTerrainShaderTest.ts",
+        "src/Context3DCacheDebugText.ts",
+        "src/TextureTest.ts",
+        "src/base/BaseGeometry.ts",
+        "src/colorTerrain/ColorTerrainGeometry.ts",
+        "src/textureTest/TextureTestGeometry.ts",
+        "src/base/BaseMaterial.ts",
+        "src/colorMap/ColorMapMaterial.ts",
+        "src/colorTerrain/ColorTerrainMaterial.ts",
+        "src/textureTest/TextureTestMaterial.ts",
+        "src/base/BaseMesh.ts",
+        "src/com/adobe/utils/PerspectiveMatrix3D.ts",
+        "src/configs/Context3DBufferIDConfig_Fagal.ts",
+        "src/fagal/F_TextureTest.ts",
+        "src/fagal/F_baseShader.ts",
+        "src/fagal/F_colorMap.ts",
+        "src/fagal/F_colorTerrain.ts",
+        "src/fagal/V_TextureTest.ts",
+        "src/fagal/V_baseShader.ts",
+        "src/fagal/V_colorMap.ts",
+        "src/fagal/V_colorTerrain.ts"
+    ]
+}
