@@ -23,7 +23,7 @@ module feng3d {
             this._eventListeners = {};
         }
 
-        public addEventListener(type: string, listener: Function, priority: number = 0, useWeakReference: boolean = false): void {
+        public addEventListener(type: string, listener: (event:Event)=>any, priority: number = 0, useWeakReference: boolean = false): void {
             if (listener == null)
                 return;
 
@@ -36,7 +36,7 @@ module feng3d {
             }
         }
 
-        public removeEventListener(type: string, listener: Function): void {
+        public removeEventListener(type: string, listener: (event:Event)=>any): void {
             if (this._eventListeners) {
                 var listeners: Function[] = this._eventListeners[type];
                 var index: number = listeners.indexOf(listener);
