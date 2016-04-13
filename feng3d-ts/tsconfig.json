@@ -72,8 +72,6 @@
         // //
         // "src/me/feng3d/entities/Entity.ts",
         // //
-        // "src/me/feng3d/controllers/ControllerBase.ts",
-        // //
         // "src/me/feng3d/bounds/BoundingVolumeBase.ts",
         //
         "src/Feng3d.ts"
