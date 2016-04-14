@@ -1,26 +1,26 @@
-// {
-//     "compilerOptions": {
-//         "target": "es5",
-//         "noImplicitAny": false,
-//         "module": "amd",
-//         "removeComments": false,
-//         "outDir": "bin",
-//         "sourceMap": true
-//     }
-// }
 {
     "compilerOptions": {
         "target": "es5",
         "noImplicitAny": false,
         "module": "amd",
         "removeComments": false,
-        "declaration": true,
-        "outFile": "release/feng3d.js",
-        // "outFile": "D:/a/feng3d.js",
+        "outDir": "bin",
         "sourceMap": true
-    },
-    "files": [
-        // "src/utils/loadjs.ts"
-        "src/me/feng/events/EventBubblesTest.ts"
-    ]
+    }
 }
+// {
+//     "compilerOptions": {
+//         "target": "es5",
+//         "noImplicitAny": false,
+//         "module": "amd",
+//         "removeComments": false,
+//         "declaration": true,
+//         // "outFile": "release/feng3d.js",
+//         // "outFile": "D:/a/feng3d.js",
+//         "sourceMap": true
+//     },
+//     "files": [
+//         // "src/utils/loadjs.ts"
+//         "src/me/feng/events/EventBubblesTest.ts"
+//     ]
+// }
