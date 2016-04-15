@@ -2189,7 +2189,7 @@ var feng3d;
                 this._target = this;
             this._eventListeners = {};
         }
-        EventDispatcher.prototype.addEventListener = function (type, listener, priority, useWeakReference) {
+        EventDispatcher.prototype.addEventListener = function (type, thisObject, listener, priority, useWeakReference) {
             if (priority === void 0) { priority = 0; }
             if (useWeakReference === void 0) { useWeakReference = false; }
             if (listener == null)
