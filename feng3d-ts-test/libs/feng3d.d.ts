@@ -1,5 +1,41 @@
 declare module feng3d {
     /**
+     * 点与面的相对位置
+     * @author feng
+     */
+    class PlaneClassification {
+        /**
+         * 在平面后面
+         * <p>等价于平面内</p>
+         * @see #IN
+         */
+        static BACK: number;
+        /**
+         * 在平面前面
+         * <p>等价于平面外</p>
+         * @see #OUT
+         */
+        static FRONT: number;
+        /**
+         * 在平面内
+         * <p>等价于在平面后</p>
+         * @see #BACK
+         */
+        static IN: number;
+        /**
+         * 在平面外
+         * <p>等价于平面前面</p>
+         * @see #FRONT
+         */
+        static OUT: number;
+        /**
+         * 与平面相交
+         */
+        static INTERSECT: number;
+    }
+}
+declare module feng3d {
+    /**
      * 数学常量类
      */
     class MathConsts {
@@ -585,6 +621,101 @@ declare module feng3d {
 }
 declare module feng3d {
     /**
+     * 3d面
+     */
+    class Plane3D {
+        /**
+         * 平面A系数
+         * <p>同样也是面法线x尺寸</p>
+         */
+        a: number;
+        /**
+         * 平面B系数
+         * <p>同样也是面法线y尺寸</p>
+         */
+        b: number;
+        /**
+         * 平面C系数
+         * <p>同样也是面法线z尺寸</p>
+         */
+        c: number;
+        /**
+         * 平面D系数
+         * <p>同样也是（0，0）点到平面的距离的负值</p>
+         */
+        d: number;
+        /**
+         * 对齐类型
+         */
+        _alignment: number;
+        /**
+         * 普通平面
+         * <p>不与对称轴平行或垂直</p>
+         */
+        static ALIGN_ANY: number;
+        /**
+         * XY方向平面
+         * <p>法线与Z轴平行</p>
+         */
+        static ALIGN_XY_AXIS: number;
+        /**
+         * YZ方向平面
+         * <p>法线与X轴平行</p>
+         */
+        static ALIGN_YZ_AXIS: number;
+        /**
+         * XZ方向平面
+         * <p>法线与Y轴平行</p>
+         */
+        static ALIGN_XZ_AXIS: number;
+        /**
+         * 创建一个平面
+         * @param a		A系数
+         * @param b		B系数
+         * @param c		C系数
+         * @param d		D系数
+         */
+        Plane3D(a?: number, b?: number, c?: number, d?: number): void;
+        /**
+         * 通过3顶点定义一个平面
+         * @param p0		点0
+         * @param p1		点1
+         * @param p2		点2
+         */
+        fromPoints(p0: Vector3D, p1: Vector3D, p2: Vector3D): void;
+        /**
+         * 根据法线与点定义平面
+         * @param normal		平面法线
+         * @param point			平面上任意一点
+         */
+        fromNormalAndPoint(normal: Vector3D, point: Vector3D): void;
+        /**
+         * 标准化平面
+         * @return		标准化后的平面
+         */
+        normalize(): Plane3D;
+        /**
+         * 计算点与平面的距离
+         * @param p		点
+         * @returns		距离
+         */
+        distance(p: Vector3D): number;
+        /**
+         * 顶点分类
+         * <p>把顶点分为后面、前面、相交三类</p>
+         * @param p			顶点
+         * @return			顶点类型 PlaneClassification.BACK,PlaneClassification.FRONT,PlaneClassification.INTERSECT
+         * @see				me.feng3d.core.math.PlaneClassification
+         */
+        classifyPoint(p: Vector3D, epsilon?: number): number;
+        /**
+         * 输出字符串
+         */
+        toString(): string;
+    }
+}
+declare module feng3d {
+    /**
      * 判断a对象是否为b类型
      */
     function is(a: any, b: Function): boolean;
@@ -871,8 +1002,8 @@ declare module feng3d {
          * @param target		事件适配主体
          */
         constructor(target?: IEventDispatcher);
-        addEventListener(type: string, listener: Function, priority?: number, useWeakReference?: boolean): void;
-        removeEventListener(type: string, listener: Function): void;
+        addEventListener(type: string, thisObject: IEventDispatcher, listener: (event: Event) => any, priority?: number, useWeakReference?: boolean): void;
+        removeEventListener(type: string, listener: (event: Event) => any): void;
         removeEventListeners(type?: string): void;
         /**
          * @inheritDoc
@@ -900,7 +1031,7 @@ declare module feng3d {
         /**
          * 使用 EventDispatcher 对象注册事件侦听器对象，以使侦听器能够接收事件通知。
          */
-        addEventListener(type: string, listener: Function, priority?: number, useWeakReference?: boolean): void;
+        addEventListener(type: string, thisObject: IEventDispatcher, listener: (event: Event) => any, priority?: number, useWeakReference?: boolean): void;
         /**
          * 将事件调度到事件流中。
          */
@@ -912,7 +1043,7 @@ declare module feng3d {
         /**
          * 从 EventDispatcher 对象中删除侦听器。
          */
-        removeEventListener(type: string, listener: Function): void;
+        removeEventListener(type: string, thisObject: IEventDispatcher, listener: (event: Event) => any): void;
         /**
          * 检查是否用此 EventDispatcher 对象或其任何祖代为指定事件类型注册了事件侦听器。
          */

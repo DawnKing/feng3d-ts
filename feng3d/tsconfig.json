@@ -12,15 +12,14 @@
 //     "compilerOptions": {
 //         "target": "es5",
 //         "noImplicitAny": false,
-//         "module": "amd",
-//         "removeComments": false,
+//         "sourceMap": true,
 //         "declaration": true,
-//         // "outFile": "release/feng3d.js",
-//         // "outFile": "D:/a/feng3d.js",
-//         "sourceMap": true
+//         // "out": "release/feng3d.js"
+//         // "out": "../feng3d-ts-examples/libs/feng3d.js"
+//         "out": "../feng3d-ts-test/libs/feng3d.js"
 //     },
-//     "files": [
-//         // "src/utils/loadjs.ts"
-//         "src/me/feng/events/EventBubblesTest.ts"
+//     "files": [ //注：如果有继承关系的，父类必须排在子类前面
+//         //
+//         "src/Feng3d.ts"
 //     ]
 // }
