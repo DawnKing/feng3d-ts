@@ -7,7 +7,7 @@ class Feng3D {
 
     constructor(parameters) {
 
-        console.log("Feng3D version " + Feng3D.REVISION)
+        console.log(`Feng3D version ${Feng3D.REVISION}`);
     }
 
 }
