@@ -20,8 +20,8 @@
     },
     "files": [ //注：如果有继承关系的，父类必须排在子类前面
         //
-        "src/me/feng3d/mathlib/PlaneClassification.ts",
         "src/me/feng3d/mathlib/MathConsts.ts",
+        "src/me/feng3d/mathlib/PlaneClassification.ts",
         "src/me/feng3d/mathlib/Matrix3D.ts",
         "src/me/feng3d/mathlib/Orientation3D.ts",
         "src/me/feng3d/mathlib/Quaternion.ts",
