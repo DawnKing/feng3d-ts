@@ -3,7 +3,7 @@ module feng3d {
     // 事件冒泡测试
     // @author warden_feng 2014-11-26
     //
-   export class EventBubblesTest extends feng3d.EventDispatcher{
+    export class EventBubblesTest extends feng3d.EventDispatcher {
         public a: Container = new Container("a");
         public b: Container = new Container("b");
         public c: Container = new Container("c");
@@ -11,9 +11,9 @@ module feng3d {
         public init(): void {
             this.a.addChild(this.b);
             this.b.addChild(this.c);
-            this.a.addEventListener("testEvent", this.onTestEvent);
-            this.b.addEventListener("testEvent", this.onTestEvent);
-            this.c.addEventListener("testEvent", this.onTestEvent);
+            this.a.addEventListener("testEvent", this.onTestEvent, this);
+            this.b.addEventListener("testEvent", this.onTestEvent, this);
+            this.c.addEventListener("testEvent", this.onTestEvent, this);
 
             //			a.addEventListener("testEvent", onTestEvent1);
             //			b.addEventListener("testEvent", onTestEvent1);
@@ -45,7 +45,7 @@ module feng3d {
         }
     }
 
-   export class Container extends feng3d.EventDispatcher {
+    export class Container extends feng3d.EventDispatcher {
         public parent: Container;
         name: string;
 

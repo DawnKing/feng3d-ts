@@ -1,4 +1,4 @@
-module feng {
+module feng3d {
 
     //
     // 测试事件调度器
@@ -6,13 +6,13 @@ module feng {
     //
     export class EventDispatcherTest {
         public init(): void {
-            var dispatcher = new feng3d.EventDispatcher();
-            dispatcher.addEventListener("testEvent", this.onTestEvent);
-            dispatcher.addEventListener("testEvent", this.onTestEvent);
-            dispatcher.dispatchEvent(new feng3d.Event("testEvent"));
+            var dispatcher = new EventDispatcher();
+            dispatcher.addEventListener("testEvent", this.onTestEvent, this);
+            dispatcher.addEventListener("testEvent", this.onTestEvent, this);
+            dispatcher.dispatchEvent(new Event("testEvent"));
         }
 
-        private onTestEvent(event: feng3d.Event): void {
+        private onTestEvent(event: Event): void {
             console.log(event.type, event);
         }
     }
