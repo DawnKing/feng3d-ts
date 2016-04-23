@@ -176,7 +176,7 @@ module feng3d {
 
             for (var i = 0; i < listeners.length && !event.stopsImmediatePropagation; i++) {
                 var element = listeners[i];
-                element.listener.apply(element.thisObject, event);
+                element.listener.call(element.thisObject, event);
             }
         }
     }
