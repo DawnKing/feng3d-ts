@@ -1,8 +1,8 @@
 var testSources = [//
-    "me/feng/events/EventBubblesTest.js",//
-    "me/feng/events/EventBubblesTest2.js",//
-    "me/feng/events/EventDispatcherTest.js",//
-    "me/feng/events/IEventDispatcherTest.js",//
+    // "me/feng/events/EventBubblesTest.js",//
+    // "me/feng/events/EventBubblesTest2.js",//
+    // "me/feng/events/EventDispatcherTest.js",//
+    // "me/feng/events/IEventDispatcherTest.js",//
 ];
 
 function loadjs(jsPath: string, onLoad = null) {
@@ -19,12 +19,12 @@ function onFeng3dInited(ev: Event) {
 
         loadjs("../bin/" + element);
         var className = getClassName(element);
-        document.write('<input type="submit" value="' + className + '" onclick="(new ' + className + '()).init()">');
+        document.write(`<input type="submit" value="${className}" onclick="(new ${className}()).init()">`);
     });
 }
 
 function getClassName(url: string): string {
-    return "feng3d."+url.split("/").pop().split(".")[0];
+    return "me.feng3d." + url.split("/").pop().split(".")[0];
 }
 
 loadjs("../libs/feng3d.js", onFeng3dInited);

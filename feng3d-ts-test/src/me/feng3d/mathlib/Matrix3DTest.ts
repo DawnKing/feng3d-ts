@@ -1,4 +1,4 @@
-module feng {
+module me.feng3d {
 
     /**
      * Matrix3DTest
@@ -13,8 +13,8 @@ module feng {
         }
 
         test() {
-            var mat = new feng3d.Matrix3D();
-            mat.appendTranslation(1, 2, 3);
+            // var mat = new Matrix3D();
+            // mat.appendTranslation(1, 2, 3);
         }
     }
 
