@@ -1,745 +1,48 @@
-/**
- * Feng3D
- */
-declare class Feng3D {
-    static REVISION: number;
-    constructor(parameters: any);
+declare module me.feng3d {
 }
-declare module feng3d {
+declare module me.feng3d {
     /**
-     * Matrix3D 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
-     * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）。
-     * Matrix3D 类还可以执行透视投影，这会将 3D 坐标空间中的点映射到二维 (2D) 视图。
+     * 断言
+     * @b			判定为真的表达式
+     * @msg			在表达式为假时将输出的错误信息
+     * @author feng 2014-10-29
      */
-    class Matrix3D {
+    function assert(b: boolean, msg?: string): void;
+}
+declare module me.feng3d {
+    /**
+     * 获取对象的类名
+     * @author feng 2016-4-24
+     */
+    function getClassName(value: any): string;
+}
+declare module me.feng3d {
+    class StringUtils {
         /**
-         * 一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
+         * 获取字符串
+         * @param obj 转换为字符串的对象
+         * @param showLen       显示长度
+         * @param fill          长度不够是填充的字符串
          */
-        rawData: Array<number>;
-        /**
-         * 创建 Matrix3D 对象。
-         */
-        constructor(datas?: Array<number>);
-        /**
-         * 一个保存显示对象在转换参照帧中的 3D 坐标 (x,y,z) 位置的 Vector3D 对象。
-         */
-        position: Vector3D;
-        /**
-        * @language en_US
-        * Build a lookat matrix. (left-handed)
-        * @param eye The eye position.
-        * @param at The target position.
-        * @param up The up direction.
-        */
-        /**
-        * @language zh_CN
-        * 生成一个注视目标的矩阵.
-        * @param eye 眼睛的位置.
-        * @param at 目标的位置.
-        * @param up 向上的方向.
-        */
-        lookAt(eye: Vector3D, at: Vector3D, up: Vector3D): void;
-        /**
-        * @language en_US
-        * Build a perspective projection matrix. (left-handed)
-        * @param fovy .
-        * @param aspect .
-        * @param zn min z.
-        * @param zf max z.
-        */
-        /**
-        * @language zh_CN
-        * 生成一个透视投影矩阵.
-        * @param fovy 观察时y 轴方向的角度，就是观察范围夹角。
-        * @param aspect 横纵比，在视空间宽度除以高度.
-        * @param zn 近裁剪面位置Z值.
-        * @param zf 远裁剪面位置Z值.
-        */
-        perspective(fovy: number, aspect: number, zn: number, zf: number): void;
-        /**
-        * @language en_US
-        * Build an ortho matrix. (left-handed)
-        * @param w screen width.
-        * @param h screen height.
-        * @param zn min z.
-        * @param zf max z.
-        */
-        /**
-        * @language zh_CN
-        * 生成一个透视投影矩阵.
-        * @param w 屏幕的宽度。
-        * @param h 屏幕的高度.
-        * @param zn 近裁剪面位置Z值.
-        * @param zf 远裁剪面位置Z值.
-        */
-        ortho(w: number, h: number, zn: number, zf: number): void;
-        /**
-        * @language en_US
-        * Build an ortho matrix. (left-handed)
-        * @param l min x.
-        * @param r max x.
-        * @param b min y.
-        * @param t max y.
-        * @param zn min z.
-        * @param zf max z.
-        */
-        /**
-        * @language zh_CN
-        * 生成一个透视投影矩阵.
-        * @param l 观察时X轴最小值.
-        * @param r 观察时X轴最大值.
-        * @param b 观察时Y轴最小值。
-        * @param t 观察时Y轴最大值.
-        * @param zn 近裁剪面位置Z值.
-        * @param zf 远裁剪面位置Z值.
-        */
-        orthoOffCenter(l: number, r: number, b: number, t: number, zn: number, zf: number): void;
-        /**
-        * @language en_US
-        * matrix multiply
-        * @param lhs .
-        */
-        /**
-        * @language zh_CN
-        * 通过将当前 Matrix3D 对象与另一个 Matrix3D 对象相乘来前置一个矩阵
-        * @param lhs 目标矩阵.
-        */
-        append(lhs: Matrix3D): void;
-        /**
-        * @language en_US
-        * matrix add
-        * @param lhs
-        * @returns
-        */
-        /**
-        * @language zh_CN
-        * 矩阵相加.
-        * @param lhs 目标矩阵.
-        * @returns 相加后的结果.
-        */
-        add(lhs: Matrix3D): Matrix3D;
-        /**
-        * @language en_US
-        * matrix add
-        * @param lhs
-        * @returns reslut
-        */
-        /**
-        * @language zh_CN
-        * 矩阵相减.
-        * @param lhs 目标矩阵.
-        * @returns 相加减的结果.
-        */
-        sub(lhs: Matrix3D): Matrix3D;
-        /**
-        * @language zh_CN
-        * 矩阵乘分量.
-        * @param v .
-        * @returns 返回一个相乘后的结果 矩阵.
-        */
-        mult(v: number): Matrix3D;
-        /**
-        * @language zh_CN
-        * 创建一个欧拉旋转矩阵.
-        * @param x 绕x轴旋转角度.
-        * @param y 绕y轴旋转角度.
-        * @param z 绕z轴旋转角度.
-        */
-        rotation(x: number, y: number, z: number): void;
-        /**
-        * @language zh_CN
-        * 当前矩阵乘 (按axis轴旋转degrees角度创建出来的矩阵)
-        * @param degrees 旋转角度.
-        * @param axis 绕axis轴旋转角度.
-        */
-        appendRotation(degrees: number, axis: Vector3D): void;
-        /**
-        * @language zh_CN
-        * 生成一个缩放矩阵
-        * @param xScale x轴缩放
-        * @param yScale y轴缩放
-        * @param zScale z轴缩放
-        */
-        appendScale(xScale: number, yScale: number, zScale: number): void;
-        /**
-        * @language zh_CN
-        * 加上一个平移矩阵
-        * @param x x轴坐标
-        * @param y y轴坐标
-        * @param z z轴坐标
-        */
-        appendTranslation(x: number, y: number, z: number): void;
-        /**
-        * @language zh_CN
-        * 返回一个当前矩阵的克隆矩阵
-        * @returns 克隆后的矩阵
-        */
-        clone(): Matrix3D;
-        /**
-        * @language zh_CN
-        * 给当前矩阵其中一行赋值
-        * @param column 拷贝的行
-        * @param vector3D 拷贝的值
-        */
-        copyColumnFrom(column: number, vector3D: Vector3D): void;
-        /**
-        * @language zh_CN
-        * 拷贝矩阵中的其中一行 把值存在vector3D.
-        * @param column 拷贝的行
-        * @param vector3D 拷贝存值目标
-        */
-        copyRowTo(column: number, vector3D: Vector3D): void;
-        /**
-        * @language zh_CN
-        * 把一个矩阵的值赋给当前矩阵.
-        * @param sourceMatrix3D 源矩阵.
-        * @returns 返回当前矩阵
-        */
-        copyFrom(sourceMatrix3D: Matrix3D): Matrix3D;
-        /**
-        * @language zh_CN
-        * 把一个 float 数组赋值给当前矩阵.
-        * @param vector 源数组.
-        * @param index 从数组的index 开始copy.
-        * @param transpose 是否转置当前矩阵.
-        */
-        copyRawDataFrom(vector: Array<number>, index?: number, transpose?: boolean): void;
-        /**
-        * @language zh_CN
-        * 把当前矩阵的值拷贝给一个 float 数组.
-        * @param vector 目标数组.
-        * @param index 从数组的index 开始copy.
-        * @param transpose 是否转置当前矩阵.
-        */
-        copyRawDataTo(vector: Array<number>, index?: number, transpose?: boolean): void;
-        /**
-        * @language zh_CN
-        * 给当前矩阵的某一列 赋值
-        * @param col 列
-        * @param vector3D 值来源
-        */
-        copyColFrom(col: number, vector3D: Vector3D): void;
-        /**
-        * @language zh_CN
-        * 拷贝当前矩阵的某一列
-        * @param col 列
-        * @param vector3D 拷贝目标
-        */
-        copyColTo(col: number, vector3D: Vector3D): void;
-        /**
-        * @language zh_CN
-        * 拷贝当前矩阵
-        * @param dest 拷贝目标
-        */
-        copyToMatrix3D(dest: Matrix3D): void;
-        /**
-        * @language zh_CN
-        * 分解当前矩阵
-        * @param orientationStyle 分解类型
-        * @returns Vector3D[3] pos rot scale
-        */
-        decompose(orientationStyle?: string): Vector3D[];
-        /**
-        * @language zh_CN
-        * 当前矩阵变换一个向量
-        * @param v 要变换的向量
-        * @returns 变换后的向量
-        */
-        deltaTransformVector(v: Vector3D): Vector3D;
-        /**
-        * @language zh_CN
-        * 单位化当前矩阵
-        */
-        identity(): void;
-        /**
-        * @language zh_CN
-        * 填充当前矩阵
-        * @param value 填充的值
-        */
-        fill(value: number): void;
-        /**
-        * @language zh_CN
-        * 当前矩阵求逆
-        */
-        invers33(): void;
-        /**
-        * @language zh_CN
-        * 当前矩阵求逆
-        * @returns 是否能求逆
-        */
-        invert(): boolean;
-        /**
-        * @language zh_CN
-        * 生成一个变换矩阵
-        * @param pos  位移
-        * @param scale 缩放
-        * @param rot 旋转
-        */
-        makeTransform(pos: Vector3D, scale: Vector3D, rot: Quaternion): void;
-        /**
-        * @language zh_CN
-        * 生成一个变换矩阵
-        * @param components Vector3D[3] 位移 旋转 缩放
-        * @returns 生成是否成功
-        */
-        recompose(components: Vector3D[]): boolean;
-        /**
-        * @language zh_CN
-        * 用当前矩阵变换一个3D向量
-        * @param v 变换的向量
-        * @returns 变换后的向量
-        */
-        transformVector(v: Vector3D): Vector3D;
-        private oRawData;
-        /**
-        * @language zh_CN
-        * 当前矩阵转置
-        */
-        transpose(): void;
-        /**
-        * @language zh_CN
-        * 生成一个(以x,y,z为中心轴旋转degrees角度)的矩阵
-        * @param x 中心轴的x
-        * @param y 中心轴的y
-        * @param z 中心轴的z
-        * @param degrees 旋转角度
-        */
-        static getAxisRotation(x: number, y: number, z: number, degrees: number): Matrix3D;
-        /**
-        * @language zh_CN
-        * 返回矩阵行列式
-        *
-        * @returns 行列式值
-        */
-        determinant: number;
-        /**
-        * @language zh_CN
-        * 返回矩阵缩放
-        *
-        * @returns 缩放
-        */
-        scale: Vector3D;
-        /**
-        * @language zh_CN
-        * 以字符串返回矩阵的值
-        *
-        * @returns 字符
-        */
-        toString(): string;
-        /**
-        * @language zh_CN
-        * 求两个矩阵之间的差值
-        * @param m0 矩阵0
-        * @param m1 矩阵1
-        * @param t 时间差 0.0 - 1.0
-        */
-        lerp(m0: Matrix3D, m1: Matrix3D, t: number): void;
+        static getString(obj: any, showLen?: number, fill?: string): string;
     }
 }
-declare module feng3d {
+declare module me.feng3d {
     /**
-    * @language zh_CN
-    * @class egret3d.Matrix3DUtils
-    * @classdesc
-    * 可使用 Matrix3DUtils 类 进行3d矩阵的计算
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    class Matrix3DUtils {
+     * 数学常量类
+     */
+    class MathConsts {
         /**
-        * @language zh_CN
-        * 1弧度为多少角度
-        */
+         * 弧度转角度因子
+         */
         static RADIANS_TO_DEGREES: number;
         /**
-        * @language zh_CN
-        * 1角度为多少弧度
-        */
+         * 角度转弧度因子
+         */
         static DEGREES_TO_RADIANS: number;
-        /**
-        * @private
-        * 1角度为多少弧度
-        */
-        static RAW_DATA_CONTAINER: Array<number>;
-        /**
-        * @private
-        */
-        static CALCULATION_MATRIX: Matrix3D;
-        /**
-        * @language zh_CN
-        * 四元数转矩阵
-        * @param quarternion 源四元数
-        * @param m 目标矩阵
-        * @returns 返回转出矩阵
-        */
-        static quaternion2matrix(quarternion: Quaternion, m?: Matrix3D): Matrix3D;
-        /**
-        * @language zh_CN
-        * 得到矩阵朝前的方向
-        * @param m 源矩阵
-        * @param v 返回的方向 可为null
-        * @returns 返回方向
-        */
-        static getForward(m: Matrix3D, v?: Vector3D): Vector3D;
-        /**
-        * @language zh_CN
-        * 得到矩阵朝上的方向
-        * @param m 源矩阵
-        * @param v 返回的方向 可为null
-        * @returns 返回方向
-        */
-        static getUp(m: Matrix3D, v?: Vector3D): Vector3D;
-        /**
-        * @language zh_CN
-        * 得到矩阵朝右的方向
-        * @param m 源矩阵
-        * @param v 返回的方向 可为null
-        * @returns 返回方向
-        */
-        static getRight(m: Matrix3D, v?: Vector3D): Vector3D;
-        /**
-        * @language zh_CN
-        * 比较两个矩阵是否相同
-        * @param m1 矩阵1
-        * @param m2 矩阵2
-        * @returns 相同返回true
-        */
-        static compare(m1: Matrix3D, m2: Matrix3D): boolean;
-        /**
-        * @language zh_CN
-        * 得到矩阵的平移
-        * @param transform 计算的矩阵
-        * @param result 计算返回平移坐标
-        * @returns 返回平移坐标
-        */
-        static getTranslation(transform: Matrix3D, result?: Vector3D): Vector3D;
-        /**
-        * @language zh_CN
-        * 把一个值固定在一个范围之内
-        * @param value 当前判定的值
-        * @param min_inclusive 最小取值
-        * @param max_inclusive 最大取值
-        * @returns 计算后的结果
-        */
-        static clampf(value: number, min_inclusive: number, max_inclusive: number): number;
     }
 }
-declare module feng3d {
-    /**
-     * @language zh_CN
-     * @class egret3d.Orientation3D
-     * @classdesc
-     * 定义 Orientation3D 常量。</p>
-     * Matrix4_4.decompose 会分 axisAngle、eulerAngles、quaternion这3种类型进行分解。</p>
-     * 比如:</p>
-     <pre>
-     matrix.decompose(Orientation3D.QUATERNION)
-     </pre>
-     *
-     * @see egret3d.Matrix4_4
-     * @see egret3d.Quaternion
-     *
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
-    class Orientation3D {
-        /**
-        * @language zh_CN
-        * 按轴旋转角度
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        static AXIS_ANGLE: string;
-        /**
-        * @language zh_CN
-        * 按欧拉角旋转角度
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        static EULER_ANGLES: string;
-        /**
-        * @language zh_CN
-        * 四元数旋转角度
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        static QUATERNION: string;
-    }
-}
-declare module feng3d {
-    /**
-     * @language zh_CN
-     * @class egret3d.Quaternion
-     * @classdesc
-     * Quaternion类
-     *
-     * 定义了一个四元数表示物体在空间的旋转。
-     * 四元数通常用作替代欧拉角和旋转矩阵的方式来实现平滑插值和避免万向节锁
-     * 注意，这四元数类不自动保持四元数标准化。因此，在必要的时候，必须采取单位化的四元数，通过调用单位化方法
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
-    class Quaternion {
-        /**
-        * @language en_US
-        * The x value of the quaternion.
-        */
-        /**
-        * @language zh_CN
-        * 四元数的x值.
-        */
-        x: number;
-        /**
-        * @language en_US
-        * The y value of the quaternion.
-        */
-        /**
-        * @language zh_CN
-        * 四元数的y值.
-        */
-        y: number;
-        /**
-        * @language en_US
-        * The z value of the quaternion.
-        */
-        /**
-        * @language zh_CN
-        * 四元数的z值.
-        */
-        z: number;
-        /**
-        * @language en_US
-        * The w value of the quaternion.
-        */
-        /**
-        * @language zh_CN
-        * 四元数的w值.
-        */
-        w: number;
-        /**
-        * @language en_US
-        * Creates a new Quaternion object.
-        * @param x The x value of the quaternion.
-        * @param y The y value of the quaternion.
-        * @param z The z value of the quaternion.
-        * @param w The w value of the quaternion.
-        */
-        /**
-        * @language zh_CN
-        * 创建一个四元数.
-        * @param x
-        * @param y
-        * @param z
-        * @param w
-        */
-        constructor(x?: number, y?: number, z?: number, w?: number);
-        /**
-        * @language en_US
-        *
-        * @returns the magnitude of the quaternion object.
-        */
-        /**
-        * @language zh_CN
-        *
-        * 返回四元数的大小.
-        * @param w
-        * @returns 四元数的大小.
-        */
-        magnitude: number;
-        /**
-        * @language en_US
-        * Fills the quaternion object with the result from a multiplication of two quaternion objects.
-        *
-        * @param    qa    The first quaternion in the multiplication.
-        * @param    qb    The second quaternion in the multiplication.
-        */
-        /**
-        * @language zh_CN
-        * 两个四元数相乘,然后结果给当调用者.
-        * @param qa 第一个四元数
-        * @param qb 第二个四元数
-        */
-        multiply(qa: Quaternion, qb: Quaternion): void;
-        /**
-        * @language zh_CN
-        * 四元数乘以一个3维向量，结果返回一个四元数
-        * @param vector 相乘的向量
-        * @param target 返回的结果，如果为null就会实例化一个四元数对象返回
-        * @returns 返回相乘后的结果
-        */
-        multiplyVector(vector: Vector3D, target?: Quaternion): Quaternion;
-        /**
-        * @language en_US
-        * Fills the quaternion object with values representing the given rotation around a vector.
-        *
-        * @param    axis    The axis around which to rotate
-        * @param    angle    The angle in radians of the rotation.
-        */
-        /**
-        * @language zh_CN
-        * 创建一个以axis轴为中心旋转angle角度的四元数
-        *
-        * @param axis   旋转轴
-        * @param angle  旋转角度
-        */
-        fromAxisAngle(axis: Vector3D, angle: number): void;
-        /**
-        * @language zh_CN
-        * 返回四元数绕轴心和角度
-        *
-        * @param axis 轴心
-        * @returns 角度
-        */
-        toAxisAngle(axis: Vector3D): number;
-        /**
-        * @language en_US
-        * Spherically interpolates between two quaternions, providing an interpolation between rotations with constant angle change rate.
-        * @param qa The first quaternion to interpolate.
-        * @param qb The second quaternion to interpolate.
-        * @param t The interpolation weight, a value between 0 and 1.
-        */
-        /**
-        * @language zh_CN
-        * 两个四元数之间球形插值，插值之间提供旋转恒定角变化率。
-        *
-        * @param qa 四元数1
-        * @param qb 四元数2
-        * @param t 差值时刻
-        */
-        slerp(qa: Quaternion, qb: Quaternion, t: number): void;
-        /**
-        * @language en_US
-        * Linearly interpolates between two quaternions.
-        * @param qa The first quaternion to interpolate.
-        * @param qb The second quaternion to interpolate.
-        * @param t The interpolation weight, a value between 0 and 1.
-        */
-        /**
-        * @language zh_CN
-        * 两个四元数之间的线性插值
-        *
-        * @param qa 四元数1
-        * @param qb 四元数2
-        * @param t 差值时刻
-        */
-        lerp(qa: Quaternion, qb: Quaternion, t: number): void;
-        /**
-        * @language en_US
-        * Fills the quaternion object with values representing the given euler rotation.
-        *
-        * @param    ax        The angle in radians of the rotation around the ax axis.
-        * @param    ay        The angle in radians of the rotation around the ay axis.
-        * @param    az        The angle in radians of the rotation around the az axis.
-        */
-        /**
-        * @language zh_CN
-        * 用数值表示给定的欧拉旋转填充四元数对象。
-        *
-        * @param ax x轴旋转角度
-        * @param ay y轴旋转角度
-        * @param az z轴旋转角度
-        */
-        fromEulerAngles(ax: number, ay: number, az: number): Quaternion;
-        /**
-        * @language en_US
-        * Fills a target Vector3D object with the Euler angles that form the rotation represented by this quaternion.
-        * @param target An optional Vector3D object to contain the Euler angles. If not provided, a new object is created.
-        * @returns The Vector3D containing the Euler angles.
-        */
-        /**
-        * @language zh_CN
-        * 把四元数转成欧拉角返回
-        *
-        * @param target 转成的欧拉返回值，如果为null就新建一个对象返回
-        * @retruns 转成的欧拉返回值
-        */
-        toEulerAngles(target?: Vector3D): Vector3D;
-        /**
-        * @language en_US
-        * Normalises the quaternion object.
-        */
-        /**
-        * @language zh_CN
-        * 单位化四元数
-        */
-        normalize(val?: number): void;
-        /**
-        * @language en_US
-        * Used to trace the values of a quaternion.
-        *
-        * @returns A string representation of the quaternion object.
-        */
-        /**
-        * @language zh_CN
-        * 以字符串形式返回四元数的值
-        * @returns
-        */
-        toString(): string;
-        /**
-        * @language en_US
-        * Converts the quaternion to a Matrix3D object representing an equivalent rotation.
-        * @param target An optional Matrix3D container to store the transformation in. If not provided, a new object is created.
-        * @returns A Matrix3D object representing an equivalent rotation.
-        */
-        /**
-        * @language zh_CN
-        * 把一个四元数转换成矩阵
-        * @param target 返回转换后的矩阵，如果为null就新建一个对象返回
-        * @see egret3d.Matrix3D
-        * @returns 返回转换后的矩阵
-        */
-        toMatrix3D(target?: Matrix3D): Matrix3D;
-        /**
-        * @language en_US
-        * Extracts a quaternion rotation matrix out of a given Matrix3D object.
-        * @param matrix The Matrix3D out of which the rotation will be extracted.
-        */
-        /**
-        * @language zh_CN
-        * 用一个旋转矩阵生成四元数
-        * @param matrix 旋转矩阵
-        */
-        fromMatrix(matrix: Matrix3D): void;
-        /**
-        * @language en_US
-        * Clones the quaternion.
-        * @returns An exact duplicate of the current Quaternion.
-        */
-        /**
-        * @language zh_CN
-        * 克隆一个四元数
-        * @returns 当前四元数复制后返回.
-        */
-        clone(): Quaternion;
-        /**
-        * @language en_US
-        * Rotates a point.
-        * @param vector The Vector3D object to be rotated.
-        * @param target An optional Vector3D object that will contain the rotated coordinates. If not provided, a new object will be created.
-        * @returns A Vector3D object containing the rotated point.
-        */
-        /**
-        * @language zh_CN
-        * 旋转一个3量坐标点
-        * @param vector 被旋转的对象
-        * @param target 旋转后的坐标对象。如果为null，将创建一个新的对象
-        * @returns 返回旋转后的坐标对象
-        */
-        rotatePoint(vector: Vector3D, target?: Vector3D): Vector3D;
-        /**
-        * @language en_US
-        * Copies the data from a quaternion into this instance.
-        * @param q The quaternion to copy from.
-        */
-        /**
-        * @language zh_CN
-        * 将数据从四元数复制到该实例
-        * @param q 被复制的四元数对象
-        */
-        copyFrom(q: Quaternion): void;
-    }
-}
-declare module feng3d {
+declare module me.feng3d {
     /**
      * Vector3D 类使用笛卡尔坐标 x、y 和 z 表示三维空间中的点或位置
      * @author feng 2016-3-21
@@ -855,122 +158,313 @@ declare module feng3d {
         toString(): string;
     }
 }
-declare module feng3d {
+declare module me.feng3d {
     /**
-     * 自定义事件
-     * @author warden_feng 2014-5-7
+     * Matrix3D 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
+     * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）。
+     * Matrix3D 类还可以执行透视投影，这会将 3D 坐标空间中的点映射到二维 (2D) 视图。
+     *
+     *  ---            方向              平移 ---
+     *  |   scaleX      0         0       tx    |
+     *  |     0       scaleY      0       ty    |
+     *  |     0         0       scaleZ    tz    |
+     *  |     0         0         0       tw    |
+     *  ---  x轴        y轴      z轴          ---
+     *
+     *  ---            方向              平移 ---
+     *  |     0         4         8       12    |
+     *  |     1         5         9       13    |
+     *  |     2         6        10       14    |
+     *  |     3         7        11       15    |
+     *  ---  x轴        y轴      z轴          ---
      */
-    class Event {
-        private _type;
-        private _data;
-        private _bubbles;
-        private _target;
-        private _currentTarget;
-        private _stopsPropagation;
-        private _stopsImmediatePropagation;
+    class Matrix3D {
         /**
-         * 创建一个作为参数传递给事件侦听器的 Event 对象。
-         * @param type 事件的类型，可以作为 Event.type 访问。
-         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 确定是否可以取消 Event 对象。默认值为 false。
+         * 一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
          */
-        constructor(type: string, data?: any, bubbles?: Boolean, cancelable?: Boolean);
+        rawData: Array<number>;
         /**
-         * 防止对事件流中当前节点中和所有后续节点中的事件侦听器进行处理。此方法会立即生效，并且会影响当前节点中的事件侦听器。相比之下，在当前节点中的所有事件侦听器都完成处理之前，stopPropagation() 方法不会生效。
+         * 一个保存显示对象在转换参照帧中的 3D 坐标 (x,y,z) 位置的 Vector3D 对象。
          */
-        stopImmediatePropagation(): void;
+        position: Vector3D;
         /**
-         * 防止对事件流中当前节点的后续节点中的所有事件侦听器进行处理。此方法不会影响当前节点 (currentTarget) 中的任何事件侦听器。相比之下，stopImmediatePropagation() 方法可以防止对当前节点中和后续节点中的事件侦听器进行处理。对此方法的其他调用没有任何效果。可以在事件流的任何阶段中调用此方法。
+         * 一个用于确定矩阵是否可逆的数字。
          */
-        stopPropagation(): void;
-        tostring(): string;
+        determinant: number;
         /**
-         * 表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
+         * 前方（+Z轴方向）
          */
-        bubbles: Boolean;
+        forward: Vector3D;
         /**
-         * 事件的类型。类型区分大小写。
+         * 上方（+y轴方向）
          */
-        type: string;
-        /** 事件携带的自定义数据 */
+        up: Vector3D;
         /**
-         * @private
+         * 右方（+x轴方向）
          */
-        data: any;
+        right: Vector3D;
         /**
-         * 事件目标。
+         * 创建 Matrix3D 对象。
+         * @param   datas    一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
          */
-        target: Object;
+        constructor(datas?: Array<number>);
         /**
-         * 当前正在使用某个事件侦听器处理 Event 对象的对象。
+         * 创建旋转矩阵
+         * @param   degrees         角度
+         * @param   axis            旋转轴
+         * @param   pivotPoint      旋转中心点
          */
-        currentTarget: Object;
-        stopsImmediatePropagation: Boolean;
-        stopsPropagation: Boolean;
-        setTarget(value: IEventDispatcher): void;
-        setCurrentTarget(value: IEventDispatcher): void;
+        static createRotationMatrix3D(degrees: number, axis: Vector3D): Matrix3D;
+        /**
+         * 创建缩放矩阵
+         * @param   xScale      用于沿 x 轴缩放对象的乘数。
+         * @param   yScale      用于沿 y 轴缩放对象的乘数。
+         * @param   zScale      用于沿 z 轴缩放对象的乘数。
+         */
+        static createScaleMatrix3D(xScale: number, yScale: number, zScale: number): Matrix3D;
+        /**
+         * 创建位移矩阵
+         * @param   x   沿 x 轴的增量平移。
+         * @param   y   沿 y 轴的增量平移。
+         * @param   z   沿 z 轴的增量平移。
+         */
+        static createTranslationMatrix3D(x: number, y: number, z: number): Matrix3D;
+        /**
+         * 通过将另一个 Matrix3D 对象与当前 Matrix3D 对象相乘来后置一个矩阵。
+         */
+        append(lhs: Matrix3D): void;
+        /**
+         * 在 Matrix3D 对象上后置一个增量旋转。
+         * @param   degrees         角度
+         * @param   axis            旋转轴
+         * @param   pivotPoint      旋转中心点
+         */
+        appendRotation(degrees: number, axis: Vector3D, pivotPoint?: Vector3D): void;
+        /**
+         * 在 Matrix3D 对象上后置一个增量缩放，沿 x、y 和 z 轴改变位置。
+         * @param   xScale      用于沿 x 轴缩放对象的乘数。
+         * @param   yScale      用于沿 y 轴缩放对象的乘数。
+         * @param   zScale      用于沿 z 轴缩放对象的乘数。
+         */
+        appendScale(xScale: number, yScale: number, zScale: number): void;
+        /**
+         * 在 Matrix3D 对象上后置一个增量平移，沿 x、y 和 z 轴重新定位。
+         * @param   x   沿 x 轴的增量平移。
+         * @param   y   沿 y 轴的增量平移。
+         * @param   z   沿 z 轴的增量平移。
+         */
+        appendTranslation(x: number, y: number, z: number): void;
+        /**
+         * 返回一个新 Matrix3D 对象，它是与当前 Matrix3D 对象完全相同的副本。
+         */
+        clone(): Matrix3D;
+        /**
+         * 将 Vector3D 对象复制到调用方 Matrix3D 对象的特定列中。
+         * @param   column      副本的目标列。
+         * @param   vector3D    要从中复制数据的 Vector3D 对象。
+         */
+        copyColumnFrom(column: number, vector3D: Vector3D): void;
+        /**
+         * 将调用方 Matrix3D 对象的特定列复制到 Vector3D 对象中。
+         * @param   column       要从中复制数据的列。
+         * @param   vector3D     副本的目标 Vector3D 对象。
+         */
+        copyColumnTo(column: number, vector3D: Vector3D): void;
+        /**
+         * 将源 Matrix3D 对象中的所有矩阵数据复制到调用方 Matrix3D 对象中。
+         * @param   sourceMatrix3D      要从中复制数据的 Matrix3D 对象。
+         */
+        copyFrom(sourceMatrix3D: Matrix3D): void;
+        /**
+         * 将源 Vector 对象中的所有矢量数据复制到调用方 Matrix3D 对象中。利用可选索引参数，您可以选择矢量中的任何起始文字插槽。
+         * @param   vector      要从中复制数据的 Vector 对象。
+         * @param   index       vector中的起始位置
+         * @param   transpose   是否转置当前矩阵
+         */
+        copyRawDataFrom(vector: Array<number>, index?: number, transpose?: boolean): void;
+        /**
+         * 将调用方 Matrix3D 对象中的所有矩阵数据复制到提供的矢量中。
+         * @param   vector      要将数据复制到的 Vector 对象。
+         * @param   index       vector中的起始位置
+         * @param   transpose   是否转置当前矩阵
+         */
+        copyRawDataTo(vector: Array<number>, index?: number, transpose?: boolean): void;
+        /**
+         * 将 Vector3D 对象复制到调用方 Matrix3D 对象的特定行中。
+         * @param   row         要将数据复制到的行。
+         * @param   vector3D    要从中复制数据的 Vector3D 对象。
+         */
+        copyRowFrom(row: number, vector3D: Vector3D): void;
+        /**
+         * 将调用方 Matrix3D 对象的特定行复制到 Vector3D 对象中。
+         * @param   row         要从中复制数据的行。
+         * @param   vector3D    将作为数据复制目的地的 Vector3D 对象。
+         */
+        copyRowTo(row: number, vector3D: Vector3D): void;
+        /**
+         * 拷贝当前矩阵
+         * @param   dest    目标矩阵
+         */
+        copyToMatrix3D(dest: Matrix3D): void;
+        /**
+         * 将转换矩阵的平移、旋转和缩放设置作为由三个 Vector3D 对象组成的矢量返回。
+         * @return      一个由三个 Vector3D 对象组成的矢量，其中，每个对象分别容纳平移、旋转和缩放设置。
+         */
+        decompose(): Vector3D[];
+        /**
+         * 使用不含平移元素的转换矩阵将 Vector3D 对象从一个空间坐标转换到另一个空间坐标。
+         * @param   v   一个容纳要转换的坐标的 Vector3D 对象。
+         * @return  一个包含转换后的坐标的 Vector3D 对象。
+         */
+        deltaTransformVector(v: Vector3D): Vector3D;
+        /**
+         * 将当前矩阵转换为恒等或单位矩阵。
+         */
+        identity(): void;
+        /**
+         * 反转当前矩阵。逆矩阵
+         * @return      如果成功反转矩阵，则返回 true。
+         */
+        invert(): boolean;
+        /**
+         * 通过将当前 Matrix3D 对象与另一个 Matrix3D 对象相乘来前置一个矩阵。得到的结果将合并两个矩阵转换。
+         * @param   rhs     个右侧矩阵，它与当前 Matrix3D 对象相乘。
+         */
+        prepend(rhs: Matrix3D): void;
+        /**
+         * 在 Matrix3D 对象上前置一个增量旋转。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行旋转，然后再执行其他转换。
+         * @param   degrees     旋转的角度。
+         * @param   axis        旋转的轴或方向。常见的轴为 X_AXIS (Vector3D(1,0,0))、Y_AXIS (Vector3D(0,1,0)) 和 Z_AXIS (Vector3D(0,0,1))。此矢量的长度应为 1。
+         * @param   pivotPoint  一个用于确定旋转中心的点。对象的默认轴点为该对象的注册点。
+         */
+        prependRotation(degrees: number, axis: Vector3D, pivotPoint?: Vector3D): void;
+        /**
+         * 在 Matrix3D 对象上前置一个增量缩放，沿 x、y 和 z 轴改变位置。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行缩放更改，然后再执行其他转换。
+         * @param   xScale      用于沿 x 轴缩放对象的乘数。
+         * @param   yScale      用于沿 y 轴缩放对象的乘数。
+         * @param   zScale      用于沿 z 轴缩放对象的乘数。
+         */
+        prependScale(xScale: number, yScale: number, zScale: number): void;
+        /**
+         * 在 Matrix3D 对象上前置一个增量平移，沿 x、y 和 z 轴重新定位。在将 Matrix3D 对象应用于显示对象时，矩阵会在 Matrix3D 对象中先执行平移更改，然后再执行其他转换。
+         * @param   x   沿 x 轴的增量平移。
+         * @param   y   沿 y 轴的增量平移。
+         * @param   z   沿 z 轴的增量平移。
+         */
+        prependTranslation(x: number, y: number, z: number): void;
+        /**
+         * 设置转换矩阵的平移、旋转和缩放设置。
+         * @param   components      一个由三个 Vector3D 对象组成的矢量，这些对象将替代 Matrix3D 对象的平移、旋转和缩放元素。
+         */
+        recompose(components: Vector3D[]): boolean;
+        /**
+         * 使用转换矩阵将 Vector3D 对象从一个空间坐标转换到另一个空间坐标。
+         * @param   v   一个容纳要转换的坐标的 Vector3D 对象。
+         * @return  一个包含转换后的坐标的 Vector3D 对象。
+         */
+        transformVector(v: Vector3D): Vector3D;
+        /**
+         * 使用转换矩阵将由数字构成的矢量从一个空间坐标转换到另一个空间坐标。
+         * @param   vin     一个由多个数字组成的矢量，其中每三个数字构成一个要转换的 3D 坐标 (x,y,z)。
+         * @param   vout    一个由多个数字组成的矢量，其中每三个数字构成一个已转换的 3D 坐标 (x,y,z)。
+         */
+        transformVectors(vin: number[], vout: number[]): void;
+        /**
+         * 将当前 Matrix3D 对象转换为一个矩阵，并将互换其中的行和列。
+         */
+        transpose(): void;
+        /**
+         * 比较矩阵是否相等
+         */
+        compare(matrix3D: Matrix3D, precision?: number): boolean;
+        /**
+         * 以字符串返回矩阵的值
+         */
+        toString(): string;
     }
 }
-declare module feng3d {
+declare module me.feng3d {
     /**
-     * 为了实现非flash原生显示列表的冒泡事件，自定义事件适配器
-     * @author feng 2016-3-22
+     * 3D空间
+     * @author feng 2016-04-26
      */
-    class EventDispatcher implements IEventDispatcher {
-        _target: IEventDispatcher;
-        _eventListeners: any;
-        /** 冒泡属性名称为“parent” */
-        static BUBBLE_PROPERTY: string;
+    class Space3D extends Component {
         /**
-         * 构建事件适配器
-         * @param target		事件适配主体
+         * X坐标
          */
-        constructor(target?: IEventDispatcher);
-        addEventListener(type: string, listener: Function, priority?: number, useWeakReference?: Boolean): void;
-        removeEventListener(type: string, listener: Function): void;
-        removeEventListeners(type?: string): void;
+        x: number;
         /**
-         * @inheritDoc
+         * Y坐标
          */
-        dispatchEvent(event: Event): Boolean;
-        hasEventListener(type: string): Boolean;
+        y: number;
         /**
-         * 该功能暂未实现
-         * @param type
-         * @return
+         * Z坐标
          */
-        willTrigger(type: string): Boolean;
+        z: number;
         /**
-         * 父事件适配器
+         * X旋转
          */
-        private parentDispatcher;
+        rx: number;
+        /**
+         * Y旋转
+         */
+        ry: number;
+        /**
+         * Z旋转
+         */
+        rz: number;
+        /**
+         * X缩放
+         */
+        sx: number;
+        /**
+         * Y缩放
+         */
+        sy: number;
+        /**
+         * Z缩放
+         */
+        sz: number;
+        /**
+         * 空间矩阵（此处返回的是公共的临时矩阵）
+         */
+        matrix3D: Matrix3D;
+        /**
+         * 更新矩阵
+         */
+        private updateMatrix3D();
+        /**
+         * 使矩阵无效
+         */
+        protected invalidateMatrix3D(): void;
+        private _x;
+        private _y;
+        private _z;
+        private _rx;
+        private _ry;
+        private _rz;
+        private _sx;
+        private _sy;
+        private _sz;
+        private _matrix3D;
+        private matrix3DDirty;
     }
 }
-declare module feng3d {
+declare module me.feng3d {
     /**
-     * IEventDispatcher 接口定义用于添加或删除事件侦听器的方法，检查是否已注册特定类型的事件侦听器，并调度事件。
-     * @author feng 2016-3-22
+     * 游戏对象
+     * @author feng 2016-04-26
      */
-    interface IEventDispatcher {
-        /**
-         * 使用 EventDispatcher 对象注册事件侦听器对象，以使侦听器能够接收事件通知。
-         */
-        addEventListener(type: string, listener: Function, priority: number, useWeakReference: Boolean): void;
-        /**
-         * 将事件调度到事件流中。
-         */
-        dispatchEvent(event: Event): Boolean;
-        /**
-         * 检查 EventDispatcher 对象是否为特定事件类型注册了任何侦听器。
-         */
-        hasEventListener(type: string): Boolean;
-        /**
-         * 从 EventDispatcher 对象中删除侦听器。
-         */
-        removeEventListener(type: string, listener: Function): void;
-        /**
-         * 检查是否用此 EventDispatcher 对象或其任何祖代为指定事件类型注册了事件侦听器。
-         */
-        willTrigger(type: string): Boolean;
+    class GameObject extends Component {
     }
+}
+/**
+ * 临时值
+ * @author feng 2016-04-26
+ */
+declare module me.feng3d.temp {
+    /**
+     * 临时矩阵
+     */
+    var matrix3D: Matrix3D;
 }

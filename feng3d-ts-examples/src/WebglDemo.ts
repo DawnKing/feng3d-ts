@@ -207,10 +207,14 @@ class WebglDemo {
         demo.gl.drawArrays(demo.gl.TRIANGLE_STRIP, 0, 4);
     }
 
+    
+
     private setMatrixUniforms() {
 
-        var perspectiveMatrix = new feng3d.Matrix3D([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0])
-        var mvMatrix = new feng3d.Matrix3D([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
+        var perspectiveMatrix = new me.feng3d.Matrix3D([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0])
+        space3d.z = -6;
+        
+        var mvMatrix = space3d.matrix3D;
 
         var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
         this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
@@ -224,3 +228,5 @@ function start() {
     var demo = new WebglDemo();
     demo;
 }
+
+var space3d = new me.feng3d.Space3D();
