@@ -31,7 +31,7 @@ function onFeng3dInited2(ev: Event) {
         
         loadjs("bin/" + element, alljsLoadOk);
         var className = getClassName(element);
-        document.write('<input type="submit" value="' + className + '" onclick="(new ' + className + '()).test()">');
+       // document.write('<input type="submit" value="' + className + '" onclick="(new ' + className + '()).test()">');
     }
 }
 
