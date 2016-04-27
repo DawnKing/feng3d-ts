@@ -152,10 +152,10 @@ var WebglDemo = (function () {
     };
     WebglDemo.prototype.setMatrixUniforms = function () {
         // var perspectiveMatrix = new me.feng3d.Matrix3D([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0])
-        var perspectiveMatrix = camSpace3D.matrix3D.clone();
+        var perspectiveMatrix = camSpace3D.transform3D.clone();
         perspectiveMatrix.invert();
-        perspectiveMatrix.append(lens.matrix);
-        var mvMatrix = objSpace3d.matrix3D;
+        perspectiveMatrix.append(camera.projectionMatrix3D);
+        var mvMatrix = objSpace3d.transform3D;
         var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
         this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
         var mvUniform = this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
@@ -177,7 +177,7 @@ objSpace3d.z = 6;
  */
 var camSpace3D = new me.feng3d.Space3D();
 /**
- * 镜头
+ * 摄像机镜头
  */
-var lens = new me.feng3d.PerspectiveLens();
+var camera = new me.feng3d.Camera();
 //# sourceMappingURL=WebglDemo.js.map

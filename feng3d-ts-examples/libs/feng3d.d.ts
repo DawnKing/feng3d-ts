@@ -415,26 +415,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 镜头事件
-     * @author feng 2014-10-14
-     */
-    class LensEvent extends Event {
-        static MATRIX_CHANGED: string;
-        /**
-         * 镜头
-         */
-        data: LensBase;
-        /**
-         * 创建一个镜头事件。
-         * @param type 事件的类型
-         * @param lens 镜头
-         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         */
-        constructor(type: string, lens?: LensBase, bubbles?: boolean);
-    }
-}
-declare module me.feng3d {
-    /**
      * 3D空间
      * @author feng 2016-04-26
      */
@@ -476,17 +456,17 @@ declare module me.feng3d {
          */
         sz: number;
         /**
-         * 空间矩阵（此处返回的是公共的临时矩阵）
+         * 空间变换矩阵（此处返回的是公共的临时矩阵）
          */
-        matrix3D: Matrix3D;
+        transform3D: Matrix3D;
         /**
-         * 更新矩阵
+         * 更新变换矩阵
          */
-        private updateMatrix3D();
+        private updateTransform3D();
         /**
-         * 使矩阵无效
+         * 使变换矩阵无效
          */
-        protected invalidateMatrix3D(): void;
+        protected invalidateTransform3D(): void;
         private _x;
         private _y;
         private _z;
@@ -496,16 +476,44 @@ declare module me.feng3d {
         private _sx;
         private _sy;
         private _sz;
-        private _matrix3D;
-        private matrix3DDirty;
+        private _transform3D;
+        private transform3DDirty;
     }
 }
 declare module me.feng3d {
     /**
-     * 游戏对象
+     * 3D对象
      * @author feng 2016-04-26
      */
-    class GameObject extends Component {
+    class Object3D extends Component {
+        /**
+         * 3D空间
+         */
+        space3D: Space3D;
+        /**
+         * 构建3D对象
+         */
+        constructor();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 摄像机（镜头）事件
+     * @author feng 2014-10-14
+     */
+    class CameraEvent extends Event {
+        static MATRIX_CHANGED: string;
+        /**
+         * 摄像机（镜头）
+         */
+        data: CameraBase;
+        /**
+         * 创建一个摄像机（镜头）事件。
+         * @param type 事件的类型
+         * @param camera 摄像机（镜头）
+         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         */
+        constructor(type: string, camera?: CameraBase, bubbles?: boolean);
     }
 }
 declare module me.feng3d {
@@ -529,15 +537,14 @@ declare module me.feng3d {
      * 摄像机镜头
      * @author feng 2014-10-14
      */
-    abstract class LensBase extends EventDispatcher {
-        protected _matrix: Matrix3D;
+    abstract class CameraBase extends Component {
+        protected _projectionMatrix3D: Matrix3D;
         protected _scissorRect: Rectangle;
         protected _viewPort: Rectangle;
         protected _near: number;
         protected _far: number;
         protected _aspectRatio: number;
-        protected _matrixInvalid: boolean;
-        protected _frustumCorners: number[];
+        protected _projectionMatrix3DDirty: boolean;
         private _unprojection;
         private _unprojectionInvalid;
         /**
@@ -545,13 +552,9 @@ declare module me.feng3d {
          */
         constructor();
         /**
-         * Retrieves the corner points of the lens frustum.
-         */
-        frustumCorners: number[];
-        /**
          * 投影矩阵
          */
-        matrix: Matrix3D;
+        projectionMatrix3D: Matrix3D;
         /**
          * 最近距离
          */
@@ -587,19 +590,19 @@ declare module me.feng3d {
         /**
          * 投影矩阵失效
          */
-        protected invalidateMatrix(): void;
+        protected invalidateProjectionMatrix(): void;
         /**
          * 更新投影矩阵
          */
-        protected abstract updateMatrix(): any;
+        protected abstract updateProjectionMatrix(): any;
     }
 }
 declare module me.feng3d {
     /**
-     * 透视摄像机镜头
+     * 透视摄像机（镜头）
      * @author feng 2014-10-14
      */
-    class PerspectiveLens extends LensBase {
+    class Camera extends CameraBase {
         private _fieldOfView;
         private _focalLength;
         private _focalLengthInv;
@@ -625,7 +628,10 @@ declare module me.feng3d {
          * 坐标系类型
          */
         coordinateSystem: number;
-        protected updateMatrix(): void;
+        /**
+         * 更新投影矩阵
+         */
+        protected updateProjectionMatrix(): void;
     }
 }
 /**
