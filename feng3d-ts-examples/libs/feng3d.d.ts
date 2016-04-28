@@ -493,7 +493,7 @@ declare module me.feng3d {
         /**
          * 构建3D对象
          */
-        constructor();
+        constructor(name?: string);
     }
 }
 declare module me.feng3d {

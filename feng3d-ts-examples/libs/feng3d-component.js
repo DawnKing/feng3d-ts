@@ -61,21 +61,6 @@ var me;
                  */
                 this.components = [];
             }
-            Object.defineProperty(Component.prototype, "componentName", {
-                /**
-                 * 组件名称
-                 */
-                get: function () {
-                    if (this._componentName == null)
-                        this._componentName = Object.getPrototypeOf(this).constructor.name;
-                    return this._componentName;
-                },
-                set: function (value) {
-                    this._componentName = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
             Object.defineProperty(Component.prototype, "numComponents", {
                 /**
                  * 子组件个数
@@ -169,23 +154,23 @@ var me;
              * @param componentName		组件名称
              * @return 					获取到的组件
              */
-            Component.prototype.getComponentByName = function (componentName) {
-                var filterResult = this.getComponentsByName(componentName);
+            Component.prototype.getComponentByName = function (name) {
+                var filterResult = this.getComponentsByName(name);
                 return filterResult[0];
             };
             /**
              * 获取与给出组件名称相同的所有组件
              * <p>注意：此处比较的是componentName而非name</p>
-             * @param componentName		组件名称
+             * @param name		        组件名称
              * @return 					获取到的组件
              */
-            Component.prototype.getComponentsByName = function (componentName) {
+            Component.prototype.getComponentsByName = function (name) {
                 var filterResult = this.components.filter(function (item) {
                     var args = [];
                     for (var _i = 1; _i < arguments.length; _i++) {
                         args[_i - 1] = arguments[_i];
                     }
-                    return item.componentName == componentName;
+                    return item.name == name;
                 });
                 return filterResult;
             };

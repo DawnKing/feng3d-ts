@@ -1089,8 +1089,9 @@ var me;
             /**
              * 构建3D对象
              */
-            function Object3D() {
+            function Object3D(name) {
                 _super.call(this);
+                this.name = name || feng3d.getClassName(this);
                 this.getOrCreateComponentByClass(feng3d.Space3D);
             }
             Object.defineProperty(Object3D.prototype, "space3D", {
