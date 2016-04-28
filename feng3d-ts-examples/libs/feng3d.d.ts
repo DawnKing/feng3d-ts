@@ -498,6 +498,78 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 几何体
+     * @author feng 2016-04-28
+     */
+    class Geometry extends Component {
+        private _vaIdList;
+        /** 顶点属性数据步长字典 */
+        private strideDic;
+        /** 顶点属性数据字典 */
+        private vaDataDic;
+        private _indices;
+        /**
+         * 索引数据
+         */
+        /**
+         * 更新顶点索引数据
+         */
+        indices: number[];
+        /**
+         * 获取顶点属性步长(1-4)
+         * @param vaId          顶点属性编号
+         * @return 顶点属性步长
+         */
+        getVAStride(vaId: string): number;
+        /**
+         * 设置顶点属性数据
+         * @param vaId          顶点属性编号
+         * @param data          顶点属性数据
+         * @param stride        顶点数据步长
+         */
+        setVAData(vaId: string, data: number[], stride: number): void;
+        /**
+         * 获取顶点属性数据
+         * @param vaId 数据类型编号
+         * @return 顶点属性数据
+         */
+        getVAData(vaId: string): number[];
+        /**
+         * 顶点属性编号列表
+         */
+        vaIdList: string[];
+    }
+}
+declare module me.feng3d {
+    /**
+     * 几何体事件
+     * @author feng 2015-12-8
+     */
+    class GeometryEvent extends Event {
+        /**
+         * 获取几何体顶点数据
+         */
+        static GET_VA_DATA: string;
+        /**
+         * 改变几何体顶点数据事件
+         */
+        static CHANGED_VA_DATA: string;
+        /**
+         * 改变顶点索引数据事件
+         */
+        static CHANGED_INDEX_DATA: string;
+        /**
+         * 事件目标
+         */
+        target: Geometry;
+        /**
+         * 构建几何体事件
+         */
+        constructor(type: string, data?: any, bubbles?: boolean);
+    }
+}
+declare module me.feng3d {
+    /**
      * 摄像机（镜头）事件
      * @author feng 2014-10-14
      */

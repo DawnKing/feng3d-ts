@@ -1114,6 +1114,119 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 几何体
+         * @author feng 2016-04-28
+         */
+        var Geometry = (function (_super) {
+            __extends(Geometry, _super);
+            function Geometry() {
+                _super.apply(this, arguments);
+                this._vaIdList = [];
+                /** 顶点属性数据步长字典 */
+                this.strideDic = {};
+                /** 顶点属性数据字典 */
+                this.vaDataDic = {};
+            }
+            Object.defineProperty(Geometry.prototype, "indices", {
+                /**
+                 * 索引数据
+                 */
+                get: function () {
+                    return this._indices;
+                },
+                /**
+                 * 更新顶点索引数据
+                 */
+                set: function (value) {
+                    this._indices = value;
+                    this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_INDEX_DATA));
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 获取顶点属性步长(1-4)
+             * @param vaId          顶点属性编号
+             * @return 顶点属性步长
+             */
+            Geometry.prototype.getVAStride = function (vaId) {
+                return this.strideDic[vaId];
+            };
+            /**
+             * 设置顶点属性数据
+             * @param vaId          顶点属性编号
+             * @param data          顶点属性数据
+             * @param stride        顶点数据步长
+             */
+            Geometry.prototype.setVAData = function (vaId, data, stride) {
+                var vaLen = this.getVAStride(vaId);
+                this.vaDataDic[vaId] = data;
+                this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_VA_DATA, vaId));
+            };
+            /**
+             * 获取顶点属性数据
+             * @param vaId 数据类型编号
+             * @return 顶点属性数据
+             */
+            Geometry.prototype.getVAData = function (vaId) {
+                this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.GET_VA_DATA, vaId));
+                return this.vaDataDic[vaId];
+            };
+            Object.defineProperty(Geometry.prototype, "vaIdList", {
+                /**
+                 * 顶点属性编号列表
+                 */
+                get: function () {
+                    return this._vaIdList;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Geometry;
+        }(feng3d.Component));
+        feng3d.Geometry = Geometry;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 几何体事件
+         * @author feng 2015-12-8
+         */
+        var GeometryEvent = (function (_super) {
+            __extends(GeometryEvent, _super);
+            /**
+             * 构建几何体事件
+             */
+            function GeometryEvent(type, data, bubbles) {
+                if (data === void 0) { data = null; }
+                if (bubbles === void 0) { bubbles = false; }
+                _super.call(this, type, data, bubbles);
+            }
+            /**
+             * 获取几何体顶点数据
+             */
+            GeometryEvent.GET_VA_DATA = "getVAData";
+            /**
+             * 改变几何体顶点数据事件
+             */
+            GeometryEvent.CHANGED_VA_DATA = "changedVAData";
+            /**
+             * 改变顶点索引数据事件
+             */
+            GeometryEvent.CHANGED_INDEX_DATA = "changedIndexData";
+            return GeometryEvent;
+        }(feng3d.Event));
+        feng3d.GeometryEvent = GeometryEvent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 摄像机（镜头）事件
          * @author feng 2014-10-14
          */
