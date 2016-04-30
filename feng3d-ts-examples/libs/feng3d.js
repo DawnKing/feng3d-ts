@@ -1114,6 +1114,33 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * opengl顶点属性名称
+         */
+        var GLAttribute = (function () {
+            function GLAttribute() {
+            }
+            /**
+             * 坐标
+             */
+            GLAttribute.position = "vaPosition";
+            /**
+             * 法线
+             */
+            GLAttribute.normal = "vaNormal";
+            /**
+             * 切线
+             */
+            GLAttribute.tangent = "vaTangent";
+            return GLAttribute;
+        }());
+        feng3d.GLAttribute = GLAttribute;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 几何体
          * @author feng 2016-04-28
          */
@@ -1549,6 +1576,142 @@ var me;
             return Camera;
         }(feng3d.CameraBase));
         feng3d.Camera = Camera;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 平面基元
+         * @author feng 2016-04-30
+         */
+        var PlanePrimitive = (function () {
+            /**
+             * 构建平面基元
+             * @param width 宽度
+             * @param height 高度
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             * @param doubleSided 是否双面
+             */
+            function PlanePrimitive(width, height, segmentsW, segmentsH, yUp, doubleSided) {
+                if (width === void 0) { width = 100; }
+                if (height === void 0) { height = 100; }
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
+                if (doubleSided === void 0) { doubleSided = false; }
+                this.segmentsW = segmentsW;
+                this.segmentsH = segmentsH;
+                this.yUp = yUp;
+                this.width = width;
+                this.height = height;
+                this.doubleSided = doubleSided;
+            }
+            return PlanePrimitive;
+        }());
+        feng3d.PlanePrimitive = PlanePrimitive;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        var primitives;
+        (function (primitives) {
+            /**
+             * 创建
+             */
+            function creatPlane(plane) {
+                var target = new feng3d.Geometry();
+                var vertexPositionData = [];
+                var vertexNormalData = [];
+                var vertexTangentData = [];
+                var indices = [];
+                var tw = this._segmentsW + 1;
+                var vertexPositionStride = 3;
+                var vertexNormalStride = 3;
+                var vertexTangentStride = 3;
+                var numIndices = 0;
+                var positionIndex = 0;
+                var normalIndex = 0;
+                var tangentIndex = 0;
+                var x, y;
+                var base;
+                for (var yi = 0; yi <= this._segmentsH; ++yi) {
+                    for (var xi = 0; xi <= this._segmentsW; ++xi) {
+                        x = (xi / this._segmentsW - .5) * this._width;
+                        y = (yi / this._segmentsH - .5) * this._height;
+                        //设置坐标数据
+                        vertexPositionData[positionIndex++] = x;
+                        if (this._yUp) {
+                            vertexPositionData[positionIndex++] = 0;
+                            vertexPositionData[positionIndex++] = y;
+                        }
+                        else {
+                            vertexPositionData[positionIndex++] = y;
+                            vertexPositionData[positionIndex++] = 0;
+                        }
+                        //设置法线数据
+                        vertexNormalData[normalIndex++] = 0;
+                        if (this._yUp) {
+                            vertexNormalData[normalIndex++] = 1;
+                            vertexNormalData[normalIndex++] = 0;
+                        }
+                        else {
+                            vertexNormalData[normalIndex++] = 0;
+                            vertexNormalData[normalIndex++] = -1;
+                        }
+                        vertexTangentData[tangentIndex++] = 1;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                        //复制反面数据
+                        if (this._doubleSided) {
+                            for (var i = 0; i < 3; ++i) {
+                                vertexPositionData[positionIndex] = vertexPositionData[positionIndex - vertexPositionStride];
+                                ++positionIndex;
+                            }
+                            for (i = 0; i < 3; ++i) {
+                                vertexPositionData[normalIndex] = -vertexPositionData[normalIndex - vertexNormalStride];
+                                ++normalIndex;
+                            }
+                            for (i = 0; i < 3; ++i) {
+                                vertexTangentData[tangentIndex] = -vertexTangentData[tangentIndex - vertexTangentStride];
+                                ++tangentIndex;
+                            }
+                        }
+                        //生成索引数据
+                        if (xi != this._segmentsW && yi != this._segmentsH) {
+                            base = xi + yi * tw;
+                            var mult = this._doubleSided ? 2 : 1;
+                            indices[numIndices++] = base * mult;
+                            indices[numIndices++] = (base + tw) * mult;
+                            indices[numIndices++] = (base + tw + 1) * mult;
+                            indices[numIndices++] = base * mult;
+                            indices[numIndices++] = (base + tw + 1) * mult;
+                            indices[numIndices++] = (base + 1) * mult;
+                            //设置反面索引数据
+                            if (this._doubleSided) {
+                                indices[numIndices++] = (base + tw + 1) * mult + 1;
+                                indices[numIndices++] = (base + tw) * mult + 1;
+                                indices[numIndices++] = base * mult + 1;
+                                indices[numIndices++] = (base + 1) * mult + 1;
+                                indices[numIndices++] = (base + tw + 1) * mult + 1;
+                                indices[numIndices++] = base * mult + 1;
+                            }
+                        }
+                    }
+                }
+                target.setVAData(feng3d.GLAttribute.position, vertexPositionData, vertexPositionStride);
+                target.setVAData(feng3d.GLAttribute.normal, vertexNormalData, vertexNormalStride);
+                target.setVAData(feng3d.GLAttribute.tangent, vertexTangentData, vertexTangentStride);
+                target.indices = indices;
+                return target;
+            }
+            primitives.creatPlane = creatPlane;
+        })(primitives = feng3d.primitives || (feng3d.primitives = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 /**
