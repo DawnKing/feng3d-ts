@@ -725,53 +725,16 @@ declare module me.feng3d {
         protected updateProjectionMatrix(): void;
     }
 }
-declare module me.feng3d {
-    /**
-     * 平面基元
-     * @author feng 2016-04-30
-     */
-    class PlanePrimitive {
-        /**
-         * 宽度
-         */
-        width: number;
-        /**
-         * 高度
-         */
-        height: number;
-        /**
-         * 横向分割数
-         */
-        segmentsW: number;
-        /**
-         * 纵向分割数
-         */
-        segmentsH: number;
-        /**
-         * 正面朝向 true:Y+ false:Z+
-         */
-        yUp: boolean;
-        /**
-         * 是否双面
-         */
-        doubleSided: boolean;
-        /**
-         * 构建平面基元
-         * @param width 宽度
-         * @param height 高度
-         * @param segmentsW 横向分割数
-         * @param segmentsH 纵向分割数
-         * @param yUp 正面朝向 true:Y+ false:Z+
-         * @param doubleSided 是否双面
-         */
-        constructor(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, doubleSided?: boolean);
-    }
-}
 declare module me.feng3d.primitives {
     /**
-     * 创建
+     * 创建平面几何体
+     * @param width 宽度
+     * @param height 高度
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
+     * @param yUp 正面朝向 true:Y+ false:Z+
      */
-    function creatPlane(plane: PlanePrimitive): Geometry;
+    function createPlane(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
 /**
  * 临时值

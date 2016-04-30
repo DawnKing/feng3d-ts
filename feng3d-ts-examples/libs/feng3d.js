@@ -1582,71 +1582,71 @@ var me;
 (function (me) {
     var feng3d;
     (function (feng3d) {
-        /**
-         * 平面基元
-         * @author feng 2016-04-30
-         */
-        var PlanePrimitive = (function () {
+        var primitives;
+        (function (primitives) {
             /**
-             * 构建平面基元
+             * 创建平面几何体
              * @param width 宽度
              * @param height 高度
              * @param segmentsW 横向分割数
              * @param segmentsH 纵向分割数
              * @param yUp 正面朝向 true:Y+ false:Z+
-             * @param doubleSided 是否双面
              */
-            function PlanePrimitive(width, height, segmentsW, segmentsH, yUp, doubleSided) {
+            function createPlane(width, height, segmentsW, segmentsH, yUp, elements) {
                 if (width === void 0) { width = 100; }
                 if (height === void 0) { height = 100; }
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (yUp === void 0) { yUp = true; }
-                if (doubleSided === void 0) { doubleSided = false; }
-                this.segmentsW = segmentsW;
-                this.segmentsH = segmentsH;
-                this.yUp = yUp;
-                this.width = width;
-                this.height = height;
-                this.doubleSided = doubleSided;
+                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
+                var geometry = new feng3d.Geometry();
+                elements.forEach(function (element) {
+                    switch (element) {
+                        case feng3d.GLAttribute.position:
+                            var vertexPositionData = buildPosition(width, height, segmentsW, segmentsH, yUp);
+                            geometry.setVAData(feng3d.GLAttribute.position, vertexPositionData, 3);
+                            break;
+                        case feng3d.GLAttribute.normal:
+                            var vertexNormalData = buildNormal(segmentsW, segmentsH, yUp);
+                            geometry.setVAData(feng3d.GLAttribute.normal, vertexNormalData, 3);
+                            break;
+                        case feng3d.GLAttribute.tangent:
+                            var vertexTangentData = buildTangent(segmentsW, segmentsH, yUp);
+                            geometry.setVAData(feng3d.GLAttribute.tangent, vertexTangentData, 3);
+                            break;
+                        default:
+                            throw ("\u4E0D\u652F\u6301\u4E3A\u5E73\u9762\u521B\u5EFA\u9876\u70B9\u5C5E\u6027 " + element);
+                    }
+                });
+                var indices = buildIndices(segmentsW, segmentsH, yUp);
+                geometry.indices = indices;
+                return geometry;
             }
-            return PlanePrimitive;
-        }());
-        feng3d.PlanePrimitive = PlanePrimitive;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        var primitives;
-        (function (primitives) {
+            primitives.createPlane = createPlane;
             /**
-             * 创建
+             * 构建顶点坐标
+             * @param width 宽度
+             * @param height 高度
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
              */
-            function creatPlane(plane) {
-                var target = new feng3d.Geometry();
+            function buildPosition(width, height, segmentsW, segmentsH, yUp) {
+                if (width === void 0) { width = 100; }
+                if (height === void 0) { height = 100; }
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
                 var vertexPositionData = [];
-                var vertexNormalData = [];
-                var vertexTangentData = [];
-                var indices = [];
-                var tw = this._segmentsW + 1;
-                var vertexPositionStride = 3;
-                var vertexNormalStride = 3;
-                var vertexTangentStride = 3;
-                var numIndices = 0;
-                var positionIndex = 0;
-                var normalIndex = 0;
-                var tangentIndex = 0;
                 var x, y;
-                var base;
-                for (var yi = 0; yi <= this._segmentsH; ++yi) {
-                    for (var xi = 0; xi <= this._segmentsW; ++xi) {
-                        x = (xi / this._segmentsW - .5) * this._width;
-                        y = (yi / this._segmentsH - .5) * this._height;
+                var positionIndex = 0;
+                for (var yi = 0; yi <= segmentsH; ++yi) {
+                    for (var xi = 0; xi <= segmentsW; ++xi) {
+                        x = (xi / segmentsW - .5) * width;
+                        y = (yi / segmentsH - .5) * height;
                         //设置坐标数据
                         vertexPositionData[positionIndex++] = x;
-                        if (this._yUp) {
+                        if (yUp) {
                             vertexPositionData[positionIndex++] = 0;
                             vertexPositionData[positionIndex++] = y;
                         }
@@ -1654,9 +1654,27 @@ var me;
                             vertexPositionData[positionIndex++] = y;
                             vertexPositionData[positionIndex++] = 0;
                         }
+                    }
+                }
+                return vertexPositionData;
+            }
+            /**
+             * 构建顶点法线
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             */
+            function buildNormal(segmentsW, segmentsH, yUp) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
+                var vertexNormalData = [];
+                var normalIndex = 0;
+                for (var yi = 0; yi <= segmentsH; ++yi) {
+                    for (var xi = 0; xi <= segmentsW; ++xi) {
                         //设置法线数据
                         vertexNormalData[normalIndex++] = 0;
-                        if (this._yUp) {
+                        if (yUp) {
                             vertexNormalData[normalIndex++] = 1;
                             vertexNormalData[normalIndex++] = 0;
                         }
@@ -1664,53 +1682,61 @@ var me;
                             vertexNormalData[normalIndex++] = 0;
                             vertexNormalData[normalIndex++] = -1;
                         }
+                    }
+                }
+                return vertexNormalData;
+            }
+            /**
+             * 构建顶点切线
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             */
+            function buildTangent(segmentsW, segmentsH, yUp) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
+                var vertexTangentData = [];
+                var tangentIndex = 0;
+                for (var yi = 0; yi <= segmentsH; ++yi) {
+                    for (var xi = 0; xi <= segmentsW; ++xi) {
                         vertexTangentData[tangentIndex++] = 1;
                         vertexTangentData[tangentIndex++] = 0;
                         vertexTangentData[tangentIndex++] = 0;
-                        //复制反面数据
-                        if (this._doubleSided) {
-                            for (var i = 0; i < 3; ++i) {
-                                vertexPositionData[positionIndex] = vertexPositionData[positionIndex - vertexPositionStride];
-                                ++positionIndex;
-                            }
-                            for (i = 0; i < 3; ++i) {
-                                vertexPositionData[normalIndex] = -vertexPositionData[normalIndex - vertexNormalStride];
-                                ++normalIndex;
-                            }
-                            for (i = 0; i < 3; ++i) {
-                                vertexTangentData[tangentIndex] = -vertexTangentData[tangentIndex - vertexTangentStride];
-                                ++tangentIndex;
-                            }
-                        }
+                    }
+                }
+                return vertexTangentData;
+            }
+            /**
+             * 构建顶点索引
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             */
+            function buildIndices(segmentsW, segmentsH, yUp) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
+                var indices = [];
+                var tw = segmentsW + 1;
+                var numIndices = 0;
+                var base;
+                for (var yi = 0; yi <= segmentsH; ++yi) {
+                    for (var xi = 0; xi <= segmentsW; ++xi) {
                         //生成索引数据
-                        if (xi != this._segmentsW && yi != this._segmentsH) {
+                        if (xi != segmentsW && yi != segmentsH) {
                             base = xi + yi * tw;
-                            var mult = this._doubleSided ? 2 : 1;
-                            indices[numIndices++] = base * mult;
-                            indices[numIndices++] = (base + tw) * mult;
-                            indices[numIndices++] = (base + tw + 1) * mult;
-                            indices[numIndices++] = base * mult;
-                            indices[numIndices++] = (base + tw + 1) * mult;
-                            indices[numIndices++] = (base + 1) * mult;
-                            //设置反面索引数据
-                            if (this._doubleSided) {
-                                indices[numIndices++] = (base + tw + 1) * mult + 1;
-                                indices[numIndices++] = (base + tw) * mult + 1;
-                                indices[numIndices++] = base * mult + 1;
-                                indices[numIndices++] = (base + 1) * mult + 1;
-                                indices[numIndices++] = (base + tw + 1) * mult + 1;
-                                indices[numIndices++] = base * mult + 1;
-                            }
+                            indices[numIndices++] = base;
+                            indices[numIndices++] = base + tw;
+                            indices[numIndices++] = base + tw + 1;
+                            indices[numIndices++] = base;
+                            indices[numIndices++] = base + tw + 1;
+                            indices[numIndices++] = base + 1;
                         }
                     }
                 }
-                target.setVAData(feng3d.GLAttribute.position, vertexPositionData, vertexPositionStride);
-                target.setVAData(feng3d.GLAttribute.normal, vertexNormalData, vertexNormalStride);
-                target.setVAData(feng3d.GLAttribute.tangent, vertexTangentData, vertexTangentStride);
-                target.indices = indices;
-                return target;
+                return indices;
             }
-            primitives.creatPlane = creatPlane;
         })(primitives = feng3d.primitives || (feng3d.primitives = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));

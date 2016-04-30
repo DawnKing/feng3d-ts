@@ -169,18 +169,14 @@ class WebglDemo {
         // Now create an array of vertices for the square. Note that the Z
         // coordinate is always 0 here.
 
-        var vertices = [
-            1.0, 1.0, 0.0,
-            -1.0, 1.0, 0.0,
-            1.0, -1.0, 0.0,
-            -1.0, -1.0, 0.0
-        ];
+        var planeGeometry = me.feng3d.primitives.createPlane(1,1);
+        var positionData = planeGeometry.getVAData(me.feng3d.GLAttribute.position);
 
         // Now pass the list of vertices into WebGL to build the shape. We
         // do this by creating a Float32Array from the JavaScript array,
         // then use it to fill the current vertex buffer.
 
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positionData), this.gl.STATIC_DRAW);
     }
 
     //
@@ -233,7 +229,8 @@ function start() {
  * 物体空间
  */
 var objSpace3d = new me.feng3d.Space3D();
-objSpace3d.z = 6;
+objSpace3d.z = 3;
+objSpace3d.rx = 90;
 
 /**
  * 摄像机空间
