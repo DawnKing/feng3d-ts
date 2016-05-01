@@ -1361,7 +1361,7 @@ var me;
                 return this;
             };
             /**
-             * 深度查找与name相同的节点
+             * 根据名称深度查找节点
              * @param name 节点名称
              */
             Scene3DNode.prototype.find = function (name) {
@@ -1377,6 +1377,12 @@ var me;
                         return target;
                 }
                 return null;
+            };
+            /**
+             * 是否可渲染
+             */
+            Scene3DNode.prototype.renderable = function () {
+                return true;
             };
             return Scene3DNode;
         }(feng3d.EventDispatcher));

@@ -586,10 +586,15 @@ declare module me.feng3d {
          */
         removeObject(object3D: Object3D): this;
         /**
-         * 深度查找与name相同的节点
+         * 根据名称深度查找节点
          * @param name 节点名称
          */
         find(name: string): Scene3DNode;
+        /**
+         * 是否可渲染
+         */
+        renderable(): boolean;
+        getRenderables: any;
     }
 }
 declare module me.feng3d {
