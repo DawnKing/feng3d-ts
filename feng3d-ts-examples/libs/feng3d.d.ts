@@ -518,21 +518,19 @@ declare module me.feng3d {
         private gl;
         private shaderProgram;
         private vertexPositionAttribute;
-        private squareVerticesBuffer;
         private _camera;
+        private plane;
         vertexShaderStr: string;
         fragmentShaderStr: string;
         constructor(canvas: any, camera?: Object3D);
         private initGL();
         private initShaders();
         private getShader(theSource, type);
-        private initBuffers();
+        private initObject3D();
         private drawScene();
         private setMatrixUniforms();
-        /**
-         * 物体空间
-         */
-        objSpace3d: Space3D;
+        private getPerspectiveMatrix();
+        private drawObject3D(object3D);
     }
 }
 declare module me.feng3d {
@@ -780,6 +778,19 @@ declare module me.feng3d.factory {
      * 创建摄像机3D对象
      */
     function createCamera(): Object3D;
+    /**
+     * 创建3D基元对象
+     */
+    function createPrimitive(primitive: PrimitiveType): Object3D;
+}
+declare module me.feng3d {
+    /**
+     * 3D基元类型
+     * @author feng 2016-05-01
+     */
+    enum PrimitiveType {
+        Plane = 0,
+    }
 }
 /**
  * 临时值
