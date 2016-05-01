@@ -420,6 +420,19 @@ declare module me.feng3d {
      */
     class Space3D extends Component {
         /**
+         * 构建3D空间
+         * @param x X坐标
+         * @param y Y坐标
+         * @param z Z坐标
+         * @param rx X旋转
+         * @param ry Y旋转
+         * @param rz Z旋转
+         * @param sx X缩放
+         * @param sy Y缩放
+         * @param sz Z缩放
+         */
+        constructor(x?: number, y?: number, z?: number, rx?: number, ry?: number, rz?: number, sx?: number, sy?: number, sz?: number);
+        /**
          * X坐标
          */
         x: number;
@@ -494,6 +507,39 @@ declare module me.feng3d {
          * 构建3D对象
          */
         constructor(name?: string);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D视图
+     * @author feng 2016-05-01
+     */
+    class View3D {
+        private gl;
+        private shaderProgram;
+        private vertexPositionAttribute;
+        private squareVerticesBuffer;
+        vertexShaderStr: string;
+        fragmentShaderStr: string;
+        constructor(canvas: any);
+        private initGL();
+        private initShaders();
+        private getShader(theSource, type);
+        private initBuffers();
+        private drawScene();
+        private setMatrixUniforms();
+        /**
+         * 物体空间
+         */
+        objSpace3d: Space3D;
+        /**
+         * 摄像机空间
+         */
+        camSpace3D: Space3D;
+        /**
+         * 摄像机镜头
+         */
+        camera: Camera;
     }
 }
 declare module me.feng3d {
