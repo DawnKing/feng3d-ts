@@ -1148,11 +1148,18 @@ var me;
          * @author feng 2016-05-01
          */
         var View3D = (function () {
-            function View3D(canvas, camera) {
+            /**
+             * 构建3D视图
+             * @param canvas    画布
+             * @param scene     3D场景
+             * @param camera    摄像机
+             */
+            function View3D(canvas, scene, camera) {
                 if (camera === void 0) { camera = null; }
                 this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
                 this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
+                this.scene = scene || new feng3d.Scene3D();
                 this._camera = camera || feng3d.factory.createCamera();
                 this.gl = canvas.getContext("experimental-webgl");
                 this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
@@ -1161,6 +1168,17 @@ var me;
                 this.initObject3D();
                 setInterval(this.drawScene.bind(this), 15);
             }
+            Object.defineProperty(View3D.prototype, "scene", {
+                /** 3d场景 */
+                get: function () {
+                    return this._scene;
+                },
+                set: function (value) {
+                    this._scene = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
             View3D.prototype.initGL = function () {
                 this.gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
                 this.gl.clearDepth(1.0); // Clear everything
@@ -1267,6 +1285,136 @@ var me;
             return Object3DBufferManager;
         }());
         var object3DBufferManager = new Object3DBufferManager();
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D场景
+         * @author feng 2016-05-01
+         */
+        var Scene3D = (function (_super) {
+            __extends(Scene3D, _super);
+            /**
+             * 构造3D场景
+             */
+            function Scene3D() {
+                _super.call(this, null, null);
+            }
+            return Scene3D;
+        }(feng3d.Scene3DNode));
+        feng3d.Scene3D = Scene3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D场景节点
+         */
+        var Scene3DNode = (function (_super) {
+            __extends(Scene3DNode, _super);
+            /**
+             * 构建3D场景节点
+             * @param object3D 3D对象
+             * @param parent 父节点
+             */
+            function Scene3DNode(object3D, parent) {
+                _super.call(this);
+                /**
+                 * 父节点
+                 */
+                this.parent = null;
+                /**
+                 * 子节点列表
+                 */
+                this.children = [];
+                this.object3D = object3D;
+                this.parent = parent;
+            }
+            /**
+             * 添加3D对象生成节点
+             */
+            Scene3DNode.prototype.addObject3D = function (object3D) {
+                var child = new Scene3DNode(object3D, this);
+                this.children.push(child);
+                this.dispatchEvent(new feng3d.Scene3DEvent(feng3d.Scene3DEvent.ADDED, child, true));
+                return this;
+            };
+            /**
+             * 移除3D对象节点
+             */
+            Scene3DNode.prototype.removeObject = function (object3D) {
+                var deletedChild;
+                for (var i = 0; i < this.children.length; i++) {
+                    var element = this.children[i];
+                    if (element.object3D == object3D) {
+                        this.children.splice(i, 1);
+                        deletedChild = deletedChild;
+                        this.dispatchEvent(new feng3d.Scene3DEvent(feng3d.Scene3DEvent.REMOVED, deletedChild, true));
+                        break;
+                    }
+                }
+                return this;
+            };
+            /**
+             * 深度查找与name相同的节点
+             * @param name 节点名称
+             */
+            Scene3DNode.prototype.find = function (name) {
+                if (this.name == name) {
+                    return this;
+                }
+                for (var i = 0; i < this.children.length; i++) {
+                    var element = this.children[i];
+                    if (element.name == name)
+                        return element;
+                    var target = element.find(name);
+                    if (target != null)
+                        return target;
+                }
+                return null;
+            };
+            return Scene3DNode;
+        }(feng3d.EventDispatcher));
+        feng3d.Scene3DNode = Scene3DNode;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D场景事件
+         * author feng 2016-05-01
+         */
+        var Scene3DEvent = (function (_super) {
+            __extends(Scene3DEvent, _super);
+            /**
+             * 构建3D场景事件
+             * @param type 事件的类型，可以作为 Event.type 访问。
+             * @param data 携带数据
+             * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+             */
+            function Scene3DEvent(type, data, bubbles) {
+                if (data === void 0) { data = null; }
+                if (bubbles === void 0) { bubbles = false; }
+                _super.call(this, type, data, bubbles);
+            }
+            /**
+             * 添加3D场景节点
+             */
+            Scene3DEvent.ADDED = "scene3D_added";
+            /**
+             * 删除3D场景节点
+             */
+            Scene3DEvent.REMOVED = "scene3D_removed";
+            return Scene3DEvent;
+        }(feng3d.Event));
+        feng3d.Scene3DEvent = Scene3DEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

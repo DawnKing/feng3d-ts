@@ -520,9 +520,18 @@ declare module me.feng3d {
         private vertexPositionAttribute;
         private _camera;
         private plane;
+        private _scene;
         vertexShaderStr: string;
         fragmentShaderStr: string;
-        constructor(canvas: any, camera?: Object3D);
+        /**
+         * 构建3D视图
+         * @param canvas    画布
+         * @param scene     3D场景
+         * @param camera    摄像机
+         */
+        constructor(canvas: any, scene: Scene3D, camera?: Object3D);
+        /** 3d场景 */
+        scene: Scene3D;
         private initGL();
         private initShaders();
         private getShader(theSource, type);
@@ -531,6 +540,83 @@ declare module me.feng3d {
         private setMatrixUniforms();
         private getPerspectiveMatrix();
         private drawObject3D(object3D);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D场景
+     * @author feng 2016-05-01
+     */
+    class Scene3D extends Scene3DNode {
+        /**
+         * 构造3D场景
+         */
+        constructor();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D场景节点
+     */
+    class Scene3DNode extends EventDispatcher {
+        /**
+         * 父节点
+         */
+        parent: Scene3DNode;
+        /**
+         * 子节点列表
+         */
+        children: Scene3DNode[];
+        /**
+         * 3D对象
+         */
+        object3D: Object3D;
+        /**
+         * 构建3D场景节点
+         * @param object3D 3D对象
+         * @param parent 父节点
+         */
+        constructor(object3D: Object3D, parent: Scene3DNode);
+        /**
+         * 添加3D对象生成节点
+         */
+        addObject3D(object3D: Object3D): this;
+        /**
+         * 移除3D对象节点
+         */
+        removeObject(object3D: Object3D): this;
+        /**
+         * 深度查找与name相同的节点
+         * @param name 节点名称
+         */
+        find(name: string): Scene3DNode;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D场景事件
+     * author feng 2016-05-01
+     */
+    class Scene3DEvent extends Event {
+        /**
+         * 添加3D场景节点
+         */
+        static ADDED: string;
+        /**
+         * 删除3D场景节点
+         */
+        static REMOVED: string;
+        /**
+         * 数据
+         */
+        data: Scene3DNode;
+        /**
+         * 构建3D场景事件
+         * @param type 事件的类型，可以作为 Event.type 访问。
+         * @param data 携带数据
+         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         */
+        constructor(type: string, data?: Scene3DNode, bubbles?: boolean);
     }
 }
 declare module me.feng3d {
