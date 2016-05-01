@@ -1149,22 +1149,16 @@ var me;
          * @author feng 2016-05-01
          */
         var View3D = (function () {
-            function View3D(canvas) {
+            function View3D(canvas, camera) {
+                if (camera === void 0) { camera = null; }
                 this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
                 this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 /**
                  * 物体空间
                  */
                 this.objSpace3d = new me.feng3d.Space3D(0, 0, 3, 90);
-                /**
-                 * 摄像机空间
-                 */
-                this.camSpace3D = new me.feng3d.Space3D();
-                /**
-                 * 摄像机镜头
-                 */
-                this.camera = new me.feng3d.Camera();
                 feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
+                this._camera = camera || feng3d.factory.createCamera();
                 this.gl = canvas.getContext("experimental-webgl");
                 this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
                 this.initGL();
@@ -1247,9 +1241,11 @@ var me;
             };
             View3D.prototype.setMatrixUniforms = function () {
                 // var perspectiveMatrix = new me.feng3d.Matrix3D([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0])
-                var perspectiveMatrix = this.camSpace3D.transform3D.clone();
+                var camSpace3D = this._camera.space3D;
+                var camera = this._camera.getComponentByClass(feng3d.Camera);
+                var perspectiveMatrix = camSpace3D.transform3D.clone();
                 perspectiveMatrix.invert();
-                perspectiveMatrix.append(this.camera.projectionMatrix3D);
+                perspectiveMatrix.append(camera.projectionMatrix3D);
                 var mvMatrix = this.objSpace3d.transform3D;
                 var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
                 this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
@@ -1890,6 +1886,24 @@ var me;
                 return indices;
             }
         })(primitives = feng3d.primitives || (feng3d.primitives = {}));
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        var factory;
+        (function (factory) {
+            /**
+             * 创建摄像机3D对象
+             */
+            function createCamera() {
+                var camera = new feng3d.Object3D();
+                camera.addComponent(new feng3d.Camera());
+                return camera;
+            }
+            factory.createCamera = createCamera;
+        })(factory = feng3d.factory || (feng3d.factory = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 /**

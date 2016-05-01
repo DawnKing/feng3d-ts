@@ -519,9 +519,10 @@ declare module me.feng3d {
         private shaderProgram;
         private vertexPositionAttribute;
         private squareVerticesBuffer;
+        private _camera;
         vertexShaderStr: string;
         fragmentShaderStr: string;
-        constructor(canvas: any);
+        constructor(canvas: any, camera?: Object3D);
         private initGL();
         private initShaders();
         private getShader(theSource, type);
@@ -532,14 +533,6 @@ declare module me.feng3d {
          * 物体空间
          */
         objSpace3d: Space3D;
-        /**
-         * 摄像机空间
-         */
-        camSpace3D: Space3D;
-        /**
-         * 摄像机镜头
-         */
-        camera: Camera;
     }
 }
 declare module me.feng3d {
@@ -781,6 +774,12 @@ declare module me.feng3d.primitives {
      * @param yUp 正面朝向 true:Y+ false:Z+
      */
     function createPlane(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
+}
+declare module me.feng3d.factory {
+    /**
+     * 创建摄像机3D对象
+     */
+    function createCamera(): Object3D;
 }
 /**
  * 临时值
