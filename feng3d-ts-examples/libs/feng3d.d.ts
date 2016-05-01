@@ -523,7 +523,6 @@ declare module me.feng3d {
         private shaderProgram;
         private vertexPositionAttribute;
         private _camera;
-        private plane;
         private _scene;
         vertexShaderStr: string;
         fragmentShaderStr: string;
@@ -539,7 +538,6 @@ declare module me.feng3d {
         private initGL();
         private initShaders();
         private getShader(theSource, type);
-        private initObject3D();
         private drawScene();
         private setMatrixUniforms();
         private getPerspectiveMatrix();
@@ -648,6 +646,10 @@ declare module me.feng3d {
          * 切线
          */
         static tangent: string;
+        /**
+         * uv（纹理坐标）
+         */
+        static uv: string;
     }
 }
 declare module me.feng3d {
@@ -860,6 +862,16 @@ declare module me.feng3d {
         protected updateProjectionMatrix(): void;
     }
 }
+declare module me.feng3d {
+    /**
+     * 3D基元类型
+     * @author feng 2016-05-01
+     */
+    enum PrimitiveType {
+        Plane = 0,
+        Cube = 1,
+    }
+}
 declare module me.feng3d.primitives {
     /**
      * 创建平面几何体
@@ -868,6 +880,7 @@ declare module me.feng3d.primitives {
      * @param segmentsW 横向分割数
      * @param segmentsH 纵向分割数
      * @param yUp 正面朝向 true:Y+ false:Z+
+     * @param elements 顶点元素列表
      */
     function createPlane(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
@@ -877,14 +890,12 @@ declare module me.feng3d.factory {
      */
     function createCamera(): Object3D;
 }
-declare module me.feng3d {
+declare module me.feng3d.primitives {
     /**
-     * 3D基元类型
-     * @author feng 2016-05-01
+     * 创建立方几何体
+     * @param width 宽度
      */
-    enum PrimitiveType {
-        Plane = 0,
-    }
+    function createCube(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean, elements?: string[]): Geometry;
 }
 /**
  * 临时值

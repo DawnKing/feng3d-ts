@@ -1149,6 +1149,9 @@ var me;
                     case feng3d.PrimitiveType.Plane:
                         object3D.addComponent(feng3d.primitives.createPlane());
                         break;
+                    case feng3d.PrimitiveType.Cube:
+                        object3D.addComponent(feng3d.primitives.createCube());
+                        break;
                     default:
                         throw "\u65E0\u6CD5\u521B\u5EFA3D\u57FA\u5143\u5BF9\u8C61 " + type;
                 }
@@ -1186,7 +1189,6 @@ var me;
                 this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
                 this.initGL();
                 this.initShaders();
-                this.initObject3D();
                 setInterval(this.drawScene.bind(this), 15);
             }
             Object.defineProperty(View3D.prototype, "scene", {
@@ -1246,12 +1248,6 @@ var me;
                 }
                 return shader;
             };
-            View3D.prototype.initObject3D = function () {
-                var plane = this.plane = new feng3d.Object3D();
-                plane.addComponent(feng3d.primitives.createPlane(1, 1));
-                plane.space3D.z = 3;
-                plane.space3D.rx = 90;
-            };
             View3D.prototype.drawScene = function () {
                 // Clear the canvas before we start drawing on it.
                 var _this = this;
@@ -1260,7 +1256,6 @@ var me;
                 renderables.forEach(function (element) {
                     _this.drawObject3D(element);
                 });
-                this.drawObject3D(this.plane);
             };
             View3D.prototype.setMatrixUniforms = function () {
                 var perspectiveMatrix = this.getPerspectiveMatrix();
@@ -1487,6 +1482,10 @@ var me;
              * 切线
              */
             GLAttribute.tangent = "vaTangent";
+            /**
+             * uv（纹理坐标）
+             */
+            GLAttribute.uv = "vaUV";
             return GLAttribute;
         }());
         feng3d.GLAttribute = GLAttribute;
@@ -1938,6 +1937,21 @@ var me;
 (function (me) {
     var feng3d;
     (function (feng3d) {
+        /**
+         * 3D基元类型
+         * @author feng 2016-05-01
+         */
+        (function (PrimitiveType) {
+            PrimitiveType[PrimitiveType["Plane"] = 0] = "Plane";
+            PrimitiveType[PrimitiveType["Cube"] = 1] = "Cube";
+        })(feng3d.PrimitiveType || (feng3d.PrimitiveType = {}));
+        var PrimitiveType = feng3d.PrimitiveType;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
         var primitives;
         (function (primitives) {
             /**
@@ -1947,6 +1961,7 @@ var me;
              * @param segmentsW 横向分割数
              * @param segmentsH 纵向分割数
              * @param yUp 正面朝向 true:Y+ false:Z+
+             * @param elements 顶点元素列表
              */
             function createPlane(width, height, segmentsW, segmentsH, yUp, elements) {
                 if (width === void 0) { width = 100; }
@@ -1954,21 +1969,25 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (yUp === void 0) { yUp = true; }
-                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
+                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.uv, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
                 var geometry = new feng3d.Geometry();
                 elements.forEach(function (element) {
                     switch (element) {
                         case feng3d.GLAttribute.position:
                             var vertexPositionData = buildPosition(width, height, segmentsW, segmentsH, yUp);
-                            geometry.setVAData(feng3d.GLAttribute.position, vertexPositionData, 3);
+                            geometry.setVAData(element, vertexPositionData, 3);
                             break;
                         case feng3d.GLAttribute.normal:
                             var vertexNormalData = buildNormal(segmentsW, segmentsH, yUp);
-                            geometry.setVAData(feng3d.GLAttribute.normal, vertexNormalData, 3);
+                            geometry.setVAData(element, vertexNormalData, 3);
                             break;
                         case feng3d.GLAttribute.tangent:
                             var vertexTangentData = buildTangent(segmentsW, segmentsH, yUp);
-                            geometry.setVAData(feng3d.GLAttribute.tangent, vertexTangentData, 3);
+                            geometry.setVAData(element, vertexTangentData, 3);
+                            break;
+                        case feng3d.GLAttribute.uv:
+                            var uvData = buildUVs(segmentsW, segmentsH);
+                            geometry.setVAData(element, uvData, 2);
                             break;
                         default:
                             throw ("\u4E0D\u652F\u6301\u4E3A\u5E73\u9762\u521B\u5EFA\u9876\u70B9\u5C5E\u6027 " + element);
@@ -2093,6 +2112,29 @@ var me;
                 }
                 return indices;
             }
+            /**
+             * 构建uv
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             */
+            function buildUVs(segmentsW, segmentsH) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                var data;
+                var stride = 2;
+                var index = 0;
+                for (var yi = 0; yi <= this._segmentsH; ++yi) {
+                    for (var xi = 0; xi <= this._segmentsW; ++xi) {
+                        data[index++] = xi / this._segmentsW;
+                        data[index++] = 1 - yi / this._segmentsH;
+                        if (this._doubleSided) {
+                            data[index++] = xi / this._segmentsW;
+                            data[index++] = 1 - yi / this._segmentsH;
+                        }
+                    }
+                }
+                return data;
+            }
         })(primitives = feng3d.primitives || (feng3d.primitives = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
@@ -2118,14 +2160,367 @@ var me;
 (function (me) {
     var feng3d;
     (function (feng3d) {
-        /**
-         * 3D基元类型
-         * @author feng 2016-05-01
-         */
-        (function (PrimitiveType) {
-            PrimitiveType[PrimitiveType["Plane"] = 0] = "Plane";
-        })(feng3d.PrimitiveType || (feng3d.PrimitiveType = {}));
-        var PrimitiveType = feng3d.PrimitiveType;
+        var primitives;
+        (function (primitives) {
+            /**
+             * 创建立方几何体
+             * @param width 宽度
+             */
+            function createCube(width, height, depth, segmentsW, segmentsH, segmentsD, tile6, elements) {
+                if (width === void 0) { width = 100; }
+                if (height === void 0) { height = 100; }
+                if (depth === void 0) { depth = 100; }
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (segmentsD === void 0) { segmentsD = 1; }
+                if (tile6 === void 0) { tile6 = true; }
+                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.uv, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
+                var geometry = new feng3d.Geometry();
+                elements.forEach(function (element) {
+                    switch (element) {
+                        case feng3d.GLAttribute.position:
+                            var vertexPositionData = buildPosition(width, height, depth, segmentsW, segmentsH, segmentsD);
+                            geometry.setVAData(element, vertexPositionData, 3);
+                            break;
+                        case feng3d.GLAttribute.normal:
+                            var vertexNormalData = buildNormal(segmentsW, segmentsH, segmentsD);
+                            geometry.setVAData(element, vertexNormalData, 3);
+                            break;
+                        case feng3d.GLAttribute.tangent:
+                            var vertexTangentData = buildTangent(segmentsW, segmentsH, segmentsD);
+                            geometry.setVAData(element, vertexTangentData, 3);
+                            break;
+                        case feng3d.GLAttribute.uv:
+                            var uvData = buildUVs(segmentsW, segmentsH, segmentsD, tile6);
+                            geometry.setVAData(element, uvData, 2);
+                            break;
+                        default:
+                            throw ("\u4E0D\u652F\u6301\u4E3A\u5E73\u9762\u521B\u5EFA\u9876\u70B9\u5C5E\u6027 " + element);
+                    }
+                });
+                var indices = buildIndices(segmentsW, segmentsH, segmentsD);
+                geometry.indices = indices;
+                return geometry;
+            }
+            primitives.createCube = createCube;
+            function buildPosition(width, height, depth, segmentsW, segmentsH, segmentsD) {
+                if (width === void 0) { width = 100; }
+                if (height === void 0) { height = 100; }
+                if (depth === void 0) { depth = 100; }
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (segmentsD === void 0) { segmentsD = 1; }
+                var vertexPositionData = [];
+                var i, j;
+                var hw, hh, hd; // halves
+                var dw, dh, dd; // deltas
+                var outer_pos;
+                // Indices
+                var positionIndex = 0;
+                // half cube dimensions
+                hw = width / 2;
+                hh = height / 2;
+                hd = depth / 2;
+                // Segment dimensions
+                dw = width / segmentsW;
+                dh = height / segmentsH;
+                dd = depth / segmentsD;
+                for (i = 0; i <= segmentsW; i++) {
+                    outer_pos = -hw + i * dw;
+                    for (j = 0; j <= segmentsH; j++) {
+                        // front
+                        vertexPositionData[positionIndex++] = outer_pos;
+                        vertexPositionData[positionIndex++] = -hh + j * dh;
+                        vertexPositionData[positionIndex++] = -hd;
+                        // back
+                        vertexPositionData[positionIndex++] = outer_pos;
+                        vertexPositionData[positionIndex++] = -hh + j * dh;
+                        vertexPositionData[positionIndex++] = hd;
+                    }
+                }
+                for (i = 0; i <= segmentsW; i++) {
+                    outer_pos = -hw + i * dw;
+                    for (j = 0; j <= segmentsD; j++) {
+                        // top
+                        vertexPositionData[positionIndex++] = outer_pos;
+                        vertexPositionData[positionIndex++] = hh;
+                        vertexPositionData[positionIndex++] = -hd + j * dd;
+                        // bottom
+                        vertexPositionData[positionIndex++] = outer_pos;
+                        vertexPositionData[positionIndex++] = -hh;
+                        vertexPositionData[positionIndex++] = -hd + j * dd;
+                    }
+                }
+                for (i = 0; i <= segmentsD; i++) {
+                    outer_pos = hd - i * dd;
+                    for (j = 0; j <= segmentsH; j++) {
+                        // left
+                        vertexPositionData[positionIndex++] = -hw;
+                        vertexPositionData[positionIndex++] = -hh + j * dh;
+                        vertexPositionData[positionIndex++] = outer_pos;
+                        // right
+                        vertexPositionData[positionIndex++] = hw;
+                        vertexPositionData[positionIndex++] = -hh + j * dh;
+                        vertexPositionData[positionIndex++] = outer_pos;
+                    }
+                }
+                return vertexPositionData;
+            }
+            function buildNormal(segmentsW, segmentsH, segmentsD) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (segmentsD === void 0) { segmentsD = 1; }
+                var vertexNormalData = [];
+                var i, j;
+                // Indices
+                var normalIndex = 0;
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        // front
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = -1;
+                        // back
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = 1;
+                    }
+                }
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsD; j++) {
+                        // top
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = 1;
+                        vertexNormalData[normalIndex++] = 0;
+                        // bottom
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = -1;
+                        vertexNormalData[normalIndex++] = 0;
+                    }
+                }
+                for (i = 0; i <= segmentsD; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        // left
+                        vertexNormalData[normalIndex++] = -1;
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = 0;
+                        // right
+                        vertexNormalData[normalIndex++] = 1;
+                        vertexNormalData[normalIndex++] = 0;
+                        vertexNormalData[normalIndex++] = 0;
+                    }
+                }
+                return vertexNormalData;
+            }
+            function buildTangent(segmentsW, segmentsH, segmentsD) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (segmentsD === void 0) { segmentsD = 1; }
+                var vertexTangentData = [];
+                var i, j;
+                // Indices
+                var tangentIndex = 0;
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        // front
+                        vertexTangentData[tangentIndex++] = 1;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                        // back
+                        vertexTangentData[tangentIndex++] = -1;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                    }
+                }
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsD; j++) {
+                        // top
+                        vertexTangentData[tangentIndex++] = 1;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                        // bottom
+                        vertexTangentData[tangentIndex++] = 1;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                    }
+                }
+                for (i = 0; i <= segmentsD; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        // left
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = -1;
+                        // right
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 0;
+                        vertexTangentData[tangentIndex++] = 1;
+                    }
+                }
+                return vertexTangentData;
+            }
+            function buildIndices(segmentsW, segmentsH, segmentsD) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (segmentsD === void 0) { segmentsD = 1; }
+                var indices = [];
+                var tl, tr, bl, br;
+                var i, j, inc = 0;
+                var fidx = 0;
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        // front
+                        // back
+                        if (i && j) {
+                            tl = 2 * ((i - 1) * (segmentsH + 1) + (j - 1));
+                            tr = 2 * (i * (segmentsH + 1) + (j - 1));
+                            bl = tl + 2;
+                            br = tr + 2;
+                            indices[fidx++] = tl;
+                            indices[fidx++] = bl;
+                            indices[fidx++] = br;
+                            indices[fidx++] = tl;
+                            indices[fidx++] = br;
+                            indices[fidx++] = tr;
+                            indices[fidx++] = tr + 1;
+                            indices[fidx++] = br + 1;
+                            indices[fidx++] = bl + 1;
+                            indices[fidx++] = tr + 1;
+                            indices[fidx++] = bl + 1;
+                            indices[fidx++] = tl + 1;
+                        }
+                    }
+                }
+                inc += 2 * (segmentsW + 1) * (segmentsH + 1);
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsD; j++) {
+                        // top
+                        // bottom
+                        if (i && j) {
+                            tl = inc + 2 * ((i - 1) * (segmentsD + 1) + (j - 1));
+                            tr = inc + 2 * (i * (segmentsD + 1) + (j - 1));
+                            bl = tl + 2;
+                            br = tr + 2;
+                            indices[fidx++] = tl;
+                            indices[fidx++] = bl;
+                            indices[fidx++] = br;
+                            indices[fidx++] = tl;
+                            indices[fidx++] = br;
+                            indices[fidx++] = tr;
+                            indices[fidx++] = tr + 1;
+                            indices[fidx++] = br + 1;
+                            indices[fidx++] = bl + 1;
+                            indices[fidx++] = tr + 1;
+                            indices[fidx++] = bl + 1;
+                            indices[fidx++] = tl + 1;
+                        }
+                    }
+                }
+                inc += 2 * (segmentsW + 1) * (segmentsD + 1);
+                for (i = 0; i <= segmentsD; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        // left
+                        // right
+                        if (i && j) {
+                            tl = inc + 2 * ((i - 1) * (segmentsH + 1) + (j - 1));
+                            tr = inc + 2 * (i * (segmentsH + 1) + (j - 1));
+                            bl = tl + 2;
+                            br = tr + 2;
+                            indices[fidx++] = tl;
+                            indices[fidx++] = bl;
+                            indices[fidx++] = br;
+                            indices[fidx++] = tl;
+                            indices[fidx++] = br;
+                            indices[fidx++] = tr;
+                            indices[fidx++] = tr + 1;
+                            indices[fidx++] = br + 1;
+                            indices[fidx++] = bl + 1;
+                            indices[fidx++] = tr + 1;
+                            indices[fidx++] = bl + 1;
+                            indices[fidx++] = tl + 1;
+                        }
+                    }
+                }
+                return indices;
+            }
+            function buildUVs(segmentsW, segmentsH, segmentsD, tile6) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (segmentsD === void 0) { segmentsD = 1; }
+                if (tile6 === void 0) { tile6 = true; }
+                var i, j, uidx;
+                var data = [];
+                var u_tile_dim, v_tile_dim;
+                var u_tile_step, v_tile_step;
+                var tl0u, tl0v;
+                var tl1u, tl1v;
+                var du, dv;
+                if (tile6) {
+                    u_tile_dim = u_tile_step = 1 / 3;
+                    v_tile_dim = v_tile_step = 1 / 2;
+                }
+                else {
+                    u_tile_dim = v_tile_dim = 1;
+                    u_tile_step = v_tile_step = 0;
+                }
+                // Create planes two and two, the same way that they were
+                // constructed in the this.buildGeometry() function. First calculate
+                // the top-left UV coordinate for both planes, and then loop
+                // over the points, calculating the UVs from these numbers.
+                // When this.tile6 is true, the layout is as follows:
+                //       .-----.-----.-----. (1,1)
+                //       | Bot |  T  | Bak |
+                //       |-----+-----+-----|
+                //       |  L  |  F  |  R  |
+                // (0,0)'-----'-----'-----'
+                uidx = 0;
+                // FRONT / BACK
+                tl0u = 1 * u_tile_step;
+                tl0v = 1 * v_tile_step;
+                tl1u = 2 * u_tile_step;
+                tl1v = 0 * v_tile_step;
+                du = u_tile_dim / segmentsW;
+                dv = v_tile_dim / segmentsH;
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        data[uidx++] = tl0u + i * du;
+                        data[uidx++] = tl0v + (v_tile_dim - j * dv);
+                        data[uidx++] = tl1u + (u_tile_dim - i * du);
+                        data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                    }
+                }
+                // TOP / BOTTOM
+                tl0u = 1 * u_tile_step;
+                tl0v = 0 * v_tile_step;
+                tl1u = 0 * u_tile_step;
+                tl1v = 0 * v_tile_step;
+                du = u_tile_dim / segmentsW;
+                dv = v_tile_dim / segmentsD;
+                for (i = 0; i <= segmentsW; i++) {
+                    for (j = 0; j <= segmentsD; j++) {
+                        data[uidx++] = tl0u + i * du;
+                        data[uidx++] = tl0v + (v_tile_dim - j * dv);
+                        data[uidx++] = tl1u + i * du;
+                        data[uidx++] = tl1v + j * dv;
+                    }
+                }
+                // LEFT / RIGHT
+                tl0u = 0 * u_tile_step;
+                tl0v = 1 * v_tile_step;
+                tl1u = 2 * u_tile_step;
+                tl1v = 1 * v_tile_step;
+                du = u_tile_dim / segmentsD;
+                dv = v_tile_dim / segmentsH;
+                for (i = 0; i <= segmentsD; i++) {
+                    for (j = 0; j <= segmentsH; j++) {
+                        data[uidx++] = tl0u + i * du;
+                        data[uidx++] = tl0v + (v_tile_dim - j * dv);
+                        data[uidx++] = tl1u + (u_tile_dim - i * du);
+                        data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                    }
+                }
+                return data;
+            }
+        })(primitives = feng3d.primitives || (feng3d.primitives = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 /**
