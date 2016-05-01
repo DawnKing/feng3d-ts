@@ -5,16 +5,17 @@ function start() {
     var canvas = document.getElementById("glcanvas");
     view3D = new me.feng3d.View3D(canvas);
 
-    var plane = new me.feng3d.Object3D("plane");
-    plane.addComponent(me.feng3d.primitives.createPlane(1, 1));
-    plane.space3D.x = 1;
-    plane.space3D.y = 1;
-    plane.space3D.z = 3;
-    plane.space3D.rx = 90;
-    plane.space3D.sx = .5;
-    plane.space3D.sy = .5;
-
+    var plane = new me.feng3d.Object3D("plane", [
+        me.feng3d.primitives.createPlane(1, 1),
+        new me.feng3d.Space3D(1, 1, 3, 90, 0, 45),
+    ]);
     view3D.scene.addObject3D(plane);
+
+    var plane1 = new me.feng3d.Object3D("plane1", [
+        me.feng3d.primitives.createPlane(1, 1),
+        new me.feng3d.Space3D(-1, -1, 3, 90, 0, 45),
+    ]);
+    view3D.scene.addObject3D(plane1);
 }
 
 var view3D: me.feng3d.View3D;

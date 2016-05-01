@@ -975,6 +975,7 @@ var me;
                 this._sx = sx;
                 this._sy = sy;
                 this._sz = sz;
+                this.invalidateTransform3D();
             }
             Object.defineProperty(Space3D.prototype, "x", {
                 /**
@@ -1119,9 +1120,14 @@ var me;
             /**
              * 构建3D对象
              */
-            function Object3D(name) {
+            function Object3D(name, conponents) {
+                var _this = this;
+                if (conponents === void 0) { conponents = null; }
                 _super.call(this);
                 this.name = name || feng3d.getClassName(this);
+                conponents && conponents.forEach(function (element) {
+                    _this.addComponent(element);
+                });
                 this.getOrCreateComponentByClass(feng3d.Space3D);
             }
             Object.defineProperty(Object3D.prototype, "space3D", {
@@ -1134,6 +1140,20 @@ var me;
                 enumerable: true,
                 configurable: true
             });
+            /**
+             * 创建
+             */
+            Object3D.createPrimitive = function (type) {
+                var object3D = new Object3D();
+                switch (type) {
+                    case feng3d.PrimitiveType.Plane:
+                        object3D.addComponent(feng3d.primitives.createPlane());
+                        break;
+                    default:
+                        throw "\u65E0\u6CD5\u521B\u5EFA3D\u57FA\u5143\u5BF9\u8C61 " + type;
+                }
+                return object3D;
+            };
             return Object3D;
         }(feng3d.Component));
         feng3d.Object3D = Object3D;
@@ -2091,21 +2111,6 @@ var me;
                 return camera;
             }
             factory.createCamera = createCamera;
-            /**
-             * 创建3D基元对象
-             */
-            function createPrimitive(primitive) {
-                var plane = new feng3d.Object3D();
-                switch (primitive) {
-                    case feng3d.PrimitiveType.Plane:
-                        plane.addComponent(feng3d.primitives.createPlane());
-                        break;
-                    default:
-                        throw "\u65E0\u6CD5\u521B\u5EFA3D\u57FA\u5143\u5BF9\u8C61 " + primitive;
-                }
-                return plane;
-            }
-            factory.createPrimitive = createPrimitive;
         })(factory = feng3d.factory || (feng3d.factory = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));

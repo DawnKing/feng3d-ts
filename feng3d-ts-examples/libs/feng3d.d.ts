@@ -506,7 +506,11 @@ declare module me.feng3d {
         /**
          * 构建3D对象
          */
-        constructor(name?: string);
+        constructor(name?: string, conponents?: Component[]);
+        /**
+         * 创建
+         */
+        static createPrimitive(type: PrimitiveType): Object3D;
     }
 }
 declare module me.feng3d {
@@ -872,10 +876,6 @@ declare module me.feng3d.factory {
      * 创建摄像机3D对象
      */
     function createCamera(): Object3D;
-    /**
-     * 创建3D基元对象
-     */
-    function createPrimitive(primitive: PrimitiveType): Object3D;
 }
 declare module me.feng3d {
     /**
