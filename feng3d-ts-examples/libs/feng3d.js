@@ -1155,6 +1155,7 @@ var me;
              * @param camera    摄像机
              */
             function View3D(canvas, scene, camera) {
+                if (scene === void 0) { scene = null; }
                 if (camera === void 0) { camera = null; }
                 this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
                 this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
@@ -1233,7 +1234,12 @@ var me;
             };
             View3D.prototype.drawScene = function () {
                 // Clear the canvas before we start drawing on it.
+                var _this = this;
                 this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+                var renderables = this._scene.getRenderables();
+                renderables.forEach(function (element) {
+                    _this.drawObject3D(element);
+                });
                 this.drawObject3D(this.plane);
             };
             View3D.prototype.setMatrixUniforms = function () {
@@ -1285,27 +1291,6 @@ var me;
             return Object3DBufferManager;
         }());
         var object3DBufferManager = new Object3DBufferManager();
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 3D场景
-         * @author feng 2016-05-01
-         */
-        var Scene3D = (function (_super) {
-            __extends(Scene3D, _super);
-            /**
-             * 构造3D场景
-             */
-            function Scene3D() {
-                _super.call(this, null, null);
-            }
-            return Scene3D;
-        }(feng3d.Scene3DNode));
-        feng3d.Scene3D = Scene3D;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -1378,15 +1363,52 @@ var me;
                 }
                 return null;
             };
+            Object.defineProperty(Scene3DNode.prototype, "renderable", {
+                /**
+                 * 是否可渲染
+                 */
+                get: function () {
+                    return this.object3D != null;
+                },
+                enumerable: true,
+                configurable: true
+            });
             /**
-             * 是否可渲染
+             * 获取可渲染对象列表
              */
-            Scene3DNode.prototype.renderable = function () {
-                return true;
+            Scene3DNode.prototype.getRenderables = function (renderables) {
+                if (renderables === void 0) { renderables = null; }
+                renderables = renderables || [];
+                this.renderable && renderables.push(this.object3D);
+                this.children.forEach(function (element) {
+                    element.getRenderables(renderables);
+                });
+                return renderables;
             };
             return Scene3DNode;
         }(feng3d.EventDispatcher));
         feng3d.Scene3DNode = Scene3DNode;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D场景
+         * @author feng 2016-05-01
+         */
+        var Scene3D = (function (_super) {
+            __extends(Scene3D, _super);
+            /**
+             * 构造3D场景
+             */
+            function Scene3D() {
+                _super.call(this, null, null);
+            }
+            return Scene3D;
+        }(feng3d.Scene3DNode));
+        feng3d.Scene3D = Scene3D;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

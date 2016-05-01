@@ -529,7 +529,7 @@ declare module me.feng3d {
          * @param scene     3D场景
          * @param camera    摄像机
          */
-        constructor(canvas: any, scene: Scene3D, camera?: Object3D);
+        constructor(canvas: any, scene?: Scene3D, camera?: Object3D);
         /** 3d场景 */
         scene: Scene3D;
         private initGL();
@@ -540,18 +540,6 @@ declare module me.feng3d {
         private setMatrixUniforms();
         private getPerspectiveMatrix();
         private drawObject3D(object3D);
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3D场景
-     * @author feng 2016-05-01
-     */
-    class Scene3D extends Scene3DNode {
-        /**
-         * 构造3D场景
-         */
-        constructor();
     }
 }
 declare module me.feng3d {
@@ -593,8 +581,23 @@ declare module me.feng3d {
         /**
          * 是否可渲染
          */
-        renderable(): boolean;
-        getRenderables: any;
+        renderable: boolean;
+        /**
+         * 获取可渲染对象列表
+         */
+        getRenderables(renderables?: Object3D[]): Object3D[];
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D场景
+     * @author feng 2016-05-01
+     */
+    class Scene3D extends Scene3DNode {
+        /**
+         * 构造3D场景
+         */
+        constructor();
     }
 }
 declare module me.feng3d {
