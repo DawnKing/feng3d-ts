@@ -1,5 +1,5 @@
 var testSources = [//
-    "WebglDemo.js",//
+    // "WebglDemo.js",//
     // "me/feng3d/events/EventBubblesTest2.js",//
     // "me/feng3d/events/EventDispatcherTest.js",//
     // "me/feng3d/events/IEventDispatcherTest.js",//
@@ -26,12 +26,13 @@ function onFeng3dInited1(ev: Event) {
 
 function onFeng3dInited2(ev: Event) {
 
+    if (testSources.length == 0)
+        start();
     for (var i = 0; i < testSources.length; i++) {
         var element = testSources[i];
-        
+
         loadjs("bin/" + element, alljsLoadOk);
         var className = getClassName(element);
-       // document.write('<input type="submit" value="' + className + '" onclick="(new ' + className + '()).test()">');
     }
 }
 

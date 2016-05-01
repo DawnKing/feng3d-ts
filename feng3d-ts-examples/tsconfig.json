@@ -1,10 +1,29 @@
+// {
+//     "compilerOptions": {
+//         "target": "es5",
+//         "noImplicitAny": false,
+//         "module": "amd",
+//         "removeComments": false,
+//         "outDir": "bin",
+//         "sourceMap": true
+//     }
+// }
 {
     "compilerOptions": {
         "target": "es5",
         "noImplicitAny": false,
-        "module": "amd",
+        "sourceMap": true,
+        "declaration": false,
         "removeComments": false,
-        "outDir": "bin",
-        "sourceMap": true
-    }
+        "outFile": "bin/examples.js"
+    },
+    "files": [ //注：如果有继承关系的，父类必须排在子类前面
+        //
+        "libs/feng3d-event.d.ts",
+        "libs/feng3d-component.d.ts",
+        "libs/feng3d.d.ts",
+        //
+        "src/utils/loadjs.ts",
+        "src/webglDemo.ts"
+    ]
 }

@@ -1,8 +1,12 @@
 <html>
 
 <head>
-    
-    <script src="bin/utils/loadjs.js" type="text/javascript"></script>
+    <script language="JavaScript">
+        var oHead = document.getElementsByTagName('HEAD').item(0);
+        var loadedJs = document.createElement("script");
+        loadedJs.src = "bin/examples.js?version="+ Math.random();
+        oHead.appendChild(loadedJs);
+    </script>
 </head>
 
 <body onload="onLoad()">
