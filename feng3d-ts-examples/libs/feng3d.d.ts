@@ -212,7 +212,7 @@ declare module me.feng3d {
         /**
          * 一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
          */
-        rawData: Array<number>;
+        rawData: Float32Array;
         /**
          * 一个保存显示对象在转换参照帧中的 3D 坐标 (x,y,z) 位置的 Vector3D 对象。
          */
@@ -237,7 +237,7 @@ declare module me.feng3d {
          * 创建 Matrix3D 对象。
          * @param   datas    一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
          */
-        constructor(datas?: Array<number>);
+        constructor(datas?: Float32Array | number[]);
         /**
          * 创建旋转矩阵
          * @param   degrees         角度
@@ -311,7 +311,7 @@ declare module me.feng3d {
          * @param   index       vector中的起始位置
          * @param   transpose   是否转置当前矩阵
          */
-        copyRawDataFrom(vector: Array<number>, index?: number, transpose?: boolean): void;
+        copyRawDataFrom(vector: Float32Array, index?: number, transpose?: boolean): void;
         /**
          * 将调用方 Matrix3D 对象中的所有矩阵数据复制到提供的矢量中。
          * @param   vector      要将数据复制到的 Vector 对象。
@@ -691,13 +691,13 @@ declare module me.feng3d {
          * @param data          顶点属性数据
          * @param stride        顶点数据步长
          */
-        setVAData(vaId: string, data: number[], stride: number): void;
+        setVAData(vaId: string, data: Float32Array, stride: number): void;
         /**
          * 获取顶点属性数据
          * @param vaId 数据类型编号
          * @return 顶点属性数据
          */
-        getVAData(vaId: string): number[];
+        getVAData(vaId: string): Float32Array;
         /**
          * 顶点属性编号列表
          */
@@ -892,18 +892,18 @@ declare module me.feng3d.primitives {
      */
     function createPlane(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
-declare module me.feng3d.factory {
-    /**
-     * 创建摄像机3D对象
-     */
-    function createCamera(): Object3D;
-}
 declare module me.feng3d.primitives {
     /**
      * 创建立方几何体
      * @param width 宽度
      */
     function createCube(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean, elements?: string[]): Geometry;
+}
+declare module me.feng3d.factory {
+    /**
+     * 创建摄像机3D对象
+     */
+    function createCamera(): Object3D;
 }
 /**
  * 临时值
@@ -917,5 +917,5 @@ declare module me.feng3d.temp {
     /**
      * 临时矩阵数据
      */
-    var rawData: number[];
+    var rawData: Float32Array;
 }

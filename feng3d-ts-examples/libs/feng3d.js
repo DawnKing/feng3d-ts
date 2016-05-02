@@ -27,7 +27,7 @@ var me;
         function assert(b, msg) {
             if (msg === void 0) { msg = "assert"; }
             if (!b)
-                throw new Error(msg);
+                throw msg;
         }
         feng3d.assert = assert;
     })(feng3d = me.feng3d || (me.feng3d = {}));
@@ -360,16 +360,17 @@ var me;
              */
             function Matrix3D(datas) {
                 if (datas === void 0) { datas = null; }
-                if (datas) {
-                    this.rawData = datas.concat();
+                datas = datas || [
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1 //
+                ];
+                if (datas instanceof Float32Array)
+                    this.rawData = datas;
+                else {
+                    this.rawData = new Float32Array(datas);
                 }
-                else
-                    this.rawData = [
-                        1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, 1, 0,
-                        0, 0, 0, 1 //
-                    ];
             }
             Object.defineProperty(Matrix3D.prototype, "position", {
                 /**
@@ -595,9 +596,7 @@ var me;
              * @param   sourceMatrix3D      要从中复制数据的 Matrix3D 对象。
              */
             Matrix3D.prototype.copyFrom = function (sourceMatrix3D) {
-                for (var i = 0; i < 16; i++) {
-                    this.rawData[i] = sourceMatrix3D.rawData[i];
-                }
+                this.rawData.set(sourceMatrix3D.rawData);
             };
             /**
              * 将源 Vector 对象中的所有矢量数据复制到调用方 Matrix3D 对象中。利用可选索引参数，您可以选择矢量中的任何起始文字插槽。
@@ -664,7 +663,7 @@ var me;
              * @param   dest    目标矩阵
              */
             Matrix3D.prototype.copyToMatrix3D = function (dest) {
-                dest.rawData = this.rawData.slice(0);
+                dest.rawData.set(this.rawData);
             };
             /**
              * 将转换矩阵的平移、旋转和缩放设置作为由三个 Vector3D 对象组成的矢量返回。
@@ -1065,12 +1064,12 @@ var me;
                 get: function () {
                     if (this.transform3DDirty)
                         this.updateTransform3D();
-                    feng3d.temp.matrix3D.rawData = this._transform3D.rawData.concat();
+                    feng3d.temp.matrix3D.rawData.set(this._transform3D.rawData);
                     return feng3d.temp.matrix3D;
                 },
                 set: function (value) {
                     this.transform3DDirty = false;
-                    this._transform3D.rawData = value.rawData.concat();
+                    this._transform3D.rawData.set(value.rawData);
                     var vecs = this._transform3D.decompose();
                     this.x = vecs[0].x;
                     this.y = vecs[0].y;
@@ -1299,7 +1298,7 @@ var me;
                     // Create a buffer for the square's vertices.
                     var squareVerticesBuffer = this.buffer.squareVerticesBuffer = gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positionData), gl.STATIC_DRAW);
+                    gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
                 }
                 return this.buffer;
             };
@@ -2035,7 +2034,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (yUp === void 0) { yUp = true; }
-                var vertexPositionData = [];
+                var vertexPositionData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
                 var x, y;
                 var positionIndex = 0;
                 for (var yi = 0; yi <= segmentsH; ++yi) {
@@ -2066,7 +2065,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (yUp === void 0) { yUp = true; }
-                var vertexNormalData = [];
+                var vertexNormalData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
                 var normalIndex = 0;
                 for (var yi = 0; yi <= segmentsH; ++yi) {
                     for (var xi = 0; xi <= segmentsW; ++xi) {
@@ -2094,7 +2093,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (yUp === void 0) { yUp = true; }
-                var vertexTangentData = [];
+                var vertexTangentData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
                 var tangentIndex = 0;
                 for (var yi = 0; yi <= segmentsH; ++yi) {
                     for (var xi = 0; xi <= segmentsW; ++xi) {
@@ -2143,7 +2142,7 @@ var me;
             function buildUVs(segmentsW, segmentsH) {
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
-                var data;
+                var data = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 2);
                 var stride = 2;
                 var index = 0;
                 for (var yi = 0; yi <= this._segmentsH; ++yi) {
@@ -2159,24 +2158,6 @@ var me;
                 return data;
             }
         })(primitives = feng3d.primitives || (feng3d.primitives = {}));
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        var factory;
-        (function (factory) {
-            /**
-             * 创建摄像机3D对象
-             */
-            function createCamera() {
-                var camera = new feng3d.Object3D();
-                camera.addComponent(new feng3d.Camera());
-                return camera;
-            }
-            factory.createCamera = createCamera;
-        })(factory = feng3d.factory || (feng3d.factory = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2233,7 +2214,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (segmentsD === void 0) { segmentsD = 1; }
-                var vertexPositionData = [];
+                var vertexPositionData = new Float32Array(((segmentsW + 1) * (segmentsH + 1) + (segmentsW + 1) * (segmentsD + 1) + (segmentsH + 1) * (segmentsD + 1)) * 2 * 3);
                 var i, j;
                 var hw, hh, hd; // halves
                 var dw, dh, dd; // deltas
@@ -2293,7 +2274,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (segmentsD === void 0) { segmentsD = 1; }
-                var vertexNormalData = [];
+                var vertexNormalData = new Float32Array(((segmentsW + 1) * (segmentsH + 1) + (segmentsW + 1) * (segmentsD + 1) + (segmentsH + 1) * (segmentsD + 1)) * 2 * 3);
                 var i, j;
                 // Indices
                 var normalIndex = 0;
@@ -2333,13 +2314,13 @@ var me;
                         vertexNormalData[normalIndex++] = 0;
                     }
                 }
-                return vertexNormalData;
+                return new Float32Array(vertexNormalData);
             }
             function buildTangent(segmentsW, segmentsH, segmentsD) {
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (segmentsD === void 0) { segmentsD = 1; }
-                var vertexTangentData = [];
+                var vertexTangentData = new Float32Array(((segmentsW + 1) * (segmentsH + 1) + (segmentsW + 1) * (segmentsD + 1) + (segmentsH + 1) * (segmentsD + 1)) * 2 * 3);
                 var i, j;
                 // Indices
                 var tangentIndex = 0;
@@ -2471,7 +2452,7 @@ var me;
                 if (segmentsD === void 0) { segmentsD = 1; }
                 if (tile6 === void 0) { tile6 = true; }
                 var i, j, uidx;
-                var data = [];
+                var data = new Float32Array(((segmentsW + 1) * (segmentsH + 1) + (segmentsW + 1) * (segmentsD + 1) + (segmentsH + 1) * (segmentsD + 1)) * 2 * 2);
                 var u_tile_dim, v_tile_dim;
                 var u_tile_step, v_tile_step;
                 var tl0u, tl0v;
@@ -2546,6 +2527,24 @@ var me;
         })(primitives = feng3d.primitives || (feng3d.primitives = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        var factory;
+        (function (factory) {
+            /**
+             * 创建摄像机3D对象
+             */
+            function createCamera() {
+                var camera = new feng3d.Object3D();
+                camera.addComponent(new feng3d.Camera());
+                return camera;
+            }
+            factory.createCamera = createCamera;
+        })(factory = feng3d.factory || (feng3d.factory = {}));
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
 /**
  * 临时值
  * @author feng 2016-04-26
@@ -2563,7 +2562,7 @@ var me;
             /**
              * 临时矩阵数据
              */
-            temp.rawData = [];
+            temp.rawData = new Float32Array(16);
         })(temp = feng3d.temp || (feng3d.temp = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
