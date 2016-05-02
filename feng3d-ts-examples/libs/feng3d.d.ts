@@ -971,6 +971,40 @@ declare module me.feng3d {
     class ForwardRenderder {
     }
 }
+declare module me.feng3d {
+    /**
+     * 材质
+     * @author feng 2016-05-02
+     */
+    class Material extends Component {
+        pass: MaterialPass;
+        /**
+         * 构建材质
+         */
+        constructor();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 颜色材质
+     * @author feng 2016-05-02
+     */
+    class ColorMaterial extends Material {
+        color: number;
+        /**
+         * 构建颜色材质
+         * @param color 颜色
+         */
+        constructor(color?: number);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 材质通道
+     */
+    class MaterialPass {
+    }
+}
 /**
  * 临时值
  * @author feng 2016-04-26

@@ -2699,6 +2699,67 @@ var me;
         feng3d.ForwardRenderder = ForwardRenderder;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 材质
+         * @author feng 2016-05-02
+         */
+        var Material = (function (_super) {
+            __extends(Material, _super);
+            /**
+             * 构建材质
+             */
+            function Material() {
+                _super.call(this);
+                this.pass = new feng3d.MaterialPass();
+            }
+            return Material;
+        }(feng3d.Component));
+        feng3d.Material = Material;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 颜色材质
+         * @author feng 2016-05-02
+         */
+        var ColorMaterial = (function (_super) {
+            __extends(ColorMaterial, _super);
+            /**
+             * 构建颜色材质
+             * @param color 颜色
+             */
+            function ColorMaterial(color) {
+                if (color === void 0) { color = 0xcccccc; }
+                _super.call(this);
+                this.color = color;
+            }
+            return ColorMaterial;
+        }(feng3d.Material));
+        feng3d.ColorMaterial = ColorMaterial;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 材质通道
+         */
+        var MaterialPass = (function () {
+            function MaterialPass() {
+            }
+            return MaterialPass;
+        }());
+        feng3d.MaterialPass = MaterialPass;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
 /**
  * 临时值
  * @author feng 2016-04-26
