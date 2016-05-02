@@ -2106,7 +2106,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (yUp === void 0) { yUp = true; }
-                var indices = [];
+                var indices = new Uint16Array(segmentsH * segmentsW * 6);
                 var tw = segmentsW + 1;
                 var numIndices = 0;
                 var base;
@@ -2358,7 +2358,7 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 if (segmentsD === void 0) { segmentsD = 1; }
-                var indices = [];
+                var indices = new Uint16Array((segmentsW * segmentsH + segmentsW * segmentsD + segmentsH * segmentsD) * 12);
                 var tl, tr, bl, br;
                 var i, j, inc = 0;
                 var fidx = 0;
@@ -2639,7 +2639,8 @@ var me;
                 var mvUniform = this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
                 this.gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.rawData));
                 this.setMatrixUniforms();
-                this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+                this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, object3DBuffer.indexBuffer);
+                this.gl.drawElements(this.gl.TRIANGLES, object3DBuffer.count, this.gl.UNSIGNED_SHORT, 0);
             };
             return Renderer;
         }());
@@ -2669,6 +2670,11 @@ var me;
                     var squareVerticesBuffer = buffer.squareVerticesBuffer = gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
                     gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
+                    var indices = geometry.indices;
+                    var indexBuffer = buffer.indexBuffer = gl.createBuffer();
+                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+                    buffer.count = indices.length;
                 }
                 return buffer;
             };

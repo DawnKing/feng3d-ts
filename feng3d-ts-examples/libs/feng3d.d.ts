@@ -704,7 +704,7 @@ declare module me.feng3d {
         /**
          * 更新顶点索引数据
          */
-        indices: number[];
+        indices: Uint16Array;
         /**
          * 获取顶点属性步长(1-4)
          * @param vaId          顶点属性编号
