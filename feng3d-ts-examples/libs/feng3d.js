@@ -2620,8 +2620,8 @@ var me;
             };
             Renderer.prototype.setMatrixUniforms = function () {
                 var perspectiveMatrix = this.getPerspectiveMatrix();
-                var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-                this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
+                this.pUniform = this.pUniform || this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
+                this.gl.uniformMatrix4fv(this.pUniform, false, new Float32Array(perspectiveMatrix.rawData));
             };
             Renderer.prototype.getPerspectiveMatrix = function () {
                 var camSpace3D = this.camera.space3D;
@@ -2636,8 +2636,8 @@ var me;
                 this.gl.bindBuffer(this.gl.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
                 this.gl.vertexAttribPointer(this.vertexPositionAttribute, 3, this.gl.FLOAT, false, 0, 0);
                 var mvMatrix = object3D.space3D.transform3D;
-                var mvUniform = this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-                this.gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.rawData));
+                this.mvUniform = this.mvUniform || this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
+                this.gl.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
                 this.setMatrixUniforms();
                 this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, object3DBuffer.indexBuffer);
                 this.gl.drawElements(this.gl.TRIANGLES, object3DBuffer.count, this.gl.UNSIGNED_SHORT, 0);
@@ -2738,6 +2738,8 @@ var me;
             function ColorMaterial(color) {
                 if (color === void 0) { color = 0xcccccc; }
                 _super.call(this);
+                this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
+                this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 this.color = color;
             }
             return ColorMaterial;

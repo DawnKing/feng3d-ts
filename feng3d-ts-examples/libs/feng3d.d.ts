@@ -958,8 +958,10 @@ declare module me.feng3d {
          */
         render(): void;
         private getShader(theSource, type);
+        pUniform: WebGLUniformLocation;
         private setMatrixUniforms();
         private getPerspectiveMatrix();
+        mvUniform: WebGLUniformLocation;
         private drawObject3D(object3D);
     }
 }
@@ -990,6 +992,8 @@ declare module me.feng3d {
      * @author feng 2016-05-02
      */
     class ColorMaterial extends Material {
+        vertexShaderStr: string;
+        fragmentShaderStr: string;
         color: number;
         /**
          * 构建颜色材质
