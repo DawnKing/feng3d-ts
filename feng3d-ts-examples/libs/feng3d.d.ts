@@ -520,12 +520,9 @@ declare module me.feng3d {
      */
     class View3D {
         private gl;
-        private shaderProgram;
-        private vertexPositionAttribute;
         private _camera;
         private _scene;
-        vertexShaderStr: string;
-        fragmentShaderStr: string;
+        private renderer;
         /**
          * 构建3D视图
          * @param canvas    画布
@@ -535,13 +532,7 @@ declare module me.feng3d {
         constructor(canvas: any, scene?: Scene3D, camera?: Object3D);
         /** 3d场景 */
         scene: Scene3D;
-        private initGL();
-        private initShaders();
-        private getShader(theSource, type);
         private drawScene();
-        private setMatrixUniforms();
-        private getPerspectiveMatrix();
-        private drawObject3D(object3D);
     }
 }
 declare module me.feng3d {
@@ -904,6 +895,38 @@ declare module me.feng3d.factory {
      * 创建摄像机3D对象
      */
     function createCamera(): Object3D;
+}
+declare module me.feng3d {
+    /**
+     * 渲染器
+     * @author feng 2016-05-01
+     */
+    class Renderer {
+        private gl;
+        private shaderProgram;
+        private vertexPositionAttribute;
+        private scene;
+        private camera;
+        vertexShaderStr: string;
+        fragmentShaderStr: string;
+        /**
+         * 构建渲染器
+         * @param gl    webgl渲染上下文
+         * @param scene 场景
+         * @param camera 摄像机对象
+         */
+        constructor(gl: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        private initGL();
+        private initShaders();
+        /**
+         * 渲染
+         */
+        render(): void;
+        private getShader(theSource, type);
+        private setMatrixUniforms();
+        private getPerspectiveMatrix();
+        private drawObject3D(object3D);
+    }
 }
 /**
  * 临时值

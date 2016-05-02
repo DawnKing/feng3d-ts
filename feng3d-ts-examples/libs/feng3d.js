@@ -1182,15 +1182,12 @@ var me;
             function View3D(canvas, scene, camera) {
                 if (scene === void 0) { scene = null; }
                 if (camera === void 0) { camera = null; }
-                this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
-                this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
-                this.scene = scene || new feng3d.Scene3D();
-                this._camera = camera || feng3d.factory.createCamera();
                 this.gl = canvas.getContext("experimental-webgl");
                 this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
-                this.initGL();
-                this.initShaders();
+                this.scene = scene || new feng3d.Scene3D();
+                this._camera = camera || feng3d.factory.createCamera();
+                this.renderer = new feng3d.Renderer(this.gl, this.scene, this._camera);
                 setInterval(this.drawScene.bind(this), 15);
             }
             Object.defineProperty(View3D.prototype, "scene", {
@@ -1204,110 +1201,12 @@ var me;
                 enumerable: true,
                 configurable: true
             });
-            View3D.prototype.initGL = function () {
-                this.gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
-                this.gl.clearDepth(1.0); // Clear everything
-                this.gl.enable(this.gl.DEPTH_TEST); // Enable depth testing
-                this.gl.depthFunc(this.gl.LEQUAL); // Near things obscure far things
-            };
-            View3D.prototype.initShaders = function () {
-                var vertexShader = this.getShader(this.vertexShaderStr, 1);
-                var fragmentShader = this.getShader(this.fragmentShaderStr, 2);
-                // Create the shader program
-                this.shaderProgram = this.gl.createProgram();
-                this.gl.attachShader(this.shaderProgram, vertexShader);
-                this.gl.attachShader(this.shaderProgram, fragmentShader);
-                this.gl.linkProgram(this.shaderProgram);
-                // If creating the shader program failed, alert
-                if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
-                    alert("Unable to initialize the shader program.");
-                }
-                this.gl.useProgram(this.shaderProgram);
-                this.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
-                this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
-            };
-            View3D.prototype.getShader = function (theSource, type) {
-                // Now figure out what type of shader script we have,
-                // based on its MIME type.
-                var shader;
-                if (type == 2) {
-                    shader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
-                }
-                else if (type == 1) {
-                    shader = this.gl.createShader(this.gl.VERTEX_SHADER);
-                }
-                else {
-                    return null; // Unknown shader type
-                }
-                // Send the source to the shader object
-                this.gl.shaderSource(shader, theSource);
-                // Compile the shader program
-                this.gl.compileShader(shader);
-                // See if it compiled successfully
-                if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-                    alert("An error occurred compiling the shaders: " + this.gl.getShaderInfoLog(shader));
-                    return null;
-                }
-                return shader;
-            };
             View3D.prototype.drawScene = function () {
-                // Clear the canvas before we start drawing on it.
-                var _this = this;
-                this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-                var renderables = this._scene.getRenderables();
-                renderables.forEach(function (element) {
-                    _this.drawObject3D(element);
-                });
-            };
-            View3D.prototype.setMatrixUniforms = function () {
-                var perspectiveMatrix = this.getPerspectiveMatrix();
-                var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-                this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
-            };
-            View3D.prototype.getPerspectiveMatrix = function () {
-                var camSpace3D = this._camera.space3D;
-                var camera = this._camera.getComponentByClass(feng3d.Camera);
-                var perspectiveMatrix = camSpace3D.transform3D;
-                perspectiveMatrix.invert();
-                perspectiveMatrix.append(camera.projectionMatrix3D);
-                return perspectiveMatrix;
-            };
-            View3D.prototype.drawObject3D = function (object3D) {
-                var object3DBuffer = object3DBufferManager.getBuffer(this.gl, object3D);
-                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
-                this.gl.vertexAttribPointer(this.vertexPositionAttribute, 3, this.gl.FLOAT, false, 0, 0);
-                var mvMatrix = object3D.space3D.transform3D;
-                var mvUniform = this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-                this.gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.rawData));
-                this.setMatrixUniforms();
-                this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+                this.renderer.render();
             };
             return View3D;
         }());
         feng3d.View3D = View3D;
-        var Object3DBuffer = (function () {
-            function Object3DBuffer() {
-            }
-            return Object3DBuffer;
-        }());
-        var Object3DBufferManager = (function () {
-            function Object3DBufferManager() {
-            }
-            Object3DBufferManager.prototype.getBuffer = function (gl, object3D) {
-                if (this.buffer == null) {
-                    this.buffer = new Object3DBuffer();
-                    var geometry = object3D.getComponentByClass(feng3d.Geometry);
-                    var positionData = geometry.getVAData(feng3d.GLAttribute.position);
-                    // Create a buffer for the square's vertices.
-                    var squareVerticesBuffer = this.buffer.squareVerticesBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
-                }
-                return this.buffer;
-            };
-            return Object3DBufferManager;
-        }());
-        var object3DBufferManager = new Object3DBufferManager();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2546,6 +2445,138 @@ var me;
             }
             factory.createCamera = createCamera;
         })(factory = feng3d.factory || (feng3d.factory = {}));
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 渲染器
+         * @author feng 2016-05-01
+         */
+        var Renderer = (function () {
+            /**
+             * 构建渲染器
+             * @param gl    webgl渲染上下文
+             * @param scene 场景
+             * @param camera 摄像机对象
+             */
+            function Renderer(gl, scene, camera) {
+                this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
+                this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
+                this.gl = gl;
+                this.scene = scene;
+                this.camera = camera;
+                this.initGL();
+                this.initShaders();
+            }
+            Renderer.prototype.initGL = function () {
+                this.gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
+                this.gl.clearDepth(1.0); // Clear everything
+                this.gl.enable(this.gl.DEPTH_TEST); // Enable depth testing
+                this.gl.depthFunc(this.gl.LEQUAL); // Near things obscure far things
+            };
+            Renderer.prototype.initShaders = function () {
+                var vertexShader = this.getShader(this.vertexShaderStr, 1);
+                var fragmentShader = this.getShader(this.fragmentShaderStr, 2);
+                // Create the shader program
+                this.shaderProgram = this.gl.createProgram();
+                this.gl.attachShader(this.shaderProgram, vertexShader);
+                this.gl.attachShader(this.shaderProgram, fragmentShader);
+                this.gl.linkProgram(this.shaderProgram);
+                // If creating the shader program failed, alert
+                if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
+                    alert("Unable to initialize the shader program.");
+                }
+                this.gl.useProgram(this.shaderProgram);
+                this.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
+                this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
+            };
+            /**
+             * 渲染
+             */
+            Renderer.prototype.render = function () {
+                var _this = this;
+                this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+                var renderables = this.scene.getRenderables();
+                renderables.forEach(function (element) {
+                    _this.drawObject3D(element);
+                });
+            };
+            Renderer.prototype.getShader = function (theSource, type) {
+                // Now figure out what type of shader script we have,
+                // based on its MIME type.
+                var shader;
+                if (type == 2) {
+                    shader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
+                }
+                else if (type == 1) {
+                    shader = this.gl.createShader(this.gl.VERTEX_SHADER);
+                }
+                else {
+                    return null; // Unknown shader type
+                }
+                // Send the source to the shader object
+                this.gl.shaderSource(shader, theSource);
+                // Compile the shader program
+                this.gl.compileShader(shader);
+                // See if it compiled successfully
+                if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+                    alert("An error occurred compiling the shaders: " + this.gl.getShaderInfoLog(shader));
+                    return null;
+                }
+                return shader;
+            };
+            Renderer.prototype.setMatrixUniforms = function () {
+                var perspectiveMatrix = this.getPerspectiveMatrix();
+                var pUniform = this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
+                this.gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix.rawData));
+            };
+            Renderer.prototype.getPerspectiveMatrix = function () {
+                var camSpace3D = this.camera.space3D;
+                var camera = this.camera.getComponentByClass(feng3d.Camera);
+                var perspectiveMatrix = camSpace3D.transform3D;
+                perspectiveMatrix.invert();
+                perspectiveMatrix.append(camera.projectionMatrix3D);
+                return perspectiveMatrix;
+            };
+            Renderer.prototype.drawObject3D = function (object3D) {
+                var object3DBuffer = object3DBufferManager.getBuffer(this.gl, object3D);
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
+                this.gl.vertexAttribPointer(this.vertexPositionAttribute, 3, this.gl.FLOAT, false, 0, 0);
+                var mvMatrix = object3D.space3D.transform3D;
+                var mvUniform = this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
+                this.gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.rawData));
+                this.setMatrixUniforms();
+                this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+            };
+            return Renderer;
+        }());
+        feng3d.Renderer = Renderer;
+        var Object3DBuffer = (function () {
+            function Object3DBuffer() {
+            }
+            return Object3DBuffer;
+        }());
+        var Object3DBufferManager = (function () {
+            function Object3DBufferManager() {
+            }
+            Object3DBufferManager.prototype.getBuffer = function (gl, object3D) {
+                if (this.buffer == null) {
+                    this.buffer = new Object3DBuffer();
+                    var geometry = object3D.getComponentByClass(feng3d.Geometry);
+                    var positionData = geometry.getVAData(feng3d.GLAttribute.position);
+                    // Create a buffer for the square's vertices.
+                    var squareVerticesBuffer = this.buffer.squareVerticesBuffer = gl.createBuffer();
+                    gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+                    gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
+                }
+                return this.buffer;
+            };
+            return Object3DBufferManager;
+        }());
+        var object3DBufferManager = new Object3DBufferManager();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 /**
