@@ -91,6 +91,96 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 构建Map类代替Dictionary
+         */
+        var Map = (function () {
+            function Map() {
+                /**
+                 * key,value组合列表
+                 */
+                this.list = [];
+            }
+            /**
+             * 删除
+             */
+            Map.prototype.delete = function (k) {
+                for (var i = 0; i < this.list.length; i++) {
+                    var element = this.list[i];
+                    if (element.k == k) {
+                        this.list.splice(i, 1);
+                        break;
+                    }
+                }
+            };
+            /**
+             * 添加映射
+             */
+            Map.prototype.push = function (k, v) {
+                var target = this._getKV(k);
+                if (target != null)
+                    target.v = v;
+                else {
+                    target = new KV(k, v);
+                    this.list.push(target);
+                }
+            };
+            /**
+             * 通过key获取value
+             */
+            Map.prototype.get = function (k) {
+                var target = this._getKV(k);
+                if (target != null)
+                    return target.v;
+                return null;
+            };
+            /**
+             * 获取键列表
+             */
+            Map.prototype.getKeys = function () {
+                var keys = [];
+                this.list.forEach(function (kv) {
+                    keys.push(kv.k);
+                });
+                return keys;
+            };
+            /**
+             * 清理字典
+             */
+            Map.prototype.clear = function () {
+                this.list.length = 0;
+            };
+            /**
+             * 通过key获取(key,value)组合
+             */
+            Map.prototype._getKV = function (k) {
+                var target;
+                this.list.forEach(function (kv) {
+                    if (kv.k == k) {
+                        target = kv;
+                    }
+                });
+                return target;
+            };
+            return Map;
+        }());
+        feng3d.Map = Map;
+        /**
+         * key,value组合
+         */
+        var KV = (function () {
+            function KV(k, v) {
+                this.k = k;
+                this.v = v;
+            }
+            return KV;
+        }());
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 数学常量类
          */
         var MathConsts = (function () {
@@ -2561,22 +2651,46 @@ var me;
         }());
         var Object3DBufferManager = (function () {
             function Object3DBufferManager() {
+                this.map = new feng3d.Map();
             }
             Object3DBufferManager.prototype.getBuffer = function (gl, object3D) {
-                if (this.buffer == null) {
-                    this.buffer = new Object3DBuffer();
+                var glMap = this.map.get(gl);
+                if (glMap == null) {
+                    glMap = new feng3d.Map();
+                    this.map.push(gl, glMap);
+                }
+                var buffer = glMap.get(object3D);
+                if (buffer == null) {
+                    buffer = new Object3DBuffer();
+                    glMap.push(object3D, buffer);
                     var geometry = object3D.getComponentByClass(feng3d.Geometry);
                     var positionData = geometry.getVAData(feng3d.GLAttribute.position);
                     // Create a buffer for the square's vertices.
-                    var squareVerticesBuffer = this.buffer.squareVerticesBuffer = gl.createBuffer();
+                    var squareVerticesBuffer = buffer.squareVerticesBuffer = gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
                     gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
                 }
-                return this.buffer;
+                return buffer;
             };
             return Object3DBufferManager;
         }());
         var object3DBufferManager = new Object3DBufferManager();
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 正向渲染
+         * @author feng 2016-05-02
+         */
+        var ForwardRenderder = (function () {
+            function ForwardRenderder() {
+            }
+            return ForwardRenderder;
+        }());
+        feng3d.ForwardRenderder = ForwardRenderder;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 /**

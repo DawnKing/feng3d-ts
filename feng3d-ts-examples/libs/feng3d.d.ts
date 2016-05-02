@@ -29,6 +29,41 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 构建Map类代替Dictionary
+     */
+    class Map<K, V> {
+        /**
+         * key,value组合列表
+         */
+        private list;
+        /**
+         * 删除
+         */
+        delete(k: K): void;
+        /**
+         * 添加映射
+         */
+        push(k: K, v: V): void;
+        /**
+         * 通过key获取value
+         */
+        get(k: K): V;
+        /**
+         * 获取键列表
+         */
+        getKeys(): K[];
+        /**
+         * 清理字典
+         */
+        clear(): void;
+        /**
+         * 通过key获取(key,value)组合
+         */
+        private _getKV(k);
+    }
+}
+declare module me.feng3d {
+    /**
      * 数学常量类
      */
     class MathConsts {
@@ -926,6 +961,14 @@ declare module me.feng3d {
         private setMatrixUniforms();
         private getPerspectiveMatrix();
         private drawObject3D(object3D);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 正向渲染
+     * @author feng 2016-05-02
+     */
+    class ForwardRenderder {
     }
 }
 /**
