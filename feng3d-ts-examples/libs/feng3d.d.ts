@@ -568,6 +568,10 @@ declare module me.feng3d {
          */
         constructor(object3D: Object3D, parent: Scene3DNode);
         /**
+         * 节点名称
+         */
+        name: string;
+        /**
          * 添加3D对象生成节点
          */
         addObject3D(object3D: Object3D): this;
@@ -600,6 +604,10 @@ declare module me.feng3d {
          * 构造3D场景
          */
         constructor();
+        /**
+         * 场景名称默认为root
+         */
+        name: string;
     }
 }
 declare module me.feng3d {

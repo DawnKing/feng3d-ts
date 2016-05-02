@@ -1335,6 +1335,19 @@ var me;
                 this.object3D = object3D;
                 this.parent = parent;
             }
+            Object.defineProperty(Scene3DNode.prototype, "name", {
+                /**
+                 * 节点名称
+                 */
+                get: function () {
+                    return this.object3D.name;
+                },
+                set: function (value) {
+                    this.object3D.name = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
             /**
              * 添加3D对象生成节点
              */
@@ -1370,8 +1383,6 @@ var me;
                 }
                 for (var i = 0; i < this.children.length; i++) {
                     var element = this.children[i];
-                    if (element.name == name)
-                        return element;
                     var target = element.find(name);
                     if (target != null)
                         return target;
@@ -1421,6 +1432,18 @@ var me;
             function Scene3D() {
                 _super.call(this, null, null);
             }
+            Object.defineProperty(Scene3D.prototype, "name", {
+                /**
+                 * 场景名称默认为root
+                 */
+                get: function () {
+                    return "root";
+                },
+                set: function (value) {
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Scene3D;
         }(feng3d.Scene3DNode));
         feng3d.Scene3D = Scene3D;
