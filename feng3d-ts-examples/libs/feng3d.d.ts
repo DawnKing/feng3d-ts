@@ -978,7 +978,9 @@ declare module me.feng3d {
      * 材质
      * @author feng 2016-05-02
      */
-    class Material extends Component {
+    class Material extends Context3DBufferOwner {
+        vertexShaderStr: string;
+        fragmentShaderStr: string;
         pass: MaterialPass;
         /**
          * 构建材质
@@ -992,8 +994,6 @@ declare module me.feng3d {
      * @author feng 2016-05-02
      */
     class ColorMaterial extends Material {
-        vertexShaderStr: string;
-        fragmentShaderStr: string;
         color: number;
         /**
          * 构建颜色材质
@@ -1007,6 +1007,144 @@ declare module me.feng3d {
      * 材质通道
      */
     class MaterialPass {
+    }
+}
+declare module me.feng3d {
+    /**
+     * Context3D缓存拥有者
+     * @author feng 2014-11-26
+     */
+    class Context3DBufferOwner extends Component {
+        private _bufferDic;
+        private _bufferList;
+        /**
+         * 缓冲拥有者子项列表
+         */
+        private childrenBufferOwner;
+        private allBufferList;
+        /**
+         * 所有缓冲列表是否有效
+         */
+        private bufferInvalid;
+        /**
+         * 创建Context3D缓存拥有者
+         */
+        constructor();
+        /**
+         * @inheritDoc
+         */
+        bufferDic: any;
+        /**
+         * @inheritDoc
+         */
+        bufferList: Context3DBuffer[];
+        /**
+         * 初始化Context3d缓存
+         */
+        protected initBuffers(): void;
+        /**
+         * 添加子项缓存拥有者
+         * @param childBufferOwner
+         */
+        addChildBufferOwner(childBufferOwner: Context3DBufferOwner): void;
+        /**
+         * 移除子项缓存拥有者
+         * @param childBufferOwner
+         */
+        removeChildBufferOwner(childBufferOwner: Context3DBufferOwner): void;
+        /**
+         * 向上冒泡
+         */
+        private bubbleDispatchEvent(event);
+        /**
+         * 标记Context3d缓存脏了
+         * @param dataTypeId
+         */
+        markBufferDirty(dataTypeId: string): void;
+        /**
+         * @inheritDoc
+         */
+        mapContext3DBuffer(dataTypeId: string, updateFunc: Function): Context3DBuffer;
+        /**
+         * @inheritDoc
+         */
+        getAllBufferList(): Context3DBuffer[];
+    }
+}
+declare module me.feng3d {
+    /**
+     * Context3D可执行的数据缓存
+     * @author feng 2014-6-9
+     */
+    abstract class Context3DBuffer {
+        /** 3d缓存类型编号 */
+        private _dataTypeId;
+        /** 数据脏了 */
+        protected _dataDirty: boolean;
+        /** 更新回调函数 */
+        protected _updateFunc: Function;
+        /**
+         * 创建一个gl可执行的数据缓存
+         * @param dataTypeId 		数据缓存编号
+         * @param updateFunc 		更新回调函数
+         */
+        constructor(dataTypeId: string, updateFunc: Function);
+        /**
+         * 使缓存无效
+         */
+        invalid(): void;
+        /**
+         * 运行更新回调函数
+         */
+        protected doUpdateFunc(): void;
+        /**
+         * 缓存类型编号
+         */
+        dataTypeId: string;
+        /**
+         * 执行Context3DBuffer
+         * <p><b>注：</b>该函数为虚函数</p>
+         *
+         * @param context3D		3d环境
+         *
+         * @see me.feng3d.core.buffer.Context3DCache
+         */
+        abstract doBuffer(context3D: WebGLRenderingContext): any;
+        /**
+         * 字符串描述
+         */
+        toString(): string;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D环境缓冲拥有者事件
+     * @author feng 2015-7-18
+     */
+    class Context3DBufferOwnerEvent extends Event {
+        /**
+         * 添加3D环境缓冲事件
+         */
+        static ADD_CONTEXT3DBUFFER: string;
+        /**
+         * 移除3D环境缓冲事件
+         */
+        static REMOVE_CONTEXT3DBUFFER: string;
+        /**
+         * 添加子项3D环境缓冲拥有者事件
+         */
+        static ADDCHILD_CONTEXT3DBUFFEROWNER: string;
+        /**
+         * 移除子项3D环境缓冲拥有者事件
+         */
+        static REMOVECHILD_CONTEXT3DBUFFEROWNER: string;
+        /**
+         * 创建3D环境缓冲拥有者事件
+         * @param type 					事件的类型，可以作为 Event.type 访问。
+         * @param data					事件携带的数据
+         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         */
+        constructor(type: string, data?: any, bubbles?: boolean);
     }
 }
 /**
