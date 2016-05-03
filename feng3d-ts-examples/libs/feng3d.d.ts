@@ -1147,17 +1147,3 @@ declare module me.feng3d {
         constructor(type: string, data?: any, bubbles?: boolean);
     }
 }
-/**
- * 临时值
- * @author feng 2016-04-26
- */
-declare module me.feng3d.temp {
-    /**
-     * 临时矩阵
-     */
-    var matrix3D: Matrix3D;
-    /**
-     * 临时矩阵数据
-     */
-    var rawData: Float32Array;
-}

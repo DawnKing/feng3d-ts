@@ -1157,8 +1157,8 @@ var me;
                 get: function () {
                     if (this.transform3DDirty)
                         this.updateTransform3D();
-                    feng3d.temp.matrix3D.rawData.set(this._transform3D.rawData);
-                    return feng3d.temp.matrix3D;
+                    tempMatrix3D.rawData.set(this._transform3D.rawData);
+                    return tempMatrix3D;
                 },
                 set: function (value) {
                     this.transform3DDirty = false;
@@ -1197,6 +1197,10 @@ var me;
             return Space3D;
         }(feng3d.Component));
         feng3d.Space3D = Space3D;
+        /**
+         * 临时矩阵
+         */
+        var tempMatrix3D = new feng3d.Matrix3D();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -1899,7 +1903,7 @@ var me;
              * 更新投影矩阵
              */
             Camera.prototype.updateProjectionMatrix = function () {
-                var raw = feng3d.temp.rawData;
+                var raw = tempRawData;
                 this._yMax = this._near * this._focalLengthInv;
                 this._xMax = this._yMax * this._aspectRatio;
                 var left, right, top, bottom;
@@ -1945,6 +1949,10 @@ var me;
             return Camera;
         }(feng3d.CameraBase));
         feng3d.Camera = Camera;
+        /**
+         * 临时矩阵数据
+         */
+        var tempRawData = new Float32Array(16);
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2989,27 +2997,6 @@ var me;
             return Context3DBufferOwnerEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferOwnerEvent = Context3DBufferOwnerEvent;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-/**
- * 临时值
- * @author feng 2016-04-26
- */
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        var temp;
-        (function (temp) {
-            /**
-             * 临时矩阵
-             */
-            temp.matrix3D = new feng3d.Matrix3D();
-            /**
-             * 临时矩阵数据
-             */
-            temp.rawData = new Float32Array(16);
-        })(temp = feng3d.temp || (feng3d.temp = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 //# sourceMappingURL=feng3d.js.map
