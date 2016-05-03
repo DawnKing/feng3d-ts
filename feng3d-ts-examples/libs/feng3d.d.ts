@@ -967,14 +967,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 正向渲染
-     * @author feng 2016-05-02
-     */
-    class ForwardRenderder {
-    }
-}
-declare module me.feng3d {
-    /**
      * 材质
      * @author feng 2016-05-02
      */
@@ -1007,6 +999,89 @@ declare module me.feng3d {
      * 材质通道
      */
     class MaterialPass {
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3d缓存类型
+     * @author feng 2014-8-20
+     */
+    class Context3DBufferType {
+        /**
+         * 寄存器类型
+         * @see me.feng3d.core.register.RegisterType
+         */
+        registerType: string;
+        /**
+         * 数据类型
+         * @see me.feng3d.core.buffer.ConstantsDataType
+         */
+        dataType: string;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 顶点数据缓冲
+     * @author feng 2014-8-14
+     */
+    class VABuffer extends Context3DBuffer {
+        /** 顶点数据 */
+        data: Float32Array;
+        size: number;
+        /**
+         * 创建顶点数据缓存
+         * @param dataTypeId 数据编号
+         * @param updateFunc 数据更新回调函数
+         */
+        constructor(dataTypeId: string);
+        /**
+         * @inheritDoc
+         */
+        doBuffer(context3D: WebGLRenderingContext): void;
+        /**
+         * 绑定缓冲
+         */
+        bindBuffer(context3D: WebGLRenderingContext): void;
+        /**
+         * 更新数据
+         * @param data 				顶点数据
+         * @param numVertices 		要在缓存区中存储的顶点数量。
+         * @param size              与每个顶点关联的 32 位（4 字节）数据值的数量。
+         */
+        update(data: Float32Array, numVertices: number, size: number): void;
+    }
+}
+declare module me.feng3d {
+    /**
+     * Context3D可执行的数据缓存
+     * @author feng 2014-6-9
+     */
+    abstract class Context3DBuffer {
+        /** 3d缓存类型编号 */
+        private _dataTypeId;
+        /**
+         * 创建一个gl可执行的数据缓存
+         * @param dataTypeId 		数据缓存编号
+         * @param updateFunc 		更新回调函数
+         */
+        constructor(dataTypeId: string);
+        /**
+         * 缓存类型编号
+         */
+        dataTypeId: string;
+        /**
+         * 执行Context3DBuffer
+         * <p><b>注：</b>该函数为虚函数</p>
+         *
+         * @param context3D		3d环境
+         *
+         * @see me.feng3d.core.buffer.Context3DCache
+         */
+        abstract doBuffer(context3D: WebGLRenderingContext): any;
+        /**
+         * 字符串描述
+         */
+        toString(): string;
     }
 }
 declare module me.feng3d {
@@ -1073,48 +1148,44 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * Context3D可执行的数据缓存
-     * @author feng 2014-6-9
+     * 3d环境缓存类型管理者
+     * @author feng 2014-9-3
      */
-    abstract class Context3DBuffer {
-        /** 3d缓存类型编号 */
-        private _dataTypeId;
-        /** 数据脏了 */
-        protected _dataDirty: boolean;
-        /** 更新回调函数 */
-        protected _updateFunc: Function;
+    class Context3DBufferTypeManager {
+        NAME_REGEXP: string;
+        /** 缓存类型字典 */
+        private bufferTypeDic;
+        private typeClassDic;
+        private config;
         /**
-         * 创建一个gl可执行的数据缓存
-         * @param dataTypeId 		数据缓存编号
-         * @param updateFunc 		更新回调函数
+         * 获取或创建3d缓存类型
+         * @param typeId 		3d缓存类型编号
+         * @return				3d缓存类型实例
          */
-        constructor(dataTypeId: string, updateFunc: Function);
+        getBufferType(typeId: string): Context3DBufferType;
         /**
-         * 使缓存无效
+         * 获取3d缓存类定义
+         * @param typeId 		3d缓存类型编号
+         * @return				3d缓存类定义
          */
-        invalid(): void;
-        /**
-         * 运行更新回调函数
-         */
-        protected doUpdateFunc(): void;
-        /**
-         * 缓存类型编号
-         */
-        dataTypeId: string;
-        /**
-         * 执行Context3DBuffer
-         * <p><b>注：</b>该函数为虚函数</p>
-         *
-         * @param context3D		3d环境
-         *
-         * @see me.feng3d.core.buffer.Context3DCache
-         */
-        abstract doBuffer(context3D: WebGLRenderingContext): any;
-        /**
-         * 字符串描述
-         */
-        toString(): string;
+        getBufferClass(typeId: string): any;
     }
+    /**
+     * 3d环境缓存类型管理者
+     */
+    var context3DBufferTypeManager: Context3DBufferTypeManager;
+}
+declare module me.feng3d {
+    /**
+     * 3D上下文缓冲中心
+     */
+    class Context3DBufferCenter {
+        getVABuffer(context3D: WebGLRenderingContext, data: Float32Array, target: number): WebGLBuffer;
+    }
+    /**
+     * 3D上下文缓冲中心
+     */
+    var context3DBufferCenter: Context3DBufferCenter;
 }
 declare module me.feng3d {
     /**

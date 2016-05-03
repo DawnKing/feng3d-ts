@@ -2678,6 +2678,7 @@ var me;
                     var squareVerticesBuffer = buffer.squareVerticesBuffer = gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
                     gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
+                    var vaBuffer = new feng3d.VABuffer(feng3d.GLAttribute.position);
                     var indices = geometry.indices;
                     var indexBuffer = buffer.indexBuffer = gl.createBuffer();
                     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -2689,22 +2690,6 @@ var me;
             return Object3DBufferManager;
         }());
         var object3DBufferManager = new Object3DBufferManager();
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 正向渲染
-         * @author feng 2016-05-02
-         */
-        var ForwardRenderder = (function () {
-            function ForwardRenderder() {
-            }
-            return ForwardRenderder;
-        }());
-        feng3d.ForwardRenderder = ForwardRenderder;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2768,6 +2753,107 @@ var me;
             return MaterialPass;
         }());
         feng3d.MaterialPass = MaterialPass;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3d缓存类型
+         * @author feng 2014-8-20
+         */
+        var Context3DBufferType = (function () {
+            function Context3DBufferType() {
+            }
+            return Context3DBufferType;
+        }());
+        feng3d.Context3DBufferType = Context3DBufferType;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 顶点数据缓冲
+         * @author feng 2014-8-14
+         */
+        var VABuffer = (function (_super) {
+            __extends(VABuffer, _super);
+            /**
+             * 创建顶点数据缓存
+             * @param dataTypeId 数据编号
+             * @param updateFunc 数据更新回调函数
+             */
+            function VABuffer(dataTypeId) {
+                _super.call(this, dataTypeId);
+            }
+            /**
+             * @inheritDoc
+             */
+            VABuffer.prototype.doBuffer = function (context3D) {
+                var buffer = feng3d.context3DBufferCenter.getVABuffer(context3D, this.data, context3D.ARRAY_BUFFER);
+                var vertexBufferItem = this.dataBuffer.getBufferItem(context3D);
+                vertexBufferItem.setVertexBufferAt(this.firstRegister, 0, this.format);
+            };
+            /**
+             * 绑定缓冲
+             */
+            VABuffer.prototype.bindBuffer = function (context3D) {
+            };
+            /**
+             * 更新数据
+             * @param data 				顶点数据
+             * @param numVertices 		要在缓存区中存储的顶点数量。
+             * @param size              与每个顶点关联的 32 位（4 字节）数据值的数量。
+             */
+            VABuffer.prototype.update = function (data, numVertices, size) {
+                feng3d.assert(1 <= size && size <= 4);
+                this.data = data;
+                this.size = size;
+            };
+            return VABuffer;
+        }(feng3d.Context3DBuffer));
+        feng3d.VABuffer = VABuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * Context3D可执行的数据缓存
+         * @author feng 2014-6-9
+         */
+        var Context3DBuffer = (function () {
+            /**
+             * 创建一个gl可执行的数据缓存
+             * @param dataTypeId 		数据缓存编号
+             * @param updateFunc 		更新回调函数
+             */
+            function Context3DBuffer(dataTypeId) {
+                this._dataTypeId = dataTypeId;
+            }
+            Object.defineProperty(Context3DBuffer.prototype, "dataTypeId", {
+                /**
+                 * 缓存类型编号
+                 */
+                get: function () {
+                    return this._dataTypeId;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 字符串描述
+             */
+            Context3DBuffer.prototype.toString = function () {
+                return "[" + feng3d.getClassName(this) + " dataType=\"" + this._dataTypeId + "\"]";
+            };
+            return Context3DBuffer;
+        }());
+        feng3d.Context3DBuffer = Context3DBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2872,7 +2958,7 @@ var me;
              * @inheritDoc
              */
             Context3DBufferOwner.prototype.mapContext3DBuffer = function (dataTypeId, updateFunc) {
-                var bufferCls = Context3DBufferTypeManager.getBufferClass(dataTypeId);
+                var bufferCls = feng3d.context3DBufferTypeManager.getBufferClass(dataTypeId);
                 var context3DBuffer = new bufferCls(dataTypeId, updateFunc);
                 this.bufferDic[dataTypeId] = context3DBuffer;
                 this.bufferList.push(context3DBuffer);
@@ -2906,55 +2992,81 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * Context3D可执行的数据缓存
-         * @author feng 2014-6-9
+         * 3d环境缓存类型管理者
+         * @author feng 2014-9-3
          */
-        var Context3DBuffer = (function () {
-            /**
-             * 创建一个gl可执行的数据缓存
-             * @param dataTypeId 		数据缓存编号
-             * @param updateFunc 		更新回调函数
-             */
-            function Context3DBuffer(dataTypeId, updateFunc) {
-                /** 数据脏了 */
-                this._dataDirty = true;
-                this._dataTypeId = dataTypeId;
-                this._updateFunc = updateFunc;
+        var Context3DBufferTypeManager = (function () {
+            function Context3DBufferTypeManager() {
+                this.NAME_REGEXP = "[a-zA-Z0-9$]";
+                /** 缓存类型字典 */
+                this.bufferTypeDic = {};
+                this.typeClassDic = {};
+                this.config = [];
             }
             /**
-             * 使缓存无效
+             * 获取或创建3d缓存类型
+             * @param typeId 		3d缓存类型编号
+             * @return				3d缓存类型实例
              */
-            Context3DBuffer.prototype.invalid = function () {
-                this._dataDirty = true;
+            Context3DBufferTypeManager.prototype.getBufferType = function (typeId) {
+                var bufferType = this.bufferTypeDic[typeId];
+                if (bufferType)
+                    return bufferType;
+                this.bufferTypeDic[typeId] = bufferType = new feng3d.Context3DBufferType();
+                var types = typeId.split("_");
+                bufferType.registerType = types[1];
+                bufferType.dataType = types[2];
+                return bufferType;
             };
             /**
-             * 运行更新回调函数
+             * 获取3d缓存类定义
+             * @param typeId 		3d缓存类型编号
+             * @return				3d缓存类定义
              */
-            Context3DBuffer.prototype.doUpdateFunc = function () {
-                if (this._updateFunc != null && this._dataDirty) {
-                    this._updateFunc(this);
-                    this._dataDirty = false;
+            Context3DBufferTypeManager.prototype.getBufferClass = function (typeId) {
+                var cls = this.typeClassDic[typeId];
+                if (cls == null) {
+                    for (var i = 0; i < this.config.length; i++) {
+                        var result = typeId.match(this.config[i][0]);
+                        if (result != null && result.input == result[0]) {
+                            return this.config[i][1];
+                        }
+                    }
                 }
+                throw ("无法为" + typeId + "匹配到3d缓存类");
             };
-            Object.defineProperty(Context3DBuffer.prototype, "dataTypeId", {
-                /**
-                 * 缓存类型编号
-                 */
-                get: function () {
-                    return this._dataTypeId;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * 字符串描述
-             */
-            Context3DBuffer.prototype.toString = function () {
-                return "[" + feng3d.getClassName(this) + " dataType=\"" + this._dataTypeId + "\"]";
-            };
-            return Context3DBuffer;
+            return Context3DBufferTypeManager;
         }());
-        feng3d.Context3DBuffer = Context3DBuffer;
+        feng3d.Context3DBufferTypeManager = Context3DBufferTypeManager;
+        /**
+         * 3d环境缓存类型管理者
+         */
+        feng3d.context3DBufferTypeManager = new Context3DBufferTypeManager();
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D上下文缓冲中心
+         */
+        var Context3DBufferCenter = (function () {
+            function Context3DBufferCenter() {
+            }
+            Context3DBufferCenter.prototype.getVABuffer = function (context3D, data, target) {
+                var buffer = context3D.createBuffer();
+                context3D.bindBuffer(context3D.ARRAY_BUFFER, buffer);
+                context3D.bufferData(context3D.ARRAY_BUFFER, data, context3D.STATIC_DRAW);
+                return buffer;
+            };
+            return Context3DBufferCenter;
+        }());
+        feng3d.Context3DBufferCenter = Context3DBufferCenter;
+        /**
+         * 3D上下文缓冲中心
+         */
+        feng3d.context3DBufferCenter = new Context3DBufferCenter();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
