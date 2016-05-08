@@ -64,6 +64,25 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 获取对象UID
+     * @author feng 2016-05-08
+     */
+    function getUID(object: any): any;
+}
+declare module me.feng3d {
+    /**
+     * 获取对象版本
+     * @param object 对象
+     */
+    function getVersion(object: any): number;
+    /**
+     * 升级对象版本
+     * @param object 对象
+     */
+    function upgradeVersion(object: any): void;
+}
+declare module me.feng3d {
+    /**
      * 数学常量类
      */
     class MathConsts {

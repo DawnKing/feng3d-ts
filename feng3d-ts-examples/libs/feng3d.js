@@ -181,6 +181,89 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 获取对象UID
+         * @author feng 2016-05-08
+         */
+        function getUID(object) {
+            if (typeof object != "object") {
+                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
+            }
+            if (object.hasOwnProperty(uidKey)) {
+                return object[uidKey];
+            }
+            var uid = createUID(object);
+            Object.defineProperty(object, uidKey, {
+                value: uid,
+                enumerable: false,
+                writable: false
+            });
+            return uid;
+        }
+        feng3d.getUID = getUID;
+        /**
+         * 创建对象的UID
+         * @param object 对象
+         */
+        function createUID(object) {
+            var className = feng3d.getClassName(object);
+            var uid = className + "_" + ~~uidStart[className];
+            uidStart[className] = ~~uidStart[className] + 1;
+            return uid;
+        }
+        /**
+         * uid自增长编号
+         */
+        var uidStart = {};
+        /**
+         * uid属性名称
+         */
+        var uidKey = "__uid__";
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 获取对象版本
+         * @param object 对象
+         */
+        function getVersion(object) {
+            if (typeof object != "object") {
+                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
+            }
+            return ~~object[versionKey];
+        }
+        feng3d.getVersion = getVersion;
+        /**
+         * 升级对象版本
+         * @param object 对象
+         */
+        function upgradeVersion(object) {
+            if (typeof object != "object") {
+                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684\u7248\u672C\u53F7";
+            }
+            if (!object.hasOwnProperty(versionKey)) {
+                Object.defineProperty(object, versionKey, {
+                    value: 0,
+                    enumerable: false,
+                    writable: true
+                });
+            }
+            object[versionKey] = ~~object[versionKey] + 1;
+        }
+        feng3d.upgradeVersion = upgradeVersion;
+        /**
+         * 版本号键名称
+         */
+        var versionKey = "__version__";
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 数学常量类
          */
         var MathConsts = (function () {
