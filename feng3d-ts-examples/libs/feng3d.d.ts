@@ -1069,6 +1069,17 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 渲染程序缓存
+     * @author feng 2016-05-09
+     */
+    class ProgramBuffer extends Context3DBuffer {
+        vertexCode: string;
+        fragmentCode: string;
+        update(vertexCode: string, fragmentCode: string): void;
+    }
+}
+declare module me.feng3d {
+    /**
      * Context3D缓存拥有者
      * @author feng 2014-11-26
      */

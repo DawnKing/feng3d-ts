@@ -2881,6 +2881,28 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 渲染程序缓存
+         * @author feng 2016-05-09
+         */
+        var ProgramBuffer = (function (_super) {
+            __extends(ProgramBuffer, _super);
+            function ProgramBuffer() {
+                _super.apply(this, arguments);
+            }
+            ProgramBuffer.prototype.update = function (vertexCode, fragmentCode) {
+                this.vertexCode = vertexCode;
+                this.fragmentCode = fragmentCode;
+            };
+            return ProgramBuffer;
+        }(feng3d.Context3DBuffer));
+        feng3d.ProgramBuffer = ProgramBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * Context3D缓存拥有者
          * @author feng 2014-11-26
          */
