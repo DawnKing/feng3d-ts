@@ -2881,28 +2881,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 渲染程序缓存
-         * @author feng 2016-05-09
-         */
-        var ProgramBuffer = (function (_super) {
-            __extends(ProgramBuffer, _super);
-            function ProgramBuffer() {
-                _super.apply(this, arguments);
-            }
-            ProgramBuffer.prototype.update = function (vertexCode, fragmentCode) {
-                this.vertexCode = vertexCode;
-                this.fragmentCode = fragmentCode;
-            };
-            return ProgramBuffer;
-        }(feng3d.Context3DBuffer));
-        feng3d.ProgramBuffer = ProgramBuffer;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * Context3D缓存拥有者
          * @author feng 2014-11-26
          */
@@ -3151,6 +3129,124 @@ var me;
             return Context3DBufferOwnerEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferOwnerEvent = Context3DBufferOwnerEvent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 渲染程序缓存
+         * @author feng 2016-05-09
+         */
+        var ProgramBuffer = (function (_super) {
+            __extends(ProgramBuffer, _super);
+            function ProgramBuffer() {
+                _super.apply(this, arguments);
+            }
+            ProgramBuffer.prototype.doBuffer = function (gl) {
+                if (this.shaderProgram != null) {
+                    var vertexShader = this.getShader(gl, this.vertexCode, 1);
+                    var fragmentShader = this.getShader(gl, this.fragmentCode, 2);
+                    // Create the shader program
+                    this.shaderProgram = gl.createProgram();
+                    gl.attachShader(this.shaderProgram, vertexShader);
+                    gl.attachShader(this.shaderProgram, fragmentShader);
+                    gl.linkProgram(this.shaderProgram);
+                    // If creating the shader program failed, alert
+                    if (!gl.getProgramParameter(this.shaderProgram, gl.LINK_STATUS)) {
+                        alert("Unable to initialize the shader program.");
+                    }
+                }
+                gl.useProgram(this.shaderProgram);
+            };
+            ProgramBuffer.prototype.getAttributes = function () {
+                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
+                var result = attributeReg.exec(this.vertexCode);
+                var attributes = [];
+                while (result) {
+                    var attribute = new feng3d.ProgramAttribute();
+                    attribute.type = result[1];
+                    attribute.name = result[2];
+                    result = attributeReg.exec(this.vertexCode);
+                }
+                return attributes;
+            };
+            ProgramBuffer.prototype.getUniforms = function () {
+                var uniforms = [];
+                var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
+                var result = uniformReg.exec(this.vertexCode);
+                while (result) {
+                    var attribute = new feng3d.ProgramAttribute();
+                    attribute.type = result[1];
+                    attribute.name = result[2];
+                    result = uniformReg.exec(this.vertexCode);
+                }
+                return uniforms;
+            };
+            ProgramBuffer.prototype.getShader = function (gl, theSource, type) {
+                // Now figure out what type of shader script we have,
+                // based on its MIME type.
+                var shader;
+                if (type == 2) {
+                    shader = gl.createShader(gl.FRAGMENT_SHADER);
+                }
+                else if (type == 1) {
+                    shader = gl.createShader(gl.VERTEX_SHADER);
+                }
+                else {
+                    return null; // Unknown shader type
+                }
+                // Send the source to the shader object
+                gl.shaderSource(shader, theSource);
+                // Compile the shader program
+                gl.compileShader(shader);
+                // See if it compiled successfully
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    alert("An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader));
+                    return null;
+                }
+                return shader;
+            };
+            ProgramBuffer.prototype.update = function (vertexCode, fragmentCode) {
+                this.vertexCode = vertexCode;
+                this.fragmentCode = fragmentCode;
+            };
+            return ProgramBuffer;
+        }(feng3d.Context3DBuffer));
+        feng3d.ProgramBuffer = ProgramBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 程序属性
+         * @author feng 2016-05-11
+         */
+        var ProgramAttribute = (function () {
+            function ProgramAttribute() {
+            }
+            return ProgramAttribute;
+        }());
+        feng3d.ProgramAttribute = ProgramAttribute;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 程序常量
+         * @author feng 2016-05-11
+         */
+        var ProgramUniform = (function () {
+            function ProgramUniform() {
+            }
+            return ProgramUniform;
+        }());
+        feng3d.ProgramUniform = ProgramUniform;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

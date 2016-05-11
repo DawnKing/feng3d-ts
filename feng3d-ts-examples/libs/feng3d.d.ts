@@ -1069,17 +1069,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 渲染程序缓存
-     * @author feng 2016-05-09
-     */
-    class ProgramBuffer extends Context3DBuffer {
-        vertexCode: string;
-        fragmentCode: string;
-        update(vertexCode: string, fragmentCode: string): void;
-    }
-}
-declare module me.feng3d {
-    /**
      * Context3D缓存拥有者
      * @author feng 2014-11-26
      */
@@ -1210,6 +1199,44 @@ declare module me.feng3d {
          * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
          */
         constructor(type: string, data?: any, bubbles?: boolean);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染程序缓存
+     * @author feng 2016-05-09
+     */
+    class ProgramBuffer extends Context3DBuffer {
+        private shaderProgram;
+        vertexCode: string;
+        fragmentCode: string;
+        doBuffer(gl: WebGLRenderingContext): void;
+        getAttributes(): ProgramAttribute[];
+        getUniforms(): ProgramUniform[];
+        private getShader(gl, theSource, type);
+        update(vertexCode: string, fragmentCode: string): void;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 程序属性
+     * @author feng 2016-05-11
+     */
+    class ProgramAttribute {
+        name: string;
+        type: string;
+        location: number;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 程序常量
+     * @author feng 2016-05-11
+     */
+    class ProgramUniform {
+        name: string;
+        type: string;
+        location: WebGLUniformLocation;
     }
 }
 declare module me.feng3d {
