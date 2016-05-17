@@ -3144,6 +3144,9 @@ var me;
             function ProgramBuffer() {
                 _super.apply(this, arguments);
             }
+            /**
+             * 使用程序缓冲
+             */
             ProgramBuffer.prototype.doBuffer = function (gl) {
                 if (this.shaderProgram != null) {
                     var vertexShader = this.getShader(gl, this.vertexCode, 1);
@@ -3160,6 +3163,9 @@ var me;
                 }
                 gl.useProgram(this.shaderProgram);
             };
+            /**
+             * 获取程序属性列表
+             */
             ProgramBuffer.prototype.getAttributes = function () {
                 var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
                 var result = attributeReg.exec(this.vertexCode);
@@ -3172,6 +3178,9 @@ var me;
                 }
                 return attributes;
             };
+            /**
+             * 获取程序常量列表
+             */
             ProgramBuffer.prototype.getUniforms = function () {
                 var uniforms = [];
                 var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
@@ -3184,6 +3193,9 @@ var me;
                 }
                 return uniforms;
             };
+            /**
+             * 获取渲染程序
+             */
             ProgramBuffer.prototype.getShader = function (gl, theSource, type) {
                 // Now figure out what type of shader script we have,
                 // based on its MIME type.
@@ -3208,6 +3220,9 @@ var me;
                 }
                 return shader;
             };
+            /**
+             * 更新渲染程序
+             */
             ProgramBuffer.prototype.update = function (vertexCode, fragmentCode) {
                 this.vertexCode = vertexCode;
                 this.fragmentCode = fragmentCode;
@@ -3238,7 +3253,7 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 程序常量
+         * 程序唯一属性(常量)
          * @author feng 2016-05-11
          */
         var ProgramUniform = (function () {

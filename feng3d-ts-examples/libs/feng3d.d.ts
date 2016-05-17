@@ -1207,13 +1207,37 @@ declare module me.feng3d {
      * @author feng 2016-05-09
      */
     class ProgramBuffer extends Context3DBuffer {
+        /**
+         * 渲染程序
+         */
         private shaderProgram;
+        /**
+         * 顶点渲染程序代码
+         */
         vertexCode: string;
+        /**
+         * 片段渲染程序代码
+         */
         fragmentCode: string;
+        /**
+         * 使用程序缓冲
+         */
         doBuffer(gl: WebGLRenderingContext): void;
+        /**
+         * 获取程序属性列表
+         */
         getAttributes(): ProgramAttribute[];
+        /**
+         * 获取程序常量列表
+         */
         getUniforms(): ProgramUniform[];
+        /**
+         * 获取渲染程序
+         */
         private getShader(gl, theSource, type);
+        /**
+         * 更新渲染程序
+         */
         update(vertexCode: string, fragmentCode: string): void;
     }
 }
@@ -1223,19 +1247,37 @@ declare module me.feng3d {
      * @author feng 2016-05-11
      */
     class ProgramAttribute {
+        /**
+         * 属性名称
+         */
         name: string;
+        /**
+         * 类型
+         */
         type: string;
+        /**
+         * gpu地址？
+         */
         location: number;
     }
 }
 declare module me.feng3d {
     /**
-     * 程序常量
+     * 程序唯一属性(常量)
      * @author feng 2016-05-11
      */
     class ProgramUniform {
+        /**
+         * 名称
+         */
         name: string;
+        /**
+         * 类型
+         */
         type: string;
+        /**
+         * gpu地址？
+         */
         location: WebGLUniformLocation;
     }
 }
