@@ -1212,6 +1212,14 @@ declare module me.feng3d {
          */
         private shaderProgram;
         /**
+         * 顶点渲染程序
+         */
+        private vertexShaderProgram;
+        /**
+         * 片段渲染程序
+         */
+        private fragementShaderProgram;
+        /**
          * 顶点渲染程序代码
          */
         vertexCode: string;
@@ -1223,18 +1231,6 @@ declare module me.feng3d {
          * 使用程序缓冲
          */
         doBuffer(gl: WebGLRenderingContext): void;
-        /**
-         * 获取程序属性列表
-         */
-        getAttributes(): ProgramAttribute[];
-        /**
-         * 获取程序常量列表
-         */
-        getUniforms(): ProgramUniform[];
-        /**
-         * 获取渲染程序
-         */
-        private getShader(gl, theSource, type);
         /**
          * 更新渲染程序
          */
@@ -1279,6 +1275,60 @@ declare module me.feng3d {
          * gpu地址？
          */
         location: WebGLUniformLocation;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染程序
+     * @author feng 2016-05-17
+     */
+    class ShaderProgram {
+        /**
+         * 顶点渲染程序代码
+         */
+        code: string;
+        /**
+         * 渲染类型
+         */
+        type: ShaderType;
+        /**
+         * 构建渲染程序
+         * @param code 代码
+         * @param type 渲染类型
+         */
+        constructor(code: string, type: ShaderType);
+        /**
+         * 获取渲染程序
+         */
+        static getInstance(code: string, type: ShaderType): ShaderProgram;
+        /**
+         * 获取程序属性列表
+         */
+        getAttributes(): ProgramAttribute[];
+        /**
+         * 获取程序常量列表
+         */
+        getUniforms(): ProgramUniform[];
+        /**
+         * 获取渲染程序
+         * @param gl 渲染上下文
+         */
+        getShader(gl: WebGLRenderingContext): WebGLShader;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染程序类型
+     */
+    enum ShaderType {
+        /**
+         * 顶点
+         */
+        VERTEX,
+        /**
+         * 片段
+         */
+        FRAGMENT,
     }
 }
 declare module me.feng3d {
