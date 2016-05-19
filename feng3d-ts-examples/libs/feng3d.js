@@ -2661,19 +2661,8 @@ var me;
             Renderer.prototype.initShaders = function () {
                 var shaderProgramCode = new feng3d.ShaderProgramCode(this.vertexShaderStr, this.fragmentShaderStr);
                 this.programBuffer = shaderProgramCode.getProgramBuffer();
-                // this.programBuffer = new ProgramBuffer(this.vertexShaderStr, this.fragmentShaderStr);
-                var vertexShader = this.getShader(this.vertexShaderStr, 1);
-                var fragmentShader = this.getShader(this.fragmentShaderStr, 2);
-                // Create the shader program
-                this.shaderProgram = this.gl.createProgram();
-                this.gl.attachShader(this.shaderProgram, vertexShader);
-                this.gl.attachShader(this.shaderProgram, fragmentShader);
-                this.gl.linkProgram(this.shaderProgram);
-                // If creating the shader program failed, alert
-                if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
-                    alert("Unable to initialize the shader program.");
-                }
-                this.gl.useProgram(this.shaderProgram);
+                this.programBuffer.doBuffer(this.gl);
+                this.shaderProgram = this.programBuffer.shaderProgram;
                 this.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
                 this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
             };
@@ -3153,7 +3142,7 @@ var me;
              * 使用程序缓冲
              */
             ProgramBuffer.prototype.doBuffer = function (gl) {
-                if (this.shaderProgram != null) {
+                if (this.shaderProgram == null) {
                     this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this.code.vertexCode, feng3d.ShaderType.VERTEX);
                     this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
                     var vertexShader = this.vertexShaderProgram.getShader(gl);

@@ -1213,7 +1213,7 @@ declare module me.feng3d {
         /**
          * 渲染程序
          */
-        private shaderProgram;
+        shaderProgram: WebGLProgram;
         /**
          * 顶点渲染程序
          */
