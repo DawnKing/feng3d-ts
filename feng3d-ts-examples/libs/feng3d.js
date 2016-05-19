@@ -2659,7 +2659,9 @@ var me;
                 this.gl.depthFunc(this.gl.LEQUAL); // Near things obscure far things
             };
             Renderer.prototype.initShaders = function () {
-                this.programBuffer = new feng3d.ProgramBuffer(this.vertexShaderStr, this.fragmentShaderStr);
+                var shaderProgramCode = new feng3d.ShaderProgramCode(this.vertexShaderStr, this.fragmentShaderStr);
+                this.programBuffer = shaderProgramCode.getProgramBuffer();
+                // this.programBuffer = new ProgramBuffer(this.vertexShaderStr, this.fragmentShaderStr);
                 var vertexShader = this.getShader(this.vertexShaderStr, 1);
                 var fragmentShader = this.getShader(this.fragmentShaderStr, 2);
                 // Create the shader program
@@ -3140,21 +3142,20 @@ var me;
         var ProgramBuffer = (function (_super) {
             __extends(ProgramBuffer, _super);
             /**
-             * @param vertexCode        顶点渲染程序代码
-             * @param fragmentCode      片段渲染程序代码
+             * 创建渲染程序缓存
+             * @param code        渲染程序代码
              */
-            function ProgramBuffer(vertexCode, fragmentCode) {
+            function ProgramBuffer(code) {
                 _super.call(this);
-                this.vertexCode = vertexCode;
-                this.fragmentCode = fragmentCode;
+                this.code = code;
             }
             /**
              * 使用程序缓冲
              */
             ProgramBuffer.prototype.doBuffer = function (gl) {
                 if (this.shaderProgram != null) {
-                    this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this.vertexCode, feng3d.ShaderType.VERTEX);
-                    this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this.fragmentCode, feng3d.ShaderType.FRAGMENT);
+                    this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this.code.vertexCode, feng3d.ShaderType.VERTEX);
+                    this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
                     var vertexShader = this.vertexShaderProgram.getShader(gl);
                     var fragmentShader = this.fragementShaderProgram.getShader(gl);
                     // Create the shader program
@@ -3168,13 +3169,6 @@ var me;
                     }
                 }
                 gl.useProgram(this.shaderProgram);
-            };
-            /**
-             * 更新渲染程序
-             */
-            ProgramBuffer.prototype.update = function (vertexCode, fragmentCode) {
-                this.vertexCode = vertexCode;
-                this.fragmentCode = fragmentCode;
             };
             return ProgramBuffer;
         }(feng3d.Context3DBuffer));
@@ -3304,6 +3298,91 @@ var me;
             ShaderType[ShaderType["FRAGMENT"] = WebGLRenderingContext.FRAGMENT_SHADER] = "FRAGMENT";
         })(feng3d.ShaderType || (feng3d.ShaderType = {}));
         var ShaderType = feng3d.ShaderType;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 渲染程序代码
+         * @author feng 2016-05-19
+         */
+        var ShaderProgramCode = (function (_super) {
+            __extends(ShaderProgramCode, _super);
+            /**
+             * @param vertexCode        顶点渲染程序代码
+             * @param fragmentCode      片段渲染程序代码
+             */
+            function ShaderProgramCode(vertexCode, fragmentCode) {
+                _super.call(this);
+                this.vertexCode = vertexCode;
+                this.fragmentCode = fragmentCode;
+            }
+            Object.defineProperty(ShaderProgramCode.prototype, "vertexCode", {
+                /**
+                 * 顶点渲染程序代码
+                 */
+                get: function () {
+                    return this._vertexCode;
+                },
+                set: function (value) {
+                    this._vertexCode = value;
+                    this.dispatchEvent(new ShaderProgramCodeEvent(ShaderProgramCodeEvent.VERTEXCODE_CHANGE));
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(ShaderProgramCode.prototype, "fragmentCode", {
+                /**
+                 * 片段渲染程序代码
+                 */
+                get: function () {
+                    return this._fragmentCode;
+                },
+                set: function (value) {
+                    this._fragmentCode = value;
+                    this.dispatchEvent(new ShaderProgramCodeEvent(ShaderProgramCodeEvent.FRAGMENTCODE_CHANGE));
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 获取渲染程序缓冲
+             */
+            ShaderProgramCode.prototype.getProgramBuffer = function () {
+                var programBuffer = new feng3d.ProgramBuffer(this);
+                return programBuffer;
+            };
+            return ShaderProgramCode;
+        }(feng3d.EventDispatcher));
+        feng3d.ShaderProgramCode = ShaderProgramCode;
+        /**
+         * 渲染程序代码事件
+         * @author feng 2016-05-19
+         */
+        var ShaderProgramCodeEvent = (function (_super) {
+            __extends(ShaderProgramCodeEvent, _super);
+            /**
+             * 创建一个渲染程序代码事件。
+             * @param type 事件的类型，可以作为 Event.type 访问。
+             * @param data 携带数据
+             * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+             */
+            function ShaderProgramCodeEvent(type, data, bubbles) {
+                _super.call(this, type, data);
+            }
+            /**
+             * 顶点渲染程序代码改变
+             */
+            ShaderProgramCodeEvent.VERTEXCODE_CHANGE = "vertexCodeChange";
+            /**
+             * 片段渲染程序代码改变
+             */
+            ShaderProgramCodeEvent.FRAGMENTCODE_CHANGE = "fragmentCodeChange";
+            return ShaderProgramCodeEvent;
+        }(feng3d.Event));
+        feng3d.ShaderProgramCodeEvent = ShaderProgramCodeEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

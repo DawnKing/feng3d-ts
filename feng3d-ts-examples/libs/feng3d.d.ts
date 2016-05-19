@@ -1207,6 +1207,10 @@ declare module me.feng3d {
      */
     class ProgramBuffer extends Context3DBuffer {
         /**
+         * 渲染程序代码
+         */
+        private code;
+        /**
          * 渲染程序
          */
         private shaderProgram;
@@ -1219,26 +1223,14 @@ declare module me.feng3d {
          */
         private fragementShaderProgram;
         /**
-         * 顶点渲染程序代码
+         * 创建渲染程序缓存
+         * @param code        渲染程序代码
          */
-        vertexCode: string;
-        /**
-         * 片段渲染程序代码
-         */
-        fragmentCode: string;
-        /**
-         * @param vertexCode        顶点渲染程序代码
-         * @param fragmentCode      片段渲染程序代码
-         */
-        constructor(vertexCode: string, fragmentCode: string);
+        constructor(code: ShaderProgramCode);
         /**
          * 使用程序缓冲
          */
         doBuffer(gl: WebGLRenderingContext): void;
-        /**
-         * 更新渲染程序
-         */
-        update(vertexCode: string, fragmentCode: string): void;
     }
 }
 declare module me.feng3d {
@@ -1333,6 +1325,54 @@ declare module me.feng3d {
          * 片段
          */
         FRAGMENT,
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染程序代码
+     * @author feng 2016-05-19
+     */
+    class ShaderProgramCode extends EventDispatcher {
+        private _vertexCode;
+        private _fragmentCode;
+        /**
+         * @param vertexCode        顶点渲染程序代码
+         * @param fragmentCode      片段渲染程序代码
+         */
+        constructor(vertexCode: string, fragmentCode: string);
+        /**
+         * 顶点渲染程序代码
+         */
+        vertexCode: string;
+        /**
+         * 片段渲染程序代码
+         */
+        fragmentCode: string;
+        /**
+         * 获取渲染程序缓冲
+         */
+        getProgramBuffer(): ProgramBuffer;
+    }
+    /**
+     * 渲染程序代码事件
+     * @author feng 2016-05-19
+     */
+    class ShaderProgramCodeEvent extends Event {
+        /**
+         * 顶点渲染程序代码改变
+         */
+        static VERTEXCODE_CHANGE: string;
+        /**
+         * 片段渲染程序代码改变
+         */
+        static FRAGMENTCODE_CHANGE: string;
+        /**
+         * 创建一个渲染程序代码事件。
+         * @param type 事件的类型，可以作为 Event.type 访问。
+         * @param data 携带数据
+         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         */
+        constructor(type: string, data?: any, bubbles?: boolean);
     }
 }
 declare module me.feng3d {
