@@ -2659,7 +2659,7 @@ var me;
                 this.gl.depthFunc(this.gl.LEQUAL); // Near things obscure far things
             };
             Renderer.prototype.initShaders = function () {
-                this.programBuffer = new feng3d.ProgramBuffer();
+                this.programBuffer = new feng3d.ProgramBuffer(this.vertexShaderStr, this.fragmentShaderStr);
                 var vertexShader = this.getShader(this.vertexShaderStr, 1);
                 var fragmentShader = this.getShader(this.fragmentShaderStr, 2);
                 // Create the shader program
@@ -3139,8 +3139,14 @@ var me;
          */
         var ProgramBuffer = (function (_super) {
             __extends(ProgramBuffer, _super);
-            function ProgramBuffer() {
-                _super.apply(this, arguments);
+            /**
+             * @param vertexCode        顶点渲染程序代码
+             * @param fragmentCode      片段渲染程序代码
+             */
+            function ProgramBuffer(vertexCode, fragmentCode) {
+                _super.call(this);
+                this.vertexCode = vertexCode;
+                this.fragmentCode = fragmentCode;
             }
             /**
              * 使用程序缓冲

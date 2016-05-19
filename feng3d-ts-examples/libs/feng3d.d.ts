@@ -1227,6 +1227,11 @@ declare module me.feng3d {
          */
         fragmentCode: string;
         /**
+         * @param vertexCode        顶点渲染程序代码
+         * @param fragmentCode      片段渲染程序代码
+         */
+        constructor(vertexCode: string, fragmentCode: string);
+        /**
          * 使用程序缓冲
          */
         doBuffer(gl: WebGLRenderingContext): void;
