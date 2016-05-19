@@ -2659,6 +2659,7 @@ var me;
                 this.gl.depthFunc(this.gl.LEQUAL); // Near things obscure far things
             };
             Renderer.prototype.initShaders = function () {
+                this.programBuffer = new feng3d.ProgramBuffer();
                 var vertexShader = this.getShader(this.vertexShaderStr, 1);
                 var fragmentShader = this.getShader(this.fragmentShaderStr, 2);
                 // Create the shader program
@@ -2802,11 +2803,8 @@ var me;
         var Context3DBuffer = (function () {
             /**
              * 创建一个gl可执行的数据缓存
-             * @param dataTypeId 		数据缓存编号
-             * @param updateFunc 		更新回调函数
              */
-            function Context3DBuffer(dataTypeId) {
-                this._dataTypeId = dataTypeId;
+            function Context3DBuffer() {
             }
             Object.defineProperty(Context3DBuffer.prototype, "dataTypeId", {
                 /**
@@ -2845,7 +2843,7 @@ var me;
              * @param updateFunc 数据更新回调函数
              */
             function VABuffer(dataTypeId) {
-                _super.call(this, dataTypeId);
+                _super.call(this);
             }
             /**
              * @inheritDoc
