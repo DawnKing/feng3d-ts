@@ -971,13 +971,18 @@ declare module me.feng3d {
          * @param camera 摄像机对象
          */
         constructor(gl: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        /**
+         * 初始化GL
+         */
         private initGL();
+        /**
+         * 初始化渲染程序
+         */
         private initShaders();
         /**
          * 渲染
          */
         render(): void;
-        private getShader(theSource, type);
         pUniform: WebGLUniformLocation;
         private setMatrixUniforms();
         private getPerspectiveMatrix();
@@ -1205,15 +1210,16 @@ declare module me.feng3d {
      * 渲染程序缓存
      * @author feng 2016-05-09
      */
-    class ProgramBuffer extends Context3DBuffer {
+    class ProgramBuffer {
         /**
          * 渲染程序代码
          */
         private code;
         /**
-         * 渲染程序
+         * webgl渲染上下文
          */
-        shaderProgram: WebGLProgram;
+        private context3D;
+        private _shaderProgram;
         /**
          * 顶点渲染程序
          */
@@ -1224,13 +1230,24 @@ declare module me.feng3d {
         private fragementShaderProgram;
         /**
          * 创建渲染程序缓存
-         * @param code        渲染程序代码
+         * @param code          渲染程序代码
+         * @param context3D     webgl渲染上下文
          */
-        constructor(code: ShaderProgramCode);
+        constructor(code: ShaderProgramCode, context3D: WebGLRenderingContext);
         /**
-         * 使用程序缓冲
+         * 渲染程序
          */
-        doBuffer(gl: WebGLRenderingContext): void;
+        shaderProgram: WebGLProgram;
+        /**
+         * 初始化
+         */
+        private init();
+        /**
+         * 获取渲染程序缓存
+         * @param code          渲染程序代码
+         * @param gl            webgl渲染上下文
+         */
+        static getBuffer(code: ShaderProgramCode, gl: WebGLRenderingContext): ProgramBuffer;
     }
 }
 declare module me.feng3d {
@@ -1351,7 +1368,7 @@ declare module me.feng3d {
         /**
          * 获取渲染程序缓冲
          */
-        getProgramBuffer(): ProgramBuffer;
+        getProgramBuffer(gl: WebGLRenderingContext): ProgramBuffer;
     }
     /**
      * 渲染程序代码事件
