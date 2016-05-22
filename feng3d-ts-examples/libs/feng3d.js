@@ -2639,14 +2639,14 @@ var me;
         var Renderer = (function () {
             /**
              * 构建渲染器
-             * @param gl    webgl渲染上下文
+             * @param context3D    webgl渲染上下文
              * @param scene 场景
              * @param camera 摄像机对象
              */
-            function Renderer(gl, scene, camera) {
+            function Renderer(context3D, scene, camera) {
                 this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
                 this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
-                this.gl = gl;
+                this.context3D = context3D;
                 this.scene = scene;
                 this.camera = camera;
                 this.initGL();
@@ -2656,28 +2656,29 @@ var me;
              * 初始化GL
              */
             Renderer.prototype.initGL = function () {
-                this.gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
-                this.gl.clearDepth(1.0); // Clear everything
-                this.gl.enable(this.gl.DEPTH_TEST); // Enable depth testing
-                this.gl.depthFunc(this.gl.LEQUAL); // Near things obscure far things
+                this.context3D.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
+                this.context3D.clearDepth(1.0); // Clear everything
+                this.context3D.enable(this.context3D.DEPTH_TEST); // Enable depth testing
+                this.context3D.depthFunc(this.context3D.LEQUAL); // Near things obscure far things
             };
             /**
              * 初始化渲染程序
              */
             Renderer.prototype.initShaders = function () {
                 var shaderProgramCode = new feng3d.ShaderProgramCode(this.vertexShaderStr, this.fragmentShaderStr);
-                this.programBuffer = shaderProgramCode.getProgramBuffer(this.gl);
+                this.programBuffer = shaderProgramCode.getProgramBuffer(this.context3D);
                 this.shaderProgram = this.programBuffer.shaderProgram;
-                this.gl.useProgram(this.shaderProgram);
-                this.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
-                this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
+                this.context3D.useProgram(this.shaderProgram);
+                this.programBuffer.getAttribLocations();
+                this.vertexPositionAttribute = this.context3D.getAttribLocation(this.shaderProgram, "aVertexPosition");
+                this.context3D.enableVertexAttribArray(this.vertexPositionAttribute);
             };
             /**
              * 渲染
              */
             Renderer.prototype.render = function () {
                 var _this = this;
-                this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+                this.context3D.clear(this.context3D.COLOR_BUFFER_BIT | this.context3D.DEPTH_BUFFER_BIT);
                 var renderables = this.scene.getRenderables();
                 renderables.forEach(function (element) {
                     _this.drawObject3D(element);
@@ -2685,8 +2686,8 @@ var me;
             };
             Renderer.prototype.setMatrixUniforms = function () {
                 var perspectiveMatrix = this.getPerspectiveMatrix();
-                this.pUniform = this.pUniform || this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-                this.gl.uniformMatrix4fv(this.pUniform, false, new Float32Array(perspectiveMatrix.rawData));
+                this.pUniform = this.pUniform || this.context3D.getUniformLocation(this.shaderProgram, "uPMatrix");
+                this.context3D.uniformMatrix4fv(this.pUniform, false, new Float32Array(perspectiveMatrix.rawData));
             };
             Renderer.prototype.getPerspectiveMatrix = function () {
                 var camSpace3D = this.camera.space3D;
@@ -2697,15 +2698,15 @@ var me;
                 return perspectiveMatrix;
             };
             Renderer.prototype.drawObject3D = function (object3D) {
-                var object3DBuffer = object3DBufferManager.getBuffer(this.gl, object3D);
-                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
-                this.gl.vertexAttribPointer(this.vertexPositionAttribute, 3, this.gl.FLOAT, false, 0, 0);
+                var object3DBuffer = object3DBufferManager.getBuffer(this.context3D, object3D);
+                this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
+                this.context3D.vertexAttribPointer(this.vertexPositionAttribute, 3, this.context3D.FLOAT, false, 0, 0);
                 var mvMatrix = object3D.space3D.transform3D;
-                this.mvUniform = this.mvUniform || this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-                this.gl.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
+                this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
+                this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
                 this.setMatrixUniforms();
-                this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, object3DBuffer.indexBuffer);
-                this.gl.drawElements(this.gl.TRIANGLES, object3DBuffer.count, this.gl.UNSIGNED_SHORT, 0);
+                this.context3D.bindBuffer(this.context3D.ELEMENT_ARRAY_BUFFER, object3DBuffer.indexBuffer);
+                this.context3D.drawElements(this.context3D.TRIANGLES, object3DBuffer.count, this.context3D.UNSIGNED_SHORT, 0);
             };
             return Renderer;
         }());
@@ -3133,13 +3134,16 @@ var me;
                 enumerable: true,
                 configurable: true
             });
+            ProgramBuffer.prototype.getAttribLocations = function () {
+                this.code;
+            };
             /**
              * 初始化
              */
             ProgramBuffer.prototype.init = function () {
                 this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this.code.vertexCode, feng3d.ShaderType.VERTEX);
                 this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
-                var vertexShader = this.vertexShaderProgram.getShader(this.context3D);
+                var vertexShader = this.getShader(this.code.vertexCode, feng3d.ShaderType.VERTEX);
                 var fragmentShader = this.fragementShaderProgram.getShader(this.context3D);
                 // 创建渲染程序
                 var shaderProgram = this._shaderProgram = this.context3D.createProgram();
@@ -3150,6 +3154,20 @@ var me;
                 if (!this.context3D.getProgramParameter(shaderProgram, this.context3D.LINK_STATUS)) {
                     alert("Unable to initialize the shader program.");
                 }
+            };
+            /**
+             * 获取渲染程序
+             * @param gl 渲染上下文
+             */
+            ProgramBuffer.prototype.getShader = function (code, type) {
+                var shader = this.context3D.createShader(type);
+                this.context3D.shaderSource(shader, code);
+                this.context3D.compileShader(shader);
+                if (!this.context3D.getShaderParameter(shader, this.context3D.COMPILE_STATUS)) {
+                    alert("An error occurred compiling the shaders: " + this.context3D.getShaderInfoLog(shader));
+                    return null;
+                }
+                return shader;
             };
             /**
              * 获取渲染程序缓存
@@ -3250,20 +3268,6 @@ var me;
                     result = uniformReg.exec(this.code);
                 }
                 return uniforms;
-            };
-            /**
-             * 获取渲染程序
-             * @param gl 渲染上下文
-             */
-            ShaderProgram.prototype.getShader = function (gl) {
-                var shader = gl.createShader(this.type);
-                gl.shaderSource(shader, this.code);
-                gl.compileShader(shader);
-                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                    alert("An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader));
-                    return null;
-                }
-                return shader;
             };
             return ShaderProgram;
         }());

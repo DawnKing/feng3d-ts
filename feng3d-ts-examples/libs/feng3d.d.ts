@@ -956,7 +956,7 @@ declare module me.feng3d {
      * @author feng 2016-05-01
      */
     class Renderer {
-        private gl;
+        private context3D;
         private shaderProgram;
         private vertexPositionAttribute;
         private scene;
@@ -966,11 +966,11 @@ declare module me.feng3d {
         fragmentShaderStr: string;
         /**
          * 构建渲染器
-         * @param gl    webgl渲染上下文
+         * @param context3D    webgl渲染上下文
          * @param scene 场景
          * @param camera 摄像机对象
          */
-        constructor(gl: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
         /**
          * 初始化GL
          */
@@ -1238,10 +1238,16 @@ declare module me.feng3d {
          * 渲染程序
          */
         shaderProgram: WebGLProgram;
+        getAttribLocations(): void;
         /**
          * 初始化
          */
         private init();
+        /**
+         * 获取渲染程序
+         * @param gl 渲染上下文
+         */
+        getShader(code: string, type: ShaderType): WebGLShader;
         /**
          * 获取渲染程序缓存
          * @param code          渲染程序代码
@@ -1322,11 +1328,6 @@ declare module me.feng3d {
          * 获取程序常量列表
          */
         getUniforms(): ProgramUniform[];
-        /**
-         * 获取渲染程序
-         * @param gl 渲染上下文
-         */
-        getShader(gl: WebGLRenderingContext): WebGLShader;
     }
 }
 declare module me.feng3d {
