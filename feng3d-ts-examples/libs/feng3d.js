@@ -2669,9 +2669,7 @@ var me;
                 this.programBuffer = shaderProgramCode.getProgramBuffer(this.context3D);
                 this.shaderProgram = this.programBuffer.shaderProgram;
                 this.context3D.useProgram(this.shaderProgram);
-                this.programBuffer.getAttribLocations();
-                this.vertexPositionAttribute = this.context3D.getAttribLocation(this.shaderProgram, "aVertexPosition");
-                this.context3D.enableVertexAttribArray(this.vertexPositionAttribute);
+                this.attribLocations = this.programBuffer.getAttribLocations();
             };
             /**
              * 渲染
@@ -2700,7 +2698,7 @@ var me;
             Renderer.prototype.drawObject3D = function (object3D) {
                 var object3DBuffer = object3DBufferManager.getBuffer(this.context3D, object3D);
                 this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
-                this.context3D.vertexAttribPointer(this.vertexPositionAttribute, 3, this.context3D.FLOAT, false, 0, 0);
+                this.context3D.vertexAttribPointer(this.attribLocations[0].location, 3, this.context3D.FLOAT, false, 0, 0);
                 var mvMatrix = object3D.space3D.transform3D;
                 this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
                 this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
@@ -3134,8 +3132,23 @@ var me;
                 enumerable: true,
                 configurable: true
             });
+            /**
+             * 获取属性gpu地址
+             */
             ProgramBuffer.prototype.getAttribLocations = function () {
-                this.code;
+                var attribLocations = [];
+                var attributes = this.code.getAttributes();
+                for (var i = 0; i < attributes.length; i++) {
+                    var element = attributes[i];
+                    var attributeLocation = new feng3d.ProgramAttributeLocation();
+                    attributeLocation.name = element.name;
+                    attributeLocation.type = element.type;
+                    //获取属性在gpu中地址
+                    attributeLocation.location = this.context3D.getAttribLocation(this.shaderProgram, element.name);
+                    this.context3D.enableVertexAttribArray(attributeLocation.location);
+                    attribLocations.push(attributeLocation);
+                }
+                return attribLocations;
             };
             /**
              * 初始化
@@ -3144,7 +3157,7 @@ var me;
                 this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this.code.vertexCode, feng3d.ShaderType.VERTEX);
                 this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
                 var vertexShader = this.getShader(this.code.vertexCode, feng3d.ShaderType.VERTEX);
-                var fragmentShader = this.fragementShaderProgram.getShader(this.context3D);
+                var fragmentShader = this.getShader(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
                 // 创建渲染程序
                 var shaderProgram = this._shaderProgram = this.context3D.createProgram();
                 this.context3D.attachShader(shaderProgram, vertexShader);
@@ -3157,7 +3170,8 @@ var me;
             };
             /**
              * 获取渲染程序
-             * @param gl 渲染上下文
+             * @param code      渲染代码
+             * @param type      渲染代码类型
              */
             ProgramBuffer.prototype.getShader = function (code, type) {
                 var shader = this.context3D.createShader(type);
@@ -3171,11 +3185,11 @@ var me;
             };
             /**
              * 获取渲染程序缓存
-             * @param code          渲染程序代码
-             * @param gl            webgl渲染上下文
+             * @param code                  渲染程序代码
+             * @param context3D             webgl渲染上下文
              */
-            ProgramBuffer.getBuffer = function (code, gl) {
-                var programBuffer = new ProgramBuffer(code, gl);
+            ProgramBuffer.getBuffer = function (code, context3D) {
+                var programBuffer = new ProgramBuffer(code, context3D);
                 return programBuffer;
             };
             return ProgramBuffer;
@@ -3197,6 +3211,21 @@ var me;
             return ProgramAttribute;
         }());
         feng3d.ProgramAttribute = ProgramAttribute;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 程序属性gpu地址
+         */
+        var ProgramAttributeLocation = (function () {
+            function ProgramAttributeLocation() {
+            }
+            return ProgramAttributeLocation;
+        }());
+        feng3d.ProgramAttributeLocation = ProgramAttributeLocation;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3347,6 +3376,23 @@ var me;
             ShaderProgramCode.prototype.getProgramBuffer = function (gl) {
                 var programBuffer = feng3d.ProgramBuffer.getBuffer(this, gl);
                 return programBuffer;
+            };
+            /**
+             * 获取程序属性列表
+             */
+            ShaderProgramCode.prototype.getAttributes = function () {
+                var code = this._vertexCode;
+                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
+                var result = attributeReg.exec(code);
+                var attributes = [];
+                while (result) {
+                    var attribute = new feng3d.ProgramAttribute();
+                    attribute.type = result[1];
+                    attribute.name = result[2];
+                    attributes.push(attribute);
+                    result = attributeReg.exec(code);
+                }
+                return attributes;
             };
             return ShaderProgramCode;
         }(feng3d.EventDispatcher));

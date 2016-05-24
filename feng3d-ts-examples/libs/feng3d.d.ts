@@ -958,10 +958,10 @@ declare module me.feng3d {
     class Renderer {
         private context3D;
         private shaderProgram;
-        private vertexPositionAttribute;
         private scene;
         private camera;
         private programBuffer;
+        private attribLocations;
         vertexShaderStr: string;
         fragmentShaderStr: string;
         /**
@@ -1238,22 +1238,26 @@ declare module me.feng3d {
          * 渲染程序
          */
         shaderProgram: WebGLProgram;
-        getAttribLocations(): void;
+        /**
+         * 获取属性gpu地址
+         */
+        getAttribLocations(): ProgramAttributeLocation[];
         /**
          * 初始化
          */
         private init();
         /**
          * 获取渲染程序
-         * @param gl 渲染上下文
+         * @param code      渲染代码
+         * @param type      渲染代码类型
          */
-        getShader(code: string, type: ShaderType): WebGLShader;
+        private getShader(code, type);
         /**
          * 获取渲染程序缓存
-         * @param code          渲染程序代码
-         * @param gl            webgl渲染上下文
+         * @param code                  渲染程序代码
+         * @param context3D             webgl渲染上下文
          */
-        static getBuffer(code: ShaderProgramCode, gl: WebGLRenderingContext): ProgramBuffer;
+        static getBuffer(code: ShaderProgramCode, context3D: WebGLRenderingContext): ProgramBuffer;
     }
 }
 declare module me.feng3d {
@@ -1262,6 +1266,21 @@ declare module me.feng3d {
      * @author feng 2016-05-11
      */
     class ProgramAttribute {
+        /**
+         * 属性名称
+         */
+        name: string;
+        /**
+         * 类型
+         */
+        type: string;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 程序属性gpu地址
+     */
+    class ProgramAttributeLocation {
         /**
          * 属性名称
          */
@@ -1370,6 +1389,10 @@ declare module me.feng3d {
          * 获取渲染程序缓冲
          */
         getProgramBuffer(gl: WebGLRenderingContext): ProgramBuffer;
+        /**
+         * 获取程序属性列表
+         */
+        getAttributes(): ProgramAttribute[];
     }
     /**
      * 渲染程序代码事件
