@@ -1073,6 +1073,26 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 3D对象缓冲
+     */
+    class Object3DBuffer {
+        squareVerticesBuffer: WebGLBuffer;
+        indexBuffer: WebGLBuffer;
+        count: number;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象缓冲管理者
+     */
+    class Object3DBufferManager {
+        map: Map<WebGLRenderingContext, Map<Object3D, Object3DBuffer>>;
+        getBuffer(gl: WebGLRenderingContext, object3D: Object3D): Object3DBuffer;
+    }
+    var object3DBufferManager: Object3DBufferManager;
+}
+declare module me.feng3d {
+    /**
      * Context3D缓存拥有者
      * @author feng 2014-11-26
      */

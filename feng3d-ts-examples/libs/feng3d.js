@@ -2696,7 +2696,7 @@ var me;
                 return perspectiveMatrix;
             };
             Renderer.prototype.drawObject3D = function (object3D) {
-                var object3DBuffer = object3DBufferManager.getBuffer(this.context3D, object3D);
+                var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
                 this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
                 this.context3D.vertexAttribPointer(this.attribLocations[0].location, 3, this.context3D.FLOAT, false, 0, 0);
                 var mvMatrix = object3D.space3D.transform3D;
@@ -2709,43 +2709,6 @@ var me;
             return Renderer;
         }());
         feng3d.Renderer = Renderer;
-        var Object3DBuffer = (function () {
-            function Object3DBuffer() {
-            }
-            return Object3DBuffer;
-        }());
-        var Object3DBufferManager = (function () {
-            function Object3DBufferManager() {
-                this.map = new feng3d.Map();
-            }
-            Object3DBufferManager.prototype.getBuffer = function (gl, object3D) {
-                var glMap = this.map.get(gl);
-                if (glMap == null) {
-                    glMap = new feng3d.Map();
-                    this.map.push(gl, glMap);
-                }
-                var buffer = glMap.get(object3D);
-                if (buffer == null) {
-                    buffer = new Object3DBuffer();
-                    glMap.push(object3D, buffer);
-                    var geometry = object3D.getComponentByClass(feng3d.Geometry);
-                    var positionData = geometry.getVAData(feng3d.GLAttribute.position);
-                    // Create a buffer for the square's vertices.
-                    var squareVerticesBuffer = buffer.squareVerticesBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
-                    // var vaBuffer = new VABuffer(GLAttribute.position);
-                    var indices = geometry.indices;
-                    var indexBuffer = buffer.indexBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-                    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-                    buffer.count = indices.length;
-                }
-                return buffer;
-            };
-            return Object3DBufferManager;
-        }());
-        var object3DBufferManager = new Object3DBufferManager();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2844,6 +2807,63 @@ var me;
             return VABuffer;
         }(feng3d.Context3DBuffer));
         feng3d.VABuffer = VABuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象缓冲
+         */
+        var Object3DBuffer = (function () {
+            function Object3DBuffer() {
+            }
+            return Object3DBuffer;
+        }());
+        feng3d.Object3DBuffer = Object3DBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象缓冲管理者
+         */
+        var Object3DBufferManager = (function () {
+            function Object3DBufferManager() {
+                this.map = new feng3d.Map();
+            }
+            Object3DBufferManager.prototype.getBuffer = function (gl, object3D) {
+                var glMap = this.map.get(gl);
+                if (glMap == null) {
+                    glMap = new feng3d.Map();
+                    this.map.push(gl, glMap);
+                }
+                var buffer = glMap.get(object3D);
+                if (buffer == null) {
+                    buffer = new feng3d.Object3DBuffer();
+                    glMap.push(object3D, buffer);
+                    var geometry = object3D.getComponentByClass(feng3d.Geometry);
+                    var positionData = geometry.getVAData(feng3d.GLAttribute.position);
+                    // Create a buffer for the square's vertices.
+                    var squareVerticesBuffer = buffer.squareVerticesBuffer = gl.createBuffer();
+                    gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+                    gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
+                    // var vaBuffer = new VABuffer(GLAttribute.position);
+                    var indices = geometry.indices;
+                    var indexBuffer = buffer.indexBuffer = gl.createBuffer();
+                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+                    buffer.count = indices.length;
+                }
+                return buffer;
+            };
+            return Object3DBufferManager;
+        }());
+        feng3d.Object3DBufferManager = Object3DBufferManager;
+        feng3d.object3DBufferManager = new Object3DBufferManager();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
