@@ -2644,7 +2644,7 @@ var me;
              * @param camera 摄像机对象
              */
             function Renderer(context3D, scene, camera) {
-                this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
+                this.vertexShaderStr = "\nattribute vec3 vaPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(vaPosition, 1.0);\n}";
                 this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 this.context3D = context3D;
                 this.scene = scene;
@@ -2815,16 +2815,53 @@ var me;
          * 3D对象缓冲
          */
         var Object3DBuffer = (function () {
-            function Object3DBuffer(context3D) {
+            function Object3DBuffer(context3D, object3D) {
                 this.context3D = context3D;
+                this.object3D = object3D;
             }
+            /**
+             * 激活缓冲
+             */
             Object3DBuffer.prototype.active = function (programBuffer) {
                 this.activeAttributes(programBuffer);
             };
+            /**
+             * 激活属性
+             */
             Object3DBuffer.prototype.activeAttributes = function (programBuffer) {
                 var attribLocations = programBuffer.getAttribLocations();
+                var vaBuffers = this.getVaBuffers(attribLocations);
+                for (var i = 0; i < attribLocations.length; i++) {
+                    var attribLocation = attribLocations[i];
+                    this.activeAttribute(attribLocation);
+                }
+            };
+            Object3DBuffer.prototype.getVaBuffers = function (attribLocations) {
+                var vaBuffers = [];
+                for (var i = 0; i < attribLocations.length; i++) {
+                    var attribLocation = attribLocations[i];
+                    var result = { vaBuffer: null };
+                    this.object3D.dispatchEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_VABUFFER, result));
+                    var vaBuffer = new feng3d.VABuffer(attribLocation.name);
+                    vaBuffer.dataTypeId;
+                }
+                vaBuffers;
+            };
+            /**
+             * 激活属性
+             */
+            Object3DBuffer.prototype.activeAttribute = function (attribLocation) {
+                var squareVerticesBuffer = this.squareVerticesBuffer;
+                if (squareVerticesBuffer == null) {
+                    var geometry = this.object3D.getComponentByClass(feng3d.Geometry);
+                    // Create a buffer for the square's vertices.
+                    var positionData = geometry.getVAData(attribLocation.name);
+                    squareVerticesBuffer = this.squareVerticesBuffer = this.context3D.createBuffer();
+                    this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, squareVerticesBuffer);
+                    this.context3D.bufferData(this.context3D.ARRAY_BUFFER, positionData, this.context3D.STATIC_DRAW);
+                }
                 this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, this.squareVerticesBuffer);
-                this.context3D.vertexAttribPointer(attribLocations[0].location, 3, this.context3D.FLOAT, false, 0, 0);
+                this.context3D.vertexAttribPointer(attribLocation.location, 3, this.context3D.FLOAT, false, 0, 0);
             };
             return Object3DBuffer;
         }());
@@ -2850,14 +2887,9 @@ var me;
                 }
                 var buffer = glMap.get(object3D);
                 if (buffer == null) {
-                    buffer = new feng3d.Object3DBuffer(context3D);
+                    buffer = new feng3d.Object3DBuffer(context3D, object3D);
                     glMap.push(object3D, buffer);
                     var geometry = object3D.getComponentByClass(feng3d.Geometry);
-                    var positionData = geometry.getVAData(feng3d.GLAttribute.position);
-                    // Create a buffer for the square's vertices.
-                    var squareVerticesBuffer = buffer.squareVerticesBuffer = context3D.createBuffer();
-                    context3D.bindBuffer(context3D.ARRAY_BUFFER, squareVerticesBuffer);
-                    context3D.bufferData(context3D.ARRAY_BUFFER, positionData, context3D.STATIC_DRAW);
                     // var vaBuffer = new VABuffer(GLAttribute.position);
                     var indices = geometry.indices;
                     var indexBuffer = buffer.indexBuffer = context3D.createBuffer();
@@ -3091,48 +3123,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 3D环境缓冲拥有者事件
-         * @author feng 2015-7-18
-         */
-        var Context3DBufferOwnerEvent = (function (_super) {
-            __extends(Context3DBufferOwnerEvent, _super);
-            /**
-             * 创建3D环境缓冲拥有者事件
-             * @param type 					事件的类型，可以作为 Event.type 访问。
-             * @param data					事件携带的数据
-             * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-             */
-            function Context3DBufferOwnerEvent(type, data, bubbles) {
-                if (data === void 0) { data = null; }
-                if (bubbles === void 0) { bubbles = false; }
-                _super.call(this, type, data, bubbles);
-            }
-            /**
-             * 添加3D环境缓冲事件
-             */
-            Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER = "addContext3DBuffer";
-            /**
-             * 移除3D环境缓冲事件
-             */
-            Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER = "removeContext3DBuffer";
-            /**
-             * 添加子项3D环境缓冲拥有者事件
-             */
-            Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER = "addChildContext3DBufferOwner";
-            /**
-             * 移除子项3D环境缓冲拥有者事件
-             */
-            Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER = "removeChildContext3DBufferOwner";
-            return Context3DBufferOwnerEvent;
-        }(feng3d.Event));
-        feng3d.Context3DBufferOwnerEvent = Context3DBufferOwnerEvent;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 渲染程序缓存
          * @author feng 2016-05-09
          */
@@ -3222,6 +3212,70 @@ var me;
             return ProgramBuffer;
         }());
         feng3d.ProgramBuffer = ProgramBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D环境缓冲拥有者事件
+         * @author feng 2015-7-18
+         */
+        var Context3DBufferOwnerEvent = (function (_super) {
+            __extends(Context3DBufferOwnerEvent, _super);
+            /**
+             * 创建3D环境缓冲拥有者事件
+             * @param type 					事件的类型，可以作为 Event.type 访问。
+             * @param data					事件携带的数据
+             * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+             */
+            function Context3DBufferOwnerEvent(type, data, bubbles) {
+                if (data === void 0) { data = null; }
+                if (bubbles === void 0) { bubbles = false; }
+                _super.call(this, type, data, bubbles);
+            }
+            /**
+             * 添加3D环境缓冲事件
+             */
+            Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER = "addContext3DBuffer";
+            /**
+             * 移除3D环境缓冲事件
+             */
+            Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER = "removeContext3DBuffer";
+            /**
+             * 添加子项3D环境缓冲拥有者事件
+             */
+            Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER = "addChildContext3DBufferOwner";
+            /**
+             * 移除子项3D环境缓冲拥有者事件
+             */
+            Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER = "removeChildContext3DBufferOwner";
+            return Context3DBufferOwnerEvent;
+        }(feng3d.Event));
+        feng3d.Context3DBufferOwnerEvent = Context3DBufferOwnerEvent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * Context3D缓冲事件
+         * @author feng 2016-05-26
+         */
+        var Context3DBufferEvent = (function (_super) {
+            __extends(Context3DBufferEvent, _super);
+            function Context3DBufferEvent() {
+                _super.apply(this, arguments);
+            }
+            /**
+             * 获取VaBuffer事件
+             */
+            Context3DBufferEvent.GET_VABUFFER = "getVaBuffer";
+            return Context3DBufferEvent;
+        }(feng3d.Event));
+        feng3d.Context3DBufferEvent = Context3DBufferEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

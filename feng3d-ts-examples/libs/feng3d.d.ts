@@ -1076,12 +1076,24 @@ declare module me.feng3d {
      */
     class Object3DBuffer {
         private context3D;
+        private object3D;
         squareVerticesBuffer: WebGLBuffer;
         indexBuffer: WebGLBuffer;
         count: number;
-        constructor(context3D: WebGLRenderingContext);
+        constructor(context3D: WebGLRenderingContext, object3D: Object3D);
+        /**
+         * 激活缓冲
+         */
         active(programBuffer: ProgramBuffer): void;
+        /**
+         * 激活属性
+         */
         activeAttributes(programBuffer: ProgramBuffer): void;
+        getVaBuffers(attribLocations: ProgramAttributeLocation[]): void;
+        /**
+         * 激活属性
+         */
+        activeAttribute(attribLocation: ProgramAttributeLocation): void;
     }
 }
 declare module me.feng3d {
@@ -1199,37 +1211,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3D环境缓冲拥有者事件
-     * @author feng 2015-7-18
-     */
-    class Context3DBufferOwnerEvent extends Event {
-        /**
-         * 添加3D环境缓冲事件
-         */
-        static ADD_CONTEXT3DBUFFER: string;
-        /**
-         * 移除3D环境缓冲事件
-         */
-        static REMOVE_CONTEXT3DBUFFER: string;
-        /**
-         * 添加子项3D环境缓冲拥有者事件
-         */
-        static ADDCHILD_CONTEXT3DBUFFEROWNER: string;
-        /**
-         * 移除子项3D环境缓冲拥有者事件
-         */
-        static REMOVECHILD_CONTEXT3DBUFFEROWNER: string;
-        /**
-         * 创建3D环境缓冲拥有者事件
-         * @param type 					事件的类型，可以作为 Event.type 访问。
-         * @param data					事件携带的数据
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         */
-        constructor(type: string, data?: any, bubbles?: boolean);
-    }
-}
-declare module me.feng3d {
-    /**
      * 渲染程序缓存
      * @author feng 2016-05-09
      */
@@ -1281,6 +1262,49 @@ declare module me.feng3d {
          * @param context3D             webgl渲染上下文
          */
         static getBuffer(code: ShaderProgramCode, context3D: WebGLRenderingContext): ProgramBuffer;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D环境缓冲拥有者事件
+     * @author feng 2015-7-18
+     */
+    class Context3DBufferOwnerEvent extends Event {
+        /**
+         * 添加3D环境缓冲事件
+         */
+        static ADD_CONTEXT3DBUFFER: string;
+        /**
+         * 移除3D环境缓冲事件
+         */
+        static REMOVE_CONTEXT3DBUFFER: string;
+        /**
+         * 添加子项3D环境缓冲拥有者事件
+         */
+        static ADDCHILD_CONTEXT3DBUFFEROWNER: string;
+        /**
+         * 移除子项3D环境缓冲拥有者事件
+         */
+        static REMOVECHILD_CONTEXT3DBUFFEROWNER: string;
+        /**
+         * 创建3D环境缓冲拥有者事件
+         * @param type 					事件的类型，可以作为 Event.type 访问。
+         * @param data					事件携带的数据
+         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         */
+        constructor(type: string, data?: any, bubbles?: boolean);
+    }
+}
+declare module me.feng3d {
+    /**
+     * Context3D缓冲事件
+     * @author feng 2016-05-26
+     */
+    class Context3DBufferEvent extends Event {
+        /**
+         * 获取VaBuffer事件
+         */
+        static GET_VABUFFER: string;
     }
 }
 declare module me.feng3d {
