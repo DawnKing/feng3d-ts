@@ -2669,7 +2669,6 @@ var me;
                 this.programBuffer = shaderProgramCode.getProgramBuffer(this.context3D);
                 this.shaderProgram = this.programBuffer.shaderProgram;
                 this.context3D.useProgram(this.shaderProgram);
-                this.attribLocations = this.programBuffer.getAttribLocations();
             };
             /**
              * 渲染
@@ -2697,8 +2696,7 @@ var me;
             };
             Renderer.prototype.drawObject3D = function (object3D) {
                 var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
-                this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, object3DBuffer.squareVerticesBuffer);
-                this.context3D.vertexAttribPointer(this.attribLocations[0].location, 3, this.context3D.FLOAT, false, 0, 0);
+                object3DBuffer.active(this.programBuffer);
                 var mvMatrix = object3D.space3D.transform3D;
                 this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
                 this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
@@ -2817,8 +2815,17 @@ var me;
          * 3D对象缓冲
          */
         var Object3DBuffer = (function () {
-            function Object3DBuffer() {
+            function Object3DBuffer(context3D) {
+                this.context3D = context3D;
             }
+            Object3DBuffer.prototype.active = function (programBuffer) {
+                this.activeAttributes(programBuffer);
+            };
+            Object3DBuffer.prototype.activeAttributes = function (programBuffer) {
+                var attribLocations = programBuffer.getAttribLocations();
+                this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, this.squareVerticesBuffer);
+                this.context3D.vertexAttribPointer(attribLocations[0].location, 3, this.context3D.FLOAT, false, 0, 0);
+            };
             return Object3DBuffer;
         }());
         feng3d.Object3DBuffer = Object3DBuffer;
@@ -2835,27 +2842,27 @@ var me;
             function Object3DBufferManager() {
                 this.map = new feng3d.Map();
             }
-            Object3DBufferManager.prototype.getBuffer = function (gl, object3D) {
-                var glMap = this.map.get(gl);
+            Object3DBufferManager.prototype.getBuffer = function (context3D, object3D) {
+                var glMap = this.map.get(context3D);
                 if (glMap == null) {
                     glMap = new feng3d.Map();
-                    this.map.push(gl, glMap);
+                    this.map.push(context3D, glMap);
                 }
                 var buffer = glMap.get(object3D);
                 if (buffer == null) {
-                    buffer = new feng3d.Object3DBuffer();
+                    buffer = new feng3d.Object3DBuffer(context3D);
                     glMap.push(object3D, buffer);
                     var geometry = object3D.getComponentByClass(feng3d.Geometry);
                     var positionData = geometry.getVAData(feng3d.GLAttribute.position);
                     // Create a buffer for the square's vertices.
-                    var squareVerticesBuffer = buffer.squareVerticesBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
+                    var squareVerticesBuffer = buffer.squareVerticesBuffer = context3D.createBuffer();
+                    context3D.bindBuffer(context3D.ARRAY_BUFFER, squareVerticesBuffer);
+                    context3D.bufferData(context3D.ARRAY_BUFFER, positionData, context3D.STATIC_DRAW);
                     // var vaBuffer = new VABuffer(GLAttribute.position);
                     var indices = geometry.indices;
-                    var indexBuffer = buffer.indexBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-                    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+                    var indexBuffer = buffer.indexBuffer = context3D.createBuffer();
+                    context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                    context3D.bufferData(context3D.ELEMENT_ARRAY_BUFFER, indices, context3D.STATIC_DRAW);
                     buffer.count = indices.length;
                 }
                 return buffer;

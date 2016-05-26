@@ -961,7 +961,6 @@ declare module me.feng3d {
         private scene;
         private camera;
         private programBuffer;
-        private attribLocations;
         vertexShaderStr: string;
         fragmentShaderStr: string;
         /**
@@ -1076,9 +1075,13 @@ declare module me.feng3d {
      * 3D对象缓冲
      */
     class Object3DBuffer {
+        private context3D;
         squareVerticesBuffer: WebGLBuffer;
         indexBuffer: WebGLBuffer;
         count: number;
+        constructor(context3D: WebGLRenderingContext);
+        active(programBuffer: ProgramBuffer): void;
+        activeAttributes(programBuffer: ProgramBuffer): void;
     }
 }
 declare module me.feng3d {
@@ -1087,7 +1090,7 @@ declare module me.feng3d {
      */
     class Object3DBufferManager {
         map: Map<WebGLRenderingContext, Map<Object3D, Object3DBuffer>>;
-        getBuffer(gl: WebGLRenderingContext, object3D: Object3D): Object3DBuffer;
+        getBuffer(context3D: WebGLRenderingContext, object3D: Object3D): Object3DBuffer;
     }
     var object3DBufferManager: Object3DBufferManager;
 }
