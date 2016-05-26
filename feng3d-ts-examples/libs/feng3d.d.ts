@@ -717,6 +717,8 @@ declare module me.feng3d {
         /** 顶点属性数据字典 */
         private vaDataDic;
         private _indices;
+        context3DBufferOwner: Context3DBufferOwner;
+        constructor();
         /**
          * 索引数据
          */
@@ -1089,11 +1091,26 @@ declare module me.feng3d {
          * 激活属性
          */
         activeAttributes(programBuffer: ProgramBuffer): void;
-        getVaBuffers(attribLocations: ProgramAttributeLocation[]): void;
+        /**
+         * 获取顶点缓冲列表
+         */
+        getVaBuffers(attribLocations: ProgramAttributeLocation[]): VABuffer[];
         /**
          * 激活属性
          */
         activeAttribute(attribLocation: ProgramAttributeLocation): void;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 几何体缓冲
+     */
+    class GeometryBuffer extends Context3DBufferOwner {
+        geometry: Geometry;
+        constructor();
+        private onBeAddedComponent(event);
+        private init();
+        private onChange(event);
     }
 }
 declare module me.feng3d {
@@ -1305,6 +1322,10 @@ declare module me.feng3d {
          * 获取VaBuffer事件
          */
         static GET_VABUFFER: string;
+    }
+    class GetVaBufferEventData {
+        attribLocation: ProgramAttributeLocation;
+        vaBuffer: VABuffer;
     }
 }
 declare module me.feng3d {

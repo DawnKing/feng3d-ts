@@ -1603,12 +1603,13 @@ var me;
         var Geometry = (function (_super) {
             __extends(Geometry, _super);
             function Geometry() {
-                _super.apply(this, arguments);
+                _super.call(this);
                 this._vaIdList = [];
                 /** 顶点属性数据步长字典 */
-                this.strideDic = {};
+                this.strideDic = new feng3d.Map();
                 /** 顶点属性数据字典 */
-                this.vaDataDic = {};
+                this.vaDataDic = new feng3d.Map();
+                this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             }
             Object.defineProperty(Geometry.prototype, "indices", {
                 /**
@@ -1633,7 +1634,7 @@ var me;
              * @return 顶点属性步长
              */
             Geometry.prototype.getVAStride = function (vaId) {
-                return this.strideDic[vaId];
+                return this.strideDic.get(vaId);
             };
             /**
              * 设置顶点属性数据
@@ -1653,7 +1654,7 @@ var me;
              */
             Geometry.prototype.getVAData = function (vaId) {
                 this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.GET_VA_DATA, vaId));
-                return this.vaDataDic[vaId];
+                return this.vaDataDic.get(vaId);
             };
             Object.defineProperty(Geometry.prototype, "vaIdList", {
                 /**
@@ -2836,16 +2837,20 @@ var me;
                     this.activeAttribute(attribLocation);
                 }
             };
+            /**
+             * 获取顶点缓冲列表
+             */
             Object3DBuffer.prototype.getVaBuffers = function (attribLocations) {
                 var vaBuffers = [];
                 for (var i = 0; i < attribLocations.length; i++) {
                     var attribLocation = attribLocations[i];
-                    var result = { vaBuffer: null };
-                    this.object3D.dispatchEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_VABUFFER, result));
-                    var vaBuffer = new feng3d.VABuffer(attribLocation.name);
-                    vaBuffer.dataTypeId;
+                    //从Object3D中获取顶点缓冲
+                    var eventData = { attribLocation: attribLocation, vaBuffer: null };
+                    this.object3D.dispatchEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_VABUFFER, eventData));
+                    // assert(eventData.vaBuffer != null);
+                    vaBuffers.push(eventData.vaBuffer);
                 }
-                vaBuffers;
+                return vaBuffers;
             };
             /**
              * 激活属性
@@ -2866,6 +2871,33 @@ var me;
             return Object3DBuffer;
         }());
         feng3d.Object3DBuffer = Object3DBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 几何体缓冲
+         */
+        var GeometryBuffer = (function (_super) {
+            __extends(GeometryBuffer, _super);
+            function GeometryBuffer() {
+                _super.call(this);
+                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
+            }
+            GeometryBuffer.prototype.onBeAddedComponent = function (event) {
+                this.geometry = event.data.container;
+                this.init();
+            };
+            GeometryBuffer.prototype.init = function () {
+                this.geometry.addEventListener(feng3d.GeometryEvent.CHANGED_INDEX_DATA, this.onChange, this);
+            };
+            GeometryBuffer.prototype.onChange = function (event) {
+            };
+            return GeometryBuffer;
+        }(feng3d.Context3DBufferOwner));
+        feng3d.GeometryBuffer = GeometryBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3276,6 +3308,12 @@ var me;
             return Context3DBufferEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferEvent = Context3DBufferEvent;
+        var GetVaBufferEventData = (function () {
+            function GetVaBufferEventData() {
+            }
+            return GetVaBufferEventData;
+        }());
+        feng3d.GetVaBufferEventData = GetVaBufferEventData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
