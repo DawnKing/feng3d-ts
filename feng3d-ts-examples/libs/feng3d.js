@@ -2776,42 +2776,15 @@ var me;
          * 顶点数据缓冲
          * @author feng 2014-8-14
          */
-        var VABuffer = (function (_super) {
-            __extends(VABuffer, _super);
-            /**
-             * 创建顶点数据缓存
-             * @param dataTypeId 数据编号
-             * @param updateFunc 数据更新回调函数
-             */
-            function VABuffer(dataTypeId) {
-                _super.call(this);
+        var VABuffer = (function () {
+            function VABuffer() {
             }
-            /**
-             * @inheritDoc
-             */
-            VABuffer.prototype.doBuffer = function (context3D) {
-                var buffer = feng3d.context3DBufferCenter.getVABuffer(context3D, this.data, context3D.ARRAY_BUFFER);
-                // this.vertexPositionAttribute = context3D.getAttribLocation(this.shaderProgram, "aVertexPosition");
-                // this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
-            };
-            /**
-             * 绑定缓冲
-             */
-            VABuffer.prototype.bindBuffer = function (context3D) {
-            };
-            /**
-             * 更新数据
-             * @param data 				顶点数据
-             * @param numVertices 		要在缓存区中存储的顶点数量。
-             * @param size              与每个顶点关联的 32 位（4 字节）数据值的数量。
-             */
-            VABuffer.prototype.update = function (data, numVertices, size) {
-                feng3d.assert(1 <= size && size <= 4);
-                this.data = data;
-                this.size = size;
+            VABuffer.prototype.getBuffer = function (context3D) {
+                var buffer = feng3d.context3DBufferCenter.getVABuffer(context3D, this.data, this.size);
+                return buffer;
             };
             return VABuffer;
-        }(feng3d.Context3DBuffer));
+        }());
         feng3d.VABuffer = VABuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
@@ -2823,37 +2796,12 @@ var me;
          * 顶点索引缓冲
          */
         var IndexBuffer = (function () {
-            /**
-             * 构建顶点索引缓冲
-             */
-            function IndexBuffer(indices) {
-                this.indices = indices;
+            function IndexBuffer() {
             }
-            Object.defineProperty(IndexBuffer.prototype, "indices", {
-                /**
-                 * 索引数据
-                 */
-                get: function () {
-                    return this._indices;
-                },
-                set: function (value) {
-                    this._indices = value;
-                    this._indexBuffer = null;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(IndexBuffer.prototype, "indexBuffer", {
-                /**
-                 * 索引缓冲
-                 */
-                get: function () {
-                    // return this._indexBuffer = this._indexBuffer || getIndexBuffer(this._indices);
-                    return null;
-                },
-                enumerable: true,
-                configurable: true
-            });
+            IndexBuffer.prototype.getBuffer = function (context3D) {
+                var indexBuffer = feng3d.context3DBufferCenter.getIndexBuffer(context3D, this.indices);
+                return indexBuffer;
+            };
             return IndexBuffer;
         }());
         feng3d.IndexBuffer = IndexBuffer;
@@ -2987,7 +2935,7 @@ var me;
              * 映射顶点索引缓冲
              */
             Context3DBufferOwner.prototype.mapIndexBuffer = function (indices) {
-                this.indexBuffer = new feng3d.IndexBuffer(indices);
+                this.indexBuffer = { indices: indices };
             };
             Object.defineProperty(Context3DBufferOwner.prototype, "bufferDic", {
                 /**
@@ -3123,7 +3071,7 @@ var me;
                 var bufferType = this.bufferTypeDic[typeId];
                 if (bufferType)
                     return bufferType;
-                this.bufferTypeDic[typeId] = bufferType = new Context3DBufferType();
+                this.bufferTypeDic[typeId] = bufferType = new feng3d.Context3DBufferType();
                 var types = typeId.split("_");
                 bufferType.registerType = types[1];
                 bufferType.dataType = types[2];
@@ -3165,6 +3113,18 @@ var me;
         var Context3DBufferCenter = (function () {
             function Context3DBufferCenter() {
             }
+            /**
+             * 获取索引缓冲
+             */
+            Context3DBufferCenter.prototype.getIndexBuffer = function (context3D, indices) {
+                var indexBuffer = context3D.createBuffer();
+                context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                context3D.bufferData(context3D.ELEMENT_ARRAY_BUFFER, indices, context3D.STATIC_DRAW);
+                return indexBuffer;
+            };
+            /**
+             * 获取顶点属性缓冲
+             */
             Context3DBufferCenter.prototype.getVABuffer = function (context3D, data, target) {
                 var buffer = context3D.createBuffer();
                 context3D.bindBuffer(context3D.ARRAY_BUFFER, buffer);
@@ -3344,6 +3304,22 @@ var me;
             return GetVaBufferEventData;
         }());
         feng3d.GetVaBufferEventData = GetVaBufferEventData;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3d缓存类型
+         * @author feng 2014-8-20
+         */
+        var Context3DBufferType = (function () {
+            function Context3DBufferType() {
+            }
+            return Context3DBufferType;
+        }());
+        feng3d.Context3DBufferType = Context3DBufferType;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

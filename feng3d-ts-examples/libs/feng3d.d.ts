@@ -717,15 +717,12 @@ declare module me.feng3d {
         /** 顶点属性数据字典 */
         private vaDataDic;
         private _indices;
-        _context3DBufferOwner: Context3DBufferOwner;
+        /** 3d缓冲拥有者 */
+        context3DBufferOwner: Context3DBufferOwner;
         /**
          * 创建一个几何体
          */
         constructor();
-        /**
-         * 3d缓冲拥有者
-         */
-        context3DBufferOwner: Context3DBufferOwner;
         /**
          * 索引数据
          */
@@ -1000,20 +997,13 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3d缓存类型
-     * @author feng 2014-8-20
+     * 3D缓冲编号
      */
-    class Context3DBufferType {
+    class Context3DBufferID {
         /**
-         * 寄存器类型
-         * @see me.feng3d.core.register.RegisterType
+         * 顶点索引
          */
-        registerType: string;
-        /**
-         * 数据类型
-         * @see me.feng3d.core.buffer.ConstantsDataType
-         */
-        dataType: string;
+        static index: string;
     }
 }
 declare module me.feng3d {
@@ -1052,31 +1042,24 @@ declare module me.feng3d {
      * 顶点数据缓冲
      * @author feng 2014-8-14
      */
-    class VABuffer extends Context3DBuffer {
+    class VABuffer {
         /** 顶点数据 */
         data: Float32Array;
+        /** 与每个顶点关联的 32 位（4 字节）数据值的数量。 */
         size: number;
+        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 顶点索引缓冲
+     */
+    class IndexBuffer {
         /**
-         * 创建顶点数据缓存
-         * @param dataTypeId 数据编号
-         * @param updateFunc 数据更新回调函数
+         * 索引数据
          */
-        constructor(dataTypeId: string);
-        /**
-         * @inheritDoc
-         */
-        doBuffer(context3D: WebGLRenderingContext): void;
-        /**
-         * 绑定缓冲
-         */
-        bindBuffer(context3D: WebGLRenderingContext): void;
-        /**
-         * 更新数据
-         * @param data 				顶点数据
-         * @param numVertices 		要在缓存区中存储的顶点数量。
-         * @param size              与每个顶点关联的 32 位（4 字节）数据值的数量。
-         */
-        update(data: Float32Array, numVertices: number, size: number): void;
+        indices: Uint16Array;
+        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
     }
 }
 declare module me.feng3d {
@@ -1110,18 +1093,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 几何体缓冲
-     */
-    class GeometryBuffer extends Context3DBufferOwner {
-        geometry: Geometry;
-        constructor();
-        private onBeAddedComponent(event);
-        private init();
-        private onChange(event);
-    }
-}
-declare module me.feng3d {
-    /**
      * 3D对象缓冲管理者
      */
     class Object3DBufferManager {
@@ -1136,6 +1107,7 @@ declare module me.feng3d {
      * @author feng 2014-11-26
      */
     class Context3DBufferOwner extends Component {
+        private indexBuffer;
         private _bufferDic;
         private _bufferList;
         /**
@@ -1151,6 +1123,10 @@ declare module me.feng3d {
          * 创建Context3D缓存拥有者
          */
         constructor();
+        /**
+         * 映射顶点索引缓冲
+         */
+        mapIndexBuffer(indices: Uint16Array): void;
         /**
          * @inheritDoc
          */
@@ -1226,6 +1202,13 @@ declare module me.feng3d {
      * 3D上下文缓冲中心
      */
     class Context3DBufferCenter {
+        /**
+         * 获取索引缓冲
+         */
+        getIndexBuffer(context3D: WebGLRenderingContext, indices: Uint16Array): WebGLBuffer;
+        /**
+         * 获取顶点属性缓冲
+         */
         getVABuffer(context3D: WebGLRenderingContext, data: Float32Array, target: number): WebGLBuffer;
     }
     /**
@@ -1333,6 +1316,24 @@ declare module me.feng3d {
     class GetVaBufferEventData {
         attribLocation: ProgramAttributeLocation;
         vaBuffer: VABuffer;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3d缓存类型
+     * @author feng 2014-8-20
+     */
+    class Context3DBufferType {
+        /**
+         * 寄存器类型
+         * @see me.feng3d.core.register.RegisterType
+         */
+        registerType: string;
+        /**
+         * 数据类型
+         * @see me.feng3d.core.buffer.ConstantsDataType
+         */
+        dataType: string;
     }
 }
 declare module me.feng3d {
