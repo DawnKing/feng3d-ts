@@ -717,8 +717,15 @@ declare module me.feng3d {
         /** 顶点属性数据字典 */
         private vaDataDic;
         private _indices;
-        context3DBufferOwner: Context3DBufferOwner;
+        _context3DBufferOwner: Context3DBufferOwner;
+        /**
+         * 创建一个几何体
+         */
         constructor();
+        /**
+         * 3d缓冲拥有者
+         */
+        context3DBufferOwner: Context3DBufferOwner;
         /**
          * 索引数据
          */

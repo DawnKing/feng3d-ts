@@ -1602,6 +1602,9 @@ var me;
          */
         var Geometry = (function (_super) {
             __extends(Geometry, _super);
+            /**
+             * 创建一个几何体
+             */
             function Geometry() {
                 _super.call(this);
                 this._vaIdList = [];
@@ -1623,6 +1626,7 @@ var me;
                  */
                 set: function (value) {
                     this._indices = value;
+                    this.context3DBufferOwner.mapIndexBuffer(value);
                     this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_INDEX_DATA));
                 },
                 enumerable: true,
@@ -2715,15 +2719,18 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 3d缓存类型
-         * @author feng 2014-8-20
+         * 3D缓冲编号
          */
-        var Context3DBufferType = (function () {
-            function Context3DBufferType() {
+        var Context3DBufferID = (function () {
+            function Context3DBufferID() {
             }
-            return Context3DBufferType;
+            /**
+             * 顶点索引
+             */
+            Context3DBufferID.index = "index";
+            return Context3DBufferID;
         }());
-        feng3d.Context3DBufferType = Context3DBufferType;
+        feng3d.Context3DBufferID = Context3DBufferID;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2813,6 +2820,50 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 顶点索引缓冲
+         */
+        var IndexBuffer = (function () {
+            /**
+             * 构建顶点索引缓冲
+             */
+            function IndexBuffer(indices) {
+                this.indices = indices;
+            }
+            Object.defineProperty(IndexBuffer.prototype, "indices", {
+                /**
+                 * 索引数据
+                 */
+                get: function () {
+                    return this._indices;
+                },
+                set: function (value) {
+                    this._indices = value;
+                    this._indexBuffer = null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(IndexBuffer.prototype, "indexBuffer", {
+                /**
+                 * 索引缓冲
+                 */
+                get: function () {
+                    // return this._indexBuffer = this._indexBuffer || getIndexBuffer(this._indices);
+                    return null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return IndexBuffer;
+        }());
+        feng3d.IndexBuffer = IndexBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 3D对象缓冲
          */
         var Object3DBuffer = (function () {
@@ -2878,33 +2929,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 几何体缓冲
-         */
-        var GeometryBuffer = (function (_super) {
-            __extends(GeometryBuffer, _super);
-            function GeometryBuffer() {
-                _super.call(this);
-                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
-            }
-            GeometryBuffer.prototype.onBeAddedComponent = function (event) {
-                this.geometry = event.data.container;
-                this.init();
-            };
-            GeometryBuffer.prototype.init = function () {
-                this.geometry.addEventListener(feng3d.GeometryEvent.CHANGED_INDEX_DATA, this.onChange, this);
-            };
-            GeometryBuffer.prototype.onChange = function (event) {
-            };
-            return GeometryBuffer;
-        }(feng3d.Context3DBufferOwner));
-        feng3d.GeometryBuffer = GeometryBuffer;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 3D对象缓冲管理者
          */
         var Object3DBufferManager = (function () {
@@ -2959,6 +2983,12 @@ var me;
                 this.childrenBufferOwner = [];
                 this.initBuffers();
             }
+            /**
+             * 映射顶点索引缓冲
+             */
+            Context3DBufferOwner.prototype.mapIndexBuffer = function (indices) {
+                this.indexBuffer = new feng3d.IndexBuffer(indices);
+            };
             Object.defineProperty(Context3DBufferOwner.prototype, "bufferDic", {
                 /**
                  * @inheritDoc
@@ -3093,7 +3123,7 @@ var me;
                 var bufferType = this.bufferTypeDic[typeId];
                 if (bufferType)
                     return bufferType;
-                this.bufferTypeDic[typeId] = bufferType = new feng3d.Context3DBufferType();
+                this.bufferTypeDic[typeId] = bufferType = new Context3DBufferType();
                 var types = typeId.split("_");
                 bufferType.registerType = types[1];
                 bufferType.dataType = types[2];
