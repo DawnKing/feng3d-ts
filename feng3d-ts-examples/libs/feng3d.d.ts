@@ -1059,7 +1059,6 @@ declare module me.feng3d {
          * 索引数据
          */
         indices: Uint16Array;
-        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
     }
 }
 declare module me.feng3d {
@@ -1202,14 +1201,20 @@ declare module me.feng3d {
      * 3D上下文缓冲中心
      */
     class Context3DBufferCenter {
+        map: Map<WebGLRenderingContext, Context3DBufferSet>;
+        getContext3DBufferSet(context3D: WebGLRenderingContext): Context3DBufferSet;
+    }
+    class Context3DBufferSet {
+        context3D: WebGLRenderingContext;
+        constructor(context3D: WebGLRenderingContext);
         /**
          * 获取索引缓冲
          */
-        getIndexBuffer(context3D: WebGLRenderingContext, indices: Uint16Array): WebGLBuffer;
+        getIndexBuffer(indices: Uint16Array): WebGLBuffer;
         /**
          * 获取顶点属性缓冲
          */
-        getVABuffer(context3D: WebGLRenderingContext, data: Float32Array, target: number): WebGLBuffer;
+        getVABuffer(data: Float32Array, target: number): WebGLBuffer;
     }
     /**
      * 3D上下文缓冲中心

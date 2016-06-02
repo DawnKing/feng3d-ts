@@ -2780,7 +2780,8 @@ var me;
             function VABuffer() {
             }
             VABuffer.prototype.getBuffer = function (context3D) {
-                var buffer = feng3d.context3DBufferCenter.getVABuffer(context3D, this.data, this.size);
+                var buffer = feng3d.context3DBufferCenter.getContext3DBufferSet(context3D) //
+                    .getVABuffer(this.data, this.size);
                 return buffer;
             };
             return VABuffer;
@@ -2798,10 +2799,6 @@ var me;
         var IndexBuffer = (function () {
             function IndexBuffer() {
             }
-            IndexBuffer.prototype.getBuffer = function (context3D) {
-                var indexBuffer = feng3d.context3DBufferCenter.getIndexBuffer(context3D, this.indices);
-                return indexBuffer;
-            };
             return IndexBuffer;
         }());
         feng3d.IndexBuffer = IndexBuffer;
@@ -3112,11 +3109,28 @@ var me;
          */
         var Context3DBufferCenter = (function () {
             function Context3DBufferCenter() {
+                this.map = new feng3d.Map();
+            }
+            Context3DBufferCenter.prototype.getContext3DBufferSet = function (context3D) {
+                var context3DBufferSet = this.map.get(context3D);
+                if (context3DBufferSet == null) {
+                    context3DBufferSet = new Context3DBufferSet(context3D);
+                    this.map.push(context3D, context3DBufferSet);
+                }
+                return context3DBufferSet;
+            };
+            return Context3DBufferCenter;
+        }());
+        feng3d.Context3DBufferCenter = Context3DBufferCenter;
+        var Context3DBufferSet = (function () {
+            function Context3DBufferSet(context3D) {
+                this.context3D = context3D;
             }
             /**
              * 获取索引缓冲
              */
-            Context3DBufferCenter.prototype.getIndexBuffer = function (context3D, indices) {
+            Context3DBufferSet.prototype.getIndexBuffer = function (indices) {
+                var context3D = this.context3D;
                 var indexBuffer = context3D.createBuffer();
                 context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
                 context3D.bufferData(context3D.ELEMENT_ARRAY_BUFFER, indices, context3D.STATIC_DRAW);
@@ -3125,15 +3139,16 @@ var me;
             /**
              * 获取顶点属性缓冲
              */
-            Context3DBufferCenter.prototype.getVABuffer = function (context3D, data, target) {
+            Context3DBufferSet.prototype.getVABuffer = function (data, target) {
+                var context3D = this.context3D;
                 var buffer = context3D.createBuffer();
                 context3D.bindBuffer(context3D.ARRAY_BUFFER, buffer);
                 context3D.bufferData(context3D.ARRAY_BUFFER, data, context3D.STATIC_DRAW);
                 return buffer;
             };
-            return Context3DBufferCenter;
+            return Context3DBufferSet;
         }());
-        feng3d.Context3DBufferCenter = Context3DBufferCenter;
+        feng3d.Context3DBufferSet = Context3DBufferSet;
         /**
          * 3D上下文缓冲中心
          */
