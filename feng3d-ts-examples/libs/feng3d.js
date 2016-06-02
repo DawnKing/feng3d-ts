@@ -229,9 +229,7 @@ var me;
          * @param object 对象
          */
         function getVersion(object) {
-            if (typeof object != "object") {
-                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
-            }
+            assertObject(object);
             return ~~object[versionKey];
         }
         feng3d.getVersion = getVersion;
@@ -240,9 +238,7 @@ var me;
          * @param object 对象
          */
         function upgradeVersion(object) {
-            if (typeof object != "object") {
-                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684\u7248\u672C\u53F7";
-            }
+            assertObject(object);
             if (!object.hasOwnProperty(versionKey)) {
                 Object.defineProperty(object, versionKey, {
                     value: 0,
@@ -253,6 +249,21 @@ var me;
             object[versionKey] = ~~object[versionKey] + 1;
         }
         feng3d.upgradeVersion = upgradeVersion;
+        /**
+         * 设置版本号
+         * @param object 对象
+         * @param version 版本号
+         */
+        function setVersion(object, version) {
+            assertObject(object);
+            object[versionKey] = ~~version;
+        }
+        feng3d.setVersion = setVersion;
+        function assertObject(object) {
+            if (typeof object != "object") {
+                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
+            }
+        }
         /**
          * 版本号键名称
          */
@@ -3124,6 +3135,7 @@ var me;
         feng3d.Context3DBufferCenter = Context3DBufferCenter;
         var Context3DBufferSet = (function () {
             function Context3DBufferSet(context3D) {
+                this.indexbufferMap = new feng3d.Map();
                 this.context3D = context3D;
             }
             /**
@@ -3131,9 +3143,16 @@ var me;
              */
             Context3DBufferSet.prototype.getIndexBuffer = function (indices) {
                 var context3D = this.context3D;
+                var indexBuffer = this.indexbufferMap.get(indices);
+                if (!indexBuffer) {
+                    indexBuffer = context3D.createBuffer();
+                    this.indexbufferMap.push(indices, indexBuffer);
+                }
+                if (feng3d.getVersion(indexBuffer) != feng3d.getVersion(indices)) {
+                    context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                    context3D.bufferData(context3D.ELEMENT_ARRAY_BUFFER, indices, context3D.STATIC_DRAW);
+                }
                 var indexBuffer = context3D.createBuffer();
-                context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
-                context3D.bufferData(context3D.ELEMENT_ARRAY_BUFFER, indices, context3D.STATIC_DRAW);
                 return indexBuffer;
             };
             /**
@@ -3149,6 +3168,11 @@ var me;
             return Context3DBufferSet;
         }());
         feng3d.Context3DBufferSet = Context3DBufferSet;
+        var IndexBufferCenter = (function () {
+            function IndexBufferCenter() {
+            }
+            return IndexBufferCenter;
+        }());
         /**
          * 3D上下文缓冲中心
          */

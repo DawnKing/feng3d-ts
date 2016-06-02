@@ -80,6 +80,12 @@ declare module me.feng3d {
      * @param object 对象
      */
     function upgradeVersion(object: any): void;
+    /**
+     * 设置版本号
+     * @param object 对象
+     * @param version 版本号
+     */
+    function setVersion(object: any, version: number): void;
 }
 declare module me.feng3d {
     /**
@@ -1207,6 +1213,7 @@ declare module me.feng3d {
     class Context3DBufferSet {
         context3D: WebGLRenderingContext;
         constructor(context3D: WebGLRenderingContext);
+        private indexbufferMap;
         /**
          * 获取索引缓冲
          */
