@@ -1658,8 +1658,8 @@ var me;
              * @param stride        顶点数据步长
              */
             Geometry.prototype.setVAData = function (vaId, data, stride) {
-                var vaLen = this.getVAStride(vaId);
-                this.vaDataDic[vaId] = data;
+                this.strideDic.push(vaId, stride);
+                this.vaDataDic.push(vaId, data);
                 this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_VA_DATA, vaId));
             };
             /**
