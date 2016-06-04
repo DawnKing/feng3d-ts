@@ -224,50 +224,69 @@ var me;
 (function (me) {
     var feng3d;
     (function (feng3d) {
-        /**
-         * 获取对象版本
-         * @param object 对象
-         */
-        function getVersion(object) {
-            assertObject(object);
-            return ~~object[versionKey];
-        }
-        feng3d.getVersion = getVersion;
-        /**
-         * 升级对象版本
-         * @param object 对象
-         */
-        function upgradeVersion(object) {
-            assertObject(object);
-            if (!object.hasOwnProperty(versionKey)) {
-                Object.defineProperty(object, versionKey, {
-                    value: 0,
-                    enumerable: false,
-                    writable: true
-                });
+        var Version = (function () {
+            function Version() {
             }
-            object[versionKey] = ~~object[versionKey] + 1;
-        }
-        feng3d.upgradeVersion = upgradeVersion;
-        /**
-         * 设置版本号
-         * @param object 对象
-         * @param version 版本号
-         */
-        function setVersion(object, version) {
-            assertObject(object);
-            object[versionKey] = ~~version;
-        }
-        feng3d.setVersion = setVersion;
-        function assertObject(object) {
-            if (typeof object != "object") {
-                throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
-            }
-        }
+            /**
+             * 获取对象版本
+             * @param object 对象
+             */
+            Version.prototype.getVersion = function (object) {
+                this.assertObject(object);
+                if (!object.hasOwnProperty(versionKey)) {
+                    return -1;
+                }
+                return ~~object[versionKey];
+            };
+            /**
+             * 升级对象版本（版本号+1）
+             * @param object 对象
+             */
+            Version.prototype.upgradeVersion = function (object) {
+                this.assertObject(object);
+                if (!object.hasOwnProperty(versionKey)) {
+                    Object.defineProperty(object, versionKey, {
+                        value: 0,
+                        enumerable: false,
+                        writable: true
+                    });
+                }
+                object[versionKey] = ~~object[versionKey] + 1;
+            };
+            /**
+             * 设置版本号
+             * @param object 对象
+             * @param version 版本号
+             */
+            Version.prototype.setVersion = function (object, version) {
+                this.assertObject(object);
+                object[versionKey] = ~~version;
+            };
+            /**
+             * 判断两个对象的版本号是否相等
+             */
+            Version.prototype.equal = function (a, b) {
+                return this.getVersion(a) == this.getVersion(b);
+            };
+            /**
+             * 断言object为对象类型
+             */
+            Version.prototype.assertObject = function (object) {
+                if (typeof object != "object") {
+                    throw "\u65E0\u6CD5\u83B7\u53D6" + object + "\u7684UID";
+                }
+            };
+            return Version;
+        }());
+        feng3d.Version = Version;
         /**
          * 版本号键名称
          */
         var versionKey = "__version__";
+        /**
+         * 对象版本
+         */
+        feng3d.version = new Version();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2791,8 +2810,8 @@ var me;
             function VABuffer() {
             }
             VABuffer.prototype.getBuffer = function (context3D) {
-                var buffer = feng3d.context3DBufferCenter.getContext3DBufferSet(context3D) //
-                    .getVABuffer(this.data, this.size);
+                var buffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
+                    .getVABuffer(this.data);
                 return buffer;
             };
             return VABuffer;
@@ -3119,64 +3138,68 @@ var me;
          * 3D上下文缓冲中心
          */
         var Context3DBufferCenter = (function () {
-            function Context3DBufferCenter() {
-                this.map = new feng3d.Map();
-            }
-            Context3DBufferCenter.prototype.getContext3DBufferSet = function (context3D) {
-                var context3DBufferSet = this.map.get(context3D);
-                if (context3DBufferSet == null) {
-                    context3DBufferSet = new Context3DBufferSet(context3D);
-                    this.map.push(context3D, context3DBufferSet);
-                }
-                return context3DBufferSet;
-            };
-            return Context3DBufferCenter;
-        }());
-        feng3d.Context3DBufferCenter = Context3DBufferCenter;
-        var Context3DBufferSet = (function () {
-            function Context3DBufferSet(context3D) {
-                this.indexbufferMap = new feng3d.Map();
+            /**
+             * 构建3D上下文缓冲中心
+             * @param context3D 3D上下文
+             */
+            function Context3DBufferCenter(context3D) {
+                /**
+                 * 缓冲字典
+                 */
+                this.bufferMap = new feng3d.Map();
                 this.context3D = context3D;
             }
             /**
+             * 获取3D上下文缓冲中心
+             * @param context3D 3D上下文
+             */
+            Context3DBufferCenter.getInstance = function (context3D) {
+                var context3DBufferCenter = this.map.get(context3D);
+                if (context3DBufferCenter == null) {
+                    context3DBufferCenter = new Context3DBufferCenter(context3D);
+                    this.map.push(context3D, context3DBufferCenter);
+                }
+                return context3DBufferCenter;
+            };
+            /**
              * 获取索引缓冲
              */
-            Context3DBufferSet.prototype.getIndexBuffer = function (indices) {
-                var context3D = this.context3D;
-                var indexBuffer = this.indexbufferMap.get(indices);
-                if (!indexBuffer) {
-                    indexBuffer = context3D.createBuffer();
-                    this.indexbufferMap.push(indices, indexBuffer);
-                }
-                if (feng3d.getVersion(indexBuffer) != feng3d.getVersion(indices)) {
-                    context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
-                    context3D.bufferData(context3D.ELEMENT_ARRAY_BUFFER, indices, context3D.STATIC_DRAW);
-                }
-                var indexBuffer = context3D.createBuffer();
+            Context3DBufferCenter.prototype.getIndexBuffer = function (indices) {
+                var indexBuffer = this.getBuffer(indices, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER);
                 return indexBuffer;
             };
             /**
              * 获取顶点属性缓冲
+             * @param data  数据
              */
-            Context3DBufferSet.prototype.getVABuffer = function (data, target) {
-                var context3D = this.context3D;
-                var buffer = context3D.createBuffer();
-                context3D.bindBuffer(context3D.ARRAY_BUFFER, buffer);
-                context3D.bufferData(context3D.ARRAY_BUFFER, data, context3D.STATIC_DRAW);
+            Context3DBufferCenter.prototype.getVABuffer = function (data) {
+                var buffer = this.getBuffer(data, WebGLRenderingContext.ARRAY_BUFFER);
                 return buffer;
             };
-            return Context3DBufferSet;
+            /**
+             * 获取缓冲
+             * @param data  数据
+             */
+            Context3DBufferCenter.prototype.getBuffer = function (data, target) {
+                var context3D = this.context3D;
+                var buffer = this.bufferMap.get(data);
+                if (!buffer) {
+                    buffer = context3D.createBuffer();
+                    this.bufferMap.push(data, buffer);
+                }
+                if (!feng3d.version.equal(data, buffer)) {
+                    context3D.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, buffer);
+                    context3D.bufferData(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, data, WebGLRenderingContext.STATIC_DRAW);
+                }
+                return buffer;
+            };
+            /**
+             * 3D上下文缓冲中心字典
+             */
+            Context3DBufferCenter.map = new feng3d.Map();
+            return Context3DBufferCenter;
         }());
-        feng3d.Context3DBufferSet = Context3DBufferSet;
-        var IndexBufferCenter = (function () {
-            function IndexBufferCenter() {
-            }
-            return IndexBufferCenter;
-        }());
-        /**
-         * 3D上下文缓冲中心
-         */
-        feng3d.context3DBufferCenter = new Context3DBufferCenter();
+        feng3d.Context3DBufferCenter = Context3DBufferCenter;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

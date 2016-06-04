@@ -70,22 +70,36 @@ declare module me.feng3d {
     function getUID(object: any): any;
 }
 declare module me.feng3d {
+    class Version {
+        /**
+         * 获取对象版本
+         * @param object 对象
+         */
+        getVersion(object: Object): number;
+        /**
+         * 升级对象版本（版本号+1）
+         * @param object 对象
+         */
+        upgradeVersion(object: Object): void;
+        /**
+         * 设置版本号
+         * @param object 对象
+         * @param version 版本号
+         */
+        setVersion(object: Object, version: number): void;
+        /**
+         * 判断两个对象的版本号是否相等
+         */
+        equal(a: Object, b: Object): boolean;
+        /**
+         * 断言object为对象类型
+         */
+        private assertObject(object);
+    }
     /**
-     * 获取对象版本
-     * @param object 对象
+     * 对象版本
      */
-    function getVersion(object: any): number;
-    /**
-     * 升级对象版本
-     * @param object 对象
-     */
-    function upgradeVersion(object: any): void;
-    /**
-     * 设置版本号
-     * @param object 对象
-     * @param version 版本号
-     */
-    function setVersion(object: any, version: number): void;
+    var version: Version;
 }
 declare module me.feng3d {
     /**
@@ -1207,26 +1221,43 @@ declare module me.feng3d {
      * 3D上下文缓冲中心
      */
     class Context3DBufferCenter {
-        map: Map<WebGLRenderingContext, Context3DBufferSet>;
-        getContext3DBufferSet(context3D: WebGLRenderingContext): Context3DBufferSet;
-    }
-    class Context3DBufferSet {
-        context3D: WebGLRenderingContext;
+        /**
+         * 3D上下文缓冲中心字典
+         */
+        private static map;
+        /**
+         * 3D上下文
+         */
+        private context3D;
+        /**
+         * 缓冲字典
+         */
+        private bufferMap;
+        /**
+         * 获取3D上下文缓冲中心
+         * @param context3D 3D上下文
+         */
+        static getInstance(context3D: WebGLRenderingContext): Context3DBufferCenter;
+        /**
+         * 构建3D上下文缓冲中心
+         * @param context3D 3D上下文
+         */
         constructor(context3D: WebGLRenderingContext);
-        private indexbufferMap;
         /**
          * 获取索引缓冲
          */
         getIndexBuffer(indices: Uint16Array): WebGLBuffer;
         /**
          * 获取顶点属性缓冲
+         * @param data  数据
          */
-        getVABuffer(data: Float32Array, target: number): WebGLBuffer;
+        getVABuffer(data: Float32Array): WebGLBuffer;
+        /**
+         * 获取缓冲
+         * @param data  数据
+         */
+        getBuffer(data: ArrayBufferView | ArrayBuffer, target: number): WebGLBuffer;
     }
-    /**
-     * 3D上下文缓冲中心
-     */
-    var context3DBufferCenter: Context3DBufferCenter;
 }
 declare module me.feng3d {
     /**
