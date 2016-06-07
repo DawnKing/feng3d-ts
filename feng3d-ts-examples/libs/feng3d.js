@@ -1642,8 +1642,17 @@ var me;
                 this.strideDic = new feng3d.Map();
                 /** 顶点属性数据字典 */
                 this.vaDataDic = new feng3d.Map();
-                this.context3DBufferOwner = new feng3d.Context3DBufferOwner();
             }
+            Object.defineProperty(Geometry.prototype, "context3DBuffer", {
+                /**
+                 * Context3D数据缓冲
+                 */
+                get: function () {
+                    return this.getOrCreateComponentByClass(feng3d.Context3DBuffer);
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(Geometry.prototype, "indices", {
                 /**
                  * 索引数据
@@ -1656,7 +1665,7 @@ var me;
                  */
                 set: function (value) {
                     this._indices = value;
-                    this.context3DBufferOwner.mapIndexBuffer(value);
+                    this.context3DBuffer.mapIndexBuffer(value);
                     this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_INDEX_DATA));
                 },
                 enumerable: true,
@@ -2768,33 +2777,33 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * Context3D可执行的数据缓存
-         * @author feng 2014-6-9
+         * Context3D数据缓冲
+         * @author feng 2016-6-7
          */
-        var Context3DBuffer = (function () {
+        var Context3DBuffer = (function (_super) {
+            __extends(Context3DBuffer, _super);
             /**
-             * 创建一个gl可执行的数据缓存
+             * 创建Context3D数据缓冲
              */
             function Context3DBuffer() {
+                _super.call(this);
             }
-            Object.defineProperty(Context3DBuffer.prototype, "dataTypeId", {
-                /**
-                 * 缓存类型编号
-                 */
-                get: function () {
-                    return this._dataTypeId;
-                },
-                enumerable: true,
-                configurable: true
-            });
             /**
-             * 字符串描述
+             * 映射索引缓冲
              */
-            Context3DBuffer.prototype.toString = function () {
-                return "[" + feng3d.getClassName(this) + " dataType=\"" + this._dataTypeId + "\"]";
+            Context3DBuffer.prototype.mapIndexBuffer = function (value) {
+                var indexBuffer = this.getOrCreateComponentByClass(feng3d.IndexBuffer);
+                indexBuffer.indices = value;
+            };
+            /**
+             * 映射属性缓冲
+             */
+            Context3DBuffer.prototype.mapAttributeBuffer = function (value) {
+                var attributeBuffer = this.getOrCreateComponentByClass(feng3d.AttributeBuffer);
+                attributeBuffer.data = value;
             };
             return Context3DBuffer;
-        }());
+        }(feng3d.Component));
         feng3d.Context3DBuffer = Context3DBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
@@ -2803,20 +2812,38 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 顶点数据缓冲
+         * 属性缓冲
          * @author feng 2014-8-14
          */
-        var VABuffer = (function () {
-            function VABuffer() {
+        var AttributeBuffer = (function (_super) {
+            __extends(AttributeBuffer, _super);
+            /**
+             * 构建属性缓冲
+             */
+            function AttributeBuffer() {
+                _super.call(this);
+                this.addEventListener(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, this.onGetAttributeBuffer, this);
             }
-            VABuffer.prototype.getBuffer = function (context3D) {
+            /**
+             * 获取缓冲
+             * @param context3D    3D渲染环境
+             */
+            AttributeBuffer.prototype.getBuffer = function (context3D) {
                 var buffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
                     .getVABuffer(this.data);
                 return buffer;
             };
-            return VABuffer;
-        }());
-        feng3d.VABuffer = VABuffer;
+            /**
+             * 处理获取属性缓冲事件
+             */
+            AttributeBuffer.prototype.onGetAttributeBuffer = function (event) {
+                var eventData = event.data;
+                if (eventData.attribLocation.name == this.name)
+                    eventData.attributeBuffer = this;
+            };
+            return AttributeBuffer;
+        }(feng3d.Component));
+        feng3d.AttributeBuffer = AttributeBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2826,11 +2853,22 @@ var me;
         /**
          * 顶点索引缓冲
          */
-        var IndexBuffer = (function () {
+        var IndexBuffer = (function (_super) {
+            __extends(IndexBuffer, _super);
             function IndexBuffer() {
+                _super.apply(this, arguments);
             }
+            /**
+             * 获取缓冲
+             * @param context3D    3D渲染环境
+             */
+            IndexBuffer.prototype.getBuffer = function (context3D) {
+                var indexBuffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
+                    .getIndexBuffer(this.indices);
+                return indexBuffer;
+            };
             return IndexBuffer;
-        }());
+        }(feng3d.Component));
         feng3d.IndexBuffer = IndexBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
@@ -2871,10 +2909,10 @@ var me;
                 for (var i = 0; i < attribLocations.length; i++) {
                     var attribLocation = attribLocations[i];
                     //从Object3D中获取顶点缓冲
-                    var eventData = { attribLocation: attribLocation, vaBuffer: null };
-                    this.object3D.dispatchEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_VABUFFER, eventData));
+                    var eventData = { attribLocation: attribLocation, attributeBuffer: null };
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData));
                     // assert(eventData.vaBuffer != null);
-                    vaBuffers.push(eventData.vaBuffer);
+                    vaBuffers.push(eventData.attributeBuffer);
                 }
                 return vaBuffers;
             };
@@ -2934,143 +2972,6 @@ var me;
         }());
         feng3d.Object3DBufferManager = Object3DBufferManager;
         feng3d.object3DBufferManager = new Object3DBufferManager();
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * Context3D缓存拥有者
-         * @author feng 2014-11-26
-         */
-        var Context3DBufferOwner = (function (_super) {
-            __extends(Context3DBufferOwner, _super);
-            /**
-             * 创建Context3D缓存拥有者
-             */
-            function Context3DBufferOwner() {
-                _super.call(this);
-                /**
-                 * 所有缓冲列表是否有效
-                 */
-                this.bufferInvalid = true;
-                this.childrenBufferOwner = [];
-                this.initBuffers();
-            }
-            /**
-             * 映射顶点索引缓冲
-             */
-            Context3DBufferOwner.prototype.mapIndexBuffer = function (indices) {
-                this.indexBuffer = { indices: indices };
-            };
-            Object.defineProperty(Context3DBufferOwner.prototype, "bufferDic", {
-                /**
-                 * @inheritDoc
-                 */
-                get: function () {
-                    if (this._bufferDic == null)
-                        this._bufferDic = {};
-                    return this._bufferDic;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Context3DBufferOwner.prototype, "bufferList", {
-                /**
-                 * @inheritDoc
-                 */
-                get: function () {
-                    if (this._bufferList == null)
-                        this._bufferList = [];
-                    return this._bufferList;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * 初始化Context3d缓存
-             */
-            Context3DBufferOwner.prototype.initBuffers = function () {
-            };
-            /**
-             * 添加子项缓存拥有者
-             * @param childBufferOwner
-             */
-            Context3DBufferOwner.prototype.addChildBufferOwner = function (childBufferOwner) {
-                var index = this.childrenBufferOwner.indexOf(childBufferOwner);
-                feng3d.assert(index == -1, "不能重复添加子项缓存拥有者");
-                this.childrenBufferOwner.push(childBufferOwner);
-                //添加事件
-                childBufferOwner.addEventListener(feng3d.Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, this.bubbleDispatchEvent, this);
-                childBufferOwner.addEventListener(feng3d.Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER, this.bubbleDispatchEvent, this);
-                childBufferOwner.addEventListener(feng3d.Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER, this.bubbleDispatchEvent, this);
-                childBufferOwner.addEventListener(feng3d.Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER, this.bubbleDispatchEvent, this);
-                //派发添加子项缓冲拥有者事件
-                this.dispatchEvent(new feng3d.Context3DBufferOwnerEvent(feng3d.Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER, childBufferOwner));
-            };
-            /**
-             * 移除子项缓存拥有者
-             * @param childBufferOwner
-             */
-            Context3DBufferOwner.prototype.removeChildBufferOwner = function (childBufferOwner) {
-                var index = this.childrenBufferOwner.indexOf(childBufferOwner);
-                feng3d.assert(index != -1, "无法移除不存在的子项缓存拥有者");
-                this.childrenBufferOwner.splice(index, 1);
-                //移除事件
-                childBufferOwner.removeEventListener(feng3d.Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, this.bubbleDispatchEvent, this);
-                childBufferOwner.removeEventListener(feng3d.Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER, this.bubbleDispatchEvent, this);
-                childBufferOwner.removeEventListener(feng3d.Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER, this.bubbleDispatchEvent, this);
-                childBufferOwner.removeEventListener(feng3d.Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER, this.bubbleDispatchEvent, this);
-                //派发添加子项缓冲拥有者事件
-                this.dispatchEvent(new feng3d.Context3DBufferOwnerEvent(feng3d.Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER, childBufferOwner));
-            };
-            /**
-             * 向上冒泡
-             */
-            Context3DBufferOwner.prototype.bubbleDispatchEvent = function (event) {
-                this.bufferInvalid = true;
-                this.dispatchEvent(event);
-            };
-            /**
-             * 标记Context3d缓存脏了
-             * @param dataTypeId
-             */
-            Context3DBufferOwner.prototype.markBufferDirty = function (dataTypeId) {
-                var context3DBuffer = this.bufferDic[dataTypeId];
-                // context3DBuffer.invalid();
-            };
-            /**
-             * @inheritDoc
-             */
-            Context3DBufferOwner.prototype.mapContext3DBuffer = function (dataTypeId, updateFunc) {
-                var bufferCls = feng3d.context3DBufferTypeManager.getBufferClass(dataTypeId);
-                var context3DBuffer = new bufferCls(dataTypeId, updateFunc);
-                this.bufferDic[dataTypeId] = context3DBuffer;
-                this.bufferList.push(context3DBuffer);
-                this.dispatchEvent(new feng3d.Context3DBufferOwnerEvent(feng3d.Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER, context3DBuffer));
-                return context3DBuffer;
-            };
-            /**
-             * @inheritDoc
-             */
-            Context3DBufferOwner.prototype.getAllBufferList = function () {
-                if (this.bufferInvalid) {
-                    //收集本拥有者缓冲列表
-                    this.allBufferList = this.bufferList.concat();
-                    var childAllBufferList;
-                    //遍历子项拥有者收集缓冲列表
-                    for (var i = 0; i < this.childrenBufferOwner.length; i++) {
-                        childAllBufferList = this.childrenBufferOwner[i].getAllBufferList();
-                        this.allBufferList = this.allBufferList.concat(childAllBufferList);
-                    }
-                    this.bufferInvalid = false;
-                }
-                return this.allBufferList;
-            };
-            return Context3DBufferOwner;
-        }(feng3d.Component));
-        feng3d.Context3DBufferOwner = Context3DBufferOwner;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3188,8 +3089,8 @@ var me;
                     this.bufferMap.push(data, buffer);
                 }
                 if (!feng3d.version.equal(data, buffer)) {
-                    context3D.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, buffer);
-                    context3D.bufferData(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, data, WebGLRenderingContext.STATIC_DRAW);
+                    context3D.bindBuffer(target, buffer);
+                    context3D.bufferData(target, data, WebGLRenderingContext.STATIC_DRAW);
                 }
                 return buffer;
             };
@@ -3303,48 +3204,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 3D环境缓冲拥有者事件
-         * @author feng 2015-7-18
-         */
-        var Context3DBufferOwnerEvent = (function (_super) {
-            __extends(Context3DBufferOwnerEvent, _super);
-            /**
-             * 创建3D环境缓冲拥有者事件
-             * @param type 					事件的类型，可以作为 Event.type 访问。
-             * @param data					事件携带的数据
-             * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-             */
-            function Context3DBufferOwnerEvent(type, data, bubbles) {
-                if (data === void 0) { data = null; }
-                if (bubbles === void 0) { bubbles = false; }
-                _super.call(this, type, data, bubbles);
-            }
-            /**
-             * 添加3D环境缓冲事件
-             */
-            Context3DBufferOwnerEvent.ADD_CONTEXT3DBUFFER = "addContext3DBuffer";
-            /**
-             * 移除3D环境缓冲事件
-             */
-            Context3DBufferOwnerEvent.REMOVE_CONTEXT3DBUFFER = "removeContext3DBuffer";
-            /**
-             * 添加子项3D环境缓冲拥有者事件
-             */
-            Context3DBufferOwnerEvent.ADDCHILD_CONTEXT3DBUFFEROWNER = "addChildContext3DBufferOwner";
-            /**
-             * 移除子项3D环境缓冲拥有者事件
-             */
-            Context3DBufferOwnerEvent.REMOVECHILD_CONTEXT3DBUFFEROWNER = "removeChildContext3DBufferOwner";
-            return Context3DBufferOwnerEvent;
-        }(feng3d.Event));
-        feng3d.Context3DBufferOwnerEvent = Context3DBufferOwnerEvent;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * Context3D缓冲事件
          * @author feng 2016-05-26
          */
@@ -3354,18 +3213,21 @@ var me;
                 _super.apply(this, arguments);
             }
             /**
-             * 获取VaBuffer事件
+             * 获取AttributeBuffer
              */
-            Context3DBufferEvent.GET_VABUFFER = "getVaBuffer";
+            Context3DBufferEvent.GET_ATTRIBUTEBUFFER = "getAttributeBuffer";
             return Context3DBufferEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferEvent = Context3DBufferEvent;
-        var GetVaBufferEventData = (function () {
-            function GetVaBufferEventData() {
+        /**
+         * 获取AttributeBuffer事件数据
+         */
+        var GetAttributeBufferEventData = (function () {
+            function GetAttributeBufferEventData() {
             }
-            return GetVaBufferEventData;
+            return GetAttributeBufferEventData;
         }());
-        feng3d.GetVaBufferEventData = GetVaBufferEventData;
+        feng3d.GetAttributeBufferEventData = GetAttributeBufferEventData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3676,7 +3538,7 @@ var me;
                 return shader;
             };
             return Material;
-        }(feng3d.Context3DBufferOwner));
+        }(feng3d.Component));
         feng3d.Material = Material;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));

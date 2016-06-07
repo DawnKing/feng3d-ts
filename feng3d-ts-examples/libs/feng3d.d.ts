@@ -737,8 +737,10 @@ declare module me.feng3d {
         /** 顶点属性数据字典 */
         private vaDataDic;
         private _indices;
-        /** 3d缓冲拥有者 */
-        context3DBufferOwner: Context3DBufferOwner;
+        /**
+         * Context3D数据缓冲
+         */
+        context3DBuffer: Context3DBuffer;
         /**
          * 创建一个几何体
          */
@@ -1028,57 +1030,67 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * Context3D可执行的数据缓存
-     * @author feng 2014-6-9
+     * Context3D数据缓冲
+     * @author feng 2016-6-7
      */
-    abstract class Context3DBuffer {
-        /** 3d缓存类型编号 */
-        private _dataTypeId;
+    class Context3DBuffer extends Component {
         /**
-         * 创建一个gl可执行的数据缓存
+         * 创建Context3D数据缓冲
          */
         constructor();
         /**
-         * 缓存类型编号
+         * 映射索引缓冲
          */
-        dataTypeId: string;
+        mapIndexBuffer(value: Uint16Array): void;
         /**
-         * 执行Context3DBuffer
-         * <p><b>注：</b>该函数为虚函数</p>
-         *
-         * @param context3D		3d环境
-         *
-         * @see me.feng3d.core.buffer.Context3DCache
+         * 映射属性缓冲
          */
-        abstract doBuffer(context3D: WebGLRenderingContext): any;
-        /**
-         * 字符串描述
-         */
-        toString(): string;
+        mapAttributeBuffer(value: Uint16Array): void;
     }
 }
 declare module me.feng3d {
     /**
-     * 顶点数据缓冲
+     * 属性缓冲
      * @author feng 2014-8-14
      */
-    class VABuffer {
+    class AttributeBuffer extends Component {
+        /**
+         * 属性缓冲名称
+         */
+        name: string;
         /** 顶点数据 */
         data: Float32Array;
         /** 与每个顶点关联的 32 位（4 字节）数据值的数量。 */
         size: number;
+        /**
+         * 构建属性缓冲
+         */
+        constructor();
+        /**
+         * 获取缓冲
+         * @param context3D    3D渲染环境
+         */
         getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
+        /**
+         * 处理获取属性缓冲事件
+         */
+        onGetAttributeBuffer(event: Context3DBufferEvent): void;
     }
 }
 declare module me.feng3d {
     /**
      * 顶点索引缓冲
      */
-    class IndexBuffer {
+    class IndexBuffer extends Component {
         /**
          * 索引数据
          */
         indices: Uint16Array;
+        /**
+         * 获取缓冲
+         * @param context3D    3D渲染环境
+         */
+        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
     }
 }
 declare module me.feng3d {
@@ -1103,7 +1115,7 @@ declare module me.feng3d {
         /**
          * 获取顶点缓冲列表
          */
-        getVaBuffers(attribLocations: ProgramAttributeLocation[]): VABuffer[];
+        getVaBuffers(attribLocations: ProgramAttributeLocation[]): AttributeBuffer[];
         /**
          * 激活属性
          */
@@ -1119,73 +1131,6 @@ declare module me.feng3d {
         getBuffer(context3D: WebGLRenderingContext, object3D: Object3D): Object3DBuffer;
     }
     var object3DBufferManager: Object3DBufferManager;
-}
-declare module me.feng3d {
-    /**
-     * Context3D缓存拥有者
-     * @author feng 2014-11-26
-     */
-    class Context3DBufferOwner extends Component {
-        private indexBuffer;
-        private _bufferDic;
-        private _bufferList;
-        /**
-         * 缓冲拥有者子项列表
-         */
-        private childrenBufferOwner;
-        private allBufferList;
-        /**
-         * 所有缓冲列表是否有效
-         */
-        private bufferInvalid;
-        /**
-         * 创建Context3D缓存拥有者
-         */
-        constructor();
-        /**
-         * 映射顶点索引缓冲
-         */
-        mapIndexBuffer(indices: Uint16Array): void;
-        /**
-         * @inheritDoc
-         */
-        bufferDic: any;
-        /**
-         * @inheritDoc
-         */
-        bufferList: Context3DBuffer[];
-        /**
-         * 初始化Context3d缓存
-         */
-        protected initBuffers(): void;
-        /**
-         * 添加子项缓存拥有者
-         * @param childBufferOwner
-         */
-        addChildBufferOwner(childBufferOwner: Context3DBufferOwner): void;
-        /**
-         * 移除子项缓存拥有者
-         * @param childBufferOwner
-         */
-        removeChildBufferOwner(childBufferOwner: Context3DBufferOwner): void;
-        /**
-         * 向上冒泡
-         */
-        private bubbleDispatchEvent(event);
-        /**
-         * 标记Context3d缓存脏了
-         * @param dataTypeId
-         */
-        markBufferDirty(dataTypeId: string): void;
-        /**
-         * @inheritDoc
-         */
-        mapContext3DBuffer(dataTypeId: string, updateFunc: Function): Context3DBuffer;
-        /**
-         * @inheritDoc
-         */
-        getAllBufferList(): Context3DBuffer[];
-    }
 }
 declare module me.feng3d {
     /**
@@ -1316,49 +1261,27 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3D环境缓冲拥有者事件
-     * @author feng 2015-7-18
-     */
-    class Context3DBufferOwnerEvent extends Event {
-        /**
-         * 添加3D环境缓冲事件
-         */
-        static ADD_CONTEXT3DBUFFER: string;
-        /**
-         * 移除3D环境缓冲事件
-         */
-        static REMOVE_CONTEXT3DBUFFER: string;
-        /**
-         * 添加子项3D环境缓冲拥有者事件
-         */
-        static ADDCHILD_CONTEXT3DBUFFEROWNER: string;
-        /**
-         * 移除子项3D环境缓冲拥有者事件
-         */
-        static REMOVECHILD_CONTEXT3DBUFFEROWNER: string;
-        /**
-         * 创建3D环境缓冲拥有者事件
-         * @param type 					事件的类型，可以作为 Event.type 访问。
-         * @param data					事件携带的数据
-         * @param bubbles 				确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         */
-        constructor(type: string, data?: any, bubbles?: boolean);
-    }
-}
-declare module me.feng3d {
-    /**
      * Context3D缓冲事件
      * @author feng 2016-05-26
      */
     class Context3DBufferEvent extends Event {
         /**
-         * 获取VaBuffer事件
+         * 获取AttributeBuffer
          */
-        static GET_VABUFFER: string;
+        static GET_ATTRIBUTEBUFFER: string;
     }
-    class GetVaBufferEventData {
+    /**
+     * 获取AttributeBuffer事件数据
+     */
+    class GetAttributeBufferEventData {
+        /**
+         * 程序属性地址
+         */
         attribLocation: ProgramAttributeLocation;
-        vaBuffer: VABuffer;
+        /**
+         * 属性缓冲
+         */
+        attributeBuffer: AttributeBuffer;
     }
 }
 declare module me.feng3d {
@@ -1540,7 +1463,7 @@ declare module me.feng3d {
      * 材质
      * @author feng 2016-05-02
      */
-    class Material extends Context3DBufferOwner {
+    class Material extends Component {
         vertexShaderStr: string;
         fragmentShaderStr: string;
         pass: MaterialPass;
