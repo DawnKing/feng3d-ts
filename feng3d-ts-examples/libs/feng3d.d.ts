@@ -733,9 +733,9 @@ declare module me.feng3d {
     class Geometry extends Component {
         private _vaIdList;
         /** 顶点属性数据步长字典 */
-        private strideDic;
+        private strideObj;
         /** 顶点属性数据字典 */
-        private vaDataDic;
+        private vaDataObj;
         private _indices;
         /**
          * Context3D数据缓冲

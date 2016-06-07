@@ -1639,9 +1639,9 @@ var me;
                 _super.call(this);
                 this._vaIdList = [];
                 /** 顶点属性数据步长字典 */
-                this.strideDic = new feng3d.Map();
+                this.strideObj = {};
                 /** 顶点属性数据字典 */
-                this.vaDataDic = new feng3d.Map();
+                this.vaDataObj = {};
             }
             Object.defineProperty(Geometry.prototype, "context3DBuffer", {
                 /**
@@ -1677,7 +1677,7 @@ var me;
              * @return 顶点属性步长
              */
             Geometry.prototype.getVAStride = function (vaId) {
-                return this.strideDic.get(vaId);
+                return this.strideObj[vaId];
             };
             /**
              * 设置顶点属性数据
@@ -1686,8 +1686,8 @@ var me;
              * @param stride        顶点数据步长
              */
             Geometry.prototype.setVAData = function (vaId, data, stride) {
-                this.strideDic.push(vaId, stride);
-                this.vaDataDic.push(vaId, data);
+                this.strideObj[vaId] = stride;
+                this.vaDataObj[vaId] = data;
                 this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.CHANGED_VA_DATA, vaId));
             };
             /**
@@ -1697,7 +1697,7 @@ var me;
              */
             Geometry.prototype.getVAData = function (vaId) {
                 this.dispatchEvent(new feng3d.GeometryEvent(feng3d.GeometryEvent.GET_VA_DATA, vaId));
-                return this.vaDataDic.get(vaId);
+                return this.vaDataObj[vaId];
             };
             Object.defineProperty(Geometry.prototype, "vaIdList", {
                 /**
