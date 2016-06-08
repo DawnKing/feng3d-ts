@@ -1035,6 +1035,10 @@ declare module me.feng3d {
      */
     class Context3DBuffer extends Component {
         /**
+         * 属性缓冲字典
+         */
+        private attributeBufferDic;
+        /**
          * 创建Context3D数据缓冲
          */
         constructor();
@@ -1044,8 +1048,26 @@ declare module me.feng3d {
         mapIndexBuffer(value: Uint16Array): void;
         /**
          * 映射属性缓冲
+         * @param attributeName		属性名称
+         * @param data				数据
+         * @param size				单个属性数据长度
          */
-        mapAttributeBuffer(value: Uint16Array): void;
+        mapAttributeBuffer(attributeName: string, data: Float32Array, size: number): void;
+        /**
+         * 获取属性缓冲
+         * @param attributeName		属性名称
+         */
+        getAttributeBuffer(attributeName: string): AttributeBuffer;
+        /**
+         * 添加属性缓冲
+         * @param attributeBuffer		属性缓冲
+         */
+        addAttributeBuffer(attributeBuffer: AttributeBuffer): void;
+        /**
+         * 删除属性缓冲
+         * @param attributeBuffer		属性缓冲
+         */
+        deleteAttributeBuffer(attributeBuffer: AttributeBuffer): void;
     }
 }
 declare module me.feng3d {
@@ -1070,11 +1092,15 @@ declare module me.feng3d {
          * 获取缓冲
          * @param context3D    3D渲染环境
          */
-        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
+        private getBuffer(context3D);
         /**
          * 处理获取属性缓冲事件
          */
-        onGetAttributeBuffer(event: Context3DBufferEvent): void;
+        private onGetAttributeBuffer(event);
+        /**
+         * 激活属性
+         */
+        active(context3D: WebGLRenderingContext, location: number): void;
     }
 }
 declare module me.feng3d {
@@ -1115,7 +1141,9 @@ declare module me.feng3d {
         /**
          * 获取顶点缓冲列表
          */
-        getVaBuffers(attribLocations: ProgramAttributeLocation[]): AttributeBuffer[];
+        getVaBuffers(attribLocations: ProgramAttributeLocation[]): {
+            [key: string]: AttributeBuffer;
+        };
         /**
          * 激活属性
          */
