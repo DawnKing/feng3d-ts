@@ -1144,10 +1144,6 @@ declare module me.feng3d {
         getVaBuffers(attribLocations: ProgramAttributeLocation[]): {
             [key: string]: AttributeBuffer;
         };
-        /**
-         * 激活属性
-         */
-        activeAttribute(attribLocation: ProgramAttributeLocation): void;
     }
 }
 declare module me.feng3d {
@@ -1218,6 +1214,7 @@ declare module me.feng3d {
         constructor(context3D: WebGLRenderingContext);
         /**
          * 获取索引缓冲
+         * @param indices   索引数据
          */
         getIndexBuffer(indices: Uint16Array): WebGLBuffer;
         /**

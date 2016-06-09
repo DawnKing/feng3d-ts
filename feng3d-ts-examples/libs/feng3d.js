@@ -2946,10 +2946,6 @@ var me;
                     var vaBuffer = vaBuffers[attribLocation.name];
                     vaBuffer.active(this.context3D, attribLocation.location);
                 }
-                // for (var i = 0; i < attribLocations.length; i++) {
-                //     var attribLocation = attribLocations[i];
-                //     this.activeAttribute(attribLocation);
-                // }
             };
             /**
              * 获取顶点缓冲列表
@@ -2961,26 +2957,10 @@ var me;
                     //从Object3D中获取顶点缓冲
                     var eventData = { attribLocation: attribLocation, attributeBuffer: null };
                     this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
-                    // assert(eventData.vaBuffer != null);
+                    feng3d.assert(eventData.attributeBuffer != null);
                     vaBuffers[attribLocation.name] = eventData.attributeBuffer;
                 }
                 return vaBuffers;
-            };
-            /**
-             * 激活属性
-             */
-            Object3DBuffer.prototype.activeAttribute = function (attribLocation) {
-                var squareVerticesBuffer = this.squareVerticesBuffer;
-                if (squareVerticesBuffer == null) {
-                    var geometry = this.object3D.getComponentByClass(feng3d.Geometry);
-                    // Create a buffer for the square's vertices.
-                    var positionData = geometry.getVAData(attribLocation.name);
-                    squareVerticesBuffer = this.squareVerticesBuffer = this.context3D.createBuffer();
-                    this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, squareVerticesBuffer);
-                    this.context3D.bufferData(this.context3D.ARRAY_BUFFER, positionData, this.context3D.STATIC_DRAW);
-                }
-                this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, this.squareVerticesBuffer);
-                this.context3D.vertexAttribPointer(attribLocation.location, 3, this.context3D.FLOAT, false, 0, 0);
             };
             return Object3DBuffer;
         }());
@@ -3114,6 +3094,7 @@ var me;
             };
             /**
              * 获取索引缓冲
+             * @param indices   索引数据
              */
             Context3DBufferCenter.prototype.getIndexBuffer = function (indices) {
                 var indexBuffer = this.getBuffer(indices, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER);
