@@ -2862,15 +2862,6 @@ var me;
                 this.addEventListener(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, this.onGetAttributeBuffer, this);
             }
             /**
-             * 获取缓冲
-             * @param context3D    3D渲染环境
-             */
-            AttributeBuffer.prototype.getBuffer = function (context3D) {
-                var buffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
-                    .getVABuffer(this.data);
-                return buffer;
-            };
-            /**
              * 处理获取属性缓冲事件
              */
             AttributeBuffer.prototype.onGetAttributeBuffer = function (event) {
@@ -2882,7 +2873,8 @@ var me;
              * 激活属性
              */
             AttributeBuffer.prototype.active = function (context3D, location) {
-                var webGLBuffer = this.getBuffer(context3D);
+                var webGLBuffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
+                    .getVABuffer(this.data);
                 context3D.bindBuffer(context3D.ARRAY_BUFFER, webGLBuffer);
                 context3D.vertexAttribPointer(location, this.size, context3D.FLOAT, false, 0, 0);
             };
@@ -2922,6 +2914,41 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 常量缓冲
+         */
+        var UniformBuffer = (function (_super) {
+            __extends(UniformBuffer, _super);
+            /**
+             * 构建常量缓冲
+             */
+            function UniformBuffer() {
+                _super.call(this);
+                this.addEventListener(feng3d.Context3DBufferEvent.GET_UNIFORMBUFFER, this.onGetUniformBuffer, this);
+            }
+            /**
+             * 处理获取常量缓冲事件
+             */
+            UniformBuffer.prototype.onGetUniformBuffer = function (event) {
+                var eventData = event.data;
+                if (eventData.uniformLocation.name == this.name)
+                    eventData.uniformBuffer = this;
+            };
+            /**
+             * 激活
+             */
+            UniformBuffer.prototype.active = function (context3D, location) {
+                context3D.uniformMatrix4fv(location, false, this.data);
+            };
+            return UniformBuffer;
+        }(feng3d.Component));
+        feng3d.UniformBuffer = UniformBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 3D对象缓冲
          */
         var Object3DBuffer = (function () {
@@ -2934,33 +2961,59 @@ var me;
              */
             Object3DBuffer.prototype.active = function (programBuffer) {
                 this.activeAttributes(programBuffer);
+                this.activeUniforms(programBuffer);
+            };
+            /**
+             * 激活常量
+             */
+            Object3DBuffer.prototype.activeUniforms = function (programBuffer) {
+                //             var mvMatrix = object3D.space3D.transform3D;
+                // this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
+                // this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
+                var uniformLocations = programBuffer.getUniformLocations();
+                var uniformBuffers = this.getUniformBuffers(uniformLocations);
+            };
+            /**
+             * 获取常量缓冲列表
+             */
+            Object3DBuffer.prototype.getUniformBuffers = function (uniformLocations) {
+                var uniformBuffers = {};
+                for (var i = 0; i < uniformLocations.length; i++) {
+                    var uniformLocation = uniformLocations[i];
+                    //从Object3D中获取常量缓冲
+                    var eventData = { uniformLocation: uniformLocation, uniformBuffer: null };
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
+                    feng3d.assert(eventData.uniformBuffer != null);
+                    uniformBuffers[uniformLocation.name] = eventData.uniformBuffer;
+                }
+                return uniformBuffers;
             };
             /**
              * 激活属性
              */
             Object3DBuffer.prototype.activeAttributes = function (programBuffer) {
                 var attribLocations = programBuffer.getAttribLocations();
-                var vaBuffers = this.getVaBuffers(attribLocations);
+                var attributeBuffers = this.getAttributeBuffers(attribLocations);
                 for (var i = 0; i < attribLocations.length; i++) {
                     var attribLocation = attribLocations[i];
-                    var vaBuffer = vaBuffers[attribLocation.name];
+                    var vaBuffer = attributeBuffers[attribLocation.name];
                     vaBuffer.active(this.context3D, attribLocation.location);
                 }
             };
             /**
              * 获取顶点缓冲列表
              */
-            Object3DBuffer.prototype.getVaBuffers = function (attribLocations) {
-                var vaBuffers = {};
+            Object3DBuffer.prototype.getAttributeBuffers = function (attribLocations) {
+                var attributeBuffers = {};
                 for (var i = 0; i < attribLocations.length; i++) {
                     var attribLocation = attribLocations[i];
                     //从Object3D中获取顶点缓冲
                     var eventData = { attribLocation: attribLocation, attributeBuffer: null };
                     this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
                     feng3d.assert(eventData.attributeBuffer != null);
-                    vaBuffers[attribLocation.name] = eventData.attributeBuffer;
+                    attributeBuffers[attribLocation.name] = eventData.attributeBuffer;
                 }
-                return vaBuffers;
+                return attributeBuffers;
             };
             return Object3DBuffer;
         }());
@@ -3184,6 +3237,20 @@ var me;
                 }
                 return attribLocations;
             };
+            ProgramBuffer.prototype.getUniformLocations = function () {
+                var uniformLocations = [];
+                var uniforms = this.code.getUniforms();
+                for (var i = 0; i < uniforms.length; i++) {
+                    var element = uniforms[i];
+                    var uniformLocation = new feng3d.ProgramUniformLocation();
+                    uniformLocation.name = element.name;
+                    uniformLocation.type = element.type;
+                    //获取在gpu中地址
+                    uniformLocation.location = this.context3D.getUniformLocation(this.shaderProgram, element.name);
+                    uniformLocations.push(uniformLocation);
+                }
+                return uniformLocations;
+            };
             /**
              * 初始化
              */
@@ -3248,6 +3315,10 @@ var me;
              * 获取AttributeBuffer
              */
             Context3DBufferEvent.GET_ATTRIBUTEBUFFER = "getAttributeBuffer";
+            /**
+             * 获取UniformBuffer
+             */
+            Context3DBufferEvent.GET_UNIFORMBUFFER = "getUniformBuffer";
             return Context3DBufferEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferEvent = Context3DBufferEvent;
@@ -3260,6 +3331,15 @@ var me;
             return GetAttributeBufferEventData;
         }());
         feng3d.GetAttributeBufferEventData = GetAttributeBufferEventData;
+        /**
+         * 获取UniformBuffer事件数据
+         */
+        var GetUniformBufferEventData = (function () {
+            function GetUniformBufferEventData() {
+            }
+            return GetUniformBufferEventData;
+        }());
+        feng3d.GetUniformBufferEventData = GetUniformBufferEventData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3323,6 +3403,21 @@ var me;
             return ProgramUniform;
         }());
         feng3d.ProgramUniform = ProgramUniform;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 程序Uniform地址
+         */
+        var ProgramUniformLocation = (function () {
+            function ProgramUniformLocation() {
+            }
+            return ProgramUniformLocation;
+        }());
+        feng3d.ProgramUniformLocation = ProgramUniformLocation;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3474,6 +3569,26 @@ var me;
                     result = attributeReg.exec(code);
                 }
                 return attributes;
+            };
+            ShaderProgramCode.prototype.getUniforms = function () {
+                var uniforms = [];
+                var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
+                var result = uniformReg.exec(this._vertexCode);
+                while (result) {
+                    var attribute = new feng3d.ProgramAttribute();
+                    attribute.type = result[1];
+                    attribute.name = result[2];
+                    result = uniformReg.exec(this._vertexCode);
+                }
+                uniformReg.lastIndex = 0;
+                var result = uniformReg.exec(this._fragmentCode);
+                while (result) {
+                    var attribute = new feng3d.ProgramAttribute();
+                    attribute.type = result[1];
+                    attribute.name = result[2];
+                    result = uniformReg.exec(this._fragmentCode);
+                }
+                return uniforms;
             };
             return ShaderProgramCode;
         }(feng3d.EventDispatcher));
