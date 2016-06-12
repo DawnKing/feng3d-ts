@@ -2967,11 +2967,13 @@ var me;
              * 激活常量
              */
             Object3DBuffer.prototype.activeUniforms = function (programBuffer) {
-                //             var mvMatrix = object3D.space3D.transform3D;
-                // this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
-                // this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
                 var uniformLocations = programBuffer.getUniformLocations();
                 var uniformBuffers = this.getUniformBuffers(uniformLocations);
+                for (var i = 0; i < uniformLocations.length; i++) {
+                    var uniformLocation = uniformLocations[i];
+                    var uniformBuffer = uniformBuffers[uniformLocation.name];
+                    uniformBuffer.active(this.context3D, uniformLocation.location);
+                }
             };
             /**
              * 获取常量缓冲列表
@@ -2996,8 +2998,8 @@ var me;
                 var attributeBuffers = this.getAttributeBuffers(attribLocations);
                 for (var i = 0; i < attribLocations.length; i++) {
                     var attribLocation = attribLocations[i];
-                    var vaBuffer = attributeBuffers[attribLocation.name];
-                    vaBuffer.active(this.context3D, attribLocation.location);
+                    var attributeBuffer = attributeBuffers[attribLocation.name];
+                    attributeBuffer.active(this.context3D, attribLocation.location);
                 }
             };
             /**
