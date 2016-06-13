@@ -1134,35 +1134,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3d环境缓存类型管理者
-     * @author feng 2014-9-3
-     */
-    class Context3DBufferTypeManager {
-        NAME_REGEXP: string;
-        /** 缓存类型字典 */
-        private bufferTypeDic;
-        private typeClassDic;
-        private config;
-        /**
-         * 获取或创建3d缓存类型
-         * @param typeId 		3d缓存类型编号
-         * @return				3d缓存类型实例
-         */
-        getBufferType(typeId: string): Context3DBufferType;
-        /**
-         * 获取3d缓存类定义
-         * @param typeId 		3d缓存类型编号
-         * @return				3d缓存类定义
-         */
-        getBufferClass(typeId: string): any;
-    }
-    /**
-     * 3d环境缓存类型管理者
-     */
-    var context3DBufferTypeManager: Context3DBufferTypeManager;
-}
-declare module me.feng3d {
-    /**
      * 3D上下文缓冲中心
      */
     class Context3DBufferCenter {
@@ -1282,24 +1253,6 @@ declare module me.feng3d {
          * 属性缓冲
          */
         attributeBuffer: AttributeBuffer;
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3d缓存类型
-     * @author feng 2014-8-20
-     */
-    class Context3DBufferType {
-        /**
-         * 寄存器类型
-         * @see me.feng3d.core.register.RegisterType
-         */
-        registerType: string;
-        /**
-         * 数据类型
-         * @see me.feng3d.core.buffer.ConstantsDataType
-         */
-        dataType: string;
     }
 }
 declare module me.feng3d {

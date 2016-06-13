@@ -2979,63 +2979,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 3d环境缓存类型管理者
-         * @author feng 2014-9-3
-         */
-        var Context3DBufferTypeManager = (function () {
-            function Context3DBufferTypeManager() {
-                this.NAME_REGEXP = "[a-zA-Z0-9$]";
-                /** 缓存类型字典 */
-                this.bufferTypeDic = {};
-                this.typeClassDic = {};
-                this.config = [];
-            }
-            /**
-             * 获取或创建3d缓存类型
-             * @param typeId 		3d缓存类型编号
-             * @return				3d缓存类型实例
-             */
-            Context3DBufferTypeManager.prototype.getBufferType = function (typeId) {
-                var bufferType = this.bufferTypeDic[typeId];
-                if (bufferType)
-                    return bufferType;
-                this.bufferTypeDic[typeId] = bufferType = new feng3d.Context3DBufferType();
-                var types = typeId.split("_");
-                bufferType.registerType = types[1];
-                bufferType.dataType = types[2];
-                return bufferType;
-            };
-            /**
-             * 获取3d缓存类定义
-             * @param typeId 		3d缓存类型编号
-             * @return				3d缓存类定义
-             */
-            Context3DBufferTypeManager.prototype.getBufferClass = function (typeId) {
-                var cls = this.typeClassDic[typeId];
-                if (cls == null) {
-                    for (var i = 0; i < this.config.length; i++) {
-                        var result = typeId.match(this.config[i][0]);
-                        if (result != null && result.input == result[0]) {
-                            return this.config[i][1];
-                        }
-                    }
-                }
-                throw ("无法为" + typeId + "匹配到3d缓存类");
-            };
-            return Context3DBufferTypeManager;
-        }());
-        feng3d.Context3DBufferTypeManager = Context3DBufferTypeManager;
-        /**
-         * 3d环境缓存类型管理者
-         */
-        feng3d.context3DBufferTypeManager = new Context3DBufferTypeManager();
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 3D上下文缓冲中心
          */
         var Context3DBufferCenter = (function () {
@@ -3228,22 +3171,6 @@ var me;
             return GetAttributeBufferEventData;
         }());
         feng3d.GetAttributeBufferEventData = GetAttributeBufferEventData;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 3d缓存类型
-         * @author feng 2014-8-20
-         */
-        var Context3DBufferType = (function () {
-            function Context3DBufferType() {
-            }
-            return Context3DBufferType;
-        }());
-        feng3d.Context3DBufferType = Context3DBufferType;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
