@@ -246,20 +246,15 @@ var me;
             /**
              * 派发子组件事件
              * <p>事件广播给子组件</p>
-             * @param event     事件
-             * @param depth     广播深度
+             * @param event
              */
-            Component.prototype.dispatchChildrenEvent = function (event, depth) {
-                if (depth === void 0) { depth = 1; }
-                if (depth == 0)
-                    return;
+            Component.prototype.dispatchChildrenEvent = function (event) {
                 this.components.forEach(function (item) {
                     var args = [];
                     for (var _i = 1; _i < arguments.length; _i++) {
                         args[_i - 1] = arguments[_i];
                     }
                     item.dispatchEvent(event);
-                    item.dispatchChildrenEvent(event, depth - 1);
                 });
             };
             /**
