@@ -1034,6 +1034,7 @@ declare module me.feng3d {
      * @author feng 2016-6-7
      */
     class Context3DBuffer extends Component {
+        private attributes;
         /**
          * 创建Context3D数据缓冲
          */
@@ -1045,7 +1046,8 @@ declare module me.feng3d {
         /**
          * 映射属性缓冲
          */
-        mapAttributeBuffer(value: Uint16Array): void;
+        mapAttributeBuffer(name: string, value: Uint16Array, stride: number): void;
+        private getAttributeBuffer(name);
     }
 }
 declare module me.feng3d {
@@ -1067,19 +1069,20 @@ declare module me.feng3d {
          */
         constructor();
         /**
-         * 获取缓冲
-         * @param context3D    3D渲染环境
+         * 激活缓冲
+         * @param context3D     3D渲染环境
+         * @param location      缓冲gpu地址
          */
-        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
+        active(context3D: WebGLRenderingContext, location: number): void;
         /**
          * 处理获取属性缓冲事件
          */
-        onGetAttributeBuffer(event: Context3DBufferEvent): void;
+        private onGetAttributeBuffer(event);
     }
 }
 declare module me.feng3d {
     /**
-     * 顶点索引缓冲
+     * 索引缓冲
      */
     class IndexBuffer extends Component {
         /**
@@ -1087,10 +1090,18 @@ declare module me.feng3d {
          */
         indices: Uint16Array;
         /**
-         * 获取缓冲
+         * 索引缓冲
+         */
+        constructor();
+        /**
+         * 绘制
          * @param context3D    3D渲染环境
          */
-        getBuffer(context3D: WebGLRenderingContext): WebGLBuffer;
+        draw(context3D: WebGLRenderingContext): void;
+        /**
+         * 处理获取索引缓冲事件
+         */
+        private onGetIndexBuffer(event);
     }
 }
 declare module me.feng3d {
@@ -1101,8 +1112,6 @@ declare module me.feng3d {
         private context3D;
         private object3D;
         squareVerticesBuffer: WebGLBuffer;
-        indexBuffer: WebGLBuffer;
-        count: number;
         constructor(context3D: WebGLRenderingContext, object3D: Object3D);
         /**
          * 激活缓冲
@@ -1113,9 +1122,13 @@ declare module me.feng3d {
          */
         activeAttributes(programBuffer: ProgramBuffer): void;
         /**
-         * 获取顶点缓冲列表
+         * 准备顶点缓冲列表
          */
-        getVaBuffers(attribLocations: ProgramAttributeLocation[]): AttributeBuffer[];
+        prepareAttributeBuffers(attribLocations: {
+            [name: string]: {
+                attributeBuffer?: AttributeBuffer;
+            };
+        }): void;
         /**
          * 激活属性
          */
@@ -1215,7 +1228,12 @@ declare module me.feng3d {
         /**
          * 获取属性gpu地址
          */
-        getAttribLocations(): ProgramAttributeLocation[];
+        getAttribLocations(): {
+            [name: string]: {
+                type: string;
+                location: number;
+            };
+        };
         /**
          * 初始化
          */
@@ -1244,19 +1262,32 @@ declare module me.feng3d {
          * 获取AttributeBuffer
          */
         static GET_ATTRIBUTEBUFFER: string;
+        /**
+         * 获取IndexBuffer
+         */
+        static GET_INDEXBUFFER: string;
     }
     /**
      * 获取AttributeBuffer事件数据
      */
     class GetAttributeBufferEventData {
         /**
-         * 程序属性地址
+         * 属性名称
          */
-        attribLocation: ProgramAttributeLocation;
+        name: string;
         /**
          * 属性缓冲
          */
-        attributeBuffer: AttributeBuffer;
+        buffer: AttributeBuffer;
+    }
+    /**
+     * 获取IndexBuffer事件数据
+     */
+    class GetIndexBufferEventData {
+        /**
+         * 索引缓冲
+         */
+        buffer: IndexBuffer;
     }
 }
 declare module me.feng3d {
