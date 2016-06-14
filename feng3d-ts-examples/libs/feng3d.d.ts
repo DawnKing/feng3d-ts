@@ -1120,6 +1120,10 @@ declare module me.feng3d {
          * 激活属性
          */
         activeAttribute(attribLocation: ProgramAttributeLocation): void;
+        /**
+         * 绘制
+         */
+        draw(): void;
     }
 }
 declare module me.feng3d {

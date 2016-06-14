@@ -2745,8 +2745,7 @@ var me;
                 this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
                 this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
                 this.setMatrixUniforms();
-                this.context3D.bindBuffer(this.context3D.ELEMENT_ARRAY_BUFFER, object3DBuffer.indexBuffer);
-                this.context3D.drawElements(this.context3D.TRIANGLES, object3DBuffer.count, this.context3D.UNSIGNED_SHORT, 0);
+                object3DBuffer.draw();
             };
             return Renderer;
         }());
@@ -2931,6 +2930,13 @@ var me;
                 }
                 this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, this.squareVerticesBuffer);
                 this.context3D.vertexAttribPointer(attribLocation.location, 3, this.context3D.FLOAT, false, 0, 0);
+            };
+            /**
+             * 绘制
+             */
+            Object3DBuffer.prototype.draw = function () {
+                this.context3D.bindBuffer(this.context3D.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                this.context3D.drawElements(this.context3D.TRIANGLES, this.count, this.context3D.UNSIGNED_SHORT, 0);
             };
             return Object3DBuffer;
         }());
