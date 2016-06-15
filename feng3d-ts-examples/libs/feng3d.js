@@ -1342,6 +1342,7 @@ var me;
                     _this.addComponent(element);
                 });
                 this.getOrCreateComponentByClass(feng3d.Space3D);
+                this.getOrCreateComponentByClass(feng3d.Material);
             }
             Object.defineProperty(Object3D.prototype, "space3D", {
                 /**
@@ -2693,13 +2694,10 @@ var me;
              * @param camera 摄像机对象
              */
             function Renderer(context3D, scene, camera) {
-                this.vertexShaderStr = "\nattribute vec3 vaPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(vaPosition, 1.0);\n}";
-                this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 this.context3D = context3D;
                 this.scene = scene;
                 this.camera = camera;
                 this.initGL();
-                this.initShaders();
             }
             /**
              * 初始化GL
@@ -2709,15 +2707,6 @@ var me;
                 this.context3D.clearDepth(1.0); // Clear everything
                 this.context3D.enable(this.context3D.DEPTH_TEST); // Enable depth testing
                 this.context3D.depthFunc(this.context3D.LEQUAL); // Near things obscure far things
-            };
-            /**
-             * 初始化渲染程序
-             */
-            Renderer.prototype.initShaders = function () {
-                var shaderProgramCode = new feng3d.ShaderProgramCode(this.vertexShaderStr, this.fragmentShaderStr);
-                this.programBuffer = shaderProgramCode.getProgramBuffer(this.context3D);
-                this.shaderProgram = this.programBuffer.shaderProgram;
-                this.context3D.useProgram(this.shaderProgram);
             };
             /**
              * 渲染
@@ -2732,7 +2721,7 @@ var me;
             };
             Renderer.prototype.setMatrixUniforms = function () {
                 var perspectiveMatrix = this.getPerspectiveMatrix();
-                this.pUniform = this.pUniform || this.context3D.getUniformLocation(this.shaderProgram, "uPMatrix");
+                this.pUniform = this.context3D.getUniformLocation(this.shaderProgram, "uPMatrix");
                 this.context3D.uniformMatrix4fv(this.pUniform, false, new Float32Array(perspectiveMatrix.rawData));
             };
             Renderer.prototype.getPerspectiveMatrix = function () {
@@ -2745,12 +2734,13 @@ var me;
             };
             Renderer.prototype.drawObject3D = function (object3D) {
                 var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
-                object3DBuffer.active(this.programBuffer);
+                object3DBuffer.activeProgram();
+                this.shaderProgram = object3DBuffer.programBuffer.getShaderProgram(this.context3D);
                 var mvMatrix = object3D.space3D.transform3D;
-                this.mvUniform = this.mvUniform || this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
+                this.mvUniform = this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
                 this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
                 this.setMatrixUniforms();
-                object3DBuffer.draw();
+                object3DBuffer.active();
             };
             return Renderer;
         }());
@@ -2808,6 +2798,10 @@ var me;
                 attributeBuffer.data = value;
                 attributeBuffer.size = stride;
             };
+            /**
+             * 获取属性缓冲
+             * @param name	属性名称
+             */
             Context3DBuffer.prototype.getAttributeBuffer = function (name) {
                 var attributeBuffer = this.attributes[name];
                 if (!attributeBuffer) {
@@ -2816,6 +2810,16 @@ var me;
                     this.addComponent(attributeBuffer);
                 }
                 return attributeBuffer;
+            };
+            /**
+             * 映射程序缓冲
+             * @param vertexCode        顶点渲染程序代码
+             * @param fragmentCode      片段渲染程序代码
+             */
+            Context3DBuffer.prototype.mapProgramBuffer = function (vertexCode, fragmentCode) {
+                var programBuffer = this.getOrCreateComponentByClass(feng3d.ProgramBuffer);
+                programBuffer.vertexCode = vertexCode;
+                programBuffer.fragmentCode = fragmentCode;
             };
             return Context3DBuffer;
         }(feng3d.Component));
@@ -2917,14 +2921,26 @@ var me;
             /**
              * 激活缓冲
              */
-            Object3DBuffer.prototype.active = function (programBuffer) {
-                this.activeAttributes(programBuffer);
+            Object3DBuffer.prototype.active = function () {
+                this.activeAttributes();
+                this.draw();
+            };
+            /**
+             * 激活程序
+             */
+            Object3DBuffer.prototype.activeProgram = function () {
+                //从Object3D中获取顶点缓冲
+                var eventData = { buffer: null };
+                this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_PROGRAMBUFFER, eventData), Number.MAX_VALUE);
+                feng3d.assert(eventData.buffer != null);
+                this.programBuffer = eventData.buffer;
+                this.programBuffer.active(this.context3D);
             };
             /**
              * 激活属性
              */
-            Object3DBuffer.prototype.activeAttributes = function (programBuffer) {
-                var attribLocations = programBuffer.getAttribLocations();
+            Object3DBuffer.prototype.activeAttributes = function () {
+                var attribLocations = this.programBuffer.getAttribLocations(this.context3D);
                 this.prepareAttributeBuffers(attribLocations);
                 for (var name in attribLocations) {
                     if (attribLocations.hasOwnProperty(name)) {
@@ -2944,22 +2960,6 @@ var me;
                     feng3d.assert(eventData.buffer != null);
                     attribLocations[name].attributeBuffer = eventData.buffer;
                 }
-            };
-            /**
-             * 激活属性
-             */
-            Object3DBuffer.prototype.activeAttribute = function (attribLocation) {
-                var squareVerticesBuffer = this.squareVerticesBuffer;
-                if (squareVerticesBuffer == null) {
-                    var geometry = this.object3D.getComponentByClass(feng3d.Geometry);
-                    // Create a buffer for the square's vertices.
-                    var positionData = geometry.getVAData(attribLocation.name);
-                    squareVerticesBuffer = this.squareVerticesBuffer = this.context3D.createBuffer();
-                    this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, squareVerticesBuffer);
-                    this.context3D.bufferData(this.context3D.ARRAY_BUFFER, positionData, this.context3D.STATIC_DRAW);
-                }
-                this.context3D.bindBuffer(this.context3D.ARRAY_BUFFER, this.squareVerticesBuffer);
-                this.context3D.vertexAttribPointer(attribLocation.location, 3, this.context3D.FLOAT, false, 0, 0);
             };
             /**
              * 绘制
@@ -3091,40 +3091,83 @@ var me;
          * 渲染程序缓存
          * @author feng 2016-05-09
          */
-        var ProgramBuffer = (function () {
+        var ProgramBuffer = (function (_super) {
+            __extends(ProgramBuffer, _super);
             /**
              * 创建渲染程序缓存
              * @param code          渲染程序代码
              * @param context3D     webgl渲染上下文
              */
-            function ProgramBuffer(code, context3D) {
-                this.code = code;
-                this.context3D = context3D;
+            function ProgramBuffer() {
+                _super.call(this);
+                this.addEventListener(feng3d.Context3DBufferEvent.GET_PROGRAMBUFFER, this.onGetProgramBuffer, this);
             }
-            Object.defineProperty(ProgramBuffer.prototype, "shaderProgram", {
+            /**
+             * 处理获取缓冲事件
+             */
+            ProgramBuffer.prototype.onGetProgramBuffer = function (event) {
+                var eventData = event.data;
+                eventData.buffer = this;
+            };
+            Object.defineProperty(ProgramBuffer.prototype, "vertexCode", {
                 /**
-                 * 渲染程序
+                 * 顶点渲染程序代码
                  */
                 get: function () {
-                    if (this._shaderProgram == null) {
-                        this.init();
-                    }
-                    return this._shaderProgram;
+                    return this._vertexCode;
+                },
+                set: function (value) {
+                    this._vertexCode = value;
+                    this.invalidCode();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(ProgramBuffer.prototype, "fragmentCode", {
+                /**
+                 * 片段渲染程序代码
+                 */
+                get: function () {
+                    return this._fragmentCode;
+                },
+                set: function (value) {
+                    this._fragmentCode = value;
+                    this.invalidCode();
                 },
                 enumerable: true,
                 configurable: true
             });
             /**
+             * 使失效
+             */
+            ProgramBuffer.prototype.invalidCode = function () {
+            };
+            ProgramBuffer.prototype.active = function (context3D) {
+                var shaderProgramCode = new feng3d.ShaderProgramCode(this._vertexCode, this._fragmentCode);
+                var shaderProgram = this.getShaderProgram(context3D);
+                context3D.useProgram(shaderProgram);
+            };
+            /**
+             * 渲染程序
+             */
+            ProgramBuffer.prototype.getShaderProgram = function (context3D) {
+                if (this._shaderProgram == null) {
+                    this.init(context3D);
+                }
+                return this._shaderProgram;
+            };
+            /**
              * 获取属性gpu地址
              */
-            ProgramBuffer.prototype.getAttribLocations = function () {
+            ProgramBuffer.prototype.getAttribLocations = function (context3D) {
                 var attribLocations = {};
-                var attributes = this.code.getAttributes();
+                var attributes = feng3d.ShaderProgramCode.getAttributes(this._vertexCode);
                 for (var i = 0; i < attributes.length; i++) {
                     var element = attributes[i];
                     //获取属性在gpu中地址
-                    var location = this.context3D.getAttribLocation(this.shaderProgram, element.name);
-                    this.context3D.enableVertexAttribArray(location);
+                    var shaderProgram = this.getShaderProgram(context3D);
+                    var location = context3D.getAttribLocation(shaderProgram, element.name);
+                    context3D.enableVertexAttribArray(location);
                     attribLocations[element.name] = { type: element.type, location: location };
                 }
                 return attribLocations;
@@ -3132,18 +3175,18 @@ var me;
             /**
              * 初始化
              */
-            ProgramBuffer.prototype.init = function () {
-                this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this.code.vertexCode, feng3d.ShaderType.VERTEX);
-                this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
-                var vertexShader = this.getShader(this.code.vertexCode, feng3d.ShaderType.VERTEX);
-                var fragmentShader = this.getShader(this.code.fragmentCode, feng3d.ShaderType.FRAGMENT);
+            ProgramBuffer.prototype.init = function (context3D) {
+                this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this._vertexCode, feng3d.ShaderType.VERTEX);
+                this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this._fragmentCode, feng3d.ShaderType.FRAGMENT);
+                var vertexShader = this.getShader(context3D, this._vertexCode, feng3d.ShaderType.VERTEX);
+                var fragmentShader = this.getShader(context3D, this._fragmentCode, feng3d.ShaderType.FRAGMENT);
                 // 创建渲染程序
-                var shaderProgram = this._shaderProgram = this.context3D.createProgram();
-                this.context3D.attachShader(shaderProgram, vertexShader);
-                this.context3D.attachShader(shaderProgram, fragmentShader);
-                this.context3D.linkProgram(shaderProgram);
+                var shaderProgram = this._shaderProgram = context3D.createProgram();
+                context3D.attachShader(shaderProgram, vertexShader);
+                context3D.attachShader(shaderProgram, fragmentShader);
+                context3D.linkProgram(shaderProgram);
                 // 渲染程序创建失败时给出弹框
-                if (!this.context3D.getProgramParameter(shaderProgram, this.context3D.LINK_STATUS)) {
+                if (!context3D.getProgramParameter(shaderProgram, context3D.LINK_STATUS)) {
                     alert("Unable to initialize the shader program.");
                 }
             };
@@ -3152,27 +3195,18 @@ var me;
              * @param code      渲染代码
              * @param type      渲染代码类型
              */
-            ProgramBuffer.prototype.getShader = function (code, type) {
-                var shader = this.context3D.createShader(type);
-                this.context3D.shaderSource(shader, code);
-                this.context3D.compileShader(shader);
-                if (!this.context3D.getShaderParameter(shader, this.context3D.COMPILE_STATUS)) {
-                    alert("An error occurred compiling the shaders: " + this.context3D.getShaderInfoLog(shader));
+            ProgramBuffer.prototype.getShader = function (context3D, code, type) {
+                var shader = context3D.createShader(type);
+                context3D.shaderSource(shader, code);
+                context3D.compileShader(shader);
+                if (!context3D.getShaderParameter(shader, context3D.COMPILE_STATUS)) {
+                    alert("An error occurred compiling the shaders: " + context3D.getShaderInfoLog(shader));
                     return null;
                 }
                 return shader;
             };
-            /**
-             * 获取渲染程序缓存
-             * @param code                  渲染程序代码
-             * @param context3D             webgl渲染上下文
-             */
-            ProgramBuffer.getBuffer = function (code, context3D) {
-                var programBuffer = new ProgramBuffer(code, context3D);
-                return programBuffer;
-            };
             return ProgramBuffer;
-        }());
+        }(feng3d.Component));
         feng3d.ProgramBuffer = ProgramBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
@@ -3197,6 +3231,10 @@ var me;
              * 获取IndexBuffer
              */
             Context3DBufferEvent.GET_INDEXBUFFER = "getIndexBuffer";
+            /**
+             * 获取IndexBuffer
+             */
+            Context3DBufferEvent.GET_PROGRAMBUFFER = "getProgramBuffer";
             return Context3DBufferEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferEvent = Context3DBufferEvent;
@@ -3218,6 +3256,15 @@ var me;
             return GetIndexBufferEventData;
         }());
         feng3d.GetIndexBufferEventData = GetIndexBufferEventData;
+        /**
+         * 获取ProgramBuffer事件数据
+         */
+        var GetProgramBufferEventData = (function () {
+            function GetProgramBufferEventData() {
+            }
+            return GetProgramBufferEventData;
+        }());
+        feng3d.GetProgramBufferEventData = GetProgramBufferEventData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3394,17 +3441,9 @@ var me;
                 configurable: true
             });
             /**
-             * 获取渲染程序缓冲
-             */
-            ShaderProgramCode.prototype.getProgramBuffer = function (gl) {
-                var programBuffer = feng3d.ProgramBuffer.getBuffer(this, gl);
-                return programBuffer;
-            };
-            /**
              * 获取程序属性列表
              */
-            ShaderProgramCode.prototype.getAttributes = function () {
-                var code = this._vertexCode;
+            ShaderProgramCode.getAttributes = function (code) {
                 var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
                 var result = attributeReg.exec(code);
                 var attributes = [];
@@ -3463,10 +3502,21 @@ var me;
              */
             function Material() {
                 _super.call(this);
-                this.vertexShaderStr = "\nattribute vec3 aVertexPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);\n}";
+                this.vertexShaderStr = "\nattribute vec3 vaPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(vaPosition, 1.0);\n}";
                 this.fragmentShaderStr = "\nvoid main(void) {\n    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n}";
                 this.pass = new feng3d.MaterialPass();
+                this.context3DBuffer.mapProgramBuffer(this.vertexShaderStr, this.fragmentShaderStr);
             }
+            Object.defineProperty(Material.prototype, "context3DBuffer", {
+                /**
+                 * Context3D数据缓冲
+                 */
+                get: function () {
+                    return this.getOrCreateComponentByClass(feng3d.Context3DBuffer);
+                },
+                enumerable: true,
+                configurable: true
+            });
             // protected initBuffers(): void {
             //     mapContext3DBuffer(_.projection_vc_matrix, updateProjectionBuffer);
             //     mapContext3DBuffer(_.program, updateProgramBuffer);

@@ -988,9 +988,6 @@ declare module me.feng3d {
         private shaderProgram;
         private scene;
         private camera;
-        private programBuffer;
-        vertexShaderStr: string;
-        fragmentShaderStr: string;
         /**
          * 构建渲染器
          * @param context3D    webgl渲染上下文
@@ -1002,10 +999,6 @@ declare module me.feng3d {
          * 初始化GL
          */
         private initGL();
-        /**
-         * 初始化渲染程序
-         */
-        private initShaders();
         /**
          * 渲染
          */
@@ -1047,7 +1040,17 @@ declare module me.feng3d {
          * 映射属性缓冲
          */
         mapAttributeBuffer(name: string, value: Uint16Array, stride: number): void;
+        /**
+         * 获取属性缓冲
+         * @param name	属性名称
+         */
         private getAttributeBuffer(name);
+        /**
+         * 映射程序缓冲
+         * @param vertexCode        顶点渲染程序代码
+         * @param fragmentCode      片段渲染程序代码
+         */
+        mapProgramBuffer(vertexCode: string, fragmentCode: string): void;
     }
 }
 declare module me.feng3d {
@@ -1111,32 +1114,31 @@ declare module me.feng3d {
     class Object3DBuffer {
         private context3D;
         private object3D;
-        squareVerticesBuffer: WebGLBuffer;
+        /**
+         * 渲染程序缓存
+         */
+        programBuffer: ProgramBuffer;
         constructor(context3D: WebGLRenderingContext, object3D: Object3D);
         /**
          * 激活缓冲
          */
-        active(programBuffer: ProgramBuffer): void;
+        active(): void;
+        /**
+         * 激活程序
+         */
+        activeProgram(): void;
         /**
          * 激活属性
          */
-        activeAttributes(programBuffer: ProgramBuffer): void;
+        private activeAttributes();
         /**
          * 准备顶点缓冲列表
          */
-        prepareAttributeBuffers(attribLocations: {
-            [name: string]: {
-                attributeBuffer?: AttributeBuffer;
-            };
-        }): void;
-        /**
-         * 激活属性
-         */
-        activeAttribute(attribLocation: ProgramAttributeLocation): void;
+        private prepareAttributeBuffers(attribLocations);
         /**
          * 绘制
          */
-        draw(): void;
+        private draw();
     }
 }
 declare module me.feng3d {
@@ -1197,15 +1199,9 @@ declare module me.feng3d {
      * 渲染程序缓存
      * @author feng 2016-05-09
      */
-    class ProgramBuffer {
-        /**
-         * 渲染程序代码
-         */
-        private code;
-        /**
-         * webgl渲染上下文
-         */
-        private context3D;
+    class ProgramBuffer extends Component {
+        private _vertexCode;
+        private _fragmentCode;
         private _shaderProgram;
         /**
          * 顶点渲染程序
@@ -1220,15 +1216,32 @@ declare module me.feng3d {
          * @param code          渲染程序代码
          * @param context3D     webgl渲染上下文
          */
-        constructor(code: ShaderProgramCode, context3D: WebGLRenderingContext);
+        constructor();
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetProgramBuffer(event);
+        /**
+         * 顶点渲染程序代码
+         */
+        vertexCode: string;
+        /**
+         * 片段渲染程序代码
+         */
+        fragmentCode: string;
+        /**
+         * 使失效
+         */
+        private invalidCode();
+        active(context3D: WebGLRenderingContext): void;
         /**
          * 渲染程序
          */
-        shaderProgram: WebGLProgram;
+        getShaderProgram(context3D: WebGLRenderingContext): WebGLProgram;
         /**
          * 获取属性gpu地址
          */
-        getAttribLocations(): {
+        getAttribLocations(context3D: WebGLRenderingContext): {
             [name: string]: {
                 type: string;
                 location: number;
@@ -1237,19 +1250,13 @@ declare module me.feng3d {
         /**
          * 初始化
          */
-        private init();
+        private init(context3D);
         /**
          * 获取渲染程序
          * @param code      渲染代码
          * @param type      渲染代码类型
          */
-        private getShader(code, type);
-        /**
-         * 获取渲染程序缓存
-         * @param code                  渲染程序代码
-         * @param context3D             webgl渲染上下文
-         */
-        static getBuffer(code: ShaderProgramCode, context3D: WebGLRenderingContext): ProgramBuffer;
+        private getShader(context3D, code, type);
     }
 }
 declare module me.feng3d {
@@ -1266,6 +1273,10 @@ declare module me.feng3d {
          * 获取IndexBuffer
          */
         static GET_INDEXBUFFER: string;
+        /**
+         * 获取IndexBuffer
+         */
+        static GET_PROGRAMBUFFER: string;
     }
     /**
      * 获取AttributeBuffer事件数据
@@ -1288,6 +1299,15 @@ declare module me.feng3d {
          * 索引缓冲
          */
         buffer: IndexBuffer;
+    }
+    /**
+     * 获取ProgramBuffer事件数据
+     */
+    class GetProgramBufferEventData {
+        /**
+         * 渲染程序缓存
+         */
+        buffer: ProgramBuffer;
     }
 }
 declare module me.feng3d {
@@ -1416,13 +1436,9 @@ declare module me.feng3d {
          */
         fragmentCode: string;
         /**
-         * 获取渲染程序缓冲
-         */
-        getProgramBuffer(gl: WebGLRenderingContext): ProgramBuffer;
-        /**
          * 获取程序属性列表
          */
-        getAttributes(): ProgramAttribute[];
+        static getAttributes(code: string): ProgramAttribute[];
     }
     /**
      * 渲染程序代码事件
@@ -1459,6 +1475,10 @@ declare module me.feng3d {
          * 构建材质
          */
         constructor();
+        /**
+         * Context3D数据缓冲
+         */
+        context3DBuffer: Context3DBuffer;
         private initShaders(gl);
         private getShader(gl, theSource, type);
     }
