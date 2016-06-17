@@ -2721,8 +2721,8 @@ var me;
             };
             Renderer.prototype.setMatrixUniforms = function () {
                 var perspectiveMatrix = this.getPerspectiveMatrix();
-                this.pUniform = this.context3D.getUniformLocation(this.shaderProgram, "uPMatrix");
-                this.context3D.uniformMatrix4fv(this.pUniform, false, new Float32Array(perspectiveMatrix.rawData));
+                this.pUniform = this.context3D.getUniformLocation(this.shaderProgram, feng3d.Context3DBufferID.uPMatrix);
+                this.context3D.uniformMatrix4fv(this.pUniform, false, perspectiveMatrix.rawData);
             };
             Renderer.prototype.getPerspectiveMatrix = function () {
                 var camSpace3D = this.camera.space3D;
@@ -2733,12 +2733,17 @@ var me;
                 return perspectiveMatrix;
             };
             Renderer.prototype.drawObject3D = function (object3D) {
+                var context3DBuffer = object3D.getOrCreateComponentByClass(feng3d.Context3DBuffer);
+                var mvMatrix = object3D.space3D.transform3D;
+                context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uMVMatrix, mvMatrix);
+                var perspectiveMatrix = this.getPerspectiveMatrix();
+                context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uPMatrix, perspectiveMatrix);
                 var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
                 object3DBuffer.activeProgram();
                 this.shaderProgram = object3DBuffer.programBuffer.getShaderProgram(this.context3D);
                 var mvMatrix = object3D.space3D.transform3D;
-                this.mvUniform = this.context3D.getUniformLocation(this.shaderProgram, "uMVMatrix");
-                this.context3D.uniformMatrix4fv(this.mvUniform, false, new Float32Array(mvMatrix.rawData));
+                this.mvUniform = this.context3D.getUniformLocation(this.shaderProgram, feng3d.Context3DBufferID.uMVMatrix);
+                this.context3D.uniformMatrix4fv(this.mvUniform, false, mvMatrix.rawData);
                 this.setMatrixUniforms();
                 object3DBuffer.active();
             };
@@ -2761,6 +2766,14 @@ var me;
              * 顶点索引
              */
             Context3DBufferID.index = "index";
+            /**
+             * 模型矩阵
+             */
+            Context3DBufferID.uMVMatrix = "uMVMatrix";
+            /**
+             * 投影矩阵
+             */
+            Context3DBufferID.uPMatrix = "uPMatrix";
             return Context3DBufferID;
         }());
         feng3d.Context3DBufferID = Context3DBufferID;
@@ -2782,6 +2795,7 @@ var me;
             function Context3DBuffer() {
                 _super.call(this);
                 this.attributes = {};
+                this.uniforms = {};
             }
             /**
              * 映射索引缓冲
@@ -2805,7 +2819,7 @@ var me;
             Context3DBuffer.prototype.getAttributeBuffer = function (name) {
                 var attributeBuffer = this.attributes[name];
                 if (!attributeBuffer) {
-                    attributeBuffer = new feng3d.AttributeBuffer();
+                    attributeBuffer = this.attributes[name] = new feng3d.AttributeBuffer();
                     attributeBuffer.name = name;
                     this.addComponent(attributeBuffer);
                 }
@@ -2820,6 +2834,26 @@ var me;
                 var programBuffer = this.getOrCreateComponentByClass(feng3d.ProgramBuffer);
                 programBuffer.vertexCode = vertexCode;
                 programBuffer.fragmentCode = fragmentCode;
+            };
+            /**
+             * 映射常量缓冲
+             */
+            Context3DBuffer.prototype.mapUniformBuffer = function (name, data) {
+                var uniformBuffer = this.getUniformBuffer(name);
+                uniformBuffer.matrix = data;
+            };
+            /**
+             * 获取常量缓冲
+             * @param name	属性名称
+             */
+            Context3DBuffer.prototype.getUniformBuffer = function (name) {
+                var uniformBuffer = this.uniforms[name];
+                if (!uniformBuffer) {
+                    uniformBuffer = this.uniforms[name] = new feng3d.UniformBuffer();
+                    uniformBuffer.name = name;
+                    this.addComponent(uniformBuffer);
+                }
+                return uniformBuffer;
             };
             return Context3DBuffer;
         }(feng3d.Component));
@@ -2929,6 +2963,14 @@ var me;
                 var eventData = event.data;
                 if (eventData.name == this.name)
                     eventData.buffer = this;
+            };
+            /**
+             * 激活缓冲
+             * @param context3D     3D渲染环境
+             * @param location      缓冲gpu地址
+             */
+            UniformBuffer.prototype.active = function (context3D, location) {
+                context3D.uniformMatrix4fv(location, false, this.matrix.rawData);
             };
             return UniformBuffer;
         }(feng3d.Component));
@@ -3117,7 +3159,7 @@ var me;
              */
             Object3DBuffer.prototype.active = function () {
                 this.activeAttributes();
-                this.activeUniforms();
+                // this.activeUniforms();
                 this.draw();
             };
             /**
@@ -3156,13 +3198,16 @@ var me;
                     attributes[name].buffer = eventData.buffer;
                 }
             };
+            /**
+             * 激活常量
+             */
             Object3DBuffer.prototype.activeUniforms = function () {
                 var uniforms = this.programBuffer.getUniforms(this.context3D);
-                // this.prepareUniformBuffers(uniforms);
+                this.prepareUniformBuffers(uniforms);
                 for (var name in uniforms) {
                     if (uniforms.hasOwnProperty(name)) {
                         var element = uniforms[name];
-                        element;
+                        element.buffer.active(this.context3D, element.location);
                     }
                 }
             };
@@ -3173,9 +3218,9 @@ var me;
                 for (var name in uniforms) {
                     //从Object3D中获取顶点缓冲
                     var eventData = { name: name, buffer: null };
-                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_UNIFORMBUFFER, eventData), Number.MAX_VALUE);
                     feng3d.assert(eventData.buffer != null);
-                    uniforms[name].attributeBuffer = eventData.buffer;
+                    uniforms[name].buffer = eventData.buffer;
                 }
             };
             /**

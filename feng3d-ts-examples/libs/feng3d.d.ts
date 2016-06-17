@@ -1019,6 +1019,14 @@ declare module me.feng3d {
          * 顶点索引
          */
         static index: string;
+        /**
+         * 模型矩阵
+         */
+        static uMVMatrix: string;
+        /**
+         * 投影矩阵
+         */
+        static uPMatrix: string;
     }
 }
 declare module me.feng3d {
@@ -1028,6 +1036,7 @@ declare module me.feng3d {
      */
     class Context3DBuffer extends Component {
         private attributes;
+        private uniforms;
         /**
          * 创建Context3D数据缓冲
          */
@@ -1051,6 +1060,15 @@ declare module me.feng3d {
          * @param fragmentCode      片段渲染程序代码
          */
         mapProgramBuffer(vertexCode: string, fragmentCode: string): void;
+        /**
+         * 映射常量缓冲
+         */
+        mapUniformBuffer(name: string, data: Matrix3D): void;
+        /**
+         * 获取常量缓冲
+         * @param name	属性名称
+         */
+        private getUniformBuffer(name);
     }
 }
 declare module me.feng3d {
@@ -1116,6 +1134,7 @@ declare module me.feng3d {
          * 常量缓冲名称
          */
         name: string;
+        matrix: Matrix3D;
         /**
          * 构建常量缓冲
          */
@@ -1124,6 +1143,12 @@ declare module me.feng3d {
          * 处理获取缓冲事件
          */
         private onGetUniformBuffer(event);
+        /**
+         * 激活缓冲
+         * @param context3D     3D渲染环境
+         * @param location      缓冲gpu地址
+         */
+        active(context3D: WebGLRenderingContext, location: WebGLUniformLocation): void;
     }
 }
 declare module me.feng3d {
@@ -1236,6 +1261,9 @@ declare module me.feng3d {
          * 准备顶点缓冲列表
          */
         private prepareAttributeBuffers(attributes);
+        /**
+         * 激活常量
+         */
         private activeUniforms();
         /**
          * 准备顶点缓冲列表
