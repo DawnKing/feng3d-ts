@@ -543,7 +543,7 @@ declare module me.feng3d {
          */
         sz: number;
         /**
-         * 空间变换矩阵（此处返回的是公共的临时矩阵）
+         * 空间变换矩阵
          */
         transform3D: Matrix3D;
         /**
@@ -1006,7 +1006,6 @@ declare module me.feng3d {
         pUniform: WebGLUniformLocation;
         private setMatrixUniforms();
         private getPerspectiveMatrix();
-        mvUniform: WebGLUniformLocation;
         private drawObject3D(object3D);
     }
 }
@@ -1253,6 +1252,7 @@ declare module me.feng3d {
          * 激活程序
          */
         activeProgram(): void;
+        private attributes;
         /**
          * 激活属性
          */
@@ -1261,10 +1261,11 @@ declare module me.feng3d {
          * 准备顶点缓冲列表
          */
         private prepareAttributeBuffers(attributes);
+        private uniforms;
         /**
          * 激活常量
          */
-        private activeUniforms();
+        activeUniforms(): void;
         /**
          * 准备顶点缓冲列表
          */

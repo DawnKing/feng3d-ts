@@ -1269,13 +1269,12 @@ var me;
             });
             Object.defineProperty(Space3D.prototype, "transform3D", {
                 /**
-                 * 空间变换矩阵（此处返回的是公共的临时矩阵）
+                 * 空间变换矩阵
                  */
                 get: function () {
                     if (this.transform3DDirty)
                         this.updateTransform3D();
-                    tempMatrix3D.rawData.set(this._transform3D.rawData);
-                    return tempMatrix3D;
+                    return this._transform3D;
                 },
                 set: function (value) {
                     this.transform3DDirty = false;
@@ -1314,10 +1313,6 @@ var me;
             return Space3D;
         }(feng3d.Component));
         feng3d.Space3D = Space3D;
-        /**
-         * 临时矩阵
-         */
-        var tempMatrix3D = new feng3d.Matrix3D();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2727,7 +2722,7 @@ var me;
             Renderer.prototype.getPerspectiveMatrix = function () {
                 var camSpace3D = this.camera.space3D;
                 var camera = this.camera.getComponentByClass(feng3d.Camera);
-                var perspectiveMatrix = camSpace3D.transform3D;
+                var perspectiveMatrix = camSpace3D.transform3D.clone();
                 perspectiveMatrix.invert();
                 perspectiveMatrix.append(camera.projectionMatrix3D);
                 return perspectiveMatrix;
@@ -2741,10 +2736,9 @@ var me;
                 var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
                 object3DBuffer.activeProgram();
                 this.shaderProgram = object3DBuffer.programBuffer.getShaderProgram(this.context3D);
-                var mvMatrix = object3D.space3D.transform3D;
-                this.mvUniform = this.context3D.getUniformLocation(this.shaderProgram, feng3d.Context3DBufferID.uMVMatrix);
-                this.context3D.uniformMatrix4fv(this.mvUniform, false, mvMatrix.rawData);
-                this.setMatrixUniforms();
+                // var mvMatrix = object3D.space3D.transform3D;
+                object3DBuffer.activeUniforms();
+                // this.setMatrixUniforms();
                 object3DBuffer.active();
             };
             return Renderer;
@@ -3070,14 +3064,6 @@ var me;
              */
             ProgramBuffer.prototype.getUniforms = function (context3D) {
                 var uniforms = ProgramBuffer.getUniforms(this._vertexCode);
-                //获取属性在gpu中地址
-                var shaderProgram = this.getShaderProgram(context3D);
-                for (var name in uniforms) {
-                    if (uniforms.hasOwnProperty(name)) {
-                        var element = uniforms[name];
-                        element.location = context3D.getUniformLocation(shaderProgram, name);
-                    }
-                }
                 return uniforms;
             };
             /**
@@ -3177,11 +3163,13 @@ var me;
              * 激活属性
              */
             Object3DBuffer.prototype.activeAttributes = function () {
-                var attributes = this.programBuffer.getAttribLocations(this.context3D);
-                this.prepareAttributeBuffers(attributes);
-                for (var name in attributes) {
-                    if (attributes.hasOwnProperty(name)) {
-                        var element = attributes[name];
+                if (this.attributes == null) {
+                    this.attributes = this.programBuffer.getAttribLocations(this.context3D);
+                    this.prepareAttributeBuffers(this.attributes);
+                }
+                for (var name in this.attributes) {
+                    if (this.attributes.hasOwnProperty(name)) {
+                        var element = this.attributes[name];
                         element.buffer.active(this.context3D, element.location);
                     }
                 }
@@ -3202,12 +3190,17 @@ var me;
              * 激活常量
              */
             Object3DBuffer.prototype.activeUniforms = function () {
-                var uniforms = this.programBuffer.getUniforms(this.context3D);
-                this.prepareUniformBuffers(uniforms);
-                for (var name in uniforms) {
-                    if (uniforms.hasOwnProperty(name)) {
-                        var element = uniforms[name];
-                        element.buffer.active(this.context3D, element.location);
+                if (this.uniforms == null) {
+                    this.uniforms = this.programBuffer.getUniforms(this.context3D);
+                    this.prepareUniformBuffers(this.uniforms);
+                }
+                //获取属性在gpu中地址
+                var shaderProgram = this.programBuffer.getShaderProgram(this.context3D);
+                for (var name in this.uniforms) {
+                    if (this.uniforms.hasOwnProperty(name)) {
+                        var element = this.uniforms[name];
+                        var location = this.context3D.getUniformLocation(shaderProgram, name);
+                        element.buffer.active(this.context3D, location);
                     }
                 }
             };
