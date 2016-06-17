@@ -1252,11 +1252,14 @@ declare module me.feng3d {
         /**
          * 获取程序属性列表
          */
-        private getAttributes(code);
+        static getAttributes(code: string): {
+            type: string;
+            name: string;
+        }[];
         /**
          * 获取程序常量列表
          */
-        private getUniforms(code);
+        static getUniforms(code: string): any[];
     }
 }
 declare module me.feng3d {
@@ -1308,60 +1311,6 @@ declare module me.feng3d {
          * 渲染程序缓存
          */
         buffer: ProgramBuffer;
-    }
-}
-declare module me.feng3d {
-    /**
-     * 程序属性gpu地址
-     */
-    class ProgramAttributeLocation {
-        /**
-         * 属性名称
-         */
-        name: string;
-        /**
-         * 类型
-         */
-        type: string;
-        /**
-         * gpu地址？
-         */
-        location: number;
-    }
-}
-declare module me.feng3d {
-    /**
-     * 程序唯一属性(常量)
-     * @author feng 2016-05-11
-     */
-    class ProgramUniform {
-        /**
-         * 名称
-         */
-        name: string;
-        /**
-         * 类型
-         */
-        type: string;
-        /**
-         * gpu地址？
-         */
-        location: WebGLUniformLocation;
-    }
-}
-declare module me.feng3d {
-    /**
-     * 渲染程序类型
-     */
-    enum ShaderType {
-        /**
-         * 顶点
-         */
-        VERTEX,
-        /**
-         * 片段
-         */
-        FRAGMENT,
     }
 }
 declare module me.feng3d {
