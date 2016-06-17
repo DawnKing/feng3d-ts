@@ -1204,14 +1204,6 @@ declare module me.feng3d {
         private _fragmentCode;
         private _shaderProgram;
         /**
-         * 顶点渲染程序
-         */
-        private vertexShaderProgram;
-        /**
-         * 片段渲染程序
-         */
-        private fragementShaderProgram;
-        /**
          * 创建渲染程序缓存
          * @param code          渲染程序代码
          * @param context3D     webgl渲染上下文
@@ -1257,6 +1249,14 @@ declare module me.feng3d {
          * @param type      渲染代码类型
          */
         private getShader(context3D, code, type);
+        /**
+         * 获取程序属性列表
+         */
+        private getAttributes(code);
+        /**
+         * 获取程序常量列表
+         */
+        private getUniforms(code);
     }
 }
 declare module me.feng3d {
@@ -1312,22 +1312,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 程序属性
-     * @author feng 2016-05-11
-     */
-    class ProgramAttribute {
-        /**
-         * 属性名称
-         */
-        name: string;
-        /**
-         * 类型
-         */
-        type: string;
-    }
-}
-declare module me.feng3d {
-    /**
      * 程序属性gpu地址
      */
     class ProgramAttributeLocation {
@@ -1367,40 +1351,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 渲染程序
-     * @author feng 2016-05-17
-     */
-    class ShaderProgram {
-        /**
-         * 顶点渲染程序代码
-         */
-        code: string;
-        /**
-         * 渲染类型
-         */
-        type: ShaderType;
-        /**
-         * 构建渲染程序
-         * @param code 代码
-         * @param type 渲染类型
-         */
-        constructor(code: string, type: ShaderType);
-        /**
-         * 获取渲染程序
-         */
-        static getInstance(code: string, type: ShaderType): ShaderProgram;
-        /**
-         * 获取程序属性列表
-         */
-        getAttributes(): ProgramAttribute[];
-        /**
-         * 获取程序常量列表
-         */
-        getUniforms(): ProgramUniform[];
-    }
-}
-declare module me.feng3d {
-    /**
      * 渲染程序类型
      */
     enum ShaderType {
@@ -1412,54 +1362,6 @@ declare module me.feng3d {
          * 片段
          */
         FRAGMENT,
-    }
-}
-declare module me.feng3d {
-    /**
-     * 渲染程序代码
-     * @author feng 2016-05-19
-     */
-    class ShaderProgramCode extends EventDispatcher {
-        private _vertexCode;
-        private _fragmentCode;
-        /**
-         * @param vertexCode        顶点渲染程序代码
-         * @param fragmentCode      片段渲染程序代码
-         */
-        constructor(vertexCode: string, fragmentCode: string);
-        /**
-         * 顶点渲染程序代码
-         */
-        vertexCode: string;
-        /**
-         * 片段渲染程序代码
-         */
-        fragmentCode: string;
-        /**
-         * 获取程序属性列表
-         */
-        static getAttributes(code: string): ProgramAttribute[];
-    }
-    /**
-     * 渲染程序代码事件
-     * @author feng 2016-05-19
-     */
-    class ShaderProgramCodeEvent extends Event {
-        /**
-         * 顶点渲染程序代码改变
-         */
-        static VERTEXCODE_CHANGE: string;
-        /**
-         * 片段渲染程序代码改变
-         */
-        static FRAGMENTCODE_CHANGE: string;
-        /**
-         * 创建一个渲染程序代码事件。
-         * @param type 事件的类型，可以作为 Event.type 访问。
-         * @param data 携带数据
-         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         */
-        constructor(type: string, data?: any, bubbles?: boolean);
     }
 }
 declare module me.feng3d {

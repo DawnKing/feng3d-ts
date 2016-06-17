@@ -3143,7 +3143,6 @@ var me;
             ProgramBuffer.prototype.invalidCode = function () {
             };
             ProgramBuffer.prototype.active = function (context3D) {
-                var shaderProgramCode = new feng3d.ShaderProgramCode(this._vertexCode, this._fragmentCode);
                 var shaderProgram = this.getShaderProgram(context3D);
                 context3D.useProgram(shaderProgram);
             };
@@ -3161,7 +3160,7 @@ var me;
              */
             ProgramBuffer.prototype.getAttribLocations = function (context3D) {
                 var attribLocations = {};
-                var attributes = feng3d.ShaderProgramCode.getAttributes(this._vertexCode);
+                var attributes = this.getAttributes(this._vertexCode);
                 for (var i = 0; i < attributes.length; i++) {
                     var element = attributes[i];
                     //获取属性在gpu中地址
@@ -3176,8 +3175,6 @@ var me;
              * 初始化
              */
             ProgramBuffer.prototype.init = function (context3D) {
-                this.vertexShaderProgram = feng3d.ShaderProgram.getInstance(this._vertexCode, feng3d.ShaderType.VERTEX);
-                this.fragementShaderProgram = feng3d.ShaderProgram.getInstance(this._fragmentCode, feng3d.ShaderType.FRAGMENT);
                 var vertexShader = this.getShader(context3D, this._vertexCode, feng3d.ShaderType.VERTEX);
                 var fragmentShader = this.getShader(context3D, this._fragmentCode, feng3d.ShaderType.FRAGMENT);
                 // 创建渲染程序
@@ -3204,6 +3201,34 @@ var me;
                     return null;
                 }
                 return shader;
+            };
+            /**
+             * 获取程序属性列表
+             */
+            ProgramBuffer.prototype.getAttributes = function (code) {
+                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
+                var result = attributeReg.exec(code);
+                var attributes = []; //属性{类型，名称}
+                while (result) {
+                    attributes.push({ type: result[1], name: result[2] });
+                    result = attributeReg.exec(code);
+                }
+                return attributes;
+            };
+            /**
+             * 获取程序常量列表
+             */
+            ProgramBuffer.prototype.getUniforms = function (code) {
+                var uniforms = [];
+                var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
+                var result = uniformReg.exec(code);
+                while (result) {
+                    var attribute = new ProgramAttribute();
+                    attribute.type = result[1];
+                    attribute.name = result[2];
+                    result = uniformReg.exec(code);
+                }
+                return uniforms;
             };
             return ProgramBuffer;
         }(feng3d.Component));
@@ -3272,22 +3297,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 程序属性
-         * @author feng 2016-05-11
-         */
-        var ProgramAttribute = (function () {
-            function ProgramAttribute() {
-            }
-            return ProgramAttribute;
-        }());
-        feng3d.ProgramAttribute = ProgramAttribute;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 程序属性gpu地址
          */
         var ProgramAttributeLocation = (function () {
@@ -3319,65 +3328,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 渲染程序
-         * @author feng 2016-05-17
-         */
-        var ShaderProgram = (function () {
-            /**
-             * 构建渲染程序
-             * @param code 代码
-             * @param type 渲染类型
-             */
-            function ShaderProgram(code, type) {
-                this.code = code;
-                this.type = type;
-            }
-            /**
-             * 获取渲染程序
-             */
-            ShaderProgram.getInstance = function (code, type) {
-                return new ShaderProgram(code, type);
-            };
-            /**
-             * 获取程序属性列表
-             */
-            ShaderProgram.prototype.getAttributes = function () {
-                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
-                var result = attributeReg.exec(this.code);
-                var attributes = [];
-                while (result) {
-                    var attribute = new feng3d.ProgramAttribute();
-                    attribute.type = result[1];
-                    attribute.name = result[2];
-                    result = attributeReg.exec(this.code);
-                }
-                return attributes;
-            };
-            /**
-             * 获取程序常量列表
-             */
-            ShaderProgram.prototype.getUniforms = function () {
-                var uniforms = [];
-                var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
-                var result = uniformReg.exec(this.code);
-                while (result) {
-                    var attribute = new feng3d.ProgramAttribute();
-                    attribute.type = result[1];
-                    attribute.name = result[2];
-                    result = uniformReg.exec(this.code);
-                }
-                return uniforms;
-            };
-            return ShaderProgram;
-        }());
-        feng3d.ShaderProgram = ShaderProgram;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 渲染程序类型
          */
         (function (ShaderType) {
@@ -3391,100 +3341,6 @@ var me;
             ShaderType[ShaderType["FRAGMENT"] = WebGLRenderingContext.FRAGMENT_SHADER] = "FRAGMENT";
         })(feng3d.ShaderType || (feng3d.ShaderType = {}));
         var ShaderType = feng3d.ShaderType;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 渲染程序代码
-         * @author feng 2016-05-19
-         */
-        var ShaderProgramCode = (function (_super) {
-            __extends(ShaderProgramCode, _super);
-            /**
-             * @param vertexCode        顶点渲染程序代码
-             * @param fragmentCode      片段渲染程序代码
-             */
-            function ShaderProgramCode(vertexCode, fragmentCode) {
-                _super.call(this);
-                this.vertexCode = vertexCode;
-                this.fragmentCode = fragmentCode;
-            }
-            Object.defineProperty(ShaderProgramCode.prototype, "vertexCode", {
-                /**
-                 * 顶点渲染程序代码
-                 */
-                get: function () {
-                    return this._vertexCode;
-                },
-                set: function (value) {
-                    this._vertexCode = value;
-                    this.dispatchEvent(new ShaderProgramCodeEvent(ShaderProgramCodeEvent.VERTEXCODE_CHANGE));
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(ShaderProgramCode.prototype, "fragmentCode", {
-                /**
-                 * 片段渲染程序代码
-                 */
-                get: function () {
-                    return this._fragmentCode;
-                },
-                set: function (value) {
-                    this._fragmentCode = value;
-                    this.dispatchEvent(new ShaderProgramCodeEvent(ShaderProgramCodeEvent.FRAGMENTCODE_CHANGE));
-                },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * 获取程序属性列表
-             */
-            ShaderProgramCode.getAttributes = function (code) {
-                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
-                var result = attributeReg.exec(code);
-                var attributes = [];
-                while (result) {
-                    var attribute = new feng3d.ProgramAttribute();
-                    attribute.type = result[1];
-                    attribute.name = result[2];
-                    attributes.push(attribute);
-                    result = attributeReg.exec(code);
-                }
-                return attributes;
-            };
-            return ShaderProgramCode;
-        }(feng3d.EventDispatcher));
-        feng3d.ShaderProgramCode = ShaderProgramCode;
-        /**
-         * 渲染程序代码事件
-         * @author feng 2016-05-19
-         */
-        var ShaderProgramCodeEvent = (function (_super) {
-            __extends(ShaderProgramCodeEvent, _super);
-            /**
-             * 创建一个渲染程序代码事件。
-             * @param type 事件的类型，可以作为 Event.type 访问。
-             * @param data 携带数据
-             * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-             */
-            function ShaderProgramCodeEvent(type, data, bubbles) {
-                _super.call(this, type, data);
-            }
-            /**
-             * 顶点渲染程序代码改变
-             */
-            ShaderProgramCodeEvent.VERTEXCODE_CHANGE = "vertexCodeChange";
-            /**
-             * 片段渲染程序代码改变
-             */
-            ShaderProgramCodeEvent.FRAGMENTCODE_CHANGE = "fragmentCodeChange";
-            return ShaderProgramCodeEvent;
-        }(feng3d.Event));
-        feng3d.ShaderProgramCodeEvent = ShaderProgramCodeEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
