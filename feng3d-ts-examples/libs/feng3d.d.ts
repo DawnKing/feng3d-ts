@@ -1003,8 +1003,6 @@ declare module me.feng3d {
          * 渲染
          */
         render(): void;
-        pUniform: WebGLUniformLocation;
-        private setMatrixUniforms();
         private getPerspectiveMatrix();
         private drawObject3D(object3D);
     }

@@ -2714,15 +2714,9 @@ var me;
                     _this.drawObject3D(element);
                 });
             };
-            Renderer.prototype.setMatrixUniforms = function () {
-                var perspectiveMatrix = this.getPerspectiveMatrix();
-                this.pUniform = this.context3D.getUniformLocation(this.shaderProgram, feng3d.Context3DBufferID.uPMatrix);
-                this.context3D.uniformMatrix4fv(this.pUniform, false, perspectiveMatrix.rawData);
-            };
             Renderer.prototype.getPerspectiveMatrix = function () {
-                var camSpace3D = this.camera.space3D;
                 var camera = this.camera.getComponentByClass(feng3d.Camera);
-                var perspectiveMatrix = camSpace3D.transform3D.clone();
+                var perspectiveMatrix = this.camera.space3D.transform3D.clone();
                 perspectiveMatrix.invert();
                 perspectiveMatrix.append(camera.projectionMatrix3D);
                 return perspectiveMatrix;
@@ -2734,11 +2728,6 @@ var me;
                 var perspectiveMatrix = this.getPerspectiveMatrix();
                 context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uPMatrix, perspectiveMatrix);
                 var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
-                object3DBuffer.activeProgram();
-                this.shaderProgram = object3DBuffer.programBuffer.getShaderProgram(this.context3D);
-                // var mvMatrix = object3D.space3D.transform3D;
-                object3DBuffer.activeUniforms();
-                // this.setMatrixUniforms();
                 object3DBuffer.active();
             };
             return Renderer;
@@ -3144,8 +3133,9 @@ var me;
              * 激活缓冲
              */
             Object3DBuffer.prototype.active = function () {
+                this.activeProgram();
                 this.activeAttributes();
-                // this.activeUniforms();
+                this.activeUniforms();
                 this.draw();
             };
             /**
