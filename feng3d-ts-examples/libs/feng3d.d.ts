@@ -1109,6 +1109,107 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 常量缓冲
+     */
+    class UniformBuffer extends Component {
+        /**
+         * 常量缓冲名称
+         */
+        name: string;
+        /**
+         * 构建常量缓冲
+         */
+        constructor();
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetUniformBuffer(event);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染程序缓存
+     * @author feng 2016-05-09
+     */
+    class ProgramBuffer extends Component {
+        private _vertexCode;
+        private _fragmentCode;
+        private _shaderProgram;
+        /**
+         * 创建渲染程序缓存
+         * @param code          渲染程序代码
+         * @param context3D     webgl渲染上下文
+         */
+        constructor();
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetProgramBuffer(event);
+        /**
+         * 顶点渲染程序代码
+         */
+        vertexCode: string;
+        /**
+         * 片段渲染程序代码
+         */
+        fragmentCode: string;
+        /**
+         * 使失效
+         */
+        private invalidCode();
+        active(context3D: WebGLRenderingContext): void;
+        /**
+         * 渲染程序
+         */
+        getShaderProgram(context3D: WebGLRenderingContext): WebGLProgram;
+        /**
+         * 获取属性gpu地址
+         */
+        getAttribLocations(context3D: WebGLRenderingContext): {
+            [name: string]: {
+                type: string;
+                location?: number;
+            };
+        };
+        /**
+         * 获取常量
+         */
+        getUniforms(context3D: WebGLRenderingContext): {
+            [name: string]: {
+                type: string;
+                location?: WebGLUniformLocation;
+            };
+        };
+        /**
+         * 初始化
+         */
+        private init(context3D);
+        /**
+         * 获取渲染程序
+         * @param code      渲染代码
+         * @param type      渲染代码类型
+         */
+        private getShader(context3D, code, type);
+        /**
+         * 获取程序属性列表
+         */
+        static getAttributes(code: string): {
+            [name: string]: {
+                type: string;
+            };
+        };
+        /**
+         * 获取程序常量列表
+         */
+        static getUniforms(code: string): {
+            [name: string]: {
+                type: string;
+            };
+        };
+    }
+}
+declare module me.feng3d {
+    /**
      * 3D对象缓冲
      */
     class Object3DBuffer {
@@ -1134,7 +1235,12 @@ declare module me.feng3d {
         /**
          * 准备顶点缓冲列表
          */
-        private prepareAttributeBuffers(attribLocations);
+        private prepareAttributeBuffers(attributes);
+        private activeUniforms();
+        /**
+         * 准备顶点缓冲列表
+         */
+        private prepareUniformBuffers(uniforms);
         /**
          * 绘制
          */
@@ -1196,74 +1302,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 渲染程序缓存
-     * @author feng 2016-05-09
-     */
-    class ProgramBuffer extends Component {
-        private _vertexCode;
-        private _fragmentCode;
-        private _shaderProgram;
-        /**
-         * 创建渲染程序缓存
-         * @param code          渲染程序代码
-         * @param context3D     webgl渲染上下文
-         */
-        constructor();
-        /**
-         * 处理获取缓冲事件
-         */
-        private onGetProgramBuffer(event);
-        /**
-         * 顶点渲染程序代码
-         */
-        vertexCode: string;
-        /**
-         * 片段渲染程序代码
-         */
-        fragmentCode: string;
-        /**
-         * 使失效
-         */
-        private invalidCode();
-        active(context3D: WebGLRenderingContext): void;
-        /**
-         * 渲染程序
-         */
-        getShaderProgram(context3D: WebGLRenderingContext): WebGLProgram;
-        /**
-         * 获取属性gpu地址
-         */
-        getAttribLocations(context3D: WebGLRenderingContext): {
-            [name: string]: {
-                type: string;
-                location: number;
-            };
-        };
-        /**
-         * 初始化
-         */
-        private init(context3D);
-        /**
-         * 获取渲染程序
-         * @param code      渲染代码
-         * @param type      渲染代码类型
-         */
-        private getShader(context3D, code, type);
-        /**
-         * 获取程序属性列表
-         */
-        static getAttributes(code: string): {
-            type: string;
-            name: string;
-        }[];
-        /**
-         * 获取程序常量列表
-         */
-        static getUniforms(code: string): any[];
-    }
-}
-declare module me.feng3d {
-    /**
      * Context3D缓冲事件
      * @author feng 2016-05-26
      */
@@ -1277,9 +1315,13 @@ declare module me.feng3d {
          */
         static GET_INDEXBUFFER: string;
         /**
-         * 获取IndexBuffer
+         * 获取ProgramBuffer
          */
         static GET_PROGRAMBUFFER: string;
+        /**
+         * 获取UniformBuffer
+         */
+        static GET_UNIFORMBUFFER: string;
     }
     /**
      * 获取AttributeBuffer事件数据
@@ -1311,6 +1353,19 @@ declare module me.feng3d {
          * 渲染程序缓存
          */
         buffer: ProgramBuffer;
+    }
+    /**
+     * 获取UniformBuffer事件数据
+     */
+    class GetUniformBufferEventData {
+        /**
+         * 常量名称
+         */
+        name: string;
+        /**
+         * 常量缓存
+         */
+        buffer: UniformBuffer;
     }
 }
 declare module me.feng3d {

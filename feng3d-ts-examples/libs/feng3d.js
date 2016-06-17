@@ -2911,6 +2911,200 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 常量缓冲
+         */
+        var UniformBuffer = (function (_super) {
+            __extends(UniformBuffer, _super);
+            /**
+             * 构建常量缓冲
+             */
+            function UniformBuffer() {
+                _super.call(this);
+                this.addEventListener(feng3d.Context3DBufferEvent.GET_UNIFORMBUFFER, this.onGetUniformBuffer, this);
+            }
+            /**
+             * 处理获取缓冲事件
+             */
+            UniformBuffer.prototype.onGetUniformBuffer = function (event) {
+                var eventData = event.data;
+                if (eventData.name == this.name)
+                    eventData.buffer = this;
+            };
+            return UniformBuffer;
+        }(feng3d.Component));
+        feng3d.UniformBuffer = UniformBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 渲染程序缓存
+         * @author feng 2016-05-09
+         */
+        var ProgramBuffer = (function (_super) {
+            __extends(ProgramBuffer, _super);
+            /**
+             * 创建渲染程序缓存
+             * @param code          渲染程序代码
+             * @param context3D     webgl渲染上下文
+             */
+            function ProgramBuffer() {
+                _super.call(this);
+                this.addEventListener(feng3d.Context3DBufferEvent.GET_PROGRAMBUFFER, this.onGetProgramBuffer, this);
+            }
+            /**
+             * 处理获取缓冲事件
+             */
+            ProgramBuffer.prototype.onGetProgramBuffer = function (event) {
+                var eventData = event.data;
+                eventData.buffer = this;
+            };
+            Object.defineProperty(ProgramBuffer.prototype, "vertexCode", {
+                /**
+                 * 顶点渲染程序代码
+                 */
+                get: function () {
+                    return this._vertexCode;
+                },
+                set: function (value) {
+                    this._vertexCode = value;
+                    this.invalidCode();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(ProgramBuffer.prototype, "fragmentCode", {
+                /**
+                 * 片段渲染程序代码
+                 */
+                get: function () {
+                    return this._fragmentCode;
+                },
+                set: function (value) {
+                    this._fragmentCode = value;
+                    this.invalidCode();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 使失效
+             */
+            ProgramBuffer.prototype.invalidCode = function () {
+            };
+            ProgramBuffer.prototype.active = function (context3D) {
+                var shaderProgram = this.getShaderProgram(context3D);
+                context3D.useProgram(shaderProgram);
+            };
+            /**
+             * 渲染程序
+             */
+            ProgramBuffer.prototype.getShaderProgram = function (context3D) {
+                if (this._shaderProgram == null) {
+                    this.init(context3D);
+                }
+                return this._shaderProgram;
+            };
+            /**
+             * 获取属性gpu地址
+             */
+            ProgramBuffer.prototype.getAttribLocations = function (context3D) {
+                var attributes = ProgramBuffer.getAttributes(this._vertexCode);
+                //获取属性在gpu中地址
+                var shaderProgram = this.getShaderProgram(context3D);
+                for (var name in attributes) {
+                    if (attributes.hasOwnProperty(name)) {
+                        var element = attributes[name];
+                        element.location = context3D.getAttribLocation(shaderProgram, name);
+                        context3D.enableVertexAttribArray(element.location);
+                    }
+                }
+                return attributes;
+            };
+            /**
+             * 获取常量
+             */
+            ProgramBuffer.prototype.getUniforms = function (context3D) {
+                var uniforms = ProgramBuffer.getUniforms(this._vertexCode);
+                //获取属性在gpu中地址
+                var shaderProgram = this.getShaderProgram(context3D);
+                for (var name in uniforms) {
+                    if (uniforms.hasOwnProperty(name)) {
+                        var element = uniforms[name];
+                        element.location = context3D.getUniformLocation(shaderProgram, name);
+                    }
+                }
+                return uniforms;
+            };
+            /**
+             * 初始化
+             */
+            ProgramBuffer.prototype.init = function (context3D) {
+                var vertexShader = this.getShader(context3D, this._vertexCode, WebGLRenderingContext.VERTEX_SHADER);
+                var fragmentShader = this.getShader(context3D, this._fragmentCode, WebGLRenderingContext.FRAGMENT_SHADER);
+                // 创建渲染程序
+                var shaderProgram = this._shaderProgram = context3D.createProgram();
+                context3D.attachShader(shaderProgram, vertexShader);
+                context3D.attachShader(shaderProgram, fragmentShader);
+                context3D.linkProgram(shaderProgram);
+                // 渲染程序创建失败时给出弹框
+                if (!context3D.getProgramParameter(shaderProgram, context3D.LINK_STATUS)) {
+                    alert("无法初始化渲染程序。");
+                }
+            };
+            /**
+             * 获取渲染程序
+             * @param code      渲染代码
+             * @param type      渲染代码类型
+             */
+            ProgramBuffer.prototype.getShader = function (context3D, code, type) {
+                var shader = context3D.createShader(type);
+                context3D.shaderSource(shader, code);
+                context3D.compileShader(shader);
+                if (!context3D.getShaderParameter(shader, context3D.COMPILE_STATUS)) {
+                    alert("编译渲染程序是发生错误: " + context3D.getShaderInfoLog(shader));
+                    return null;
+                }
+                return shader;
+            };
+            /**
+             * 获取程序属性列表
+             */
+            ProgramBuffer.getAttributes = function (code) {
+                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
+                var result = attributeReg.exec(code);
+                var attributes = {}; //属性{类型，名称}
+                while (result) {
+                    attributes[result[2]] = { type: result[1] };
+                    result = attributeReg.exec(code);
+                }
+                return attributes;
+            };
+            /**
+             * 获取程序常量列表
+             */
+            ProgramBuffer.getUniforms = function (code) {
+                var uniforms = {};
+                var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
+                var result = uniformReg.exec(code);
+                while (result) {
+                    uniforms[result[2]] = { type: result[1] };
+                    result = uniformReg.exec(code);
+                }
+                return uniforms;
+            };
+            return ProgramBuffer;
+        }(feng3d.Component));
+        feng3d.ProgramBuffer = ProgramBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 3D对象缓冲
          */
         var Object3DBuffer = (function () {
@@ -2923,6 +3117,7 @@ var me;
              */
             Object3DBuffer.prototype.active = function () {
                 this.activeAttributes();
+                this.activeUniforms();
                 this.draw();
             };
             /**
@@ -2940,25 +3135,47 @@ var me;
              * 激活属性
              */
             Object3DBuffer.prototype.activeAttributes = function () {
-                var attribLocations = this.programBuffer.getAttribLocations(this.context3D);
-                this.prepareAttributeBuffers(attribLocations);
-                for (var name in attribLocations) {
-                    if (attribLocations.hasOwnProperty(name)) {
-                        var element = attribLocations[name];
-                        element.attributeBuffer.active(this.context3D, element.location);
+                var attributes = this.programBuffer.getAttribLocations(this.context3D);
+                this.prepareAttributeBuffers(attributes);
+                for (var name in attributes) {
+                    if (attributes.hasOwnProperty(name)) {
+                        var element = attributes[name];
+                        element.buffer.active(this.context3D, element.location);
                     }
                 }
             };
             /**
              * 准备顶点缓冲列表
              */
-            Object3DBuffer.prototype.prepareAttributeBuffers = function (attribLocations) {
-                for (var name in attribLocations) {
+            Object3DBuffer.prototype.prepareAttributeBuffers = function (attributes) {
+                for (var name in attributes) {
                     //从Object3D中获取顶点缓冲
                     var eventData = { name: name, buffer: null };
                     this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
                     feng3d.assert(eventData.buffer != null);
-                    attribLocations[name].attributeBuffer = eventData.buffer;
+                    attributes[name].buffer = eventData.buffer;
+                }
+            };
+            Object3DBuffer.prototype.activeUniforms = function () {
+                var uniforms = this.programBuffer.getUniforms(this.context3D);
+                // this.prepareUniformBuffers(uniforms);
+                for (var name in uniforms) {
+                    if (uniforms.hasOwnProperty(name)) {
+                        var element = uniforms[name];
+                        element;
+                    }
+                }
+            };
+            /**
+             * 准备顶点缓冲列表
+             */
+            Object3DBuffer.prototype.prepareUniformBuffers = function (uniforms) {
+                for (var name in uniforms) {
+                    //从Object3D中获取顶点缓冲
+                    var eventData = { name: name, buffer: null };
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
+                    feng3d.assert(eventData.buffer != null);
+                    uniforms[name].attributeBuffer = eventData.buffer;
                 }
             };
             /**
@@ -2969,7 +3186,8 @@ var me;
                 var eventData = { buffer: null };
                 this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_INDEXBUFFER, eventData), Number.MAX_VALUE);
                 feng3d.assert(eventData.buffer != null);
-                var indexBuffer = eventData.buffer.draw(this.context3D);
+                var indexBuffer = eventData.buffer;
+                indexBuffer.draw(this.context3D);
             };
             return Object3DBuffer;
         }());
@@ -3088,158 +3306,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 渲染程序缓存
-         * @author feng 2016-05-09
-         */
-        var ProgramBuffer = (function (_super) {
-            __extends(ProgramBuffer, _super);
-            /**
-             * 创建渲染程序缓存
-             * @param code          渲染程序代码
-             * @param context3D     webgl渲染上下文
-             */
-            function ProgramBuffer() {
-                _super.call(this);
-                this.addEventListener(feng3d.Context3DBufferEvent.GET_PROGRAMBUFFER, this.onGetProgramBuffer, this);
-            }
-            /**
-             * 处理获取缓冲事件
-             */
-            ProgramBuffer.prototype.onGetProgramBuffer = function (event) {
-                var eventData = event.data;
-                eventData.buffer = this;
-            };
-            Object.defineProperty(ProgramBuffer.prototype, "vertexCode", {
-                /**
-                 * 顶点渲染程序代码
-                 */
-                get: function () {
-                    return this._vertexCode;
-                },
-                set: function (value) {
-                    this._vertexCode = value;
-                    this.invalidCode();
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(ProgramBuffer.prototype, "fragmentCode", {
-                /**
-                 * 片段渲染程序代码
-                 */
-                get: function () {
-                    return this._fragmentCode;
-                },
-                set: function (value) {
-                    this._fragmentCode = value;
-                    this.invalidCode();
-                },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * 使失效
-             */
-            ProgramBuffer.prototype.invalidCode = function () {
-            };
-            ProgramBuffer.prototype.active = function (context3D) {
-                var shaderProgram = this.getShaderProgram(context3D);
-                context3D.useProgram(shaderProgram);
-            };
-            /**
-             * 渲染程序
-             */
-            ProgramBuffer.prototype.getShaderProgram = function (context3D) {
-                if (this._shaderProgram == null) {
-                    this.init(context3D);
-                }
-                return this._shaderProgram;
-            };
-            /**
-             * 获取属性gpu地址
-             */
-            ProgramBuffer.prototype.getAttribLocations = function (context3D) {
-                var attribLocations = {};
-                var attributes = ProgramBuffer.getAttributes(this._vertexCode);
-                for (var i = 0; i < attributes.length; i++) {
-                    var element = attributes[i];
-                    //获取属性在gpu中地址
-                    var shaderProgram = this.getShaderProgram(context3D);
-                    var location = context3D.getAttribLocation(shaderProgram, element.name);
-                    context3D.enableVertexAttribArray(location);
-                    attribLocations[element.name] = { type: element.type, location: location };
-                }
-                return attribLocations;
-            };
-            /**
-             * 初始化
-             */
-            ProgramBuffer.prototype.init = function (context3D) {
-                var vertexShader = this.getShader(context3D, this._vertexCode, WebGLRenderingContext.VERTEX_SHADER);
-                var fragmentShader = this.getShader(context3D, this._fragmentCode, WebGLRenderingContext.FRAGMENT_SHADER);
-                // 创建渲染程序
-                var shaderProgram = this._shaderProgram = context3D.createProgram();
-                context3D.attachShader(shaderProgram, vertexShader);
-                context3D.attachShader(shaderProgram, fragmentShader);
-                context3D.linkProgram(shaderProgram);
-                // 渲染程序创建失败时给出弹框
-                if (!context3D.getProgramParameter(shaderProgram, context3D.LINK_STATUS)) {
-                    alert("无法初始化渲染程序。");
-                }
-            };
-            /**
-             * 获取渲染程序
-             * @param code      渲染代码
-             * @param type      渲染代码类型
-             */
-            ProgramBuffer.prototype.getShader = function (context3D, code, type) {
-                var shader = context3D.createShader(type);
-                context3D.shaderSource(shader, code);
-                context3D.compileShader(shader);
-                if (!context3D.getShaderParameter(shader, context3D.COMPILE_STATUS)) {
-                    alert("编译渲染程序是发生错误: " + context3D.getShaderInfoLog(shader));
-                    return null;
-                }
-                return shader;
-            };
-            /**
-             * 获取程序属性列表
-             */
-            ProgramBuffer.getAttributes = function (code) {
-                var attributeReg = /attribute\s+(\w+)\s+(\w+)/g;
-                var result = attributeReg.exec(code);
-                var attributes = []; //属性{类型，名称}
-                while (result) {
-                    attributes.push({ type: result[1], name: result[2] });
-                    result = attributeReg.exec(code);
-                }
-                return attributes;
-            };
-            /**
-             * 获取程序常量列表
-             */
-            ProgramBuffer.getUniforms = function (code) {
-                var uniforms = [];
-                var uniformReg = /uniform\s+(\w+)\s+(\w+)/g;
-                var result = uniformReg.exec(code);
-                while (result) {
-                    var attribute = new ProgramAttribute();
-                    attribute.type = result[1];
-                    attribute.name = result[2];
-                    result = uniformReg.exec(code);
-                }
-                return uniforms;
-            };
-            return ProgramBuffer;
-        }(feng3d.Component));
-        feng3d.ProgramBuffer = ProgramBuffer;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * Context3D缓冲事件
          * @author feng 2016-05-26
          */
@@ -3257,9 +3323,13 @@ var me;
              */
             Context3DBufferEvent.GET_INDEXBUFFER = "getIndexBuffer";
             /**
-             * 获取IndexBuffer
+             * 获取ProgramBuffer
              */
             Context3DBufferEvent.GET_PROGRAMBUFFER = "getProgramBuffer";
+            /**
+             * 获取UniformBuffer
+             */
+            Context3DBufferEvent.GET_UNIFORMBUFFER = "getUniformBuffer";
             return Context3DBufferEvent;
         }(feng3d.Event));
         feng3d.Context3DBufferEvent = Context3DBufferEvent;
@@ -3290,6 +3360,15 @@ var me;
             return GetProgramBufferEventData;
         }());
         feng3d.GetProgramBufferEventData = GetProgramBufferEventData;
+        /**
+         * 获取UniformBuffer事件数据
+         */
+        var GetUniformBufferEventData = (function () {
+            function GetUniformBufferEventData() {
+            }
+            return GetUniformBufferEventData;
+        }());
+        feng3d.GetUniformBufferEventData = GetUniformBufferEventData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
