@@ -23,8 +23,9 @@ declare module me.feng3d {
          * @param obj 转换为字符串的对象
          * @param showLen       显示长度
          * @param fill          长度不够是填充的字符串
+         * @param tail          true（默认）:在尾部添加；false：在首部添加
          */
-        static getString(obj: any, showLen?: number, fill?: string): string;
+        static getString(obj: any, showLen?: number, fill?: string, tail?: boolean): string;
     }
 }
 declare module me.feng3d {
@@ -1003,7 +1004,6 @@ declare module me.feng3d {
          * 渲染
          */
         render(): void;
-        private getPerspectiveMatrix();
         private drawObject3D(object3D);
     }
 }
@@ -1032,6 +1032,8 @@ declare module me.feng3d {
      * @author feng 2016-6-7
      */
     class Context3DBuffer extends Component {
+        private indexBuffer;
+        private programBuffer;
         private attributes;
         private uniforms;
         /**
@@ -1047,11 +1049,6 @@ declare module me.feng3d {
          */
         mapAttributeBuffer(name: string, value: Uint16Array, stride: number): void;
         /**
-         * 获取属性缓冲
-         * @param name	属性名称
-         */
-        private getAttributeBuffer(name);
-        /**
          * 映射程序缓冲
          * @param vertexCode        顶点渲染程序代码
          * @param fragmentCode      片段渲染程序代码
@@ -1062,18 +1059,41 @@ declare module me.feng3d {
          */
         mapUniformBuffer(name: string, data: Matrix3D): void;
         /**
-         * 获取常量缓冲
-         * @param name	属性名称
+         * 处理获取索引缓冲事件
          */
-        private getUniformBuffer(name);
+        private onGetIndexBuffer(event);
+        /**
+         * 处理获取属性缓冲事件
+         */
+        private onGetAttributeBuffer(event);
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetUniformBuffer(event);
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetProgramBuffer(event);
     }
-}
-declare module me.feng3d {
+    /**
+     * 索引缓冲
+     */
+    class IndexBuffer {
+        /**
+         * 索引数据
+         */
+        indices: Uint16Array;
+        /**
+         * 绘制
+         * @param context3D    3D渲染环境
+         */
+        draw(context3D: WebGLRenderingContext): void;
+    }
     /**
      * 属性缓冲
      * @author feng 2014-8-14
      */
-    class AttributeBuffer extends Component {
+    class AttributeBuffer {
         /**
          * 属性缓冲名称
          */
@@ -1083,63 +1103,21 @@ declare module me.feng3d {
         /** 与每个顶点关联的 32 位（4 字节）数据值的数量。 */
         size: number;
         /**
-         * 构建属性缓冲
-         */
-        constructor();
-        /**
          * 激活缓冲
          * @param context3D     3D渲染环境
          * @param location      缓冲gpu地址
          */
         active(context3D: WebGLRenderingContext, location: number): void;
-        /**
-         * 处理获取属性缓冲事件
-         */
-        private onGetAttributeBuffer(event);
     }
-}
-declare module me.feng3d {
-    /**
-     * 索引缓冲
-     */
-    class IndexBuffer extends Component {
-        /**
-         * 索引数据
-         */
-        indices: Uint16Array;
-        /**
-         * 索引缓冲
-         */
-        constructor();
-        /**
-         * 绘制
-         * @param context3D    3D渲染环境
-         */
-        draw(context3D: WebGLRenderingContext): void;
-        /**
-         * 处理获取索引缓冲事件
-         */
-        private onGetIndexBuffer(event);
-    }
-}
-declare module me.feng3d {
     /**
      * 常量缓冲
      */
-    class UniformBuffer extends Component {
+    class UniformBuffer {
         /**
          * 常量缓冲名称
          */
         name: string;
         matrix: Matrix3D;
-        /**
-         * 构建常量缓冲
-         */
-        constructor();
-        /**
-         * 处理获取缓冲事件
-         */
-        private onGetUniformBuffer(event);
         /**
          * 激活缓冲
          * @param context3D     3D渲染环境
@@ -1153,20 +1131,10 @@ declare module me.feng3d {
      * 渲染程序缓存
      * @author feng 2016-05-09
      */
-    class ProgramBuffer extends Component {
+    class ProgramBuffer {
         private _vertexCode;
         private _fragmentCode;
         private _shaderProgram;
-        /**
-         * 创建渲染程序缓存
-         * @param code          渲染程序代码
-         * @param context3D     webgl渲染上下文
-         */
-        constructor();
-        /**
-         * 处理获取缓冲事件
-         */
-        private onGetProgramBuffer(event);
         /**
          * 顶点渲染程序代码
          */
