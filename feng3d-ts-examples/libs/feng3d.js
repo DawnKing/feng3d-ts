@@ -2973,7 +2973,7 @@ var me;
             /**
              * 获取常量
              */
-            ProgramBuffer.prototype.getUniforms = function (context3D) {
+            ProgramBuffer.prototype.getUniforms = function () {
                 var uniforms = ProgramBuffer.getUniforms(this._vertexCode);
                 return uniforms;
             };
@@ -3048,6 +3048,9 @@ var me;
          * @author feng 2016-06-20
          */
         var Object3DRenderData = (function () {
+            /**
+             * 构建3D对象渲染数据
+             */
             function Object3DRenderData(object3D) {
                 this.object3D = object3D;
             }
@@ -3056,10 +3059,12 @@ var me;
              */
             Object3DRenderData.prototype.prepare = function () {
                 this.prepareProgram();
+                this.prepareIndex();
                 this.prepareAttributes();
+                this.prepareUniforms();
             };
             /**
-             * 激活程序
+             * 准备程序
              */
             Object3DRenderData.prototype.prepareProgram = function () {
                 //从Object3D中获取顶点缓冲
@@ -3069,18 +3074,39 @@ var me;
                 this.programBuffer = eventData.buffer;
             };
             /**
-             * 激活属性
+             * 准备索引
+             */
+            Object3DRenderData.prototype.prepareIndex = function () {
+                //从Object3D中获取顶点缓冲
+                var eventData = { buffer: null };
+                this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_INDEXBUFFER, eventData), Number.MAX_VALUE);
+                feng3d.assert(eventData.buffer != null);
+                this.indexBuffer = eventData.buffer;
+            };
+            /**
+             * 准备属性
              */
             Object3DRenderData.prototype.prepareAttributes = function () {
-                if (this.attributes == null) {
-                    this.attributes = this.programBuffer.getAttributes();
-                    for (var name in this.attributes) {
-                        //从Object3D中获取顶点缓冲
-                        var eventData = { name: name, buffer: null };
-                        this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
-                        feng3d.assert(eventData.buffer != null);
-                        this.attributes[name].buffer = eventData.buffer;
-                    }
+                this.attributes = this.programBuffer.getAttributes();
+                for (var name in this.attributes) {
+                    //从Object3D中获取顶点缓冲
+                    var eventData = { name: name, buffer: null };
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_ATTRIBUTEBUFFER, eventData), Number.MAX_VALUE);
+                    feng3d.assert(eventData.buffer != null);
+                    this.attributes[name].buffer = eventData.buffer;
+                }
+            };
+            /**
+             * 准备常量
+             */
+            Object3DRenderData.prototype.prepareUniforms = function () {
+                this.uniforms = this.programBuffer.getUniforms();
+                for (var name in this.uniforms) {
+                    //从Object3D中获取顶点缓冲
+                    var eventData = { name: name, buffer: null };
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_UNIFORMBUFFER, eventData), Number.MAX_VALUE);
+                    feng3d.assert(eventData.buffer != null);
+                    this.uniforms[name].buffer = eventData.buffer;
                 }
             };
             return Object3DRenderData;
@@ -3139,46 +3165,25 @@ var me;
              * 激活常量
              */
             Object3DBuffer.prototype.activeUniforms = function () {
-                if (this.uniforms == null) {
-                    this.uniforms = this.renderData.programBuffer.getUniforms(this.context3D);
-                    this.prepareUniformBuffers(this.uniforms);
-                }
+                var uniforms = this.renderData.uniforms;
                 //获取属性在gpu中地址
                 var shaderProgram = this.renderData.programBuffer.getShaderProgram(this.context3D);
-                for (var name in this.uniforms) {
-                    if (this.uniforms.hasOwnProperty(name)) {
-                        var element = this.uniforms[name];
+                for (var name in uniforms) {
+                    if (uniforms.hasOwnProperty(name)) {
+                        var element = uniforms[name];
                         var location = this.context3D.getUniformLocation(shaderProgram, name);
                         this.context3D.uniformMatrix4fv(location, false, element.buffer.matrix.rawData);
                     }
                 }
             };
             /**
-             * 准备顶点缓冲列表
-             */
-            Object3DBuffer.prototype.prepareUniformBuffers = function (uniforms) {
-                for (var name in uniforms) {
-                    //从Object3D中获取顶点缓冲
-                    var eventData = { name: name, buffer: null };
-                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_UNIFORMBUFFER, eventData), Number.MAX_VALUE);
-                    feng3d.assert(eventData.buffer != null);
-                    uniforms[name].buffer = eventData.buffer;
-                }
-            };
-            /**
              * 绘制
              */
             Object3DBuffer.prototype.draw = function () {
-                if (this.indexBuffer == null) {
-                    //从Object3D中获取顶点缓冲
-                    var eventData = { buffer: null };
-                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_INDEXBUFFER, eventData), Number.MAX_VALUE);
-                    feng3d.assert(eventData.buffer != null);
-                    this.indexBuffer = eventData.buffer;
-                }
+                var indexBuffer = this.renderData.indexBuffer;
                 var buffer = feng3d.Context3DBufferCenter.getInstance(this.context3D) //
-                    .getIndexBuffer(this.indexBuffer.indices);
-                var count = this.indexBuffer.indices.length;
+                    .getIndexBuffer(indexBuffer.indices);
+                var count = indexBuffer.indices.length;
                 this.context3D.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, buffer);
                 this.context3D.drawElements(WebGLRenderingContext.TRIANGLES, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
             };

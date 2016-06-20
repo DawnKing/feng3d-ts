@@ -1159,10 +1159,9 @@ declare module me.feng3d {
         /**
          * 获取常量
          */
-        getUniforms(context3D: WebGLRenderingContext): {
+        getUniforms(): {
             [name: string]: {
                 type: string;
-                location?: WebGLUniformLocation;
             };
         };
         /**
@@ -1201,6 +1200,10 @@ declare module me.feng3d {
     class Object3DRenderData {
         object3D: Object3D;
         /**
+         * 顶点索引缓冲
+         */
+        indexBuffer: IndexBuffer;
+        /**
          * 渲染程序缓存
          */
         programBuffer: ProgramBuffer;
@@ -1213,19 +1216,39 @@ declare module me.feng3d {
                 buffer?: AttributeBuffer;
             };
         };
+        /**
+         * 常量数据列表
+         */
+        uniforms: {
+            [name: string]: {
+                type: string;
+                buffer?: UniformBuffer;
+            };
+        };
+        /**
+         * 构建3D对象渲染数据
+         */
         constructor(object3D: Object3D);
         /**
          * 准备数据
          */
         prepare(): void;
         /**
-         * 激活程序
+         * 准备程序
          */
         private prepareProgram();
         /**
-         * 激活属性
+         * 准备索引
+         */
+        private prepareIndex();
+        /**
+         * 准备属性
          */
         private prepareAttributes();
+        /**
+         * 准备常量
+         */
+        private prepareUniforms();
     }
 }
 declare module me.feng3d {
@@ -1242,14 +1265,6 @@ declare module me.feng3d {
          * 渲染对象
          */
         private object3D;
-        /**
-         * 顶点索引缓冲
-         */
-        indexBuffer: IndexBuffer;
-        /**
-         * 常量数据列表
-         */
-        private uniforms;
         /**
          * 渲染数据
          */
@@ -1271,10 +1286,6 @@ declare module me.feng3d {
          * 激活常量
          */
         activeUniforms(): void;
-        /**
-         * 准备顶点缓冲列表
-         */
-        private prepareUniformBuffers(uniforms);
         /**
          * 绘制
          */
