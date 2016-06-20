@@ -2865,17 +2865,6 @@ var me;
         var IndexBuffer = (function () {
             function IndexBuffer() {
             }
-            /**
-             * 绘制
-             * @param context3D    3D渲染环境
-             */
-            IndexBuffer.prototype.draw = function (context3D) {
-                var indexBuffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
-                    .getIndexBuffer(this.indices);
-                var count = this.indices.length;
-                context3D.bindBuffer(context3D.ELEMENT_ARRAY_BUFFER, indexBuffer);
-                context3D.drawElements(context3D.TRIANGLES, count, context3D.UNSIGNED_SHORT, 0);
-            };
             return IndexBuffer;
         }());
         feng3d.IndexBuffer = IndexBuffer;
@@ -2886,17 +2875,6 @@ var me;
         var AttributeBuffer = (function () {
             function AttributeBuffer() {
             }
-            /**
-             * 激活缓冲
-             * @param context3D     3D渲染环境
-             * @param location      缓冲gpu地址
-             */
-            AttributeBuffer.prototype.active = function (context3D, location) {
-                var squareVerticesBuffer = feng3d.Context3DBufferCenter.getInstance(context3D) //
-                    .getVABuffer(this.data);
-                context3D.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, squareVerticesBuffer);
-                context3D.vertexAttribPointer(location, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
-            };
             return AttributeBuffer;
         }());
         feng3d.AttributeBuffer = AttributeBuffer;
@@ -2906,14 +2884,6 @@ var me;
         var UniformBuffer = (function () {
             function UniformBuffer() {
             }
-            /**
-             * 激活缓冲
-             * @param context3D     3D渲染环境
-             * @param location      缓冲gpu地址
-             */
-            UniformBuffer.prototype.active = function (context3D, location) {
-                context3D.uniformMatrix4fv(location, false, this.matrix.rawData);
-            };
             return UniformBuffer;
         }());
         feng3d.UniformBuffer = UniformBuffer;
@@ -3104,7 +3074,10 @@ var me;
                 for (var name in this.attributes) {
                     if (this.attributes.hasOwnProperty(name)) {
                         var element = this.attributes[name];
-                        element.buffer.active(this.context3D, element.location);
+                        var squareVerticesBuffer = feng3d.Context3DBufferCenter.getInstance(this.context3D) //
+                            .getVABuffer(element.buffer.data);
+                        this.context3D.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, squareVerticesBuffer);
+                        this.context3D.vertexAttribPointer(element.location, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
                     }
                 }
             };
@@ -3134,7 +3107,7 @@ var me;
                     if (this.uniforms.hasOwnProperty(name)) {
                         var element = this.uniforms[name];
                         var location = this.context3D.getUniformLocation(shaderProgram, name);
-                        element.buffer.active(this.context3D, location);
+                        this.context3D.uniformMatrix4fv(location, false, element.buffer.matrix.rawData);
                     }
                 }
             };
@@ -3154,12 +3127,18 @@ var me;
              * 绘制
              */
             Object3DBuffer.prototype.draw = function () {
-                //从Object3D中获取顶点缓冲
-                var eventData = { buffer: null };
-                this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_INDEXBUFFER, eventData), Number.MAX_VALUE);
-                feng3d.assert(eventData.buffer != null);
-                var indexBuffer = eventData.buffer;
-                indexBuffer.draw(this.context3D);
+                if (this.indexBuffer == null) {
+                    //从Object3D中获取顶点缓冲
+                    var eventData = { buffer: null };
+                    this.object3D.dispatchChildrenEvent(new feng3d.Context3DBufferEvent(feng3d.Context3DBufferEvent.GET_INDEXBUFFER, eventData), Number.MAX_VALUE);
+                    feng3d.assert(eventData.buffer != null);
+                    this.indexBuffer = eventData.buffer;
+                }
+                var buffer = feng3d.Context3DBufferCenter.getInstance(this.context3D) //
+                    .getIndexBuffer(this.indexBuffer.indices);
+                var count = this.indexBuffer.indices.length;
+                this.context3D.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, buffer);
+                this.context3D.drawElements(WebGLRenderingContext.TRIANGLES, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
             };
             return Object3DBuffer;
         }());

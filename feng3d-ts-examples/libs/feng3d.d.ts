@@ -1083,11 +1083,6 @@ declare module me.feng3d {
          * 索引数据
          */
         indices: Uint16Array;
-        /**
-         * 绘制
-         * @param context3D    3D渲染环境
-         */
-        draw(context3D: WebGLRenderingContext): void;
     }
     /**
      * 属性缓冲
@@ -1102,12 +1097,6 @@ declare module me.feng3d {
         data: Float32Array;
         /** 与每个顶点关联的 32 位（4 字节）数据值的数量。 */
         size: number;
-        /**
-         * 激活缓冲
-         * @param context3D     3D渲染环境
-         * @param location      缓冲gpu地址
-         */
-        active(context3D: WebGLRenderingContext, location: number): void;
     }
     /**
      * 常量缓冲
@@ -1117,13 +1106,10 @@ declare module me.feng3d {
          * 常量缓冲名称
          */
         name: string;
-        matrix: Matrix3D;
         /**
-         * 激活缓冲
-         * @param context3D     3D渲染环境
-         * @param location      缓冲gpu地址
+         * 矩阵数据
          */
-        active(context3D: WebGLRenderingContext, location: WebGLUniformLocation): void;
+        matrix: Matrix3D;
     }
 }
 declare module me.feng3d {
@@ -1203,12 +1189,30 @@ declare module me.feng3d {
      * 3D对象缓冲
      */
     class Object3DBuffer {
+        /**
+         * 3D上下文
+         */
         private context3D;
+        /**
+         * 渲染对象
+         */
         private object3D;
+        /**
+         * 顶点索引缓冲
+         */
+        indexBuffer: IndexBuffer;
         /**
          * 渲染程序缓存
          */
         programBuffer: ProgramBuffer;
+        /**
+         * 属性数据列表
+         */
+        private attributes;
+        /**
+         * 常量数据列表
+         */
+        private uniforms;
         constructor(context3D: WebGLRenderingContext, object3D: Object3D);
         /**
          * 激活缓冲
@@ -1218,7 +1222,6 @@ declare module me.feng3d {
          * 激活程序
          */
         activeProgram(): void;
-        private attributes;
         /**
          * 激活属性
          */
@@ -1227,7 +1230,6 @@ declare module me.feng3d {
          * 准备顶点缓冲列表
          */
         private prepareAttributeBuffers(attributes);
-        private uniforms;
         /**
          * 激活常量
          */
