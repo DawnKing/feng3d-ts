@@ -1010,6 +1010,7 @@ declare module me.feng3d {
 declare module me.feng3d {
     /**
      * 3D缓冲编号
+     * @author feng 2016-06-20
      */
     class Context3DBufferID {
         /**
@@ -1148,6 +1149,14 @@ declare module me.feng3d {
             };
         };
         /**
+         * 获取属性列表
+         */
+        getAttributes(): {
+            [name: string]: {
+                type: string;
+            };
+        };
+        /**
          * 获取常量
          */
         getUniforms(context3D: WebGLRenderingContext): {
@@ -1186,7 +1195,43 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 3D对象渲染数据
+     * @author feng 2016-06-20
+     */
+    class Object3DRenderData {
+        object3D: Object3D;
+        /**
+         * 渲染程序缓存
+         */
+        programBuffer: ProgramBuffer;
+        /**
+         * 属性数据列表
+         */
+        attributes: {
+            [name: string]: {
+                type: string;
+                buffer?: AttributeBuffer;
+            };
+        };
+        constructor(object3D: Object3D);
+        /**
+         * 准备数据
+         */
+        prepare(): void;
+        /**
+         * 激活程序
+         */
+        private prepareProgram();
+        /**
+         * 激活属性
+         */
+        private prepareAttributes();
+    }
+}
+declare module me.feng3d {
+    /**
      * 3D对象缓冲
+     * @author feng 2016-06-20
      */
     class Object3DBuffer {
         /**
@@ -1202,17 +1247,13 @@ declare module me.feng3d {
          */
         indexBuffer: IndexBuffer;
         /**
-         * 渲染程序缓存
-         */
-        programBuffer: ProgramBuffer;
-        /**
-         * 属性数据列表
-         */
-        private attributes;
-        /**
          * 常量数据列表
          */
         private uniforms;
+        /**
+         * 渲染数据
+         */
+        private renderData;
         constructor(context3D: WebGLRenderingContext, object3D: Object3D);
         /**
          * 激活缓冲
@@ -1226,10 +1267,6 @@ declare module me.feng3d {
          * 激活属性
          */
         private activeAttributes();
-        /**
-         * 准备顶点缓冲列表
-         */
-        private prepareAttributeBuffers(attributes);
         /**
          * 激活常量
          */
@@ -1247,6 +1284,7 @@ declare module me.feng3d {
 declare module me.feng3d {
     /**
      * 3D对象缓冲管理者
+     * @author feng 2016-06-20
      */
     class Object3DBufferManager {
         map: Map<WebGLRenderingContext, Map<Object3D, Object3DBuffer>>;
@@ -1257,6 +1295,7 @@ declare module me.feng3d {
 declare module me.feng3d {
     /**
      * 3D上下文缓冲中心
+     * @author feng 2016-06-20
      */
     class Context3DBufferCenter {
         /**
