@@ -1199,7 +1199,7 @@ declare module me.feng3d {
      * 3D对象渲染数据
      * @author feng 2016-06-20
      */
-    class Object3DRenderData {
+    class RenderData {
         object3D: Object3D;
         /**
          * 顶点索引缓冲
@@ -1234,9 +1234,9 @@ declare module me.feng3d {
         /**
          * 获取3D对象渲染数据实例
          */
-        static getInstance(object3D: Object3D): Object3DRenderData;
+        static getInstance(object3D: Object3D): RenderData;
         private renderBufferMap;
-        getRenderBuffer(context3D: WebGLRenderingContext): Object3DRenderBuffer;
+        getRenderBuffer(context3D: WebGLRenderingContext): RenderBuffer;
         /**
          * 构建3D对象渲染数据
          */
@@ -1268,7 +1268,7 @@ declare module me.feng3d {
      * 3D对象缓冲
      * @author feng 2016-06-20
      */
-    class Object3DRenderBuffer {
+    class RenderBuffer {
         /**
          * 3D上下文
          */
@@ -1277,7 +1277,7 @@ declare module me.feng3d {
          * 渲染数据
          */
         private renderData;
-        constructor(context3D: WebGLRenderingContext, renderData: Object3DRenderData);
+        constructor(context3D: WebGLRenderingContext, renderData: RenderData);
         /**
          * 激活缓冲
          */
