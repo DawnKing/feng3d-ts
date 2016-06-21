@@ -3070,7 +3070,7 @@ var me;
             Object3DRenderData.prototype.getRenderBuffer = function (context3D) {
                 var renderBuffer = this.renderBufferMap.get(context3D);
                 if (!renderBuffer) {
-                    renderBuffer = new feng3d.Object3DBuffer(context3D, this);
+                    renderBuffer = new feng3d.Object3DRenderBuffer(context3D, this);
                     this.renderBufferMap.push(context3D, renderBuffer);
                 }
                 return renderBuffer;
@@ -3147,15 +3147,15 @@ var me;
          * 3D对象缓冲
          * @author feng 2016-06-20
          */
-        var Object3DBuffer = (function () {
-            function Object3DBuffer(context3D, renderData) {
+        var Object3DRenderBuffer = (function () {
+            function Object3DRenderBuffer(context3D, renderData) {
                 this.context3D = context3D;
                 this.renderData = renderData;
             }
             /**
              * 激活缓冲
              */
-            Object3DBuffer.prototype.active = function () {
+            Object3DRenderBuffer.prototype.active = function () {
                 this.renderData.prepare();
                 this.activeProgram();
                 this.activeAttributes();
@@ -3165,13 +3165,13 @@ var me;
             /**
              * 激活程序
              */
-            Object3DBuffer.prototype.activeProgram = function () {
+            Object3DRenderBuffer.prototype.activeProgram = function () {
                 this.renderData.programBuffer.active(this.context3D);
             };
             /**
              * 激活属性
              */
-            Object3DBuffer.prototype.activeAttributes = function () {
+            Object3DRenderBuffer.prototype.activeAttributes = function () {
                 var attributes = this.renderData.attributes;
                 var locations = this.renderData.programBuffer.getAttribLocations(this.context3D);
                 for (var name in locations) {
@@ -3188,7 +3188,7 @@ var me;
             /**
              * 激活常量
              */
-            Object3DBuffer.prototype.activeUniforms = function () {
+            Object3DRenderBuffer.prototype.activeUniforms = function () {
                 var uniforms = this.renderData.uniforms;
                 //获取属性在gpu中地址
                 var shaderProgram = this.renderData.programBuffer.getShaderProgram(this.context3D);
@@ -3203,7 +3203,7 @@ var me;
             /**
              * 绘制
              */
-            Object3DBuffer.prototype.draw = function () {
+            Object3DRenderBuffer.prototype.draw = function () {
                 var indexBuffer = this.renderData.indexBuffer;
                 var buffer = feng3d.Context3DBufferCenter.getInstance(this.context3D) //
                     .getIndexBuffer(indexBuffer.indices);
@@ -3211,9 +3211,9 @@ var me;
                 this.context3D.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, buffer);
                 this.context3D.drawElements(WebGLRenderingContext.TRIANGLES, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
             };
-            return Object3DBuffer;
+            return Object3DRenderBuffer;
         }());
-        feng3d.Object3DBuffer = Object3DBuffer;
+        feng3d.Object3DRenderBuffer = Object3DRenderBuffer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

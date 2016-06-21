@@ -1236,7 +1236,7 @@ declare module me.feng3d {
          */
         static getInstance(object3D: Object3D): Object3DRenderData;
         private renderBufferMap;
-        getRenderBuffer(context3D: WebGLRenderingContext): Object3DBuffer;
+        getRenderBuffer(context3D: WebGLRenderingContext): Object3DRenderBuffer;
         /**
          * 构建3D对象渲染数据
          */
@@ -1268,7 +1268,7 @@ declare module me.feng3d {
      * 3D对象缓冲
      * @author feng 2016-06-20
      */
-    class Object3DBuffer {
+    class Object3DRenderBuffer {
         /**
          * 3D上下文
          */
