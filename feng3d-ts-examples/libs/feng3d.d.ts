@@ -68,7 +68,9 @@ declare module me.feng3d {
      * 获取对象UID
      * @author feng 2016-05-08
      */
-    function getUID(object: any): any;
+    function getUID(object: {
+        __uid__?: string;
+    }): any;
 }
 declare module me.feng3d {
     class Version {
@@ -1226,6 +1228,16 @@ declare module me.feng3d {
             };
         };
         /**
+         * 渲染数据字典
+         */
+        private static renderDataMap;
+        /**
+         * 获取3D对象渲染数据实例
+         */
+        static getInstance(object3D: Object3D): Object3DRenderData;
+        private renderBufferMap;
+        getRenderBuffer(context3D: WebGLRenderingContext): Object3DBuffer;
+        /**
          * 构建3D对象渲染数据
          */
         constructor(object3D: Object3D);
@@ -1262,14 +1274,10 @@ declare module me.feng3d {
          */
         private context3D;
         /**
-         * 渲染对象
-         */
-        private object3D;
-        /**
          * 渲染数据
          */
         private renderData;
-        constructor(context3D: WebGLRenderingContext, object3D: Object3D);
+        constructor(context3D: WebGLRenderingContext, renderData: Object3DRenderData);
         /**
          * 激活缓冲
          */
@@ -1291,17 +1299,6 @@ declare module me.feng3d {
          */
         private draw();
     }
-}
-declare module me.feng3d {
-    /**
-     * 3D对象缓冲管理者
-     * @author feng 2016-06-20
-     */
-    class Object3DBufferManager {
-        map: Map<WebGLRenderingContext, Map<Object3D, Object3DBuffer>>;
-        getBuffer(context3D: WebGLRenderingContext, object3D: Object3D): Object3DBuffer;
-    }
-    var object3DBufferManager: Object3DBufferManager;
 }
 declare module me.feng3d {
     /**

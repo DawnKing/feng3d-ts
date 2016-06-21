@@ -216,7 +216,7 @@ var me;
             var uid = [
                 className,
                 feng3d.StringUtils.getString(~~uidStart[className], 8, "0", false),
-                Date.now()
+                Date.now(),
             ].join("-");
             uidStart[className] = ~~uidStart[className] + 1;
             return uid;
@@ -2737,7 +2737,8 @@ var me;
                 perspectiveMatrix.append(camera.projectionMatrix3D);
                 context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uPMatrix, perspectiveMatrix);
                 //绘制对象
-                var object3DBuffer = feng3d.object3DBufferManager.getBuffer(this.context3D, object3D);
+                var renderData = feng3d.Object3DRenderData.getInstance(object3D);
+                var object3DBuffer = renderData.getRenderBuffer(this.context3D);
                 object3DBuffer.active();
             };
             return Renderer;
@@ -3052,8 +3053,28 @@ var me;
              * 构建3D对象渲染数据
              */
             function Object3DRenderData(object3D) {
+                this.renderBufferMap = new feng3d.Map();
                 this.object3D = object3D;
             }
+            /**
+             * 获取3D对象渲染数据实例
+             */
+            Object3DRenderData.getInstance = function (object3D) {
+                var renderData = this.renderDataMap.get(object3D);
+                if (!renderData) {
+                    renderData = new Object3DRenderData(object3D);
+                    this.renderDataMap.push(object3D, renderData);
+                }
+                return renderData;
+            };
+            Object3DRenderData.prototype.getRenderBuffer = function (context3D) {
+                var renderBuffer = this.renderBufferMap.get(context3D);
+                if (!renderBuffer) {
+                    renderBuffer = new feng3d.Object3DBuffer(context3D, this);
+                    this.renderBufferMap.push(context3D, renderBuffer);
+                }
+                return renderBuffer;
+            };
             /**
              * 准备数据
              */
@@ -3109,6 +3130,10 @@ var me;
                     this.uniforms[name].buffer = eventData.buffer;
                 }
             };
+            /**
+             * 渲染数据字典
+             */
+            Object3DRenderData.renderDataMap = new feng3d.Map();
             return Object3DRenderData;
         }());
         feng3d.Object3DRenderData = Object3DRenderData;
@@ -3123,10 +3148,9 @@ var me;
          * @author feng 2016-06-20
          */
         var Object3DBuffer = (function () {
-            function Object3DBuffer(context3D, object3D) {
+            function Object3DBuffer(context3D, renderData) {
                 this.context3D = context3D;
-                this.object3D = object3D;
-                this.renderData = new feng3d.Object3DRenderData(object3D);
+                this.renderData = renderData;
             }
             /**
              * 激活缓冲
@@ -3190,37 +3214,6 @@ var me;
             return Object3DBuffer;
         }());
         feng3d.Object3DBuffer = Object3DBuffer;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 3D对象缓冲管理者
-         * @author feng 2016-06-20
-         */
-        var Object3DBufferManager = (function () {
-            function Object3DBufferManager() {
-                this.map = new feng3d.Map();
-            }
-            Object3DBufferManager.prototype.getBuffer = function (context3D, object3D) {
-                var glMap = this.map.get(context3D);
-                if (glMap == null) {
-                    glMap = new feng3d.Map();
-                    this.map.push(context3D, glMap);
-                }
-                var buffer = glMap.get(object3D);
-                if (buffer == null) {
-                    buffer = new feng3d.Object3DBuffer(context3D, object3D);
-                    glMap.push(object3D, buffer);
-                }
-                return buffer;
-            };
-            return Object3DBufferManager;
-        }());
-        feng3d.Object3DBufferManager = Object3DBufferManager;
-        feng3d.object3DBufferManager = new Object3DBufferManager();
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
