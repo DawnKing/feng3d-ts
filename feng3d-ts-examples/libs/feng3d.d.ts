@@ -1006,6 +1006,9 @@ declare module me.feng3d {
          * 渲染
          */
         render(): void;
+        /**
+         * 绘制3D对象
+         */
         private drawObject3D(object3D);
     }
 }
@@ -1429,8 +1432,6 @@ declare module me.feng3d {
          * Context3D数据缓冲
          */
         context3DBuffer: Context3DBuffer;
-        private initShaders(gl);
-        private getShader(gl, theSource, type);
     }
 }
 declare module me.feng3d {
