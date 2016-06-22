@@ -492,6 +492,37 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 对象池
+     * @author feng 2016-04-26
+     */
+    class Context3DPool {
+        /**
+         * 获取渲染程序
+         * @param context3D     3D环境
+         * @param vertexCode    顶点着色器代码
+         * @param fragmentCode  片段着色器代码
+         * @return  渲染程序
+         */
+        getWebGLProgram(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): WebGLProgram;
+        /**
+         * 获取顶点渲染程序
+         * @param context3D         3D环境上下文
+         * @param vertexCode        顶点渲染代码
+         * @return                  顶点渲染程序
+         */
+        static getVertexShader(context3D: WebGLRenderingContext, vertexCode: string): void;
+        /** WebGLProgram对象池 */
+        private webGLProgramPool;
+        /** 顶点渲染程序对象池 */
+        private vertexShaderPool;
+    }
+    /**
+     * 3D环境对象池
+     */
+    var context3DPool: Context3DPool;
+}
+declare module me.feng3d {
+    /**
      * 3D空间
      * @author feng 2016-04-26
      */
@@ -1169,16 +1200,14 @@ declare module me.feng3d {
                 type: string;
             };
         };
-        /**
-         * 初始化
-         */
-        private init(context3D);
-        /**
-         * 获取渲染程序
-         * @param code      渲染代码
-         * @param type      渲染代码类型
-         */
-        private getShader(context3D, code, type);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染代码工具
+     * @author feng 2016-06-22
+     */
+    class ShaderCodeUtils {
         /**
          * 获取程序属性列表
          */
@@ -1195,6 +1224,36 @@ declare module me.feng3d {
                 type: string;
             };
         };
+        /**
+         * 获取WebGLProgram
+         * @param context3D     3D环境上下文
+         * @param vertexCode    顶点着色器代码
+         * @param fragmentCode  片段着色器代码
+         * @return  WebGL程序
+         */
+        static getWebGLProgram(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): WebGLProgram;
+        /**
+         * 获取顶点渲染程序
+         * @param context3D         3D环境上下文
+         * @param vertexCode        顶点渲染代码
+         * @return                  顶点渲染程序
+         */
+        static getVertexShader(context3D: WebGLRenderingContext, vertexCode: string): WebGLShader;
+        /**
+         * 获取片段渲染程序
+         * @param context3D         3D环境上下文
+         * @param fragmentCode      片段渲染代码
+         * @return                  片段渲染程序
+         */
+        static getFragmentShader(context3D: WebGLRenderingContext, fragmentCode: string): WebGLShader;
+        /**
+         * 编译渲染程序
+         * @param context3D         3D环境上下文
+         * @param shader            渲染程序
+         * @param shaderCode        渲染代码
+         * @return                  完成编译的渲染程序
+         */
+        static compileShader(context3D: WebGLRenderingContext, shader: WebGLShader, shaderCode: string): WebGLShader;
     }
 }
 declare module me.feng3d {
