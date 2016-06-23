@@ -495,7 +495,11 @@ declare module me.feng3d {
      * 对象池
      * @author feng 2016-04-26
      */
-    class Context3DPool {
+    class RenderBufferPool {
+        /**
+         * @param context3D     3D环境
+         */
+        private getContext3DBufferPool(context3D);
         /**
          * 获取渲染程序
          * @param context3D     3D环境
@@ -506,20 +510,27 @@ declare module me.feng3d {
         getWebGLProgram(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): WebGLProgram;
         /**
          * 获取顶点渲染程序
-         * @param context3D         3D环境上下文
+         * @param context3D         3D环境
          * @param vertexCode        顶点渲染代码
          * @return                  顶点渲染程序
          */
-        static getVertexShader(context3D: WebGLRenderingContext, vertexCode: string): void;
-        /** WebGLProgram对象池 */
-        private webGLProgramPool;
-        /** 顶点渲染程序对象池 */
-        private vertexShaderPool;
+        getVertexShader(context3D: WebGLRenderingContext, vertexCode: string): WebGLShader;
+        /**
+         * 获取顶点渲染程序
+         * @param context3D         3D环境
+         * @param fragmentCode      顶点渲染代码
+         * @return                  顶点渲染程序
+         */
+        getFragmentShader(context3D: WebGLRenderingContext, fragmentCode: string): WebGLShader;
+        /**
+         * 3D环境缓冲池
+         */
+        private context3DBufferPools;
     }
     /**
      * 3D环境对象池
      */
-    var context3DPool: Context3DPool;
+    var context3DPool: RenderBufferPool;
 }
 declare module me.feng3d {
     /**
