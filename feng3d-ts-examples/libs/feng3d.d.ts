@@ -523,6 +523,15 @@ declare module me.feng3d {
          */
         getFragmentShader(context3D: WebGLRenderingContext, fragmentCode: string): WebGLShader;
         /**
+         * 获取索引缓冲
+         */
+        getIndexBuffer(context3D: WebGLRenderingContext, indices: Uint16Array): WebGLBuffer;
+        /**
+         * 获取顶点属性缓冲
+         * @param data  数据
+         */
+        getVABuffer(context3D: WebGLRenderingContext, data: Float32Array): WebGLBuffer;
+        /**
          * 3D环境缓冲池
          */
         private context3DBufferPools;
@@ -1168,7 +1177,6 @@ declare module me.feng3d {
     class ProgramBuffer {
         private _vertexCode;
         private _fragmentCode;
-        private _shaderProgram;
         /**
          * 顶点渲染程序代码
          */
@@ -1235,36 +1243,6 @@ declare module me.feng3d {
                 type: string;
             };
         };
-        /**
-         * 获取WebGLProgram
-         * @param context3D     3D环境上下文
-         * @param vertexCode    顶点着色器代码
-         * @param fragmentCode  片段着色器代码
-         * @return  WebGL程序
-         */
-        static getWebGLProgram(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): WebGLProgram;
-        /**
-         * 获取顶点渲染程序
-         * @param context3D         3D环境上下文
-         * @param vertexCode        顶点渲染代码
-         * @return                  顶点渲染程序
-         */
-        static getVertexShader(context3D: WebGLRenderingContext, vertexCode: string): WebGLShader;
-        /**
-         * 获取片段渲染程序
-         * @param context3D         3D环境上下文
-         * @param fragmentCode      片段渲染代码
-         * @return                  片段渲染程序
-         */
-        static getFragmentShader(context3D: WebGLRenderingContext, fragmentCode: string): WebGLShader;
-        /**
-         * 编译渲染程序
-         * @param context3D         3D环境上下文
-         * @param shader            渲染程序
-         * @param shaderCode        渲染代码
-         * @return                  完成编译的渲染程序
-         */
-        static compileShader(context3D: WebGLRenderingContext, shader: WebGLShader, shaderCode: string): WebGLShader;
     }
 }
 declare module me.feng3d {
@@ -1371,50 +1349,6 @@ declare module me.feng3d {
          * 绘制
          */
         private draw();
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3D上下文缓冲中心
-     * @author feng 2016-06-20
-     */
-    class Context3DBufferCenter {
-        /**
-         * 3D上下文缓冲中心字典
-         */
-        private static map;
-        /**
-         * 3D上下文
-         */
-        private context3D;
-        /**
-         * 缓冲字典
-         */
-        private bufferMap;
-        /**
-         * 获取3D上下文缓冲中心
-         * @param context3D 3D上下文
-         */
-        static getInstance(context3D: WebGLRenderingContext): Context3DBufferCenter;
-        /**
-         * 构建3D上下文缓冲中心
-         * @param context3D 3D上下文
-         */
-        constructor(context3D: WebGLRenderingContext);
-        /**
-         * 获取索引缓冲
-         */
-        getIndexBuffer(indices: Uint16Array): WebGLBuffer;
-        /**
-         * 获取顶点属性缓冲
-         * @param data  数据
-         */
-        getVABuffer(data: Float32Array): WebGLBuffer;
-        /**
-         * 获取缓冲
-         * @param data  数据
-         */
-        getBuffer(data: ArrayBufferView | ArrayBuffer, target: number): WebGLBuffer;
     }
 }
 declare module me.feng3d {
