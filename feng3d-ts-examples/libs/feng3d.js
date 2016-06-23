@@ -3154,23 +3154,13 @@ var me;
              */
             ProgramBuffer.prototype.invalidCode = function () {
             };
-            ProgramBuffer.prototype.active = function (context3D) {
-                var shaderProgram = this.getShaderProgram(context3D);
-                context3D.useProgram(shaderProgram);
-            };
-            /**
-             * 渲染程序
-             */
-            ProgramBuffer.prototype.getShaderProgram = function (context3D) {
-                return feng3d.context3DPool.getWebGLProgram(context3D, this._vertexCode, this._fragmentCode);
-            };
             /**
              * 获取属性gpu地址
              */
             ProgramBuffer.prototype.getAttribLocations = function (context3D) {
                 var attributes = feng3d.ShaderCodeUtils.getAttributes(this._vertexCode);
                 //获取属性在gpu中地址
-                var shaderProgram = this.getShaderProgram(context3D);
+                var shaderProgram = feng3d.context3DPool.getWebGLProgram(context3D, this._vertexCode, this._fragmentCode);
                 for (var name in attributes) {
                     if (attributes.hasOwnProperty(name)) {
                         var element = attributes[name];
@@ -3367,7 +3357,9 @@ var me;
              * 激活程序
              */
             RenderBuffer.prototype.activeProgram = function () {
-                this.renderData.programBuffer.active(this.context3D);
+                var programBuffer = this.renderData.programBuffer;
+                var shaderProgram = feng3d.context3DPool.getWebGLProgram(this.context3D, programBuffer.vertexCode, programBuffer.fragmentCode);
+                this.context3D.useProgram(shaderProgram);
             };
             /**
              * 激活属性
@@ -3391,7 +3383,8 @@ var me;
             RenderBuffer.prototype.activeUniforms = function () {
                 var uniforms = this.renderData.uniforms;
                 //获取属性在gpu中地址
-                var shaderProgram = this.renderData.programBuffer.getShaderProgram(this.context3D);
+                var programBuffer = this.renderData.programBuffer;
+                var shaderProgram = feng3d.context3DPool.getWebGLProgram(this.context3D, programBuffer.vertexCode, programBuffer.fragmentCode);
                 for (var name in uniforms) {
                     if (uniforms.hasOwnProperty(name)) {
                         var element = uniforms[name];

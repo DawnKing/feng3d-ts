@@ -1189,11 +1189,6 @@ declare module me.feng3d {
          * 使失效
          */
         private invalidCode();
-        active(context3D: WebGLRenderingContext): void;
-        /**
-         * 渲染程序
-         */
-        getShaderProgram(context3D: WebGLRenderingContext): WebGLProgram;
         /**
          * 获取属性gpu地址
          */
