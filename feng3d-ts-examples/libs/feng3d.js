@@ -1439,6 +1439,71 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 渲染器
+         * @author feng 2016-05-01
+         */
+        var Renderer = (function () {
+            /**
+             * 构建渲染器
+             * @param context3D    webgl渲染上下文
+             * @param scene 场景
+             * @param camera 摄像机对象
+             */
+            function Renderer(context3D, scene, camera) {
+                this.context3D = context3D;
+                this.scene = scene;
+                this.camera = camera;
+                this.initGL();
+            }
+            /**
+             * 初始化GL
+             */
+            Renderer.prototype.initGL = function () {
+                this.context3D.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
+                this.context3D.clearDepth(1.0); // Clear everything
+                this.context3D.enable(this.context3D.DEPTH_TEST); // Enable depth testing
+                this.context3D.depthFunc(this.context3D.LEQUAL); // Near things obscure far things
+            };
+            /**
+             * 渲染
+             */
+            Renderer.prototype.render = function () {
+                var _this = this;
+                this.context3D.clear(this.context3D.COLOR_BUFFER_BIT | this.context3D.DEPTH_BUFFER_BIT);
+                var renderables = this.scene.getRenderables();
+                renderables.forEach(function (element) {
+                    _this.drawObject3D(element);
+                });
+            };
+            /**
+             * 绘制3D对象
+             */
+            Renderer.prototype.drawObject3D = function (object3D) {
+                var context3DBuffer = object3D.getOrCreateComponentByClass(feng3d.RenderDataHolder);
+                //模型矩阵
+                var mvMatrix = object3D.space3D.transform3D;
+                context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uMVMatrix, mvMatrix);
+                //计算投影矩阵
+                var perspectiveMatrix = this.camera.space3D.transform3D.clone();
+                var camera = this.camera.getComponentByClass(feng3d.Camera);
+                perspectiveMatrix.invert();
+                perspectiveMatrix.append(camera.projectionMatrix3D);
+                context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uPMatrix, perspectiveMatrix);
+                //绘制对象
+                var renderData = feng3d.RenderData.getInstance(object3D);
+                var object3DBuffer = renderData.getRenderBuffer(this.context3D);
+                object3DBuffer.active();
+            };
+            return Renderer;
+        }());
+        feng3d.Renderer = Renderer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 对象池
          * @author feng 2016-04-26
          */
@@ -3182,71 +3247,6 @@ var me;
             }
             factory.createCamera = createCamera;
         })(factory = feng3d.factory || (feng3d.factory = {}));
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 渲染器
-         * @author feng 2016-05-01
-         */
-        var Renderer = (function () {
-            /**
-             * 构建渲染器
-             * @param context3D    webgl渲染上下文
-             * @param scene 场景
-             * @param camera 摄像机对象
-             */
-            function Renderer(context3D, scene, camera) {
-                this.context3D = context3D;
-                this.scene = scene;
-                this.camera = camera;
-                this.initGL();
-            }
-            /**
-             * 初始化GL
-             */
-            Renderer.prototype.initGL = function () {
-                this.context3D.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
-                this.context3D.clearDepth(1.0); // Clear everything
-                this.context3D.enable(this.context3D.DEPTH_TEST); // Enable depth testing
-                this.context3D.depthFunc(this.context3D.LEQUAL); // Near things obscure far things
-            };
-            /**
-             * 渲染
-             */
-            Renderer.prototype.render = function () {
-                var _this = this;
-                this.context3D.clear(this.context3D.COLOR_BUFFER_BIT | this.context3D.DEPTH_BUFFER_BIT);
-                var renderables = this.scene.getRenderables();
-                renderables.forEach(function (element) {
-                    _this.drawObject3D(element);
-                });
-            };
-            /**
-             * 绘制3D对象
-             */
-            Renderer.prototype.drawObject3D = function (object3D) {
-                var context3DBuffer = object3D.getOrCreateComponentByClass(feng3d.RenderDataHolder);
-                //模型矩阵
-                var mvMatrix = object3D.space3D.transform3D;
-                context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uMVMatrix, mvMatrix);
-                //计算投影矩阵
-                var perspectiveMatrix = this.camera.space3D.transform3D.clone();
-                var camera = this.camera.getComponentByClass(feng3d.Camera);
-                perspectiveMatrix.invert();
-                perspectiveMatrix.append(camera.projectionMatrix3D);
-                context3DBuffer.mapUniformBuffer(feng3d.Context3DBufferID.uPMatrix, perspectiveMatrix);
-                //绘制对象
-                var renderData = feng3d.RenderData.getInstance(object3D);
-                var object3DBuffer = renderData.getRenderBuffer(this.context3D);
-                object3DBuffer.active();
-            };
-            return Renderer;
-        }());
-        feng3d.Renderer = Renderer;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

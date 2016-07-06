@@ -684,6 +684,37 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 渲染器
+     * @author feng 2016-05-01
+     */
+    class Renderer {
+        private context3D;
+        private shaderProgram;
+        private scene;
+        private camera;
+        /**
+         * 构建渲染器
+         * @param context3D    webgl渲染上下文
+         * @param scene 场景
+         * @param camera 摄像机对象
+         */
+        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        /**
+         * 初始化GL
+         */
+        private initGL();
+        /**
+         * 渲染
+         */
+        render(): void;
+        /**
+         * 绘制3D对象
+         */
+        private drawObject3D(object3D);
+    }
+}
+declare module me.feng3d {
+    /**
      * 对象池
      * @author feng 2016-04-26
      */
@@ -1219,37 +1250,6 @@ declare module me.feng3d.factory {
      * 创建摄像机3D对象
      */
     function createCamera(): Object3D;
-}
-declare module me.feng3d {
-    /**
-     * 渲染器
-     * @author feng 2016-05-01
-     */
-    class Renderer {
-        private context3D;
-        private shaderProgram;
-        private scene;
-        private camera;
-        /**
-         * 构建渲染器
-         * @param context3D    webgl渲染上下文
-         * @param scene 场景
-         * @param camera 摄像机对象
-         */
-        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
-        /**
-         * 初始化GL
-         */
-        private initGL();
-        /**
-         * 渲染
-         */
-        render(): void;
-        /**
-         * 绘制3D对象
-         */
-        private drawObject3D(object3D);
-    }
 }
 declare module me.feng3d {
     /**
