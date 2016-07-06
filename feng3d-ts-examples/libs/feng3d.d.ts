@@ -492,6 +492,198 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 渲染数据拥有者
+     * @author feng 2016-6-7
+     */
+    class RenderDataHolder extends Component {
+        private indexBuffer;
+        private programBuffer;
+        private attributes;
+        private uniforms;
+        /**
+         * 创建Context3D数据缓冲
+         */
+        constructor();
+        /**
+         * 映射索引缓冲
+         */
+        mapIndexBuffer(value: Uint16Array): void;
+        /**
+         * 映射属性缓冲
+         */
+        mapAttributeBuffer(name: string, value: Uint16Array, stride: number): void;
+        /**
+         * 映射程序缓冲
+         * @param vertexCode        顶点渲染程序代码
+         * @param fragmentCode      片段渲染程序代码
+         */
+        mapProgramBuffer(vertexCode: string, fragmentCode: string): void;
+        /**
+         * 映射常量缓冲
+         */
+        mapUniformBuffer(name: string, data: Matrix3D): void;
+        /**
+         * 处理获取索引缓冲事件
+         */
+        private onGetIndexBuffer(event);
+        /**
+         * 处理获取属性缓冲事件
+         */
+        private onGetAttributeBuffer(event);
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetUniformBuffer(event);
+        /**
+         * 处理获取缓冲事件
+         */
+        private onGetProgramBuffer(event);
+    }
+    /**
+     * 索引渲染数据
+     */
+    class IndexRenderData {
+        /**
+         * 索引数据
+         */
+        indices: Uint16Array;
+    }
+    /**
+     * 属性渲染数据
+     * @author feng 2014-8-14
+     */
+    class AttributeRenderData {
+        /**
+         * 属性名称
+         */
+        name: string;
+        /** 属性数据 */
+        data: Float32Array;
+        /** 属性数据长度 */
+        size: number;
+    }
+    /**
+     * 常量渲染数据
+     */
+    class UniformRenderData {
+        /**
+         * 常量名称
+         */
+        name: string;
+        /**
+         * 矩阵数据
+         */
+        matrix: Matrix3D;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象渲染数据
+     * @author feng 2016-06-20
+     */
+    class RenderData {
+        object3D: Object3D;
+        /**
+         * 顶点索引缓冲
+         */
+        indexBuffer: IndexRenderData;
+        /**
+         * 渲染程序缓存
+         */
+        programBuffer: ProgramBuffer;
+        /**
+         * 属性数据列表
+         */
+        attributes: {
+            [name: string]: {
+                type: string;
+                buffer?: AttributeRenderData;
+            };
+        };
+        /**
+         * 常量数据列表
+         */
+        uniforms: {
+            [name: string]: {
+                type: string;
+                buffer?: UniformRenderData;
+            };
+        };
+        /**
+         * 渲染数据字典
+         */
+        private static renderDataMap;
+        /**
+         * 获取3D对象渲染数据实例
+         */
+        static getInstance(object3D: Object3D): RenderData;
+        private renderBufferMap;
+        getRenderBuffer(context3D: WebGLRenderingContext): RenderBuffer;
+        /**
+         * 构建3D对象渲染数据
+         */
+        constructor(object3D: Object3D);
+        /**
+         * 准备数据
+         */
+        prepare(): void;
+        /**
+         * 准备程序
+         */
+        private prepareProgram();
+        /**
+         * 准备索引
+         */
+        private prepareIndex();
+        /**
+         * 准备属性
+         */
+        private prepareAttributes();
+        /**
+         * 准备常量
+         */
+        private prepareUniforms();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象缓冲
+     * @author feng 2016-06-20
+     */
+    class RenderBuffer {
+        /**
+         * 3D上下文
+         */
+        private context3D;
+        /**
+         * 渲染数据
+         */
+        private renderData;
+        constructor(context3D: WebGLRenderingContext, renderData: RenderData);
+        /**
+         * 激活缓冲
+         */
+        active(): void;
+        /**
+         * 激活程序
+         */
+        activeProgram(): void;
+        /**
+         * 激活属性
+         */
+        private activeAttributes();
+        /**
+         * 激活常量
+         */
+        activeUniforms(): void;
+        /**
+         * 绘制
+         */
+        private draw();
+    }
+}
+declare module me.feng3d {
+    /**
      * 对象池
      * @author feng 2016-04-26
      */
@@ -784,17 +976,13 @@ declare module me.feng3d {
      * 几何体
      * @author feng 2016-04-28
      */
-    class Geometry extends Component {
+    class Geometry extends RenderDataHolder {
         private _vaIdList;
         /** 顶点属性数据步长字典 */
         private strideObj;
         /** 顶点属性数据字典 */
         private vaDataObj;
         private _indices;
-        /**
-         * Context3D数据缓冲
-         */
-        context3DBuffer: Context3DBuffer;
         /**
          * 创建一个几何体
          */
@@ -1085,92 +1273,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * Context3D数据缓冲
-     * @author feng 2016-6-7
-     */
-    class Context3DBuffer extends Component {
-        private indexBuffer;
-        private programBuffer;
-        private attributes;
-        private uniforms;
-        /**
-         * 创建Context3D数据缓冲
-         */
-        constructor();
-        /**
-         * 映射索引缓冲
-         */
-        mapIndexBuffer(value: Uint16Array): void;
-        /**
-         * 映射属性缓冲
-         */
-        mapAttributeBuffer(name: string, value: Uint16Array, stride: number): void;
-        /**
-         * 映射程序缓冲
-         * @param vertexCode        顶点渲染程序代码
-         * @param fragmentCode      片段渲染程序代码
-         */
-        mapProgramBuffer(vertexCode: string, fragmentCode: string): void;
-        /**
-         * 映射常量缓冲
-         */
-        mapUniformBuffer(name: string, data: Matrix3D): void;
-        /**
-         * 处理获取索引缓冲事件
-         */
-        private onGetIndexBuffer(event);
-        /**
-         * 处理获取属性缓冲事件
-         */
-        private onGetAttributeBuffer(event);
-        /**
-         * 处理获取缓冲事件
-         */
-        private onGetUniformBuffer(event);
-        /**
-         * 处理获取缓冲事件
-         */
-        private onGetProgramBuffer(event);
-    }
-    /**
-     * 索引缓冲
-     */
-    class IndexBuffer {
-        /**
-         * 索引数据
-         */
-        indices: Uint16Array;
-    }
-    /**
-     * 属性缓冲
-     * @author feng 2014-8-14
-     */
-    class AttributeBuffer {
-        /**
-         * 属性缓冲名称
-         */
-        name: string;
-        /** 顶点数据 */
-        data: Float32Array;
-        /** 与每个顶点关联的 32 位（4 字节）数据值的数量。 */
-        size: number;
-    }
-    /**
-     * 常量缓冲
-     */
-    class UniformBuffer {
-        /**
-         * 常量缓冲名称
-         */
-        name: string;
-        /**
-         * 矩阵数据
-         */
-        matrix: Matrix3D;
-    }
-}
-declare module me.feng3d {
-    /**
      * 渲染程序缓存
      * @author feng 2016-05-09
      */
@@ -1242,112 +1344,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3D对象渲染数据
-     * @author feng 2016-06-20
-     */
-    class RenderData {
-        object3D: Object3D;
-        /**
-         * 顶点索引缓冲
-         */
-        indexBuffer: IndexBuffer;
-        /**
-         * 渲染程序缓存
-         */
-        programBuffer: ProgramBuffer;
-        /**
-         * 属性数据列表
-         */
-        attributes: {
-            [name: string]: {
-                type: string;
-                buffer?: AttributeBuffer;
-            };
-        };
-        /**
-         * 常量数据列表
-         */
-        uniforms: {
-            [name: string]: {
-                type: string;
-                buffer?: UniformBuffer;
-            };
-        };
-        /**
-         * 渲染数据字典
-         */
-        private static renderDataMap;
-        /**
-         * 获取3D对象渲染数据实例
-         */
-        static getInstance(object3D: Object3D): RenderData;
-        private renderBufferMap;
-        getRenderBuffer(context3D: WebGLRenderingContext): RenderBuffer;
-        /**
-         * 构建3D对象渲染数据
-         */
-        constructor(object3D: Object3D);
-        /**
-         * 准备数据
-         */
-        prepare(): void;
-        /**
-         * 准备程序
-         */
-        private prepareProgram();
-        /**
-         * 准备索引
-         */
-        private prepareIndex();
-        /**
-         * 准备属性
-         */
-        private prepareAttributes();
-        /**
-         * 准备常量
-         */
-        private prepareUniforms();
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3D对象缓冲
-     * @author feng 2016-06-20
-     */
-    class RenderBuffer {
-        /**
-         * 3D上下文
-         */
-        private context3D;
-        /**
-         * 渲染数据
-         */
-        private renderData;
-        constructor(context3D: WebGLRenderingContext, renderData: RenderData);
-        /**
-         * 激活缓冲
-         */
-        active(): void;
-        /**
-         * 激活程序
-         */
-        activeProgram(): void;
-        /**
-         * 激活属性
-         */
-        private activeAttributes();
-        /**
-         * 激活常量
-         */
-        activeUniforms(): void;
-        /**
-         * 绘制
-         */
-        private draw();
-    }
-}
-declare module me.feng3d {
-    /**
      * Context3D缓冲事件
      * @author feng 2016-05-26
      */
@@ -1380,7 +1376,7 @@ declare module me.feng3d {
         /**
          * 属性缓冲
          */
-        buffer: AttributeBuffer;
+        buffer: AttributeRenderData;
     }
     /**
      * 获取IndexBuffer事件数据
@@ -1389,7 +1385,7 @@ declare module me.feng3d {
         /**
          * 索引缓冲
          */
-        buffer: IndexBuffer;
+        buffer: IndexRenderData;
     }
     /**
      * 获取ProgramBuffer事件数据
@@ -1411,7 +1407,7 @@ declare module me.feng3d {
         /**
          * 常量缓存
          */
-        buffer: UniformBuffer;
+        buffer: UniformRenderData;
     }
 }
 declare module me.feng3d {
@@ -1419,7 +1415,7 @@ declare module me.feng3d {
      * 材质
      * @author feng 2016-05-02
      */
-    class Material extends Component {
+    class Material extends RenderDataHolder {
         vertexShaderStr: string;
         fragmentShaderStr: string;
         pass: MaterialPass;
@@ -1427,10 +1423,6 @@ declare module me.feng3d {
          * 构建材质
          */
         constructor();
-        /**
-         * Context3D数据缓冲
-         */
-        context3DBuffer: Context3DBuffer;
     }
 }
 declare module me.feng3d {
@@ -1439,12 +1431,20 @@ declare module me.feng3d {
      * @author feng 2016-05-02
      */
     class ColorMaterial extends Material {
+        /**
+         * 颜色
+         */
         color: number;
+        /**
+         * 透明度
+         */
+        alpha: number;
         /**
          * 构建颜色材质
          * @param color 颜色
+         * @param alpha 透明的
          */
-        constructor(color?: number);
+        constructor(color?: number, alpha?: number);
     }
 }
 declare module me.feng3d {
