@@ -517,11 +517,11 @@ declare module me.feng3d {
          * @param vertexCode        顶点渲染程序代码
          * @param fragmentCode      片段渲染程序代码
          */
-        mapProgramBuffer(vertexCode: string, fragmentCode: string): void;
+        mapProgram(vertexCode: string, fragmentCode: string): void;
         /**
-         * 映射常量缓冲
+         * 映射常量4*4矩阵
          */
-        mapUniformBuffer(name: string, data: Matrix3D): void;
+        mapUniformMatrix4fv(name: string, data: Matrix3D): void;
         /**
          * 处理获取索引缓冲事件
          */
@@ -563,9 +563,9 @@ declare module me.feng3d {
         size: number;
     }
     /**
-     * 常量渲染数据
+     * 常量4*4矩阵渲染数据
      */
-    class UniformRenderData {
+    class UniformMatrix4fvRenderData {
         /**
          * 常量名称
          */
@@ -590,7 +590,7 @@ declare module me.feng3d {
         /**
          * 渲染程序缓存
          */
-        programBuffer: ProgramBuffer;
+        programBuffer: ProgramRenderData;
         /**
          * 属性数据列表
          */
@@ -606,7 +606,7 @@ declare module me.feng3d {
         uniforms: {
             [name: string]: {
                 type: string;
-                buffer?: UniformRenderData;
+                buffer?: UniformMatrix4fvRenderData;
             };
         };
         /**
@@ -1253,7 +1253,7 @@ declare module me.feng3d.factory {
 }
 declare module me.feng3d {
     /**
-     * 3D缓冲编号
+     * 渲染数据编号
      * @author feng 2016-06-20
      */
     class Context3DBufferID {
@@ -1273,12 +1273,10 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 渲染程序缓存
+     * 渲染程序数据
      * @author feng 2016-05-09
      */
-    class ProgramBuffer {
-        private _vertexCode;
-        private _fragmentCode;
+    class ProgramRenderData {
         /**
          * 顶点渲染程序代码
          */
@@ -1287,10 +1285,6 @@ declare module me.feng3d {
          * 片段渲染程序代码
          */
         fragmentCode: string;
-        /**
-         * 使失效
-         */
-        private invalidCode();
         /**
          * 获取属性gpu地址
          */
@@ -1394,7 +1388,7 @@ declare module me.feng3d {
         /**
          * 渲染程序缓存
          */
-        buffer: ProgramBuffer;
+        buffer: ProgramRenderData;
     }
     /**
      * 获取UniformBuffer事件数据
@@ -1407,7 +1401,7 @@ declare module me.feng3d {
         /**
          * 常量缓存
          */
-        buffer: UniformRenderData;
+        buffer: UniformMatrix4fvRenderData;
     }
 }
 declare module me.feng3d {
