@@ -539,42 +539,6 @@ declare module me.feng3d {
          */
         private onGetProgramBuffer(event);
     }
-    /**
-     * 索引渲染数据
-     */
-    class IndexRenderData {
-        /**
-         * 索引数据
-         */
-        indices: Uint16Array;
-    }
-    /**
-     * 属性渲染数据
-     * @author feng 2014-8-14
-     */
-    class AttributeRenderData {
-        /**
-         * 属性名称
-         */
-        name: string;
-        /** 属性数据 */
-        data: Float32Array;
-        /** 属性数据长度 */
-        size: number;
-    }
-    /**
-     * 常量4*4矩阵渲染数据
-     */
-    class UniformMatrix4fvRenderData {
-        /**
-         * 常量名称
-         */
-        name: string;
-        /**
-         * 矩阵数据
-         */
-        matrix: Matrix3D;
-    }
 }
 declare module me.feng3d {
     /**
@@ -680,6 +644,58 @@ declare module me.feng3d {
          * 绘制
          */
         private draw();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染程序数据
+     * @author feng 2016-05-09
+     */
+    class ProgramRenderData {
+        /**
+         * 顶点渲染程序代码
+         */
+        vertexCode: string;
+        /**
+         * 片段渲染程序代码
+         */
+        fragmentCode: string;
+    }
+    /**
+     * 索引渲染数据
+     */
+    class IndexRenderData {
+        /**
+         * 索引数据
+         */
+        indices: Uint16Array;
+    }
+    /**
+     * 属性渲染数据
+     * @author feng 2014-8-14
+     */
+    class AttributeRenderData {
+        /**
+         * 属性名称
+         */
+        name: string;
+        /** 属性数据 */
+        data: Float32Array;
+        /** 属性数据长度 */
+        size: number;
+    }
+    /**
+     * 常量4*4矩阵渲染数据
+     */
+    class UniformMatrix4fvRenderData {
+        /**
+         * 常量名称
+         */
+        name: string;
+        /**
+         * 矩阵数据
+         */
+        matrix: Matrix3D;
     }
 }
 declare module me.feng3d {
@@ -1273,47 +1289,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 渲染程序数据
-     * @author feng 2016-05-09
-     */
-    class ProgramRenderData {
-        /**
-         * 顶点渲染程序代码
-         */
-        vertexCode: string;
-        /**
-         * 片段渲染程序代码
-         */
-        fragmentCode: string;
-        /**
-         * 获取属性gpu地址
-         */
-        getAttribLocations(context3D: WebGLRenderingContext): {
-            [name: string]: {
-                type: string;
-                location?: number;
-            };
-        };
-        /**
-         * 获取属性列表
-         */
-        getAttributes(): {
-            [name: string]: {
-                type: string;
-            };
-        };
-        /**
-         * 获取常量
-         */
-        getUniforms(): {
-            [name: string]: {
-                type: string;
-            };
-        };
-    }
-}
-declare module me.feng3d {
-    /**
      * 渲染代码工具
      * @author feng 2016-06-22
      */
@@ -1332,6 +1307,15 @@ declare module me.feng3d {
         static getUniforms(code: string): {
             [name: string]: {
                 type: string;
+            };
+        };
+        /**
+         * 获取属性gpu地址
+         */
+        static getAttribLocations(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): {
+            [name: string]: {
+                type: string;
+                location?: number;
             };
         };
     }

@@ -1166,14 +1166,14 @@ var me;
              * 映射索引缓冲
              */
             RenderDataHolder.prototype.mapIndexBuffer = function (value) {
-                var indexBuffer = this.indexBuffer = this.indexBuffer || new IndexRenderData();
+                var indexBuffer = this.indexBuffer = this.indexBuffer || new feng3d.IndexRenderData();
                 indexBuffer.indices = value;
             };
             /**
              * 映射属性缓冲
              */
             RenderDataHolder.prototype.mapAttributeBuffer = function (name, value, stride) {
-                var attributeBuffer = this.attributes[name] = this.attributes[name] || new AttributeRenderData();
+                var attributeBuffer = this.attributes[name] = this.attributes[name] || new feng3d.AttributeRenderData();
                 attributeBuffer.name = name;
                 attributeBuffer.data = value;
                 attributeBuffer.size = stride;
@@ -1192,7 +1192,7 @@ var me;
              * 映射常量4*4矩阵
              */
             RenderDataHolder.prototype.mapUniformMatrix4fv = function (name, data) {
-                var uniformBuffer = this.uniforms[name] = this.uniforms[name] || new UniformMatrix4fvRenderData();
+                var uniformBuffer = this.uniforms[name] = this.uniforms[name] || new feng3d.UniformMatrix4fvRenderData();
                 uniformBuffer.name = name;
                 uniformBuffer.matrix = data;
             };
@@ -1235,34 +1235,6 @@ var me;
             return RenderDataHolder;
         }(feng3d.Component));
         feng3d.RenderDataHolder = RenderDataHolder;
-        /**
-         * 索引渲染数据
-         */
-        var IndexRenderData = (function () {
-            function IndexRenderData() {
-            }
-            return IndexRenderData;
-        }());
-        feng3d.IndexRenderData = IndexRenderData;
-        /**
-         * 属性渲染数据
-         * @author feng 2014-8-14
-         */
-        var AttributeRenderData = (function () {
-            function AttributeRenderData() {
-            }
-            return AttributeRenderData;
-        }());
-        feng3d.AttributeRenderData = AttributeRenderData;
-        /**
-         * 常量4*4矩阵渲染数据
-         */
-        var UniformMatrix4fvRenderData = (function () {
-            function UniformMatrix4fvRenderData() {
-            }
-            return UniformMatrix4fvRenderData;
-        }());
-        feng3d.UniformMatrix4fvRenderData = UniformMatrix4fvRenderData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -1333,7 +1305,7 @@ var me;
              * 准备属性
              */
             RenderData.prototype.prepareAttributes = function () {
-                this.attributes = this.programBuffer.getAttributes();
+                this.attributes = feng3d.ShaderCodeUtils.getAttributes(this.programBuffer.vertexCode);
                 for (var name in this.attributes) {
                     //从Object3D中获取顶点缓冲
                     var eventData = { name: name, buffer: null };
@@ -1346,7 +1318,7 @@ var me;
              * 准备常量
              */
             RenderData.prototype.prepareUniforms = function () {
-                this.uniforms = this.programBuffer.getUniforms();
+                this.uniforms = feng3d.ShaderCodeUtils.getUniforms(this.programBuffer.vertexCode);
                 for (var name in this.uniforms) {
                     //从Object3D中获取顶点缓冲
                     var eventData = { name: name, buffer: null };
@@ -1400,7 +1372,7 @@ var me;
              */
             RenderBuffer.prototype.activeAttributes = function () {
                 var attributes = this.renderData.attributes;
-                var locations = this.renderData.programBuffer.getAttribLocations(this.context3D);
+                var locations = feng3d.ShaderCodeUtils.getAttribLocations(this.context3D, this.renderData.programBuffer.vertexCode, this.renderData.programBuffer.fragmentCode);
                 for (var name in locations) {
                     if (locations.hasOwnProperty(name)) {
                         var element = locations[name];
@@ -1440,6 +1412,50 @@ var me;
             return RenderBuffer;
         }());
         feng3d.RenderBuffer = RenderBuffer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 渲染程序数据
+         * @author feng 2016-05-09
+         */
+        var ProgramRenderData = (function () {
+            function ProgramRenderData() {
+            }
+            return ProgramRenderData;
+        }());
+        feng3d.ProgramRenderData = ProgramRenderData;
+        /**
+         * 索引渲染数据
+         */
+        var IndexRenderData = (function () {
+            function IndexRenderData() {
+            }
+            return IndexRenderData;
+        }());
+        feng3d.IndexRenderData = IndexRenderData;
+        /**
+         * 属性渲染数据
+         * @author feng 2014-8-14
+         */
+        var AttributeRenderData = (function () {
+            function AttributeRenderData() {
+            }
+            return AttributeRenderData;
+        }());
+        feng3d.AttributeRenderData = AttributeRenderData;
+        /**
+         * 常量4*4矩阵渲染数据
+         */
+        var UniformMatrix4fvRenderData = (function () {
+            function UniformMatrix4fvRenderData() {
+            }
+            return UniformMatrix4fvRenderData;
+        }());
+        feng3d.UniformMatrix4fvRenderData = UniformMatrix4fvRenderData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3290,52 +3306,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 渲染程序数据
-         * @author feng 2016-05-09
-         */
-        var ProgramRenderData = (function () {
-            function ProgramRenderData() {
-            }
-            /**
-             * 获取属性gpu地址
-             */
-            ProgramRenderData.prototype.getAttribLocations = function (context3D) {
-                var attributes = feng3d.ShaderCodeUtils.getAttributes(this.vertexCode);
-                //获取属性在gpu中地址
-                var shaderProgram = feng3d.context3DPool.getWebGLProgram(context3D, this.vertexCode, this.fragmentCode);
-                for (var name in attributes) {
-                    if (attributes.hasOwnProperty(name)) {
-                        var element = attributes[name];
-                        element.location = context3D.getAttribLocation(shaderProgram, name);
-                        context3D.enableVertexAttribArray(element.location);
-                    }
-                }
-                return attributes;
-            };
-            /**
-             * 获取属性列表
-             */
-            ProgramRenderData.prototype.getAttributes = function () {
-                var attributes = feng3d.ShaderCodeUtils.getAttributes(this.vertexCode);
-                return attributes;
-            };
-            /**
-             * 获取常量
-             */
-            ProgramRenderData.prototype.getUniforms = function () {
-                var uniforms = feng3d.ShaderCodeUtils.getUniforms(this.vertexCode);
-                return uniforms;
-            };
-            return ProgramRenderData;
-        }());
-        feng3d.ProgramRenderData = ProgramRenderData;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 渲染代码工具
          * @author feng 2016-06-22
          */
@@ -3367,6 +3337,22 @@ var me;
                     result = uniformReg.exec(code);
                 }
                 return uniforms;
+            };
+            /**
+             * 获取属性gpu地址
+             */
+            ShaderCodeUtils.getAttribLocations = function (context3D, vertexCode, fragmentCode) {
+                var attributes = ShaderCodeUtils.getAttributes(vertexCode);
+                //获取属性在gpu中地址
+                var shaderProgram = feng3d.context3DPool.getWebGLProgram(context3D, vertexCode, fragmentCode);
+                for (var name in attributes) {
+                    if (attributes.hasOwnProperty(name)) {
+                        var element = attributes[name];
+                        element.location = context3D.getAttribLocation(shaderProgram, name);
+                        context3D.enableVertexAttribArray(element.location);
+                    }
+                }
+                return attributes;
             };
             return ShaderCodeUtils;
         }());
