@@ -611,7 +611,7 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3D对象缓冲
+     * 渲染缓冲
      * @author feng 2016-06-20
      */
     class RenderBuffer {
@@ -623,6 +623,11 @@ declare module me.feng3d {
          * 渲染数据
          */
         private renderData;
+        /**
+         * 构建渲染缓冲
+         * @param context3D     3D环境
+         * @param renderData    渲染数据
+         */
         constructor(context3D: WebGLRenderingContext, renderData: RenderData);
         /**
          * 激活缓冲
@@ -639,7 +644,7 @@ declare module me.feng3d {
         /**
          * 激活常量
          */
-        activeUniforms(): void;
+        private activeUniforms();
         /**
          * 绘制
          */
@@ -700,33 +705,35 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 渲染器
-     * @author feng 2016-05-01
+     * 渲染代码工具
+     * @author feng 2016-06-22
      */
-    class Renderer {
-        private context3D;
-        private shaderProgram;
-        private scene;
-        private camera;
+    class ShaderCodeUtils {
         /**
-         * 构建渲染器
-         * @param context3D    webgl渲染上下文
-         * @param scene 场景
-         * @param camera 摄像机对象
+         * 获取程序属性列表
          */
-        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        static getAttributes(code: string): {
+            [name: string]: {
+                type: string;
+            };
+        };
         /**
-         * 初始化GL
+         * 获取程序常量列表
          */
-        private initGL();
+        static getUniforms(code: string): {
+            [name: string]: {
+                type: string;
+            };
+        };
         /**
-         * 渲染
+         * 获取属性gpu地址
          */
-        render(): void;
-        /**
-         * 绘制3D对象
-         */
-        private drawObject3D(object3D);
+        static getAttribLocations(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): {
+            [name: string]: {
+                type: string;
+                location?: number;
+            };
+        };
     }
 }
 declare module me.feng3d {
@@ -779,6 +786,125 @@ declare module me.feng3d {
      * 3D环境对象池
      */
     var context3DPool: RenderBufferPool;
+}
+declare module me.feng3d {
+    /**
+     * Context3D缓冲事件
+     * @author feng 2016-05-26
+     */
+    class Context3DBufferEvent extends Event {
+        /**
+         * 获取AttributeBuffer
+         */
+        static GET_ATTRIBUTEBUFFER: string;
+        /**
+         * 获取IndexBuffer
+         */
+        static GET_INDEXBUFFER: string;
+        /**
+         * 获取ProgramBuffer
+         */
+        static GET_PROGRAMBUFFER: string;
+        /**
+         * 获取UniformBuffer
+         */
+        static GET_UNIFORMBUFFER: string;
+    }
+    /**
+     * 获取AttributeBuffer事件数据
+     */
+    class GetAttributeBufferEventData {
+        /**
+         * 属性名称
+         */
+        name: string;
+        /**
+         * 属性缓冲
+         */
+        buffer: AttributeRenderData;
+    }
+    /**
+     * 获取IndexBuffer事件数据
+     */
+    class GetIndexBufferEventData {
+        /**
+         * 索引缓冲
+         */
+        buffer: IndexRenderData;
+    }
+    /**
+     * 获取ProgramBuffer事件数据
+     */
+    class GetProgramBufferEventData {
+        /**
+         * 渲染程序缓存
+         */
+        buffer: ProgramRenderData;
+    }
+    /**
+     * 获取UniformBuffer事件数据
+     */
+    class GetUniformBufferEventData {
+        /**
+         * 常量名称
+         */
+        name: string;
+        /**
+         * 常量缓存
+         */
+        buffer: UniformMatrix4fvRenderData;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染数据编号
+     * @author feng 2016-06-20
+     */
+    class RenderDataID {
+        /**
+         * 顶点索引
+         */
+        static index: string;
+        /**
+         * 模型矩阵
+         */
+        static uMVMatrix: string;
+        /**
+         * 投影矩阵
+         */
+        static uPMatrix: string;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 渲染器
+     * @author feng 2016-05-01
+     */
+    class Renderer {
+        private context3D;
+        private shaderProgram;
+        private scene;
+        private camera;
+        /**
+         * 构建渲染器
+         * @param context3D    webgl渲染上下文
+         * @param scene 场景
+         * @param camera 摄像机对象
+         */
+        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        /**
+         * 初始化GL
+         */
+        private initGL();
+        /**
+         * 渲染
+         */
+        render(): void;
+        /**
+         * 绘制3D对象
+         */
+        private drawObject3D(object3D);
+    }
 }
 declare module me.feng3d {
     /**
@@ -1266,127 +1392,6 @@ declare module me.feng3d.factory {
      * 创建摄像机3D对象
      */
     function createCamera(): Object3D;
-}
-declare module me.feng3d {
-    /**
-     * 渲染数据编号
-     * @author feng 2016-06-20
-     */
-    class Context3DBufferID {
-        /**
-         * 顶点索引
-         */
-        static index: string;
-        /**
-         * 模型矩阵
-         */
-        static uMVMatrix: string;
-        /**
-         * 投影矩阵
-         */
-        static uPMatrix: string;
-    }
-}
-declare module me.feng3d {
-    /**
-     * 渲染代码工具
-     * @author feng 2016-06-22
-     */
-    class ShaderCodeUtils {
-        /**
-         * 获取程序属性列表
-         */
-        static getAttributes(code: string): {
-            [name: string]: {
-                type: string;
-            };
-        };
-        /**
-         * 获取程序常量列表
-         */
-        static getUniforms(code: string): {
-            [name: string]: {
-                type: string;
-            };
-        };
-        /**
-         * 获取属性gpu地址
-         */
-        static getAttribLocations(context3D: WebGLRenderingContext, vertexCode: string, fragmentCode: string): {
-            [name: string]: {
-                type: string;
-                location?: number;
-            };
-        };
-    }
-}
-declare module me.feng3d {
-    /**
-     * Context3D缓冲事件
-     * @author feng 2016-05-26
-     */
-    class Context3DBufferEvent extends Event {
-        /**
-         * 获取AttributeBuffer
-         */
-        static GET_ATTRIBUTEBUFFER: string;
-        /**
-         * 获取IndexBuffer
-         */
-        static GET_INDEXBUFFER: string;
-        /**
-         * 获取ProgramBuffer
-         */
-        static GET_PROGRAMBUFFER: string;
-        /**
-         * 获取UniformBuffer
-         */
-        static GET_UNIFORMBUFFER: string;
-    }
-    /**
-     * 获取AttributeBuffer事件数据
-     */
-    class GetAttributeBufferEventData {
-        /**
-         * 属性名称
-         */
-        name: string;
-        /**
-         * 属性缓冲
-         */
-        buffer: AttributeRenderData;
-    }
-    /**
-     * 获取IndexBuffer事件数据
-     */
-    class GetIndexBufferEventData {
-        /**
-         * 索引缓冲
-         */
-        buffer: IndexRenderData;
-    }
-    /**
-     * 获取ProgramBuffer事件数据
-     */
-    class GetProgramBufferEventData {
-        /**
-         * 渲染程序缓存
-         */
-        buffer: ProgramRenderData;
-    }
-    /**
-     * 获取UniformBuffer事件数据
-     */
-    class GetUniformBufferEventData {
-        /**
-         * 常量名称
-         */
-        name: string;
-        /**
-         * 常量缓存
-         */
-        buffer: UniformMatrix4fvRenderData;
-    }
 }
 declare module me.feng3d {
     /**
