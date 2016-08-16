@@ -1222,22 +1222,22 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 摄像机（镜头）事件
+     * 镜头事件
      * @author feng 2014-10-14
      */
-    class CameraEvent extends Event {
+    class LensEvent extends Event {
         static MATRIX_CHANGED: string;
         /**
-         * 摄像机（镜头）
+         * 镜头
          */
-        data: CameraBase;
+        data: LensBase;
         /**
-         * 创建一个摄像机（镜头）事件。
-         * @param type 事件的类型
-         * @param camera 摄像机（镜头）
-         * @param bubbles 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
+         * 创建一个镜头事件。
+         * @param type      事件的类型
+         * @param lens      镜头
+         * @param bubbles   确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
          */
-        constructor(type: string, camera?: CameraBase, bubbles?: boolean);
+        constructor(type: string, lens?: LensBase, bubbles?: boolean);
     }
 }
 declare module me.feng3d {
@@ -1261,7 +1261,7 @@ declare module me.feng3d {
      * 摄像机镜头
      * @author feng 2014-10-14
      */
-    abstract class CameraBase extends Component {
+    abstract class LensBase extends Component {
         protected _projectionMatrix3D: Matrix3D;
         protected _scissorRect: Rectangle;
         protected _viewPort: Rectangle;
@@ -1323,10 +1323,10 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 透视摄像机（镜头）
+     * 透视摄像机镜头
      * @author feng 2014-10-14
      */
-    class Camera extends CameraBase {
+    class PerspectiveLens extends LensBase {
         private _fieldOfView;
         private _focalLength;
         private _focalLengthInv;
@@ -1356,6 +1356,26 @@ declare module me.feng3d {
          * 更新投影矩阵
          */
         protected updateProjectionMatrix(): void;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 摄像机
+     * @author feng 2016-08-16
+     */
+    class Camera3D extends Object3D {
+        private _viewProjection;
+        private _viewProjectionDirty;
+        private _lens;
+        /**
+         * 创建一个摄像机
+         * @param lens 摄像机镜头
+         */
+        constructor(lens?: LensBase);
+        /**
+         * 处理镜头变化事件
+         */
+        private onLensMatrixChanged(event);
     }
 }
 declare module me.feng3d {
