@@ -17,6 +17,7 @@ function start() {
         me.feng3d.primitives.createPlane(),
         new me.feng3d.Space3D(0, 0, 300, 90)
     ]);
+    
     view3D.scene.addObject3D(plane0);
 
     var plane = new me.feng3d.Object3D("plane", [
