@@ -2099,12 +2099,8 @@ var me;
                 //模型矩阵
                 var mvMatrix = object3D.space3D.transform3D;
                 context3DBuffer.mapUniformMatrix4fv(feng3d.RenderDataID.uMVMatrix, mvMatrix);
-                //计算投影矩阵
-                var perspectiveMatrix = this.camera.space3D.transform3D.clone();
-                var camera = this.camera.getComponentByClass(feng3d.PerspectiveLens);
-                perspectiveMatrix.invert();
-                perspectiveMatrix.append(camera.projectionMatrix3D);
-                context3DBuffer.mapUniformMatrix4fv(feng3d.RenderDataID.uPMatrix, perspectiveMatrix);
+                //场景投影矩阵
+                context3DBuffer.mapUniformMatrix4fv(feng3d.RenderDataID.uPMatrix, this.camera.viewProjection);
                 //绘制对象
                 var renderData = feng3d.RenderData.getInstance(object3D);
                 var object3DBuffer = renderData.getRenderBuffer(this.context3D);
@@ -2377,7 +2373,7 @@ var me;
                 this.gl = canvas.getContext("experimental-webgl");
                 this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
                 this.scene = scene || new feng3d.Scene3D();
-                this._camera = camera || feng3d.factory.createCamera();
+                this._camera = camera || new feng3d.Camera3D();
                 this.renderer = new feng3d.Renderer(this.gl, this.scene, this._camera);
                 setInterval(this.drawScene.bind(this), 15);
             }
@@ -2795,24 +2791,24 @@ var me;
                 this._near = 0.1;
                 this._far = 3000;
                 this._aspectRatio = 1;
-                this._projectionMatrix3DDirty = true;
+                this._matrixInvalid = true;
                 this._unprojectionInvalid = true;
-                this._projectionMatrix3D = new feng3d.Matrix3D();
+                this._matrix = new feng3d.Matrix3D();
             }
-            Object.defineProperty(LensBase.prototype, "projectionMatrix3D", {
+            Object.defineProperty(LensBase.prototype, "matrix", {
                 /**
                  * 投影矩阵
                  */
                 get: function () {
-                    if (this._projectionMatrix3DDirty) {
-                        this.updateProjectionMatrix();
-                        this._projectionMatrix3DDirty = false;
+                    if (this._matrixInvalid) {
+                        this.updateMatrix();
+                        this._matrixInvalid = false;
                     }
-                    return this._projectionMatrix3D;
+                    return this._matrix;
                 },
                 set: function (value) {
-                    this._projectionMatrix3D = value;
-                    this.invalidateProjectionMatrix();
+                    this._matrix = value;
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -2828,7 +2824,7 @@ var me;
                     if (value == this._near)
                         return;
                     this._near = value;
-                    this.invalidateProjectionMatrix();
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -2844,7 +2840,7 @@ var me;
                     if (value == this._far)
                         return;
                     this._far = value;
-                    this.invalidateProjectionMatrix();
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -2860,7 +2856,7 @@ var me;
                     if (this._aspectRatio == value || (value * 0) != 0)
                         return;
                     this._aspectRatio = value;
-                    this.invalidateProjectionMatrix();
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -2875,10 +2871,9 @@ var me;
                 if (v === void 0) { v = null; }
                 if (!v)
                     v = new feng3d.Vector3D();
-                this.projectionMatrix3D.transformVector(point3d, v);
+                this.matrix.transformVector(point3d, v);
                 v.x = v.x / v.w;
                 v.y = -v.y / v.w;
-                //z is unaffected by transform
                 v.z = point3d.z;
                 return v;
             };
@@ -2890,7 +2885,7 @@ var me;
                     if (this._unprojectionInvalid) {
                         if (this._unprojection == null)
                             this._unprojection = new feng3d.Matrix3D();
-                        this._unprojection.copyFrom(this.projectionMatrix3D);
+                        this._unprojection.copyFrom(this.matrix);
                         this._unprojection.invert();
                         this._unprojectionInvalid = false;
                     }
@@ -2902,8 +2897,8 @@ var me;
             /**
              * 投影矩阵失效
              */
-            LensBase.prototype.invalidateProjectionMatrix = function () {
-                this._projectionMatrix3DDirty = true;
+            LensBase.prototype.invalidateMatrix = function () {
+                this._matrixInvalid = true;
                 this._unprojectionInvalid = true;
                 this.dispatchEvent(new feng3d.LensEvent(feng3d.LensEvent.MATRIX_CHANGED, this));
             };
@@ -2947,7 +2942,7 @@ var me;
                     this._fieldOfView = value;
                     this._focalLengthInv = Math.tan(this._fieldOfView * Math.PI / 360);
                     this._focalLength = 1 / this._focalLengthInv;
-                    this.invalidateProjectionMatrix();
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -2965,7 +2960,7 @@ var me;
                     this._focalLength = value;
                     this._focalLengthInv = 1 / this._focalLength;
                     this._fieldOfView = Math.atan(this._focalLengthInv) * 360 / Math.PI;
-                    this.invalidateProjectionMatrix();
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -2981,7 +2976,6 @@ var me;
                 v.x *= sZ;
                 v.y *= sZ;
                 this.unprojectionMatrix.transformVector(v, v);
-                //z is unaffected by transform
                 v.z = sZ;
                 return v;
             };
@@ -2996,7 +2990,7 @@ var me;
                     if (value == this._coordinateSystem)
                         return;
                     this._coordinateSystem = value;
-                    this.invalidateProjectionMatrix();
+                    this.invalidateMatrix();
                 },
                 enumerable: true,
                 configurable: true
@@ -3004,7 +2998,7 @@ var me;
             /**
              * 更新投影矩阵
              */
-            PerspectiveLens.prototype.updateProjectionMatrix = function () {
+            PerspectiveLens.prototype.updateMatrix = function () {
                 var raw = tempRawData;
                 this._yMax = this._near * this._focalLengthInv;
                 this._xMax = this._yMax * this._aspectRatio;
@@ -3045,8 +3039,8 @@ var me;
                 // Switch projection transform from left to right handed.
                 if (this._coordinateSystem == feng3d.CoordinateSystem.RIGHT_HANDED)
                     raw[5] = -raw[5];
-                this._projectionMatrix3D.copyRawDataFrom(raw);
-                this._projectionMatrix3DDirty = false;
+                this._matrix.copyRawDataFrom(raw);
+                this._matrixInvalid = false;
             };
             return PerspectiveLens;
         }(feng3d.LensBase));
@@ -3079,6 +3073,25 @@ var me;
                 this._lens = lens || new feng3d.PerspectiveLens();
                 this._lens.addEventListener(feng3d.LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged, this);
             }
+            Object.defineProperty(Camera3D.prototype, "viewProjection", {
+                /**
+                 * 场景投影矩阵，世界空间转投影空间
+                 */
+                get: function () {
+                    if (this._viewProjectionDirty) {
+                        var inverseSceneTransform = this.space3D.transform3D.clone();
+                        inverseSceneTransform.invert();
+                        //场景空间转摄像机空间
+                        this._viewProjection.copyFrom(inverseSceneTransform);
+                        //+摄像机空间转投影空间 = 场景空间转投影空间
+                        this._viewProjection.append(this._lens.matrix);
+                        this._viewProjectionDirty = false;
+                    }
+                    return this._viewProjection;
+                },
+                enumerable: true,
+                configurable: true
+            });
             /**
              * 处理镜头变化事件
              */
@@ -3661,24 +3674,6 @@ var me;
                 return data;
             }
         })(primitives = feng3d.primitives || (feng3d.primitives = {}));
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        var factory;
-        (function (factory) {
-            /**
-             * 创建摄像机3D对象
-             */
-            function createCamera() {
-                var camera = new feng3d.Object3D();
-                camera.addComponent(new feng3d.PerspectiveLens());
-                return camera;
-            }
-            factory.createCamera = createCamera;
-        })(factory = feng3d.factory || (feng3d.factory = {}));
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

@@ -1022,7 +1022,7 @@ declare module me.feng3d {
          * @param scene 场景
          * @param camera 摄像机对象
          */
-        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Object3D);
+        constructor(context3D: WebGLRenderingContext, scene: Scene3D, camera: Camera3D);
         /**
          * 初始化GL
          */
@@ -1153,7 +1153,7 @@ declare module me.feng3d {
          * @param scene     3D场景
          * @param camera    摄像机
          */
-        constructor(canvas: any, scene?: Scene3D, camera?: Object3D);
+        constructor(canvas: any, scene?: Scene3D, camera?: Camera3D);
         /** 3d场景 */
         scene: Scene3D;
         private drawScene();
@@ -1393,13 +1393,13 @@ declare module me.feng3d {
      * @author feng 2014-10-14
      */
     abstract class LensBase extends Component {
-        protected _projectionMatrix3D: Matrix3D;
+        protected _matrix: Matrix3D;
         protected _scissorRect: Rectangle;
         protected _viewPort: Rectangle;
         protected _near: number;
         protected _far: number;
         protected _aspectRatio: number;
-        protected _projectionMatrix3DDirty: boolean;
+        protected _matrixInvalid: boolean;
         private _unprojection;
         private _unprojectionInvalid;
         /**
@@ -1409,7 +1409,7 @@ declare module me.feng3d {
         /**
          * 投影矩阵
          */
-        projectionMatrix3D: Matrix3D;
+        matrix: Matrix3D;
         /**
          * 最近距离
          */
@@ -1445,11 +1445,11 @@ declare module me.feng3d {
         /**
          * 投影矩阵失效
          */
-        protected invalidateProjectionMatrix(): void;
+        protected invalidateMatrix(): void;
         /**
          * 更新投影矩阵
          */
-        protected abstract updateProjectionMatrix(): any;
+        protected abstract updateMatrix(): any;
     }
 }
 declare module me.feng3d {
@@ -1486,7 +1486,7 @@ declare module me.feng3d {
         /**
          * 更新投影矩阵
          */
-        protected updateProjectionMatrix(): void;
+        protected updateMatrix(): void;
     }
 }
 declare module me.feng3d {
@@ -1503,6 +1503,10 @@ declare module me.feng3d {
          * @param lens 摄像机镜头
          */
         constructor(lens?: LensBase);
+        /**
+         * 场景投影矩阵，世界空间转投影空间
+         */
+        viewProjection: Matrix3D;
         /**
          * 处理镜头变化事件
          */
@@ -1537,12 +1541,6 @@ declare module me.feng3d.primitives {
      * @param width 宽度
      */
     function createCube(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean, elements?: string[]): Geometry;
-}
-declare module me.feng3d.factory {
-    /**
-     * 创建摄像机3D对象
-     */
-    function createCamera(): Object3D;
 }
 declare module me.feng3d {
     /**
