@@ -307,6 +307,42 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 判断a对象是否为b类型
+         */
+        function is(a, b) {
+            var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
+            while (prototype != null) {
+                //类型==自身原型的构造函数
+                if (prototype.constructor == b)
+                    return true;
+                //父类就是原型的原型构造函数
+                prototype = Object.getPrototypeOf(prototype);
+            }
+            return false;
+        }
+        feng3d.is = is;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 如果a为b类型则返回，否则返回null
+         */
+        function as(a, b) {
+            if (!feng3d.is(a, b))
+                return null;
+            return a;
+        }
+        feng3d.as = as;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 数学常量类
          */
         var MathConsts = (function () {
@@ -2165,6 +2201,7 @@ var me;
                 this._sy = sy;
                 this._sz = sz;
                 this.invalidateTransform3D();
+                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
             }
             Object.defineProperty(Space3D.prototype, "x", {
                 /**
@@ -2290,6 +2327,9 @@ var me;
             Space3D.prototype.invalidateTransform3D = function () {
                 this.transform3DDirty = true;
             };
+            Space3D.prototype.onBeAddedComponent = function (event) {
+                this.object3D = event.data.container;
+            };
             return Space3D;
         }(feng3d.Component));
         feng3d.Space3D = Space3D;
@@ -2394,6 +2434,74 @@ var me;
             return View3D;
         }());
         feng3d.View3D = View3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D容器组件
+         * @author feng 2016-04-26
+         */
+        var Container3D = (function (_super) {
+            __extends(Container3D, _super);
+            /**
+             * 构建3D容器组件
+             */
+            function Container3D() {
+                _super.call(this);
+                /**
+                 * 父对象
+                 */
+                this.parent = null;
+                /**
+                 * 子对象列表
+                 */
+                this.children = [];
+                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
+            }
+            /**
+             * 添加子对象
+             * @param child		子对象
+             * @return			新增的子对象
+             */
+            Container3D.prototype.addChild = function (child) {
+                this.children.push(child);
+                var childContainer3D = child.getOrCreateComponentByClass(Container3D);
+                childContainer3D.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.ADDED, { parent: this.object3D, child: child }));
+            };
+            /**
+             * 处理被添加事件
+             */
+            Container3D.prototype.onBeAddedComponent = function (event) {
+                this.object3D = feng3d.as(event.data.container, feng3d.Object3D);
+            };
+            return Container3D;
+        }(feng3d.Component));
+        feng3d.Container3D = Container3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D容器事件
+         */
+        var Container3DEvent = (function (_super) {
+            __extends(Container3DEvent, _super);
+            function Container3DEvent() {
+                _super.apply(this, arguments);
+            }
+            /**
+             * 被添加
+             *
+             */
+            Container3DEvent.ADDED = "added";
+            return Container3DEvent;
+        }(feng3d.Event));
+        feng3d.Container3DEvent = Container3DEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3113,7 +3221,13 @@ var me;
          * @author feng 2016-05-01
          */
         (function (PrimitiveType) {
+            /**
+             * 平面
+             */
             PrimitiveType[PrimitiveType["Plane"] = 0] = "Plane";
+            /**
+             * 立方体
+             */
             PrimitiveType[PrimitiveType["Cube"] = 1] = "Cube";
         })(feng3d.PrimitiveType || (feng3d.PrimitiveType = {}));
         var PrimitiveType = feng3d.PrimitiveType;
@@ -3317,7 +3431,14 @@ var me;
         (function (primitives) {
             /**
              * 创建立方几何体
-             * @param width 宽度
+             * @param   width           宽度
+             * @param   height          高度
+             * @param   depth           深度
+             * @param   segmentsW       宽度方向分割
+             * @param   segmentsH       高度方向分割
+             * @param   segmentsD       深度方向分割
+             * @param   tile6           是否为6块贴图
+             * @param   elements        需要生成数据的属性
              */
             function createCube(width, height, depth, segmentsW, segmentsH, segmentsD, tile6, elements) {
                 if (width === void 0) { width = 100; }
@@ -3356,6 +3477,15 @@ var me;
                 return geometry;
             }
             primitives.createCube = createCube;
+            /**
+             * 构建坐标
+             * @param   width           宽度
+             * @param   height          高度
+             * @param   depth           深度
+             * @param   segmentsW       宽度方向分割
+             * @param   segmentsH       高度方向分割
+             * @param   segmentsD       深度方向分割
+             */
             function buildPosition(width, height, depth, segmentsW, segmentsH, segmentsD) {
                 if (width === void 0) { width = 100; }
                 if (height === void 0) { height = 100; }
@@ -3419,6 +3549,12 @@ var me;
                 }
                 return vertexPositionData;
             }
+            /**
+             * 构建法线
+             * @param   segmentsW       宽度方向分割
+             * @param   segmentsH       高度方向分割
+             * @param   segmentsD       深度方向分割
+             */
             function buildNormal(segmentsW, segmentsH, segmentsD) {
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
@@ -3465,6 +3601,12 @@ var me;
                 }
                 return new Float32Array(vertexNormalData);
             }
+            /**
+             * 构建切线
+             * @param   segmentsW       宽度方向分割
+             * @param   segmentsH       高度方向分割
+             * @param   segmentsD       深度方向分割
+             */
             function buildTangent(segmentsW, segmentsH, segmentsD) {
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
@@ -3511,6 +3653,12 @@ var me;
                 }
                 return vertexTangentData;
             }
+            /**
+             * 构建索引
+             * @param   segmentsW       宽度方向分割
+             * @param   segmentsH       高度方向分割
+             * @param   segmentsD       深度方向分割
+             */
             function buildIndices(segmentsW, segmentsH, segmentsD) {
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
@@ -3595,6 +3743,13 @@ var me;
                 }
                 return indices;
             }
+            /**
+             * 构建uv
+             * @param   segmentsW       宽度方向分割
+             * @param   segmentsH       高度方向分割
+             * @param   segmentsD       深度方向分割
+             * @param   tile6           是否为6块贴图
+             */
             function buildUVs(segmentsW, segmentsH, segmentsD, tile6) {
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }

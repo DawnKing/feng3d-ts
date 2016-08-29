@@ -106,6 +106,18 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 判断a对象是否为b类型
+     */
+    function is(a: any, b: Function): boolean;
+}
+declare module me.feng3d {
+    /**
+     * 如果a为b类型则返回，否则返回null
+     */
+    function as(a: any, b: Function): any;
+}
+declare module me.feng3d {
+    /**
      * 数学常量类
      */
     class MathConsts {
@@ -1043,6 +1055,7 @@ declare module me.feng3d {
      * @author feng 2016-04-26
      */
     class Space3D extends Component {
+        private object3D;
         /**
          * 构建3D空间
          * @param x X坐标
@@ -1104,6 +1117,7 @@ declare module me.feng3d {
          * 使变换矩阵无效
          */
         protected invalidateTransform3D(): void;
+        private onBeAddedComponent(event);
         private _x;
         private _y;
         private _z;
@@ -1157,6 +1171,52 @@ declare module me.feng3d {
         /** 3d场景 */
         scene: Scene3D;
         private drawScene();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D容器组件
+     * @author feng 2016-04-26
+     */
+    class Container3D extends Component {
+        /**
+         * 所属对象
+         */
+        private object3D;
+        /**
+         * 父对象
+         */
+        private parent;
+        /**
+         * 子对象列表
+         */
+        private children;
+        /**
+         * 构建3D容器组件
+         */
+        constructor();
+        /**
+         * 添加子对象
+         * @param child		子对象
+         * @return			新增的子对象
+         */
+        addChild(child: Object3D): void;
+        /**
+         * 处理被添加事件
+         */
+        private onBeAddedComponent(event);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D容器事件
+     */
+    class Container3DEvent extends Event {
+        /**
+         * 被添加
+         *
+         */
+        static ADDED: string;
     }
 }
 declare module me.feng3d {
@@ -1519,7 +1579,13 @@ declare module me.feng3d {
      * @author feng 2016-05-01
      */
     enum PrimitiveType {
+        /**
+         * 平面
+         */
         Plane = 0,
+        /**
+         * 立方体
+         */
         Cube = 1,
     }
 }
@@ -1538,7 +1604,14 @@ declare module me.feng3d.primitives {
 declare module me.feng3d.primitives {
     /**
      * 创建立方几何体
-     * @param width 宽度
+     * @param   width           宽度
+     * @param   height          高度
+     * @param   depth           深度
+     * @param   segmentsW       宽度方向分割
+     * @param   segmentsH       高度方向分割
+     * @param   segmentsD       深度方向分割
+     * @param   tile6           是否为6块贴图
+     * @param   elements        需要生成数据的属性
      */
     function createCube(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean, elements?: string[]): Geometry;
 }
