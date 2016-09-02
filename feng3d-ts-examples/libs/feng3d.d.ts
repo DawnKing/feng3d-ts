@@ -1192,6 +1192,21 @@ declare module me.feng3d {
          */
         private children;
         /**
+         * 获取父对象
+         * @param object3D  显示对象
+         * @return          父对象
+         */
+        static getParent(object3D: Object3D): Object3D;
+        /**
+         * 获取容器
+         */
+        static getContainer3D(object3D: Object3D): Container3D;
+        /**
+         * 移除对象
+         * @param   object3D    显示对象
+         */
+        static removeChild(object3D: Object3D): void;
+        /**
          * 构建3D容器组件
          */
         constructor();
@@ -1202,9 +1217,53 @@ declare module me.feng3d {
          */
         addChild(child: Object3D): void;
         /**
+         * 添加子对象到指定位置
+         * @param   child   子对象
+         * @param   index   添加到的位置
+         */
+        addChildAt(child: Object3D, index: number): void;
+        /**
+         * 移除子对象
+         * @param   child   子对象
+         *
+         */
+        removeChild(child: Object3D): number;
+        /**
+         * 获取子对象索引
+         * @param   child   子对象
+         * @return  子对象位置
+         */
+        getChildIndex(child: Object3D): number;
+        /**
+         * 移出指定索引的子对象
+         * @param childIndex	子对象索引
+         * @return				被移除对象
+         */
+        removeChildAt(childIndex: number): Object3D;
+        /**
+         * 获取子对象
+         * @param index
+         * @return
+         */
+        getChildAt(index: number): Object3D;
+        /**
+         * 内部移除子对象
+         * @param childIndex	移除子对象所在索引
+         * @param child			移除子对象
+         */
+        private removeChildInternal(childIndex, child);
+        /**
          * 处理被添加事件
          */
         private onBeAddedComponent(event);
+        /**
+         * 处理添加子对象事件
+         */
+        private onAddedContainer3D(event);
+        /**
+         * 处理删除子对象事件
+         */
+        private onRemovedContainer3D(event);
     }
 }
 declare module me.feng3d {
@@ -1213,10 +1272,15 @@ declare module me.feng3d {
      */
     class Container3DEvent extends Event {
         /**
-         * 被添加
-         *
+         * 添加了子对象
+         * data={parent: Object3D, child: Object3D}
          */
         static ADDED: string;
+        /**
+         * 删除了子对象
+         * data={parent: Object3D, child: Object3D}
+         */
+        static REMOVED: string;
     }
 }
 declare module me.feng3d {
