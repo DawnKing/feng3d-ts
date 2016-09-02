@@ -1153,6 +1153,27 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 3D对象组件
+     * @author feng 2016-09-02
+     */
+    class Object3DComponent extends Component {
+        /**
+         * 所属对象
+         */
+        object3D: Object3D;
+        /**
+         * 构建3D容器组件
+         */
+        constructor();
+        private _object3D;
+        /**
+         * 处理被添加事件
+         */
+        private onBeAddedComponent(event);
+    }
+}
+declare module me.feng3d {
+    /**
      * 3D视图
      * @author feng 2016-05-01
      */
@@ -1178,11 +1199,7 @@ declare module me.feng3d {
      * 3D容器组件
      * @author feng 2016-04-26
      */
-    class Container3D extends Component {
-        /**
-         * 所属对象
-         */
-        private object3D;
+    class Container3D extends Object3DComponent {
         /**
          * 父对象
          */
@@ -1252,10 +1269,6 @@ declare module me.feng3d {
          * @param child			移除子对象
          */
         private removeChildInternal(childIndex, child);
-        /**
-         * 处理被添加事件
-         */
-        private onBeAddedComponent(event);
         /**
          * 处理添加子对象事件
          */
