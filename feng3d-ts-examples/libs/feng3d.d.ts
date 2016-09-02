@@ -1055,7 +1055,6 @@ declare module me.feng3d {
      * @author feng 2016-04-26
      */
     class Space3D extends Component {
-        private object3D;
         /**
          * 构建3D空间
          * @param x X坐标
@@ -1117,7 +1116,6 @@ declare module me.feng3d {
          * 使变换矩阵无效
          */
         protected invalidateTransform3D(): void;
-        private onBeAddedComponent(event);
         private _x;
         private _y;
         private _z;
@@ -1201,14 +1199,6 @@ declare module me.feng3d {
      */
     class Container3D extends Object3DComponent {
         /**
-         * 父对象
-         */
-        private parent;
-        /**
-         * 子对象列表
-         */
-        private children;
-        /**
          * 获取父对象
          * @param object3D  显示对象
          * @return          父对象
@@ -1263,6 +1253,14 @@ declare module me.feng3d {
          * @return
          */
         getChildAt(index: number): Object3D;
+        /**
+         * 父对象
+         */
+        private parent;
+        /**
+         * 子对象列表
+         */
+        private children;
         /**
          * 内部移除子对象
          * @param childIndex	移除子对象所在索引

@@ -2201,7 +2201,6 @@ var me;
                 this._sy = sy;
                 this._sz = sz;
                 this.invalidateTransform3D();
-                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
             }
             Object.defineProperty(Space3D.prototype, "x", {
                 /**
@@ -2326,9 +2325,6 @@ var me;
              */
             Space3D.prototype.invalidateTransform3D = function () {
                 this.transform3DDirty = true;
-            };
-            Space3D.prototype.onBeAddedComponent = function (event) {
-                this.object3D = event.data.container;
             };
             return Space3D;
         }(feng3d.Component));
@@ -2487,6 +2483,9 @@ var me;
              */
             function Container3D() {
                 _super.call(this);
+                //------------------------------------------
+                //@private
+                //------------------------------------------
                 /**
                  * 父对象
                  */
