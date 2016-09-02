@@ -2392,42 +2392,6 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
-         * 3D对象组件
-         * @author feng 2016-09-02
-         */
-        var Object3DComponent = (function (_super) {
-            __extends(Object3DComponent, _super);
-            /**
-             * 构建3D容器组件
-             */
-            function Object3DComponent() {
-                _super.call(this);
-                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
-            }
-            Object.defineProperty(Object3DComponent.prototype, "object3D", {
-                /**
-                 * 所属对象
-                 */
-                get: function () { return this._object3D; },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * 处理被添加事件
-             */
-            Object3DComponent.prototype.onBeAddedComponent = function (event) {
-                this._object3D = feng3d.as(event.data.container, feng3d.Object3D);
-            };
-            return Object3DComponent;
-        }(feng3d.Component));
-        feng3d.Object3DComponent = Object3DComponent;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
          * 3D视图
          * @author feng 2016-05-01
          */
@@ -2466,6 +2430,42 @@ var me;
             return View3D;
         }());
         feng3d.View3D = View3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象组件
+         * @author feng 2016-09-02
+         */
+        var Object3DComponent = (function (_super) {
+            __extends(Object3DComponent, _super);
+            /**
+             * 构建3D对象组件
+             */
+            function Object3DComponent() {
+                _super.call(this);
+                this.addEventListener(feng3d.ComponentEvent.BE_ADDED_COMPONENT, this.onBeAddedComponent, this);
+            }
+            Object.defineProperty(Object3DComponent.prototype, "object3D", {
+                /**
+                 * 所属对象
+                 */
+                get: function () { return this._object3D; },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 处理被添加事件
+             */
+            Object3DComponent.prototype.onBeAddedComponent = function (event) {
+                this._object3D = feng3d.as(event.data.container, feng3d.Object3D);
+            };
+            return Object3DComponent;
+        }(feng3d.Component));
+        feng3d.Object3DComponent = Object3DComponent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2634,6 +2634,51 @@ var me;
             return Container3DEvent;
         }(feng3d.Event));
         feng3d.Container3DEvent = Container3DEvent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象场景空间
+         * @author feng 2016-09-02
+         */
+        var SceneSpace3D = (function (_super) {
+            __extends(SceneSpace3D, _super);
+            /**
+             * 构建3D对象场景空间
+             */
+            function SceneSpace3D() {
+                _super.call(this);
+                //------------------------------------------
+                //@private
+                //------------------------------------------
+                /**
+                 * 相对场景空间
+                 */
+                this.sceneSpace3D = new feng3d.Space3D();
+                this.sceneSpace3DDirty = true;
+            }
+            Object.defineProperty(SceneSpace3D.prototype, "sceneTransform3D", {
+                /**
+                 * 场景空间变换矩阵
+                 */
+                get: function () {
+                    this.sceneSpace3DDirty && this.updateSceneSpace3D();
+                    return this.sceneSpace3D.transform3D;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 更新场景空间
+             */
+            SceneSpace3D.prototype.updateSceneSpace3D = function () {
+            };
+            return SceneSpace3D;
+        }(feng3d.Object3DComponent));
+        feng3d.SceneSpace3D = SceneSpace3D;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

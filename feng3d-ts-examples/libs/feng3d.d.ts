@@ -1151,27 +1151,6 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
-     * 3D对象组件
-     * @author feng 2016-09-02
-     */
-    class Object3DComponent extends Component {
-        /**
-         * 所属对象
-         */
-        object3D: Object3D;
-        /**
-         * 构建3D容器组件
-         */
-        constructor();
-        private _object3D;
-        /**
-         * 处理被添加事件
-         */
-        private onBeAddedComponent(event);
-    }
-}
-declare module me.feng3d {
-    /**
      * 3D视图
      * @author feng 2016-05-01
      */
@@ -1190,6 +1169,27 @@ declare module me.feng3d {
         /** 3d场景 */
         scene: Scene3D;
         private drawScene();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象组件
+     * @author feng 2016-09-02
+     */
+    class Object3DComponent extends Component {
+        /**
+         * 所属对象
+         */
+        object3D: Object3D;
+        /**
+         * 构建3D对象组件
+         */
+        constructor();
+        private _object3D;
+        /**
+         * 处理被添加事件
+         */
+        private onBeAddedComponent(event);
     }
 }
 declare module me.feng3d {
@@ -1292,6 +1292,34 @@ declare module me.feng3d {
          * data={parent: Object3D, child: Object3D}
          */
         static REMOVED: string;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象场景空间
+     * @author feng 2016-09-02
+     */
+    class SceneSpace3D extends Object3DComponent {
+        /**
+         * 构建3D对象场景空间
+         */
+        constructor();
+        /**
+         * 场景空间变换矩阵
+         */
+        sceneTransform3D: Matrix3D;
+        /**
+         * 相对场景空间
+         */
+        private sceneSpace3D;
+        /**
+         * 场景空间是否变脏
+         */
+        private sceneSpace3DDirty;
+        /**
+         * 更新场景空间
+         */
+        private updateSceneSpace3D();
     }
 }
 declare module me.feng3d {
