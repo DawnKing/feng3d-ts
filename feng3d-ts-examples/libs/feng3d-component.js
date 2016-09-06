@@ -22,6 +22,7 @@ var me;
             }
             /**
              * 添加子组件事件
+             * data = { container: IComponent, child: IComponent }
              */
             ComponentEvent.ADDED_COMPONENT = "addedComponent";
             /**
@@ -30,6 +31,7 @@ var me;
             ComponentEvent.BE_ADDED_COMPONENT = "beAddedComponet";
             /**
              * 移除子组件事件
+             * data = { container: IComponent, child: IComponent }
              */
             ComponentEvent.REMOVED_COMPONENT = "removedComponent";
             /**
@@ -279,8 +281,6 @@ var me;
             return Component;
         }(feng3d.EventDispatcher));
         feng3d.Component = Component;
-        //定义实现 IComponent 的类定义
-        // export type IComponentClass<T> = ;
         /**
          * 断言
          * @b			判定为真的表达式
