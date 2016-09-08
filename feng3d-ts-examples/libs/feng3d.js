@@ -1021,6 +1021,42 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 判断a对象是否为b类型
+         */
+        function is(a, b) {
+            var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
+            while (prototype != null) {
+                //类型==自身原型的构造函数
+                if (prototype.constructor == b)
+                    return true;
+                //父类就是原型的原型构造函数
+                prototype = Object.getPrototypeOf(prototype);
+            }
+            return false;
+        }
+        feng3d.is = is;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 如果a为b类型则返回，否则返回null
+         */
+        function as(a, b) {
+            if (!feng3d.is(a, b))
+                return null;
+            return a;
+        }
+        feng3d.as = as;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 数学常量类
          */
         var MathConsts = (function () {
@@ -3115,6 +3151,266 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 3D对象组件
+         * @author feng 2016-09-02
+         */
+        var Object3DComponent = (function (_super) {
+            __extends(Object3DComponent, _super);
+            /**
+             * 构建3D对象组件
+             */
+            function Object3DComponent() {
+                _super.call(this);
+                this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this.onBeAddedComponent, this);
+            }
+            Object.defineProperty(Object3DComponent.prototype, "object3D", {
+                /**
+                 * 所属对象
+                 */
+                get: function () { return this._object3D; },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 处理被添加事件
+             */
+            Object3DComponent.prototype.onBeAddedComponent = function (event) {
+                var data = event.data;
+                if (data.child == this) {
+                    this._object3D = feng3d.as(data.container, feng3d.Object3D);
+                }
+            };
+            return Object3DComponent;
+        }(feng3d.Component));
+        feng3d.Object3DComponent = Object3DComponent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D容器组件
+         * @author feng 2016-04-26
+         */
+        var Container3D = (function (_super) {
+            __extends(Container3D, _super);
+            /**
+             * 构建3D容器组件
+             */
+            function Container3D() {
+                _super.call(this);
+                //------------------------------------------
+                //@private
+                //------------------------------------------
+                /**
+                 * 父对象
+                 */
+                this.parent = null;
+                /**
+                 * 子对象列表
+                 */
+                this.children = [];
+                this.addEventListener(feng3d.Container3DEvent.ADDED, this.onAddedContainer3D, this);
+                this.addEventListener(feng3d.Container3DEvent.REMOVED, this.onRemovedContainer3D, this);
+            }
+            /**
+             * 获取父对象
+             * @param object3D  显示对象
+             * @return          父对象
+             */
+            Container3D.getParent = function (object3D) {
+                var container3D = this.getContainer3D(object3D);
+                return container3D.parent;
+            };
+            /**
+             * 获取容器
+             */
+            Container3D.getContainer3D = function (object3D) {
+                return object3D.getOrCreateComponentByClass(Container3D);
+            };
+            /**
+             * 移除对象
+             * @param   object3D    显示对象
+             */
+            Container3D.removeChild = function (object3D) {
+                var parent = Container3D.getParent(object3D);
+                if (parent == null) {
+                    return;
+                }
+                var parentContainer3D = this.getContainer3D(parent);
+                parentContainer3D.removeChild(object3D);
+            };
+            /**
+             * 添加子对象
+             * @param child		子对象
+             * @return			新增的子对象
+             */
+            Container3D.prototype.addChild = function (child) {
+                this.addChildAt(child, this.children.length);
+            };
+            /**
+             * 添加子对象到指定位置
+             * @param   child   子对象
+             * @param   index   添加到的位置
+             */
+            Container3D.prototype.addChildAt = function (child, index) {
+                feng3d.assert(-1 < index && index <= this.children.length, "添加子对象的索引越界！");
+                this.children.splice(index, 0, child);
+                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.ADDED, { parent: this.object3D, child: child }));
+            };
+            /**
+             * 移除子对象
+             * @param   child   子对象
+             *
+             */
+            Container3D.prototype.removeChild = function (child) {
+                var childIndex = this.children.indexOf(child);
+                this.removeChildInternal(childIndex, child);
+                return childIndex;
+            };
+            /**
+             * 获取子对象索引
+             * @param   child   子对象
+             * @return  子对象位置
+             */
+            Container3D.prototype.getChildIndex = function (child) {
+                return this.children.indexOf(child);
+            };
+            /**
+             * 移出指定索引的子对象
+             * @param childIndex	子对象索引
+             * @return				被移除对象
+             */
+            Container3D.prototype.removeChildAt = function (childIndex) {
+                var child = this.children[childIndex];
+                this.removeChildInternal(childIndex, child);
+                return child;
+            };
+            /**
+             * 获取子对象
+             * @param index
+             * @return
+             */
+            Container3D.prototype.getChildAt = function (index) {
+                return this.children[index];
+            };
+            /**
+             * 内部移除子对象
+             * @param childIndex	移除子对象所在索引
+             * @param child			移除子对象
+             */
+            Container3D.prototype.removeChildInternal = function (childIndex, child) {
+                feng3d.assert(-1 < childIndex && childIndex < this.children.length, "删除的子对象不存在或者索引越界！");
+                this.children.splice(childIndex, 1);
+                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.REMOVED, { parent: this.object3D, child: child }));
+            };
+            /**
+             * 处理添加子对象事件
+             */
+            Container3D.prototype.onAddedContainer3D = function (event) {
+                if (event.data.child == this.object3D) {
+                    this.parent = event.data.parent;
+                }
+            };
+            /**
+             * 处理删除子对象事件
+             */
+            Container3D.prototype.onRemovedContainer3D = function (event) {
+                if (event.data.child == this.object3D) {
+                    this.parent = null;
+                }
+            };
+            return Container3D;
+        }(feng3d.Object3DComponent));
+        feng3d.Container3D = Container3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D容器事件
+         */
+        var Container3DEvent = (function (_super) {
+            __extends(Container3DEvent, _super);
+            function Container3DEvent() {
+                _super.apply(this, arguments);
+            }
+            /**
+             * 添加了子对象
+             * data={parent: Object3D, child: Object3D}
+             */
+            Container3DEvent.ADDED = "added";
+            /**
+             * 删除了子对象
+             * data={parent: Object3D, child: Object3D}
+             */
+            Container3DEvent.REMOVED = "removed";
+            return Container3DEvent;
+        }(feng3d.Event));
+        feng3d.Container3DEvent = Container3DEvent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象场景空间
+         * @author feng 2016-09-02
+         */
+        var SceneSpace3D = (function (_super) {
+            __extends(SceneSpace3D, _super);
+            /**
+             * 构建3D对象场景空间
+             */
+            function SceneSpace3D() {
+                _super.call(this);
+                //------------------------------------------
+                //@private
+                //------------------------------------------
+                /**
+                 * 相对场景空间
+                 */
+                this.sceneSpace3D = new feng3d.Space3D();
+                this.sceneSpace3DDirty = true;
+            }
+            Object.defineProperty(SceneSpace3D.prototype, "sceneTransform3D", {
+                /**
+                 * 场景空间变换矩阵
+                 */
+                get: function () {
+                    this.sceneSpace3DDirty && this.updateSceneSpace3D();
+                    return this.sceneSpace3D.transform3D;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 更新场景空间
+             */
+            SceneSpace3D.prototype.updateSceneSpace3D = function () {
+                this.sceneSpace3DDirty = false;
+                var transform3D = this.object3D.space3D.transform3D.clone();
+                var parent = feng3d.Container3D.getParent(this.object3D);
+                if (parent != null) {
+                    var parentSceneTransform3D = parent.getComponentByClass(SceneSpace3D).sceneTransform3D;
+                    transform3D.append(parentSceneTransform3D);
+                }
+                this.sceneSpace3D.transform3D = transform3D;
+            };
+            return SceneSpace3D;
+        }(feng3d.Object3DComponent));
+        feng3d.SceneSpace3D = SceneSpace3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 3D场景节点
          */
         var Scene3DNode = (function (_super) {
@@ -3835,10 +4131,6 @@ var me;
              * 立方体
              */
             PrimitiveType[PrimitiveType["Cube"] = 1] = "Cube";
-            /**
-             * 球体
-             */
-            PrimitiveType[PrimitiveType["Sphere"] = 2] = "Sphere";
         })(feng3d.PrimitiveType || (feng3d.PrimitiveType = {}));
         var PrimitiveType = feng3d.PrimitiveType;
     })(feng3d = me.feng3d || (me.feng3d = {}));
@@ -4434,194 +4726,6 @@ var me;
                         data[uidx++] = tl0v + (v_tile_dim - j * dv);
                         data[uidx++] = tl1u + (u_tile_dim - i * du);
                         data[uidx++] = tl1v + (v_tile_dim - j * dv);
-                    }
-                }
-                return data;
-            }
-        })(primitives = feng3d.primitives || (feng3d.primitives = {}));
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        var primitives;
-        (function (primitives) {
-            /**
-             * 创建球形几何体
-             * @param radius 球体半径
-             * @param segmentsW 横向分割数
-             * @param segmentsH 纵向分割数
-             * @param yUp 正面朝向 true:Y+ false:Z+
-             * @param elements 顶点元素列表
-             */
-            function createSphere(radius, segmentsW, segmentsH, yUp, elements) {
-                if (radius === void 0) { radius = 50; }
-                if (segmentsW === void 0) { segmentsW = 16; }
-                if (segmentsH === void 0) { segmentsH = 12; }
-                if (yUp === void 0) { yUp = true; }
-                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.uv, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
-                var geometry = new feng3d.Geometry();
-                var list = buildGeometry(radius, segmentsW, segmentsH, yUp);
-                elements.forEach(function (element) {
-                    switch (element) {
-                        case feng3d.GLAttribute.position:
-                            var vertexPositionData = list[0];
-                            geometry.setVAData(element, vertexPositionData, 3);
-                            break;
-                        case feng3d.GLAttribute.normal:
-                            var vertexNormalData = list[1];
-                            geometry.setVAData(element, vertexNormalData, 3);
-                            break;
-                        case feng3d.GLAttribute.tangent:
-                            var vertexTangentData = list[2];
-                            geometry.setVAData(element, vertexTangentData, 3);
-                            break;
-                        case feng3d.GLAttribute.uv:
-                            var uvData = buildUVs(segmentsW, segmentsH);
-                            geometry.setVAData(element, uvData, 2);
-                            break;
-                        default:
-                            throw ("\u4E0D\u652F\u6301\u4E3A\u5E73\u9762\u521B\u5EFA\u9876\u70B9\u5C5E\u6027 " + element);
-                    }
-                });
-                var indices = buildIndices(segmentsW, segmentsH, yUp);
-                geometry.indices = indices;
-                return geometry;
-            }
-            primitives.createSphere = createSphere;
-            /**
-             * 构建几何体数据
-             * @param radius 球体半径
-             * @param segmentsW 横向分割数
-             * @param segmentsH 纵向分割数
-             * @param yUp 正面朝向 true:Y+ false:Z+
-             */
-            function buildGeometry(radius, segmentsW, segmentsH, yUp) {
-                if (radius === void 0) { radius = 50; }
-                if (segmentsW === void 0) { segmentsW = 1; }
-                if (segmentsH === void 0) { segmentsH = 1; }
-                if (yUp === void 0) { yUp = true; }
-                var vertexPositionData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
-                var vertexNormalData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
-                var vertexTangentData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
-                var startIndex;
-                var index = 0;
-                var comp1, comp2, t1, t2;
-                for (var yi = 0; yi <= segmentsH; ++yi) {
-                    startIndex = index;
-                    var horangle = Math.PI * yi / segmentsH;
-                    var z = -radius * Math.cos(horangle);
-                    var ringradius = radius * Math.sin(horangle);
-                    for (var xi = 0; xi <= segmentsW; ++xi) {
-                        var verangle = 2 * Math.PI * xi / segmentsW;
-                        var x = ringradius * Math.cos(verangle);
-                        var y = ringradius * Math.sin(verangle);
-                        var normLen = 1 / Math.sqrt(x * x + y * y + z * z);
-                        var tanLen = Math.sqrt(y * y + x * x);
-                        if (yUp) {
-                            t1 = 0;
-                            t2 = tanLen > .007 ? x / tanLen : 0;
-                            comp1 = -z;
-                            comp2 = y;
-                        }
-                        else {
-                            t1 = tanLen > .007 ? x / tanLen : 0;
-                            t2 = 0;
-                            comp1 = y;
-                            comp2 = z;
-                        }
-                        if (xi == segmentsW) {
-                            vertexPositionData[index] = vertexPositionData[startIndex];
-                            vertexPositionData[index + 1] = vertexPositionData[startIndex + 1];
-                            vertexPositionData[index + 2] = vertexPositionData[startIndex + 2];
-                            vertexNormalData[index] = vertexPositionData[startIndex + 3] + (x * normLen) * .5;
-                            vertexNormalData[index + 1] = vertexPositionData[startIndex + 4] + (comp1 * normLen) * .5;
-                            vertexNormalData[index + 2] = vertexPositionData[startIndex + 5] + (comp2 * normLen) * .5;
-                            vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
-                            vertexTangentData[index + 1] = t1;
-                            vertexTangentData[index + 2] = t2;
-                        }
-                        else {
-                            vertexPositionData[index] = x;
-                            vertexPositionData[index + 1] = comp1;
-                            vertexPositionData[index + 2] = comp2;
-                            vertexNormalData[index] = x * normLen;
-                            vertexNormalData[index + 1] = comp1 * normLen;
-                            vertexNormalData[index + 2] = comp2 * normLen;
-                            vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
-                            vertexTangentData[index + 1] = t1;
-                            vertexTangentData[index + 2] = t2;
-                        }
-                        if (xi > 0 && yi > 0) {
-                            if (yi == segmentsH) {
-                                vertexPositionData[index] = vertexPositionData[startIndex];
-                                vertexPositionData[index + 1] = vertexPositionData[startIndex + 1];
-                                vertexPositionData[index + 2] = vertexPositionData[startIndex + 2];
-                            }
-                        }
-                        index += 3;
-                    }
-                }
-                return [vertexPositionData, vertexNormalData, vertexTangentData];
-            }
-            /**
-             * 构建顶点索引
-             * @param segmentsW 横向分割数
-             * @param segmentsH 纵向分割数
-             * @param yUp 正面朝向 true:Y+ false:Z+
-             */
-            function buildIndices(segmentsW, segmentsH, yUp) {
-                if (segmentsW === void 0) { segmentsW = 1; }
-                if (segmentsH === void 0) { segmentsH = 1; }
-                if (yUp === void 0) { yUp = true; }
-                var indices = new Uint16Array(segmentsH * segmentsW * 6);
-                var numIndices = 0;
-                for (var yi = 0; yi <= segmentsH; ++yi) {
-                    for (var xi = 0; xi <= segmentsW; ++xi) {
-                        if (xi > 0 && yi > 0) {
-                            var a = (segmentsW + 1) * yi + xi;
-                            var b = (segmentsW + 1) * yi + xi - 1;
-                            var c = (segmentsW + 1) * (yi - 1) + xi - 1;
-                            var d = (segmentsW + 1) * (yi - 1) + xi;
-                            if (yi == segmentsH) {
-                                indices[numIndices++] = a;
-                                indices[numIndices++] = c;
-                                indices[numIndices++] = d;
-                            }
-                            else if (yi == 1) {
-                                indices[numIndices++] = a;
-                                indices[numIndices++] = b;
-                                indices[numIndices++] = c;
-                            }
-                            else {
-                                indices[numIndices++] = a;
-                                indices[numIndices++] = b;
-                                indices[numIndices++] = c;
-                                indices[numIndices++] = a;
-                                indices[numIndices++] = c;
-                                indices[numIndices++] = d;
-                            }
-                        }
-                    }
-                }
-                return indices;
-            }
-            /**
-             * 构建uv
-             * @param segmentsW 横向分割数
-             * @param segmentsH 纵向分割数
-             */
-            function buildUVs(segmentsW, segmentsH) {
-                if (segmentsW === void 0) { segmentsW = 1; }
-                if (segmentsH === void 0) { segmentsH = 1; }
-                var data = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 2);
-                var stride = 2;
-                var index = 0;
-                for (var yi = 0; yi <= this._segmentsH; ++yi) {
-                    for (var xi = 0; xi <= this._segmentsW; ++xi) {
-                        data[index++] = xi / this._segmentsW;
-                        data[index++] = yi / this._segmentsH;
                     }
                 }
                 return data;
