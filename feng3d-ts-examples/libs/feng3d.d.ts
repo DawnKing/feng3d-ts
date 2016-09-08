@@ -2127,6 +2127,10 @@ declare module me.feng3d {
          * 立方体
          */
         Cube = 1,
+        /**
+         * 球体
+         */
+        Sphere = 2,
     }
 }
 declare module me.feng3d.primitives {
@@ -2154,6 +2158,17 @@ declare module me.feng3d.primitives {
      * @param   elements        需要生成数据的属性
      */
     function createCube(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean, elements?: string[]): Geometry;
+}
+declare module me.feng3d.primitives {
+    /**
+     * 创建球形几何体
+     * @param radius 球体半径
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
+     * @param yUp 正面朝向 true:Y+ false:Z+
+     * @param elements 顶点元素列表
+     */
+    function createSphere(radius?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
 declare module me.feng3d {
     /**

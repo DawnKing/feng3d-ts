@@ -4131,6 +4131,10 @@ var me;
              * 立方体
              */
             PrimitiveType[PrimitiveType["Cube"] = 1] = "Cube";
+            /**
+             * 球体
+             */
+            PrimitiveType[PrimitiveType["Sphere"] = 2] = "Sphere";
         })(feng3d.PrimitiveType || (feng3d.PrimitiveType = {}));
         var PrimitiveType = feng3d.PrimitiveType;
     })(feng3d = me.feng3d || (me.feng3d = {}));
@@ -4726,6 +4730,194 @@ var me;
                         data[uidx++] = tl0v + (v_tile_dim - j * dv);
                         data[uidx++] = tl1u + (u_tile_dim - i * du);
                         data[uidx++] = tl1v + (v_tile_dim - j * dv);
+                    }
+                }
+                return data;
+            }
+        })(primitives = feng3d.primitives || (feng3d.primitives = {}));
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        var primitives;
+        (function (primitives) {
+            /**
+             * 创建球形几何体
+             * @param radius 球体半径
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             * @param elements 顶点元素列表
+             */
+            function createSphere(radius, segmentsW, segmentsH, yUp, elements) {
+                if (radius === void 0) { radius = 50; }
+                if (segmentsW === void 0) { segmentsW = 16; }
+                if (segmentsH === void 0) { segmentsH = 12; }
+                if (yUp === void 0) { yUp = true; }
+                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.uv, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
+                var geometry = new feng3d.Geometry();
+                var list = buildGeometry(radius, segmentsW, segmentsH, yUp);
+                elements.forEach(function (element) {
+                    switch (element) {
+                        case feng3d.GLAttribute.position:
+                            var vertexPositionData = list[0];
+                            geometry.setVAData(element, vertexPositionData, 3);
+                            break;
+                        case feng3d.GLAttribute.normal:
+                            var vertexNormalData = list[1];
+                            geometry.setVAData(element, vertexNormalData, 3);
+                            break;
+                        case feng3d.GLAttribute.tangent:
+                            var vertexTangentData = list[2];
+                            geometry.setVAData(element, vertexTangentData, 3);
+                            break;
+                        case feng3d.GLAttribute.uv:
+                            var uvData = buildUVs(segmentsW, segmentsH);
+                            geometry.setVAData(element, uvData, 2);
+                            break;
+                        default:
+                            throw ("\u4E0D\u652F\u6301\u4E3A\u5E73\u9762\u521B\u5EFA\u9876\u70B9\u5C5E\u6027 " + element);
+                    }
+                });
+                var indices = buildIndices(segmentsW, segmentsH, yUp);
+                geometry.indices = indices;
+                return geometry;
+            }
+            primitives.createSphere = createSphere;
+            /**
+             * 构建几何体数据
+             * @param radius 球体半径
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             */
+            function buildGeometry(radius, segmentsW, segmentsH, yUp) {
+                if (radius === void 0) { radius = 50; }
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
+                var vertexPositionData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
+                var vertexNormalData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
+                var vertexTangentData = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 3);
+                var startIndex;
+                var index = 0;
+                var comp1, comp2, t1, t2;
+                for (var yi = 0; yi <= segmentsH; ++yi) {
+                    startIndex = index;
+                    var horangle = Math.PI * yi / segmentsH;
+                    var z = -radius * Math.cos(horangle);
+                    var ringradius = radius * Math.sin(horangle);
+                    for (var xi = 0; xi <= segmentsW; ++xi) {
+                        var verangle = 2 * Math.PI * xi / segmentsW;
+                        var x = ringradius * Math.cos(verangle);
+                        var y = ringradius * Math.sin(verangle);
+                        var normLen = 1 / Math.sqrt(x * x + y * y + z * z);
+                        var tanLen = Math.sqrt(y * y + x * x);
+                        if (yUp) {
+                            t1 = 0;
+                            t2 = tanLen > .007 ? x / tanLen : 0;
+                            comp1 = -z;
+                            comp2 = y;
+                        }
+                        else {
+                            t1 = tanLen > .007 ? x / tanLen : 0;
+                            t2 = 0;
+                            comp1 = y;
+                            comp2 = z;
+                        }
+                        if (xi == segmentsW) {
+                            vertexPositionData[index] = vertexPositionData[startIndex];
+                            vertexPositionData[index + 1] = vertexPositionData[startIndex + 1];
+                            vertexPositionData[index + 2] = vertexPositionData[startIndex + 2];
+                            vertexNormalData[index] = vertexPositionData[startIndex + 3] + (x * normLen) * .5;
+                            vertexNormalData[index + 1] = vertexPositionData[startIndex + 4] + (comp1 * normLen) * .5;
+                            vertexNormalData[index + 2] = vertexPositionData[startIndex + 5] + (comp2 * normLen) * .5;
+                            vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
+                            vertexTangentData[index + 1] = t1;
+                            vertexTangentData[index + 2] = t2;
+                        }
+                        else {
+                            vertexPositionData[index] = x;
+                            vertexPositionData[index + 1] = comp1;
+                            vertexPositionData[index + 2] = comp2;
+                            vertexNormalData[index] = x * normLen;
+                            vertexNormalData[index + 1] = comp1 * normLen;
+                            vertexNormalData[index + 2] = comp2 * normLen;
+                            vertexTangentData[index] = tanLen > .007 ? -y / tanLen : 1;
+                            vertexTangentData[index + 1] = t1;
+                            vertexTangentData[index + 2] = t2;
+                        }
+                        if (xi > 0 && yi > 0) {
+                            if (yi == segmentsH) {
+                                vertexPositionData[index] = vertexPositionData[startIndex];
+                                vertexPositionData[index + 1] = vertexPositionData[startIndex + 1];
+                                vertexPositionData[index + 2] = vertexPositionData[startIndex + 2];
+                            }
+                        }
+                        index += 3;
+                    }
+                }
+                return [vertexPositionData, vertexNormalData, vertexTangentData];
+            }
+            /**
+             * 构建顶点索引
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             */
+            function buildIndices(segmentsW, segmentsH, yUp) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (yUp === void 0) { yUp = true; }
+                var indices = new Uint16Array(segmentsH * segmentsW * 6);
+                var numIndices = 0;
+                for (var yi = 0; yi <= segmentsH; ++yi) {
+                    for (var xi = 0; xi <= segmentsW; ++xi) {
+                        if (xi > 0 && yi > 0) {
+                            var a = (segmentsW + 1) * yi + xi;
+                            var b = (segmentsW + 1) * yi + xi - 1;
+                            var c = (segmentsW + 1) * (yi - 1) + xi - 1;
+                            var d = (segmentsW + 1) * (yi - 1) + xi;
+                            if (yi == segmentsH) {
+                                indices[numIndices++] = a;
+                                indices[numIndices++] = c;
+                                indices[numIndices++] = d;
+                            }
+                            else if (yi == 1) {
+                                indices[numIndices++] = a;
+                                indices[numIndices++] = b;
+                                indices[numIndices++] = c;
+                            }
+                            else {
+                                indices[numIndices++] = a;
+                                indices[numIndices++] = b;
+                                indices[numIndices++] = c;
+                                indices[numIndices++] = a;
+                                indices[numIndices++] = c;
+                                indices[numIndices++] = d;
+                            }
+                        }
+                    }
+                }
+                return indices;
+            }
+            /**
+             * 构建uv
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             */
+            function buildUVs(segmentsW, segmentsH) {
+                if (segmentsW === void 0) { segmentsW = 1; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                var data = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 2);
+                var stride = 2;
+                var index = 0;
+                for (var yi = 0; yi <= this._segmentsH; ++yi) {
+                    for (var xi = 0; xi <= this._segmentsW; ++xi) {
+                        data[index++] = xi / this._segmentsW;
+                        data[index++] = yi / this._segmentsH;
                     }
                 }
                 return data;
