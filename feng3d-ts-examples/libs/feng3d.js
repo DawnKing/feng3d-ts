@@ -468,20 +468,10 @@ var me;
              * 初始化组件
              */
             Component.prototype.initComponent = function () {
-                this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this.onAddedComponent, this, Number.MAX_VALUE);
-                this.addEventListener(feng3d.ComponentEvent.REMOVED_COMPONENT, this.onRemovedComponent, this, Number.MAX_VALUE);
-            };
-            Component.prototype.onAddedComponent = function (event) {
-                var data = event.data;
-                if (data.child == this) {
-                    this._parentComponent = data.container;
-                }
-            };
-            Component.prototype.onRemovedComponent = function (event) {
-                var data = event.data;
-                if (event.data.child == this) {
-                    this._parentComponent = null;
-                }
+                //以最高优先级监听组件被添加，设置父组件
+                this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this._onAddedComponent, this, Number.MAX_VALUE);
+                //以最低优先级监听组件被删除，清空父组件
+                this.addEventListener(feng3d.ComponentEvent.REMOVED_COMPONENT, this._onRemovedComponent, this, Number.MIN_VALUE);
             };
             Object.defineProperty(Component.prototype, "parentComponent", {
                 /**
@@ -528,7 +518,8 @@ var me;
                     return;
                 }
                 this.components.splice(index, 0, component);
-                this.dispatchAddedEvent(component);
+                //派发添加组件事件
+                component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }, true));
             };
             /**
              * 移除组件
@@ -546,7 +537,8 @@ var me;
             Component.prototype.removeComponentAt = function (index) {
                 assert(index >= 0 && index < this.numComponents, "给出索引超出范围");
                 var component = this.components.splice(index, 1)[0];
-                this.dispatchRemovedEvent(component);
+                //派发移除组件事件
+                component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }, true));
                 return component;
             };
             /**
@@ -694,23 +686,48 @@ var me;
                     item.dispatchChildrenEvent(event, depth - 1);
                 });
             };
+            //------------------------------------------
+            //@protected
+            //------------------------------------------
             /**
-             * 派发移除子组件事件
+             * 处理被添加组件事件
              */
-            Component.prototype.dispatchAddedEvent = function (component) {
-                component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.ADDED_COMPONENT, { container: this, child: component }, true));
+            Component.prototype.onBeAddedComponent = function (event) {
             };
             /**
-             * 派发移除子组件事件
+             * 处理被移除组件事件
              */
-            Component.prototype.dispatchRemovedEvent = function (component) {
-                component.dispatchEvent(new feng3d.ComponentEvent(feng3d.ComponentEvent.REMOVED_COMPONENT, { container: this, child: component }, true));
+            Component.prototype.onBeRemovedComponent = function (event) {
             };
             /**
              * 获取冒泡对象
              */
             Component.prototype.getBubbleTargets = function (event) {
+                if (event === void 0) { event = null; }
                 return [this._parentComponent];
+            };
+            //------------------------------------------
+            //@private
+            //------------------------------------------
+            /**
+             * 处理添加组件事件，此处为被添加，设置父组件
+             */
+            Component.prototype._onAddedComponent = function (event) {
+                var data = event.data;
+                if (data.child == this) {
+                    this._parentComponent = data.container;
+                    this.onBeAddedComponent(event);
+                }
+            };
+            /**
+             * 处理移除组件事件，此处为被移除，清空父组件
+             */
+            Component.prototype._onRemovedComponent = function (event) {
+                var data = event.data;
+                if (event.data.child == this) {
+                    this.onBeRemovedComponent(event);
+                    this._parentComponent = null;
+                }
             };
             return Component;
         }(feng3d.EventDispatcher));
@@ -3161,25 +3178,15 @@ var me;
              */
             function Object3DComponent() {
                 _super.call(this);
-                this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this.onBeAddedComponent, this);
             }
             Object.defineProperty(Object3DComponent.prototype, "object3D", {
                 /**
                  * 所属对象
                  */
-                get: function () { return this._object3D; },
+                get: function () { return this._parentComponent; },
                 enumerable: true,
                 configurable: true
             });
-            /**
-             * 处理被添加事件
-             */
-            Object3DComponent.prototype.onBeAddedComponent = function (event) {
-                var data = event.data;
-                if (data.child == this) {
-                    this._object3D = feng3d.as(data.container, feng3d.Object3D);
-                }
-            };
             return Object3DComponent;
         }(feng3d.Component));
         feng3d.Object3DComponent = Object3DComponent;
@@ -3211,8 +3218,6 @@ var me;
                  * 子对象列表
                  */
                 this.children = [];
-                this.addEventListener(feng3d.Container3DEvent.ADDED, this.onAddedContainer3D, this);
-                this.addEventListener(feng3d.Container3DEvent.REMOVED, this.onRemovedContainer3D, this);
             }
             /**
              * 获取父对象
@@ -3257,7 +3262,7 @@ var me;
             Container3D.prototype.addChildAt = function (child, index) {
                 feng3d.assert(-1 < index && index <= this.children.length, "添加子对象的索引越界！");
                 this.children.splice(index, 0, child);
-                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.ADDED, { parent: this.object3D, child: child }));
+                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.ADDED, { parent: this.object3D, child: child }, true));
             };
             /**
              * 移除子对象
@@ -3266,7 +3271,8 @@ var me;
              */
             Container3D.prototype.removeChild = function (child) {
                 var childIndex = this.children.indexOf(child);
-                this.removeChildInternal(childIndex, child);
+                feng3d.assert(-1 < childIndex && childIndex < this.children.length, "删除的子对象不存在！");
+                this.removeChildAt(childIndex);
                 return childIndex;
             };
             /**
@@ -3284,7 +3290,9 @@ var me;
              */
             Container3D.prototype.removeChildAt = function (childIndex) {
                 var child = this.children[childIndex];
-                this.removeChildInternal(childIndex, child);
+                feng3d.assert(-1 < childIndex && childIndex < this.children.length, "删除的索引越界！");
+                this.children.splice(childIndex, 1);
+                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.REMOVED, { parent: this.object3D, child: child }, true));
                 return child;
             };
             /**
@@ -3295,15 +3303,23 @@ var me;
             Container3D.prototype.getChildAt = function (index) {
                 return this.children[index];
             };
+            //------------------------------------------
+            //@private
+            //------------------------------------------
             /**
-             * 内部移除子对象
-             * @param childIndex	移除子对象所在索引
-             * @param child			移除子对象
+             * 处理被添加组件事件
              */
-            Container3D.prototype.removeChildInternal = function (childIndex, child) {
-                feng3d.assert(-1 < childIndex && childIndex < this.children.length, "删除的子对象不存在或者索引越界！");
-                this.children.splice(childIndex, 1);
-                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.REMOVED, { parent: this.object3D, child: child }));
+            Container3D.prototype.onBeAddedComponent = function (event) {
+                //TODO 此处可以提供一个方法，向父组件中添加事件，当自身添加到父组件时自动添加监听，当自身从父组件移除时自动移除监听
+                this.object3D.addEventListener(feng3d.Container3DEvent.ADDED, this.onAddedContainer3D, this);
+                this.object3D.addEventListener(feng3d.Container3DEvent.REMOVED, this.onRemovedContainer3D, this);
+            };
+            /**
+             * 处理被移除组件事件
+             */
+            Container3D.prototype.onBeRemovedComponent = function (event) {
+                this.object3D.addEventListener(feng3d.Container3DEvent.ADDED, this.onAddedContainer3D, this);
+                this.object3D.addEventListener(feng3d.Container3DEvent.REMOVED, this.onRemovedContainer3D, this);
             };
             /**
              * 处理添加子对象事件
@@ -3376,6 +3392,7 @@ var me;
                  */
                 this.sceneSpace3D = new feng3d.Space3D();
                 this.sceneSpace3DDirty = true;
+                this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this.onBeAddedComponent, this);
             }
             Object.defineProperty(SceneSpace3D.prototype, "sceneTransform3D", {
                 /**
@@ -3388,6 +3405,12 @@ var me;
                 enumerable: true,
                 configurable: true
             });
+            //------------------------------------------
+            //@protected
+            //------------------------------------------
+            SceneSpace3D.prototype.onBeAddedComponent = function (event) {
+                this.object3D;
+            };
             /**
              * 更新场景空间
              */
