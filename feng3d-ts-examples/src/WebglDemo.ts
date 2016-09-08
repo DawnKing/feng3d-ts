@@ -31,6 +31,12 @@ function start() {
         new me.feng3d.Space3D(-100, -100, 300, 90, 0, 45),
     ]);
     view3D.scene.addObject3D(plane1);
+
+    var sphere = new me.feng3d.Object3D("sphere", [
+        me.feng3d.primitives.createSphere(),
+        new me.feng3d.Space3D(0, -100, 300, 90, 0, 45),
+    ]);
+    view3D.scene.addObject3D(sphere);
 }
 
 var view3D: me.feng3d.View3D;
