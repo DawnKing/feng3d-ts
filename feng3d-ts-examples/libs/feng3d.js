@@ -1021,6 +1021,42 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 判断a对象是否为b类型
+         */
+        function is(a, b) {
+            var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
+            while (prototype != null) {
+                //类型==自身原型的构造函数
+                if (prototype.constructor == b)
+                    return true;
+                //父类就是原型的原型构造函数
+                prototype = Object.getPrototypeOf(prototype);
+            }
+            return false;
+        }
+        feng3d.is = is;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 如果a为b类型则返回，否则返回null
+         */
+        function as(a, b) {
+            if (!feng3d.is(a, b))
+                return null;
+            return a;
+        }
+        feng3d.as = as;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 数学常量类
          */
         var MathConsts = (function () {
@@ -3108,6 +3144,266 @@ var me;
             return View3D;
         }());
         feng3d.View3D = View3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象组件
+         * @author feng 2016-09-02
+         */
+        var Object3DComponent = (function (_super) {
+            __extends(Object3DComponent, _super);
+            /**
+             * 构建3D对象组件
+             */
+            function Object3DComponent() {
+                _super.call(this);
+                this.addEventListener(feng3d.ComponentEvent.ADDED_COMPONENT, this.onBeAddedComponent, this);
+            }
+            Object.defineProperty(Object3DComponent.prototype, "object3D", {
+                /**
+                 * 所属对象
+                 */
+                get: function () { return this._object3D; },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 处理被添加事件
+             */
+            Object3DComponent.prototype.onBeAddedComponent = function (event) {
+                var data = event.data;
+                if (data.child == this) {
+                    this._object3D = feng3d.as(data.container, feng3d.Object3D);
+                }
+            };
+            return Object3DComponent;
+        }(feng3d.Component));
+        feng3d.Object3DComponent = Object3DComponent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D容器组件
+         * @author feng 2016-04-26
+         */
+        var Container3D = (function (_super) {
+            __extends(Container3D, _super);
+            /**
+             * 构建3D容器组件
+             */
+            function Container3D() {
+                _super.call(this);
+                //------------------------------------------
+                //@private
+                //------------------------------------------
+                /**
+                 * 父对象
+                 */
+                this.parent = null;
+                /**
+                 * 子对象列表
+                 */
+                this.children = [];
+                this.addEventListener(feng3d.Container3DEvent.ADDED, this.onAddedContainer3D, this);
+                this.addEventListener(feng3d.Container3DEvent.REMOVED, this.onRemovedContainer3D, this);
+            }
+            /**
+             * 获取父对象
+             * @param object3D  显示对象
+             * @return          父对象
+             */
+            Container3D.getParent = function (object3D) {
+                var container3D = this.getContainer3D(object3D);
+                return container3D.parent;
+            };
+            /**
+             * 获取容器
+             */
+            Container3D.getContainer3D = function (object3D) {
+                return object3D.getOrCreateComponentByClass(Container3D);
+            };
+            /**
+             * 移除对象
+             * @param   object3D    显示对象
+             */
+            Container3D.removeChild = function (object3D) {
+                var parent = Container3D.getParent(object3D);
+                if (parent == null) {
+                    return;
+                }
+                var parentContainer3D = this.getContainer3D(parent);
+                parentContainer3D.removeChild(object3D);
+            };
+            /**
+             * 添加子对象
+             * @param child		子对象
+             * @return			新增的子对象
+             */
+            Container3D.prototype.addChild = function (child) {
+                this.addChildAt(child, this.children.length);
+            };
+            /**
+             * 添加子对象到指定位置
+             * @param   child   子对象
+             * @param   index   添加到的位置
+             */
+            Container3D.prototype.addChildAt = function (child, index) {
+                feng3d.assert(-1 < index && index <= this.children.length, "添加子对象的索引越界！");
+                this.children.splice(index, 0, child);
+                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.ADDED, { parent: this.object3D, child: child }));
+            };
+            /**
+             * 移除子对象
+             * @param   child   子对象
+             *
+             */
+            Container3D.prototype.removeChild = function (child) {
+                var childIndex = this.children.indexOf(child);
+                this.removeChildInternal(childIndex, child);
+                return childIndex;
+            };
+            /**
+             * 获取子对象索引
+             * @param   child   子对象
+             * @return  子对象位置
+             */
+            Container3D.prototype.getChildIndex = function (child) {
+                return this.children.indexOf(child);
+            };
+            /**
+             * 移出指定索引的子对象
+             * @param childIndex	子对象索引
+             * @return				被移除对象
+             */
+            Container3D.prototype.removeChildAt = function (childIndex) {
+                var child = this.children[childIndex];
+                this.removeChildInternal(childIndex, child);
+                return child;
+            };
+            /**
+             * 获取子对象
+             * @param index
+             * @return
+             */
+            Container3D.prototype.getChildAt = function (index) {
+                return this.children[index];
+            };
+            /**
+             * 内部移除子对象
+             * @param childIndex	移除子对象所在索引
+             * @param child			移除子对象
+             */
+            Container3D.prototype.removeChildInternal = function (childIndex, child) {
+                feng3d.assert(-1 < childIndex && childIndex < this.children.length, "删除的子对象不存在或者索引越界！");
+                this.children.splice(childIndex, 1);
+                child.dispatchEvent(new feng3d.Container3DEvent(feng3d.Container3DEvent.REMOVED, { parent: this.object3D, child: child }));
+            };
+            /**
+             * 处理添加子对象事件
+             */
+            Container3D.prototype.onAddedContainer3D = function (event) {
+                if (event.data.child == this.object3D) {
+                    this.parent = event.data.parent;
+                }
+            };
+            /**
+             * 处理删除子对象事件
+             */
+            Container3D.prototype.onRemovedContainer3D = function (event) {
+                if (event.data.child == this.object3D) {
+                    this.parent = null;
+                }
+            };
+            return Container3D;
+        }(feng3d.Object3DComponent));
+        feng3d.Container3D = Container3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D容器事件
+         */
+        var Container3DEvent = (function (_super) {
+            __extends(Container3DEvent, _super);
+            function Container3DEvent() {
+                _super.apply(this, arguments);
+            }
+            /**
+             * 添加了子对象
+             * data={parent: Object3D, child: Object3D}
+             */
+            Container3DEvent.ADDED = "added";
+            /**
+             * 删除了子对象
+             * data={parent: Object3D, child: Object3D}
+             */
+            Container3DEvent.REMOVED = "removed";
+            return Container3DEvent;
+        }(feng3d.Event));
+        feng3d.Container3DEvent = Container3DEvent;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象场景空间
+         * @author feng 2016-09-02
+         */
+        var SceneSpace3D = (function (_super) {
+            __extends(SceneSpace3D, _super);
+            /**
+             * 构建3D对象场景空间
+             */
+            function SceneSpace3D() {
+                _super.call(this);
+                //------------------------------------------
+                //@private
+                //------------------------------------------
+                /**
+                 * 相对场景空间
+                 */
+                this.sceneSpace3D = new feng3d.Space3D();
+                this.sceneSpace3DDirty = true;
+            }
+            Object.defineProperty(SceneSpace3D.prototype, "sceneTransform3D", {
+                /**
+                 * 场景空间变换矩阵
+                 */
+                get: function () {
+                    this.sceneSpace3DDirty && this.updateSceneSpace3D();
+                    return this.sceneSpace3D.transform3D;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 更新场景空间
+             */
+            SceneSpace3D.prototype.updateSceneSpace3D = function () {
+                this.sceneSpace3DDirty = false;
+                var transform3D = this.object3D.space3D.transform3D.clone();
+                var parent = feng3d.Container3D.getParent(this.object3D);
+                if (parent != null) {
+                    var parentSceneTransform3D = parent.getComponentByClass(SceneSpace3D).sceneTransform3D;
+                    transform3D.append(parentSceneTransform3D);
+                }
+                this.sceneSpace3D.transform3D = transform3D;
+            };
+            return SceneSpace3D;
+        }(feng3d.Object3DComponent));
+        feng3d.SceneSpace3D = SceneSpace3D;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;

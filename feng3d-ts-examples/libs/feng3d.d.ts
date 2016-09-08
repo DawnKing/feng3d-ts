@@ -543,6 +543,18 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 判断a对象是否为b类型
+     */
+    function is(a: any, b: Function): boolean;
+}
+declare module me.feng3d {
+    /**
+     * 如果a为b类型则返回，否则返回null
+     */
+    function as(a: any, b: Function): any;
+}
+declare module me.feng3d {
+    /**
      * 数学常量类
      */
     class MathConsts {
@@ -1594,6 +1606,157 @@ declare module me.feng3d {
         /** 3d场景 */
         scene: Scene3D;
         private drawScene();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象组件
+     * @author feng 2016-09-02
+     */
+    class Object3DComponent extends Component {
+        /**
+         * 所属对象
+         */
+        object3D: Object3D;
+        /**
+         * 构建3D对象组件
+         */
+        constructor();
+        private _object3D;
+        /**
+         * 处理被添加事件
+         */
+        private onBeAddedComponent(event);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D容器组件
+     * @author feng 2016-04-26
+     */
+    class Container3D extends Object3DComponent {
+        /**
+         * 获取父对象
+         * @param object3D  显示对象
+         * @return          父对象
+         */
+        static getParent(object3D: Object3D): Object3D;
+        /**
+         * 获取容器
+         */
+        static getContainer3D(object3D: Object3D): Container3D;
+        /**
+         * 移除对象
+         * @param   object3D    显示对象
+         */
+        static removeChild(object3D: Object3D): void;
+        /**
+         * 构建3D容器组件
+         */
+        constructor();
+        /**
+         * 添加子对象
+         * @param child		子对象
+         * @return			新增的子对象
+         */
+        addChild(child: Object3D): void;
+        /**
+         * 添加子对象到指定位置
+         * @param   child   子对象
+         * @param   index   添加到的位置
+         */
+        addChildAt(child: Object3D, index: number): void;
+        /**
+         * 移除子对象
+         * @param   child   子对象
+         *
+         */
+        removeChild(child: Object3D): number;
+        /**
+         * 获取子对象索引
+         * @param   child   子对象
+         * @return  子对象位置
+         */
+        getChildIndex(child: Object3D): number;
+        /**
+         * 移出指定索引的子对象
+         * @param childIndex	子对象索引
+         * @return				被移除对象
+         */
+        removeChildAt(childIndex: number): Object3D;
+        /**
+         * 获取子对象
+         * @param index
+         * @return
+         */
+        getChildAt(index: number): Object3D;
+        /**
+         * 父对象
+         */
+        private parent;
+        /**
+         * 子对象列表
+         */
+        private children;
+        /**
+         * 内部移除子对象
+         * @param childIndex	移除子对象所在索引
+         * @param child			移除子对象
+         */
+        private removeChildInternal(childIndex, child);
+        /**
+         * 处理添加子对象事件
+         */
+        private onAddedContainer3D(event);
+        /**
+         * 处理删除子对象事件
+         */
+        private onRemovedContainer3D(event);
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D容器事件
+     */
+    class Container3DEvent extends Event {
+        /**
+         * 添加了子对象
+         * data={parent: Object3D, child: Object3D}
+         */
+        static ADDED: string;
+        /**
+         * 删除了子对象
+         * data={parent: Object3D, child: Object3D}
+         */
+        static REMOVED: string;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象场景空间
+     * @author feng 2016-09-02
+     */
+    class SceneSpace3D extends Object3DComponent {
+        /**
+         * 构建3D对象场景空间
+         */
+        constructor();
+        /**
+         * 场景空间变换矩阵
+         */
+        sceneTransform3D: Matrix3D;
+        /**
+         * 相对场景空间
+         */
+        private sceneSpace3D;
+        /**
+         * 场景空间是否变脏
+         */
+        private sceneSpace3DDirty;
+        /**
+         * 更新场景空间
+         */
+        private updateSceneSpace3D();
     }
 }
 declare module me.feng3d {
