@@ -8,12 +8,6 @@ function loadjs(jsPath, onLoad) {
     oHead.appendChild(loadedJs);
 }
 function onFeng3dInited(ev) {
-    loadjs("libs/feng3d-component.js", onFeng3dInited1);
-}
-function onFeng3dInited1(ev) {
-    loadjs("libs/feng3d.js", onFeng3dInited2);
-}
-function onFeng3dInited2(ev) {
     if (testSources.length == 0)
         start();
     for (var i = 0; i < testSources.length; i++) {
@@ -33,7 +27,7 @@ function assert(b) {
         throw new Error();
 }
 function onLoad() {
-    loadjs("libs/feng3d-event.js", onFeng3dInited);
+    loadjs("libs/feng3d.js", onFeng3dInited);
 }
 /// <reference path="../libs/feng3d.d.ts" />
 function start() {
@@ -61,6 +55,11 @@ function start() {
         new me.feng3d.Space3D(-100, -100, 300, 90, 0, 45),
     ]);
     view3D.scene.addObject3D(plane1);
+    var sphere = new me.feng3d.Object3D("sphere", [
+        me.feng3d.primitives.createSphere(),
+        new me.feng3d.Space3D(0, -100, 300, 90, 0, 45),
+    ]);
+    view3D.scene.addObject3D(sphere);
 }
 var view3D;
 //# sourceMappingURL=examples.js.map

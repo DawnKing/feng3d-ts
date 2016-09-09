@@ -16,16 +16,6 @@ function loadjs(jsPath: string, onLoad = null) {
 
 function onFeng3dInited(ev: Event) {
 
-    loadjs("libs/feng3d-component.js", onFeng3dInited1);
-}
-
-function onFeng3dInited1(ev: Event) {
-
-    loadjs("libs/feng3d.js", onFeng3dInited2);
-}
-
-function onFeng3dInited2(ev: Event) {
-
     if (testSources.length == 0)
         start();
     for (var i = 0; i < testSources.length; i++) {
@@ -50,5 +40,5 @@ function assert(b: boolean) {
 }
 
 function onLoad() {
-    loadjs("libs/feng3d-event.js", onFeng3dInited);
+    loadjs("libs/feng3d.js", onFeng3dInited);
 }
