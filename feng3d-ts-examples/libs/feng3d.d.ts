@@ -2139,6 +2139,10 @@ declare module me.feng3d {
          * 球体
          */
         Sphere = 2,
+        /**
+         * 胶囊
+         */
+        Capsule = 3,
     }
 }
 declare module me.feng3d.primitives {
@@ -2177,6 +2181,18 @@ declare module me.feng3d.primitives {
      * @param elements 顶点元素列表
      */
     function createSphere(radius?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
+}
+declare module me.feng3d.primitives {
+    /**
+     * 创建胶囊几何体
+     * @param radius 胶囊体半径
+     * @param height 胶囊体高度
+     * @param segmentsW 横向分割数
+     * @param segmentsH 纵向分割数
+     * @param yUp 正面朝向 true:Y+ false:Z+
+     * @param elements 顶点元素列表
+     */
+    function createCapsule(radius?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
 declare module me.feng3d {
     /**
