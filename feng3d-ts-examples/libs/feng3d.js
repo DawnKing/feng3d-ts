@@ -4781,19 +4781,19 @@ var me;
                 if (yUp === void 0) { yUp = true; }
                 if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.uv, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
                 var geometry = new feng3d.Geometry();
-                var list = buildGeometry(radius, segmentsW, segmentsH, yUp);
+                var geometryData = buildGeometry(radius, segmentsW, segmentsH, yUp);
                 elements.forEach(function (element) {
                     switch (element) {
                         case feng3d.GLAttribute.position:
-                            var vertexPositionData = list[0];
+                            var vertexPositionData = geometryData[element];
                             geometry.setVAData(element, vertexPositionData, 3);
                             break;
                         case feng3d.GLAttribute.normal:
-                            var vertexNormalData = list[1];
+                            var vertexNormalData = geometryData[element];
                             geometry.setVAData(element, vertexNormalData, 3);
                             break;
                         case feng3d.GLAttribute.tangent:
-                            var vertexTangentData = list[2];
+                            var vertexTangentData = geometryData[element];
                             geometry.setVAData(element, vertexTangentData, 3);
                             break;
                         case feng3d.GLAttribute.uv:
@@ -4882,7 +4882,11 @@ var me;
                         index += 3;
                     }
                 }
-                return [vertexPositionData, vertexNormalData, vertexTangentData];
+                var result = {};
+                result[feng3d.GLAttribute.position] = vertexPositionData;
+                result[feng3d.GLAttribute.normal] = vertexNormalData;
+                result[feng3d.GLAttribute.tangent] = vertexTangentData;
+                return result;
             }
             /**
              * 构建顶点索引
