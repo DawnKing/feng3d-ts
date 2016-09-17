@@ -60,6 +60,11 @@ function start() {
         new me.feng3d.Space3D(0, -100, 300, 90, 0, 45),
     ]);
     view3D.scene.addObject3D(sphere);
+    var capsule = new me.feng3d.Object3D("capsule", [
+        me.feng3d.primitives.createCapsule(),
+        new me.feng3d.Space3D(200, -100, 500, 90, 0, 45),
+    ]);
+    view3D.scene.addObject3D(capsule);
 }
 var view3D;
 //# sourceMappingURL=examples.js.map
