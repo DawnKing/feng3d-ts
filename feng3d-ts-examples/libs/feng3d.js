@@ -602,7 +602,7 @@ var me;
              * 根据类定义获取组件
              * <p>如果存在多个则返回第一个</p>
              * @param cls				类定义
-             * @return
+             * @return                  返回指定类型组件
              */
             Component.prototype.getComponentByClass = function (cls) {
                 var component = this.getComponentsByClass(cls)[0];
@@ -626,8 +626,8 @@ var me;
             /**
              * 根据类定义获取或创建组件
              * <p>当不存在该类型对象时创建一个该组件并且添加到容器中</p>
-             * @param cls
-             * @return
+             * @param cls       类定义
+             * @return          返回与给出类定义一致的组件
              */
             Component.prototype.getOrCreateComponentByClass = function (cls) {
                 var component = this.getComponentByClass(cls);
@@ -3303,8 +3303,8 @@ var me;
             };
             /**
              * 获取子对象
-             * @param index
-             * @return
+             * @param index         子对象索引
+             * @return              指定索引的子对象
              */
             Container3D.prototype.getChildAt = function (index) {
                 return this.children[index];

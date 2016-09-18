@@ -380,7 +380,7 @@ declare module me.feng3d {
          * 根据类定义获取组件
          * <p>如果存在多个则返回第一个</p>
          * @param cls				类定义
-         * @return
+         * @return                  返回指定类型组件
          */
         getComponentByClass<T extends IComponent>(cls: new (...args) => T): T;
         /**
@@ -392,8 +392,8 @@ declare module me.feng3d {
         /**
          * 根据类定义获取或创建组件
          * <p>当不存在该类型对象时创建一个该组件并且添加到容器中</p>
-         * @param cls
-         * @return
+         * @param cls       类定义
+         * @return          返回与给出类定义一致的组件
          */
         getOrCreateComponentByClass<T extends IComponent>(cls: new (...args) => T): T;
         /**
@@ -1691,8 +1691,8 @@ declare module me.feng3d {
         removeChildAt(childIndex: number): Object3D;
         /**
          * 获取子对象
-         * @param index
-         * @return
+         * @param index         子对象索引
+         * @return              指定索引的子对象
          */
         getChildAt(index: number): Object3D;
         /**
