@@ -40,9 +40,15 @@ function start() {
 
     var capsule = new me.feng3d.Object3D("capsule", [
         me.feng3d.primitives.createCapsule(),
-        new me.feng3d.Space3D(200, -100, 500, 90, 0, 45),
+        new me.feng3d.Space3D(200, -50, 500, 0, 0, 0),
     ]);
     view3D.scene.addObject3D(capsule);
+
+    var cylinder = new me.feng3d.Object3D("cylinder", [
+        me.feng3d.primitives.createCylinder(),
+        new me.feng3d.Space3D(200, -200, 500, -90, 0, 0),
+    ]);
+    view3D.scene.addObject3D(cylinder);
 }
 
 var view3D: me.feng3d.View3D;
