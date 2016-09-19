@@ -1,4 +1,4 @@
-/// <reference path="../libs/feng3d.d.ts" />
+
 
 function start() {
 
@@ -46,3 +46,5 @@ function start() {
 }
 
 var view3D: me.feng3d.View3D;
+
+start();

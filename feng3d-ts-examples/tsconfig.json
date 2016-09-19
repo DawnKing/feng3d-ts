@@ -15,13 +15,6 @@
         "sourceMap": true,
         "declaration": false,
         "removeComments": false,
-        "outFile": "bin/examples.js"
-    },
-    "files": [ //注：如果有继承关系的，父类必须排在子类前面
-        //
-        "libs/feng3d.d.ts",
-        //
-        "src/utils/loadjs.ts",
-        "src/webglDemo.ts"
-    ]
+        "outDir": "bin"
+    }
 }
