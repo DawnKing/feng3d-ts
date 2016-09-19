@@ -3114,6 +3114,9 @@ var me;
                     case feng3d.PrimitiveType.Capsule:
                         object3D.addComponent(feng3d.primitives.createCapsule());
                         break;
+                    case feng3d.PrimitiveType.Cylinder:
+                        object3D.addComponent(feng3d.primitives.createCylinder());
+                        break;
                     default:
                         throw "\u65E0\u6CD5\u521B\u5EFA3D\u57FA\u5143\u5BF9\u8C61 " + type;
                 }
@@ -4168,6 +4171,10 @@ var me;
              * 胶囊
              */
             PrimitiveType[PrimitiveType["Capsule"] = 3] = "Capsule";
+            /**
+             * 圆柱体
+             */
+            PrimitiveType[PrimitiveType["Cylinder"] = 4] = "Cylinder";
         })(feng3d.PrimitiveType || (feng3d.PrimitiveType = {}));
         var PrimitiveType = feng3d.PrimitiveType;
     })(feng3d = me.feng3d || (me.feng3d = {}));
@@ -4345,7 +4352,6 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 var data = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 2);
-                var stride = 2;
                 var index = 0;
                 for (var yi = 0; yi <= this._segmentsH; ++yi) {
                     for (var xi = 0; xi <= this._segmentsW; ++xi) {
@@ -4949,7 +4955,6 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 var data = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 2);
-                var stride = 2;
                 var index = 0;
                 for (var yi = 0; yi <= this._segmentsH; ++yi) {
                     for (var xi = 0; xi <= this._segmentsW; ++xi) {
@@ -5146,12 +5151,361 @@ var me;
                 if (segmentsW === void 0) { segmentsW = 1; }
                 if (segmentsH === void 0) { segmentsH = 1; }
                 var data = new Float32Array((segmentsH + 1) * (segmentsW + 1) * 2);
-                var stride = 2;
                 var index = 0;
                 for (var yi = 0; yi <= this._segmentsH; ++yi) {
                     for (var xi = 0; xi <= this._segmentsW; ++xi) {
                         data[index++] = xi / this._segmentsW;
                         data[index++] = yi / this._segmentsH;
+                    }
+                }
+                return data;
+            }
+        })(primitives = feng3d.primitives || (feng3d.primitives = {}));
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        var primitives;
+        (function (primitives) {
+            /**
+             * 创建圆柱体
+             */
+            function createCylinder(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed, yUp, elements) {
+                if (topRadius === void 0) { topRadius = 50; }
+                if (bottomRadius === void 0) { bottomRadius = 50; }
+                if (height === void 0) { height = 100; }
+                if (segmentsW === void 0) { segmentsW = 16; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (topClosed === void 0) { topClosed = true; }
+                if (bottomClosed === void 0) { bottomClosed = true; }
+                if (surfaceClosed === void 0) { surfaceClosed = true; }
+                if (yUp === void 0) { yUp = true; }
+                if (elements === void 0) { elements = [feng3d.GLAttribute.position, feng3d.GLAttribute.uv, feng3d.GLAttribute.normal, feng3d.GLAttribute.tangent]; }
+                var geometry = new feng3d.Geometry();
+                var geometryData = buildGeometry(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed, yUp);
+                elements.forEach(function (element) {
+                    switch (element) {
+                        case feng3d.GLAttribute.position:
+                            var vertexPositionData = geometryData[element];
+                            geometry.setVAData(element, vertexPositionData, 3);
+                            break;
+                        case feng3d.GLAttribute.normal:
+                            var vertexNormalData = geometryData[element];
+                            geometry.setVAData(element, vertexNormalData, 3);
+                            break;
+                        case feng3d.GLAttribute.tangent:
+                            var vertexTangentData = geometryData[element];
+                            geometry.setVAData(element, vertexTangentData, 3);
+                            break;
+                        case feng3d.GLAttribute.uv:
+                            var uvData = buildUVs(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed);
+                            geometry.setVAData(element, uvData, 2);
+                            break;
+                        default:
+                            throw ("\u4E0D\u652F\u6301\u4E3A\u80F6\u56CA\u4F53\u521B\u5EFA\u9876\u70B9\u5C5E\u6027 " + element);
+                    }
+                });
+                var indices = buildIndices(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed);
+                geometry.indices = indices;
+                return geometry;
+            }
+            primitives.createCylinder = createCylinder;
+            /**
+             * 计算几何体顶点数
+             */
+            function getNumVertices(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed) {
+                var numVertices = 0;
+                if (surfaceClosed)
+                    numVertices += (segmentsH + 1) * (segmentsW + 1);
+                if (topClosed)
+                    numVertices += 2 * (segmentsW + 1);
+                if (bottomClosed)
+                    numVertices += 2 * (segmentsW + 1);
+                return numVertices;
+            }
+            /**
+             * 计算几何体三角形数量
+             */
+            function getNumTriangles(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed) {
+                var numTriangles = 0;
+                if (surfaceClosed)
+                    numTriangles += segmentsH * segmentsW * 2;
+                if (topClosed)
+                    numTriangles += segmentsW;
+                if (bottomClosed)
+                    numTriangles += segmentsW;
+                return numTriangles;
+            }
+            /**
+             * 构建几何体数据
+             */
+            function buildGeometry(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed, yUp) {
+                if (topRadius === void 0) { topRadius = 50; }
+                if (bottomRadius === void 0) { bottomRadius = 50; }
+                if (height === void 0) { height = 100; }
+                if (segmentsW === void 0) { segmentsW = 16; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (topClosed === void 0) { topClosed = true; }
+                if (bottomClosed === void 0) { bottomClosed = true; }
+                if (surfaceClosed === void 0) { surfaceClosed = true; }
+                if (yUp === void 0) { yUp = true; }
+                var i, j, index = 0;
+                var x, y, z, radius, revolutionAngle;
+                var dr, latNormElev, latNormBase;
+                var comp1, comp2;
+                var startIndex = 0;
+                var t1, t2;
+                var numVertices = getNumVertices(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed);
+                var vertexPositionData = new Float32Array(numVertices * 3);
+                var vertexNormalData = new Float32Array(numVertices * 3);
+                var vertexTangentData = new Float32Array(numVertices * 3);
+                var revolutionAngleDelta = 2 * Math.PI / segmentsW;
+                // 顶部
+                if (topClosed && topRadius > 0) {
+                    z = -0.5 * height;
+                    for (i = 0; i <= segmentsW; ++i) {
+                        // 中心顶点
+                        if (yUp) {
+                            t1 = 1;
+                            t2 = 0;
+                            comp1 = -z;
+                            comp2 = 0;
+                        }
+                        else {
+                            t1 = 0;
+                            t2 = -1;
+                            comp1 = 0;
+                            comp2 = z;
+                        }
+                        addVertex(0, comp1, comp2, 0, t1, t2, 1, 0, 0);
+                        // 旋转顶点
+                        revolutionAngle = i * revolutionAngleDelta;
+                        x = topRadius * Math.cos(revolutionAngle);
+                        y = topRadius * Math.sin(revolutionAngle);
+                        if (yUp) {
+                            comp1 = -z;
+                            comp2 = y;
+                        }
+                        else {
+                            comp1 = y;
+                            comp2 = z;
+                        }
+                        if (i == segmentsW) {
+                            addVertex(vertexPositionData[startIndex + 3], vertexPositionData[startIndex + 4], vertexPositionData[startIndex + 5], 0, t1, t2, 1, 0, 0);
+                        }
+                        else {
+                            addVertex(x, comp1, comp2, 0, t1, t2, 1, 0, 0);
+                        }
+                    }
+                }
+                // 底部
+                if (bottomClosed && bottomRadius > 0) {
+                    z = 0.5 * height;
+                    startIndex = index;
+                    for (i = 0; i <= segmentsW; ++i) {
+                        // 中心顶点
+                        if (yUp) {
+                            t1 = -1;
+                            t2 = 0;
+                            comp1 = -z;
+                            comp2 = 0;
+                        }
+                        else {
+                            t1 = 0;
+                            t2 = 1;
+                            comp1 = 0;
+                            comp2 = z;
+                        }
+                        addVertex(0, comp1, comp2, 0, t1, t2, 1, 0, 0);
+                        // 旋转顶点
+                        revolutionAngle = i * revolutionAngle;
+                        x = bottomRadius * Math.cos(revolutionAngle);
+                        y = bottomRadius * Math.sin(revolutionAngle);
+                        if (yUp) {
+                            comp1 = -z;
+                            comp2 = y;
+                        }
+                        else {
+                            comp1 = y;
+                            comp2 = z;
+                        }
+                        if (i == segmentsW) {
+                            addVertex(x, vertexPositionData[startIndex + 1], vertexPositionData[startIndex + 2], 0, t1, t2, 1, 0, 0);
+                        }
+                        else {
+                            addVertex(x, comp1, comp2, 0, t1, t2, 1, 0, 0);
+                        }
+                    }
+                }
+                // 侧面
+                dr = bottomRadius - topRadius;
+                latNormElev = dr / height;
+                latNormBase = (latNormElev == 0) ? 1 : height / dr;
+                if (surfaceClosed) {
+                    var a, b, c, d;
+                    var na0, na1, naComp1, naComp2;
+                    for (j = 0; j <= segmentsH; ++j) {
+                        radius = topRadius - ((j / segmentsH) * (topRadius - bottomRadius));
+                        z = -(height / 2) + (j / segmentsH * height);
+                        startIndex = index;
+                        for (i = 0; i <= segmentsW; ++i) {
+                            revolutionAngle = i * revolutionAngleDelta;
+                            x = radius * Math.cos(revolutionAngle);
+                            y = radius * Math.sin(revolutionAngle);
+                            na0 = latNormBase * Math.cos(revolutionAngle);
+                            na1 = latNormBase * Math.sin(revolutionAngle);
+                            if (yUp) {
+                                t1 = 0;
+                                t2 = -na0;
+                                comp1 = -z;
+                                comp2 = y;
+                                naComp1 = latNormElev;
+                                naComp2 = na1;
+                            }
+                            else {
+                                t1 = -na0;
+                                t2 = 0;
+                                comp1 = y;
+                                comp2 = z;
+                                naComp1 = na1;
+                                naComp2 = latNormElev;
+                            }
+                            if (i == segmentsW) {
+                                addVertex(vertexPositionData[startIndex], vertexPositionData[startIndex + 1], vertexPositionData[startIndex + 2], na0, latNormElev, na1, na1, t1, t2);
+                            }
+                            else {
+                                addVertex(x, comp1, comp2, na0, naComp1, naComp2, -na1, t1, t2);
+                            }
+                        }
+                    }
+                }
+                var result = {};
+                result[feng3d.GLAttribute.position] = vertexPositionData;
+                result[feng3d.GLAttribute.normal] = vertexNormalData;
+                result[feng3d.GLAttribute.tangent] = vertexTangentData;
+                return result;
+                function addVertex(px, py, pz, nx, ny, nz, tx, ty, tz) {
+                    vertexPositionData[index] = px;
+                    vertexPositionData[index + 1] = py;
+                    vertexPositionData[index + 2] = pz;
+                    vertexNormalData[index] = nx;
+                    vertexNormalData[index + 1] = ny;
+                    vertexNormalData[index + 2] = nz;
+                    vertexTangentData[index] = tx;
+                    vertexTangentData[index + 1] = ty;
+                    vertexTangentData[index + 2] = tz;
+                    index += 3;
+                }
+            }
+            /**
+             * 构建顶点索引
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             * @param yUp 正面朝向 true:Y+ false:Z+
+             */
+            function buildIndices(topRadius, bottomRadius, height, segmentsW, segmentsH, topClosed, bottomClosed, surfaceClosed) {
+                if (topRadius === void 0) { topRadius = 50; }
+                if (bottomRadius === void 0) { bottomRadius = 50; }
+                if (height === void 0) { height = 100; }
+                if (segmentsW === void 0) { segmentsW = 16; }
+                if (segmentsH === void 0) { segmentsH = 1; }
+                if (topClosed === void 0) { topClosed = true; }
+                if (bottomClosed === void 0) { bottomClosed = true; }
+                if (surfaceClosed === void 0) { surfaceClosed = true; }
+                var i, j, index = 0;
+                var numTriangles = getNumTriangles(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed);
+                var indices = new Uint16Array(numTriangles * 3);
+                var numIndices = 0;
+                // 顶部
+                if (topClosed && topRadius > 0) {
+                    for (i = 0; i <= segmentsW; ++i) {
+                        index += 2;
+                        if (i > 0)
+                            addTriangleClockWise(index - 1, index - 3, index - 2);
+                    }
+                }
+                // 底部
+                if (bottomClosed && bottomRadius > 0) {
+                    for (i = 0; i <= segmentsW; ++i) {
+                        index += 2;
+                        if (i > 0)
+                            addTriangleClockWise(index - 2, index - 3, index - 1);
+                    }
+                }
+                // 侧面
+                if (surfaceClosed) {
+                    var a, b, c, d;
+                    for (j = 0; j <= segmentsH; ++j) {
+                        for (i = 0; i <= segmentsW; ++i) {
+                            index++;
+                            if (i > 0 && j > 0) {
+                                a = index - 1;
+                                b = index - 2;
+                                c = b - segmentsW - 1;
+                                d = a - segmentsW - 1;
+                                addTriangleClockWise(a, b, c);
+                                addTriangleClockWise(a, c, d);
+                            }
+                        }
+                    }
+                }
+                return indices;
+                function addTriangleClockWise(cwVertexIndex0, cwVertexIndex1, cwVertexIndex2) {
+                    indices[numIndices++] = cwVertexIndex0;
+                    indices[numIndices++] = cwVertexIndex1;
+                    indices[numIndices++] = cwVertexIndex2;
+                }
+            }
+            /**
+             * 构建uv
+             * @param segmentsW 横向分割数
+             * @param segmentsH 纵向分割数
+             */
+            function buildUVs(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed) {
+                var i, j;
+                var x, y, revolutionAngle;
+                var numVertices = getNumVertices(segmentsW, segmentsH, surfaceClosed, topClosed, bottomClosed);
+                var data = new Float32Array(numVertices * 2);
+                var revolutionAngleDelta = 2 * Math.PI / segmentsW;
+                var index = 0;
+                // 顶部
+                if (topClosed) {
+                    for (i = 0; i <= segmentsW; ++i) {
+                        revolutionAngle = i * revolutionAngleDelta;
+                        x = 0.5 + 0.5 * -Math.cos(revolutionAngle);
+                        y = 0.5 + 0.5 * Math.sin(revolutionAngle);
+                        // 中心顶点
+                        data[index++] = 0.5;
+                        data[index++] = 0.5;
+                        // 旋转顶点
+                        data[index++] = x;
+                        data[index++] = y;
+                    }
+                }
+                // 底部
+                if (bottomClosed) {
+                    for (i = 0; i <= segmentsW; ++i) {
+                        revolutionAngle = i * revolutionAngleDelta;
+                        x = 0.5 + 0.5 * Math.cos(revolutionAngle);
+                        y = 0.5 + 0.5 * Math.sin(revolutionAngle);
+                        // 中心顶点
+                        data[index++] = 0.5;
+                        data[index++] = 0.5;
+                        // 旋转顶点
+                        data[index++] = x;
+                        data[index++] = y;
+                    }
+                }
+                // 侧面
+                if (surfaceClosed) {
+                    for (j = 0; j <= segmentsH; ++j) {
+                        for (i = 0; i <= segmentsW; ++i) {
+                            // 旋转顶点
+                            data[index++] = (i / segmentsW);
+                            data[index++] = (j / segmentsH);
+                        }
                     }
                 }
                 return data;

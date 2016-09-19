@@ -2143,6 +2143,10 @@ declare module me.feng3d {
          * 胶囊
          */
         Capsule = 3,
+        /**
+         * 圆柱体
+         */
+        Cylinder = 4,
     }
 }
 declare module me.feng3d.primitives {
@@ -2193,6 +2197,12 @@ declare module me.feng3d.primitives {
      * @param elements 顶点元素列表
      */
     function createCapsule(radius?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
+}
+declare module me.feng3d.primitives {
+    /**
+     * 创建圆柱体
+     */
+    function createCylinder(topRadius?: number, bottomRadius?: number, height?: number, segmentsW?: number, segmentsH?: number, topClosed?: boolean, bottomClosed?: boolean, surfaceClosed?: boolean, yUp?: boolean, elements?: string[]): Geometry;
 }
 declare module me.feng3d {
     /**
