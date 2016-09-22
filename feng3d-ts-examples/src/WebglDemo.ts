@@ -2,7 +2,7 @@ module me.feng3d {
 
     export class WebglDemo {
 
-        view3D: me.feng3d.View3D;
+        view3D: View3D;
         constructor() {
 
             this.init();
@@ -10,9 +10,9 @@ module me.feng3d {
 
         init() {
             var canvas = document.getElementById("glcanvas");
-            this.view3D = new me.feng3d.View3D(canvas);
+            this.view3D = new View3D(canvas);
 
-            // var cube = me.feng3d.Object3D.createPrimitive(me.feng3d.PrimitiveType.Cube);
+            // var cube = Object3D.createPrimitive(PrimitiveType.Cube);
             // cube.space3D.x = -100;
             // cube.space3D.y = 100;
             // cube.space3D.z = 300;
@@ -20,33 +20,33 @@ module me.feng3d {
             // cube.space3D.ry = 45;
             // this.view3D.scene.addObject3D(cube);
 
-            var cube = new me.feng3d.Object3D("cube", [
-                me.feng3d.primitives.createCube(),
-                new me.feng3d.Space3D(-100, 100, 300, 45, 45.0),
+            var cube = new Object3D("cube", [
+                primitives.createCube(),
+                new Space3D(-100, 100, 300, 45, 45.0),
             ]);
             this.view3D.scene.addObject3D(cube);
 
-            var plane = new me.feng3d.Object3D("plane", [
-                me.feng3d.primitives.createPlane(),
-                new me.feng3d.Space3D(100, 100, 300, 90, 0, 45),
+            var plane = new Object3D("plane", [
+                primitives.createPlane(),
+                new Space3D(100, 100, 300, 90, 0, 45),
             ]);
             this.view3D.scene.addObject3D(plane);
 
-            var sphere = new me.feng3d.Object3D("sphere", [
-                me.feng3d.primitives.createSphere(),
-                new me.feng3d.Space3D(0, -100, 300, 90, 0, 45),
+            var sphere = new Object3D("sphere", [
+                primitives.createSphere(),
+                new Space3D(0, -100, 300, 90, 0, 45),
             ]);
             this.view3D.scene.addObject3D(sphere);
 
-            var capsule = new me.feng3d.Object3D("capsule", [
-                me.feng3d.primitives.createCapsule(),
-                new me.feng3d.Space3D(200, -50, 500, 0, 0, 0),
+            var capsule = new Object3D("capsule", [
+                primitives.createCapsule(),
+                new Space3D(200, -50, 500, 0, 0, 0),
             ]);
             this.view3D.scene.addObject3D(capsule);
 
-            var cylinder = new me.feng3d.Object3D("cylinder", [
-                me.feng3d.primitives.createCylinder(),
-                new me.feng3d.Space3D(200, -200, 500, -90, 0, 0),
+            var cylinder = new Object3D("cylinder", [
+                primitives.createCylinder(),
+                new Space3D(200, -200, 500, -90, 0, 0),
             ]);
             this.view3D.scene.addObject3D(cylinder);
         }
