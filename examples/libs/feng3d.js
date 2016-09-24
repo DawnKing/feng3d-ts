@@ -1074,6 +1074,60 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 颜色
+         * @author feng 2016-09-24
+         */
+        var Color = (function () {
+            /**
+             * 构建颜色
+             */
+            function Color(color) {
+                if (color === void 0) { color = 0xffcccccc; }
+                /**
+                 * 红色，0-1
+                 */
+                this.r = 1;
+                /**
+                 * 绿色，0-1
+                 */
+                this.g = 1;
+                /**
+                 * 蓝色，0-1
+                 */
+                this.b = 1;
+                /**
+                 * 透明度，0-1
+                 */
+                this.a = 1;
+                this.color = color;
+            }
+            Object.defineProperty(Color.prototype, "color", {
+                /**
+                 * 颜色值，32位整数值
+                 */
+                get: function () {
+                    return this._color;
+                },
+                set: function (value) {
+                    this._color = value;
+                    this.a = ((this._color >> 24) & 0xff) / 0xff;
+                    this.r = ((this._color >> 16) & 0xff) / 0xff;
+                    this.g = ((this._color >> 8) & 0xff) / 0xff;
+                    this.b = (this._color & 0xff) / 0xff;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return Color;
+        }());
+        feng3d.Color = Color;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 数学常量类
          */
         var MathConsts = (function () {
@@ -2441,6 +2495,12 @@ var me;
             return UniformMatrix4fvRenderData;
         }());
         feng3d.UniformMatrix4fvRenderData = UniformMatrix4fvRenderData;
+        var Uniform4fRenderData = (function () {
+            function Uniform4fRenderData() {
+            }
+            return Uniform4fRenderData;
+        }());
+        feng3d.Uniform4fRenderData = Uniform4fRenderData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -5554,13 +5614,47 @@ var me;
              * @param alpha 透明的
              */
             function ColorMaterial(color, alpha) {
-                if (color === void 0) { color = 0xcccccc; }
+                if (color === void 0) { color = null; }
                 if (alpha === void 0) { alpha = 1; }
                 _super.call(this);
-                this.color = color;
+                this.vertexShaderStr = "\nattribute vec3 vaPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(vaPosition, 1.0);\n}";
+                this.fragmentShaderStr = "\nuniform vec4 diffuseInput_fc_vector;\nvoid main(void) {\n\n    gl_FragColor = diffuseInput_fc_vector;\n}";
+                /**
+                 * 漫反射颜色数据RGBA
+                 */
+                this.diffuseInputData = [0, 0, 0, 0];
+                this.color = color || new feng3d.Color();
                 this.alpha = alpha;
-                //  this.mapUniformBuffer();
+                // this.mapProgram(this.vertexShaderStr, this.fragmentShaderStr);
+                this.mapUniformMatrix4fv;
             }
+            Object.defineProperty(ColorMaterial.prototype, "alpha", {
+                /**
+                 * 漫反射alpha
+                 */
+                get: function () {
+                    return this.diffuseInputData[3];
+                },
+                set: function (value) {
+                    this.diffuseInputData[3] = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(ColorMaterial.prototype, "color", {
+                /**
+                 * 颜色
+                 */
+                get: function () {
+                    return this._color;
+                },
+                set: function (value) {
+                    this._color = this.diffuseInputData[3] = value;
+                    this.updateDiffuse();
+                },
+                enumerable: true,
+                configurable: true
+            });
             return ColorMaterial;
         }(feng3d.Material));
         feng3d.ColorMaterial = ColorMaterial;

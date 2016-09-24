@@ -561,6 +561,39 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 颜色
+     * @author feng 2016-09-24
+     */
+    class Color {
+        /**
+         * 红色，0-1
+         */
+        r: number;
+        /**
+         * 绿色，0-1
+         */
+        g: number;
+        /**
+         * 蓝色，0-1
+         */
+        b: number;
+        /**
+         * 透明度，0-1
+         */
+        a: number;
+        private _color;
+        /**
+         * 构建颜色
+         */
+        constructor(color?: number);
+        /**
+         * 颜色值，32位整数值
+         */
+        color: number;
+    }
+}
+declare module me.feng3d {
+    /**
      * 数学常量类
      */
     class MathConsts {
@@ -1287,6 +1320,16 @@ declare module me.feng3d {
          * 矩阵数据
          */
         matrix: Matrix3D;
+    }
+    class Uniform4fRenderData {
+        /**
+         * 常量名称
+         */
+        name: string;
+        /**
+         *
+         */
+        vec4: Vector3D;
     }
 }
 declare module me.feng3d {
@@ -2225,20 +2268,30 @@ declare module me.feng3d {
      * @author feng 2016-05-02
      */
     class ColorMaterial extends Material {
+        vertexShaderStr: string;
+        fragmentShaderStr: string;
         /**
          * 颜色
          */
-        color: number;
+        private _color;
         /**
-         * 透明度
+         * 漫反射颜色数据RGBA
          */
-        alpha: number;
+        private diffuseInputData;
         /**
          * 构建颜色材质
          * @param color 颜色
          * @param alpha 透明的
          */
-        constructor(color?: number, alpha?: number);
+        constructor(color?: Color, alpha?: number);
+        /**
+         * 漫反射alpha
+         */
+        alpha: number;
+        /**
+         * 颜色
+         */
+        color: Color;
     }
 }
 declare module me.feng3d {
