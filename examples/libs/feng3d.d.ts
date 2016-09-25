@@ -590,6 +590,10 @@ declare module me.feng3d {
          * 颜色值，32位整数值
          */
         color: number;
+        x: number;
+        y: number;
+        z: number;
+        w: number;
     }
 }
 declare module me.feng3d {
@@ -1140,7 +1144,12 @@ declare module me.feng3d {
         /**
          * 映射常量4*4矩阵
          */
-        mapUniformMatrix4fv(name: string, data: Matrix3D): void;
+        mapUniform(name: string, data: Matrix3D | {
+            x: number;
+            y: number;
+            z: number;
+            w: number;
+        }): void;
         /**
          * 处理获取索引缓冲事件
          */
@@ -1189,7 +1198,7 @@ declare module me.feng3d {
         uniforms: {
             [name: string]: {
                 type: string;
-                buffer?: UniformMatrix4fvRenderData;
+                buffer?: UniformRenderData;
             };
         };
         /**
@@ -1284,6 +1293,14 @@ declare module me.feng3d {
          * 片段渲染程序代码
          */
         fragmentCode: string;
+        /**
+        * 获取程序常量列表
+        */
+        getUniforms(): {
+            [name: string]: {
+                type: string;
+            };
+        };
     }
     /**
      * 索引渲染数据
@@ -1303,33 +1320,32 @@ declare module me.feng3d {
          * 属性名称
          */
         name: string;
-        /** 属性数据 */
+        /**
+         * 属性数据
+         */
         data: Float32Array;
-        /** 属性数据长度 */
+        /**
+         * 属性数据长度
+         */
         size: number;
     }
     /**
-     * 常量4*4矩阵渲染数据
+     * 常量渲染数据
      */
-    class UniformMatrix4fvRenderData {
+    class UniformRenderData {
         /**
          * 常量名称
          */
         name: string;
         /**
-         * 矩阵数据
+         * 数据
          */
-        matrix: Matrix3D;
-    }
-    class Uniform4fRenderData {
-        /**
-         * 常量名称
-         */
-        name: string;
-        /**
-         *
-         */
-        vec4: Vector3D;
+        data: Matrix3D | {
+            x: number;
+            y: number;
+            z: number;
+            w: number;
+        };
     }
 }
 declare module me.feng3d {
@@ -1481,7 +1497,7 @@ declare module me.feng3d {
         /**
          * 常量缓存
          */
-        buffer: UniformMatrix4fvRenderData;
+        buffer: UniformRenderData;
     }
 }
 declare module me.feng3d {
@@ -1502,6 +1518,7 @@ declare module me.feng3d {
          * 投影矩阵
          */
         static uPMatrix: string;
+        static diffuseInput_fc_vector: string;
     }
 }
 declare module me.feng3d {
@@ -2275,19 +2292,11 @@ declare module me.feng3d {
          */
         private _color;
         /**
-         * 漫反射颜色数据RGBA
-         */
-        private diffuseInputData;
-        /**
          * 构建颜色材质
          * @param color 颜色
          * @param alpha 透明的
          */
-        constructor(color?: Color, alpha?: number);
-        /**
-         * 漫反射alpha
-         */
-        alpha: number;
+        constructor(color?: Color);
         /**
          * 颜色
          */

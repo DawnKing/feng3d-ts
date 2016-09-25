@@ -1082,7 +1082,7 @@ var me;
              * 构建颜色
              */
             function Color(color) {
-                if (color === void 0) { color = 0xffcccccc; }
+                if (color === void 0) { color = 0xffff0000; }
                 /**
                  * 红色，0-1
                  */
@@ -1114,6 +1114,34 @@ var me;
                     this.r = ((this._color >> 16) & 0xff) / 0xff;
                     this.g = ((this._color >> 8) & 0xff) / 0xff;
                     this.b = (this._color & 0xff) / 0xff;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Color.prototype, "x", {
+                get: function () {
+                    return this.r;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Color.prototype, "y", {
+                get: function () {
+                    return this.g;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Color.prototype, "z", {
+                get: function () {
+                    return this.b;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Color.prototype, "w", {
+                get: function () {
+                    return this.a;
                 },
                 enumerable: true,
                 configurable: true
@@ -2225,19 +2253,11 @@ var me;
             /**
              * 映射常量4*4矩阵
              */
-            RenderDataHolder.prototype.mapUniformMatrix4fv = function (name, data) {
-                var uniformBuffer = this.uniforms[name] = this.uniforms[name] || new feng3d.UniformMatrix4fvRenderData();
+            RenderDataHolder.prototype.mapUniform = function (name, data) {
+                var uniformBuffer = this.uniforms[name] = this.uniforms[name] || new feng3d.UniformRenderData();
                 uniformBuffer.name = name;
-                uniformBuffer.matrix = data;
+                uniformBuffer.data = data;
             };
-            // /**
-            //  * 映射常量缓冲
-            //  */
-            // mapUniformBuffer(name: string, data: Matrix3D) {
-            // 	var uniformBuffer = this.uniforms[name] = this.uniforms[name] || new UniformRenderData();
-            // 	uniformBuffer.name = name;
-            // 	uniformBuffer.matrix = data;
-            // }
             /**
              * 处理获取索引缓冲事件
              */
@@ -2352,7 +2372,7 @@ var me;
              * 准备常量
              */
             RenderData.prototype.prepareUniforms = function () {
-                this.uniforms = feng3d.ShaderCodeUtils.getUniforms(this.programBuffer.vertexCode);
+                this.uniforms = this.programBuffer.getUniforms();
                 for (var name in this.uniforms) {
                     //从Object3D中获取顶点缓冲
                     var eventData = { name: name, buffer: null };
@@ -2432,9 +2452,21 @@ var me;
                 var shaderProgram = feng3d.context3DPool.getWebGLProgram(this.context3D, programBuffer.vertexCode, programBuffer.fragmentCode);
                 for (var name in uniforms) {
                     if (uniforms.hasOwnProperty(name)) {
-                        var element = uniforms[name];
+                        var item = uniforms[name];
+                        var data = item.buffer.data;
+                        var type = item.type;
                         var location = this.context3D.getUniformLocation(shaderProgram, name);
-                        this.context3D.uniformMatrix4fv(location, false, element.buffer.matrix.rawData);
+                        switch (type) {
+                            case "mat4":
+                                this.context3D.uniformMatrix4fv(location, false, data.rawData);
+                                break;
+                            case "vec4":
+                                var vec4 = data;
+                                this.context3D.uniform4f(location, vec4.x, vec4.y, vec4.z, vec4.w);
+                                break;
+                            default:
+                                throw "\u65E0\u6CD5\u8BC6\u522B\u7684uniform\u7C7B\u578B " + type;
+                        }
                     }
                 }
             };
@@ -2464,6 +2496,21 @@ var me;
         var ProgramRenderData = (function () {
             function ProgramRenderData() {
             }
+            /**
+            * 获取程序常量列表
+            */
+            ProgramRenderData.prototype.getUniforms = function () {
+                var vertexUniforms = feng3d.ShaderCodeUtils.getUniforms(this.vertexCode);
+                var fragmentUniforms = feng3d.ShaderCodeUtils.getUniforms(this.fragmentCode);
+                var uniforms = vertexUniforms;
+                for (var name in fragmentUniforms) {
+                    if (fragmentUniforms.hasOwnProperty(name)) {
+                        var element = fragmentUniforms[name];
+                        uniforms[name] = element;
+                    }
+                }
+                return uniforms;
+            };
             return ProgramRenderData;
         }());
         feng3d.ProgramRenderData = ProgramRenderData;
@@ -2487,20 +2534,14 @@ var me;
         }());
         feng3d.AttributeRenderData = AttributeRenderData;
         /**
-         * 常量4*4矩阵渲染数据
+         * 常量渲染数据
          */
-        var UniformMatrix4fvRenderData = (function () {
-            function UniformMatrix4fvRenderData() {
+        var UniformRenderData = (function () {
+            function UniformRenderData() {
             }
-            return UniformMatrix4fvRenderData;
+            return UniformRenderData;
         }());
-        feng3d.UniformMatrix4fvRenderData = UniformMatrix4fvRenderData;
-        var Uniform4fRenderData = (function () {
-            function Uniform4fRenderData() {
-            }
-            return Uniform4fRenderData;
-        }());
-        feng3d.Uniform4fRenderData = Uniform4fRenderData;
+        feng3d.UniformRenderData = UniformRenderData;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -2872,6 +2913,7 @@ var me;
              * 投影矩阵
              */
             RenderDataID.uPMatrix = "uPMatrix";
+            RenderDataID.diffuseInput_fc_vector = "diffuseInput_fc_vector";
             return RenderDataID;
         }());
         feng3d.RenderDataID = RenderDataID;
@@ -2925,9 +2967,9 @@ var me;
                 var context3DBuffer = object3D.getOrCreateComponentByClass(feng3d.RenderDataHolder);
                 //模型矩阵
                 var mvMatrix = object3D.space3D.transform3D;
-                context3DBuffer.mapUniformMatrix4fv(feng3d.RenderDataID.uMVMatrix, mvMatrix);
+                context3DBuffer.mapUniform(feng3d.RenderDataID.uMVMatrix, mvMatrix);
                 //场景投影矩阵
-                context3DBuffer.mapUniformMatrix4fv(feng3d.RenderDataID.uPMatrix, this.camera.viewProjection);
+                context3DBuffer.mapUniform(feng3d.RenderDataID.uPMatrix, this.camera.viewProjection);
                 //绘制对象
                 var renderData = feng3d.RenderData.getInstance(object3D);
                 var object3DBuffer = renderData.getRenderBuffer(this.context3D);
@@ -5613,34 +5655,15 @@ var me;
              * @param color 颜色
              * @param alpha 透明的
              */
-            function ColorMaterial(color, alpha) {
+            function ColorMaterial(color) {
                 if (color === void 0) { color = null; }
-                if (alpha === void 0) { alpha = 1; }
                 _super.call(this);
                 this.vertexShaderStr = "\nattribute vec3 vaPosition;\n\nuniform mat4 uMVMatrix;\nuniform mat4 uPMatrix;\n\nvoid main(void) {\n    gl_Position = uPMatrix * uMVMatrix * vec4(vaPosition, 1.0);\n}";
-                this.fragmentShaderStr = "\nuniform vec4 diffuseInput_fc_vector;\nvoid main(void) {\n\n    gl_FragColor = diffuseInput_fc_vector;\n}";
-                /**
-                 * 漫反射颜色数据RGBA
-                 */
-                this.diffuseInputData = [0, 0, 0, 0];
+                this.fragmentShaderStr = "\nprecision mediump float;\nuniform vec4 diffuseInput_fc_vector;\nvoid main(void) {\n\n    gl_FragColor = diffuseInput_fc_vector;\n}";
                 this.color = color || new feng3d.Color();
-                this.alpha = alpha;
-                // this.mapProgram(this.vertexShaderStr, this.fragmentShaderStr);
-                this.mapUniformMatrix4fv;
+                this.mapUniform(feng3d.RenderDataID.diffuseInput_fc_vector, this._color);
+                this.mapProgram(this.vertexShaderStr, this.fragmentShaderStr);
             }
-            Object.defineProperty(ColorMaterial.prototype, "alpha", {
-                /**
-                 * 漫反射alpha
-                 */
-                get: function () {
-                    return this.diffuseInputData[3];
-                },
-                set: function (value) {
-                    this.diffuseInputData[3] = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
             Object.defineProperty(ColorMaterial.prototype, "color", {
                 /**
                  * 颜色
@@ -5649,8 +5672,7 @@ var me;
                     return this._color;
                 },
                 set: function (value) {
-                    this._color = this.diffuseInputData[3] = value;
-                    this.updateDiffuse();
+                    this._color = value;
                 },
                 enumerable: true,
                 configurable: true
