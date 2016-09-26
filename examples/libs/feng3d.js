@@ -704,7 +704,9 @@ var me;
              */
             Component.prototype.getBubbleTargets = function (event) {
                 if (event === void 0) { event = null; }
-                return [this._parentComponent];
+                var bubbleTargets = _super.prototype.getBubbleTargets.call(this, event);
+                bubbleTargets.push(this._parentComponent);
+                return bubbleTargets;
             };
             //------------------------------------------
             //@private
@@ -1082,7 +1084,7 @@ var me;
              * 构建颜色
              */
             function Color(color) {
-                if (color === void 0) { color = 0xffff0000; }
+                if (color === void 0) { color = 0xffffffff; }
                 /**
                  * 红色，0-1
                  */
@@ -2251,7 +2253,7 @@ var me;
                 programBuffer.fragmentCode = fragmentCode;
             };
             /**
-             * 映射常量4*4矩阵
+             * 映射常量
              */
             RenderDataHolder.prototype.mapUniform = function (name, data) {
                 var uniformBuffer = this.uniforms[name] = this.uniforms[name] || new feng3d.UniformRenderData();
@@ -2966,8 +2968,9 @@ var me;
             Renderer.prototype.drawObject3D = function (object3D) {
                 var context3DBuffer = object3D.getOrCreateComponentByClass(feng3d.RenderDataHolder);
                 //模型矩阵
-                var mvMatrix = object3D.space3D.transform3D;
+                var mvMatrix = object3D.sceneTransform3D;
                 context3DBuffer.mapUniform(feng3d.RenderDataID.uMVMatrix, mvMatrix);
+                console.log(mvMatrix.rawData);
                 //场景投影矩阵
                 context3DBuffer.mapUniform(feng3d.RenderDataID.uPMatrix, this.camera.viewProjection);
                 //绘制对象
@@ -2978,6 +2981,240 @@ var me;
             return Renderer;
         }());
         feng3d.Renderer = Renderer;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象
+         * @author feng 2016-04-26
+         */
+        var Object3D = (function (_super) {
+            __extends(Object3D, _super);
+            /**
+             * 构建3D对象
+             */
+            function Object3D(name, conponents) {
+                var _this = this;
+                if (conponents === void 0) { conponents = null; }
+                _super.call(this);
+                this.name = name || feng3d.getClassName(this);
+                conponents && conponents.forEach(function (element) {
+                    _this.addComponent(element);
+                });
+                this.getOrCreateComponentByClass(feng3d.Material);
+            }
+            Object.defineProperty(Object3D.prototype, "space3D", {
+                /**
+                 * 3D空间
+                 */
+                get: function () {
+                    return this.getOrCreateComponentByClass(feng3d.Space3D);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Object3D.prototype, "container3D", {
+                /**
+                 * 容器
+                 */
+                get: function () {
+                    return this.getOrCreateComponentByClass(feng3d.Container3D);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Object3D.prototype, "sceneSpace3D", {
+                /**
+                 * 场景空间
+                 */
+                get: function () {
+                    return this.getOrCreateComponentByClass(feng3d.SceneSpace3D);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Object3D.prototype, "parent", {
+                /********************
+                 *
+                 * Container3D 组件中方法
+                 *
+                 *******************/
+                /**
+                 * 父对象
+                 */
+                get: function () { return this.container3D.parent; },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 添加子对象
+             * @param child		子对象
+             * @return			新增的子对象
+             */
+            Object3D.prototype.addChild = function (child) { this.container3D.addChild(child); };
+            /**
+             * 添加子对象到指定位置
+             * @param   child   子对象
+             * @param   index   添加到的位置
+             */
+            Object3D.prototype.addChildAt = function (child, index) { this.container3D.addChildAt(child, index); };
+            /**
+             * 移除子对象
+             * @param   child   子对象
+             * @return			被移除子对象索引
+             */
+            Object3D.prototype.removeChild = function (child) { return this.container3D.removeChild(child); };
+            /**
+             * 获取子对象索引
+             * @param   child   子对象
+             * @return  子对象位置
+             */
+            Object3D.prototype.getChildIndex = function (child) { return this.container3D.getChildIndex(child); };
+            /**
+             * 移出指定索引的子对象
+             * @param childIndex	子对象索引
+             * @return				被移除对象
+             */
+            Object3D.prototype.removeChildAt = function (childIndex) { return this.container3D.removeChildAt(childIndex); };
+            /**
+             * 获取子对象
+             * @param index         子对象索引
+             * @return              指定索引的子对象
+             */
+            Object3D.prototype.getChildAt = function (index) { return this.container3D.getChildAt(index); };
+            Object.defineProperty(Object3D.prototype, "numChildren", {
+                /**
+                 * 获取子对象数量
+                 */
+                get: function () { return this.container3D.numChildren; },
+                enumerable: true,
+                configurable: true
+            });
+            ;
+            Object.defineProperty(Object3D.prototype, "sceneTransform3D", {
+                /*********************
+                 *
+                 *********************/
+                /**
+                 * 场景空间变换矩阵
+                 */
+                get: function () { return this.sceneSpace3D.sceneTransform3D; },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * 通知场景变换改变
+             */
+            Object3D.prototype.notifySceneTransformChange = function () { this.sceneSpace3D.notifySceneTransformChange(); };
+            /*********************
+             *
+             *********************/
+            /**
+             * 创建
+             */
+            Object3D.createPrimitive = function (type) {
+                var object3D = new Object3D();
+                switch (type) {
+                    case feng3d.PrimitiveType.Plane:
+                        object3D.addComponent(feng3d.primitives.createPlane());
+                        break;
+                    case feng3d.PrimitiveType.Cube:
+                        object3D.addComponent(feng3d.primitives.createCube());
+                        break;
+                    case feng3d.PrimitiveType.Sphere:
+                        object3D.addComponent(feng3d.primitives.createSphere());
+                        break;
+                    case feng3d.PrimitiveType.Capsule:
+                        object3D.addComponent(feng3d.primitives.createCapsule());
+                        break;
+                    case feng3d.PrimitiveType.Cylinder:
+                        object3D.addComponent(feng3d.primitives.createCylinder());
+                        break;
+                    default:
+                        throw "\u65E0\u6CD5\u521B\u5EFA3D\u57FA\u5143\u5BF9\u8C61 " + type;
+                }
+                return object3D;
+            };
+            return Object3D;
+        }(feng3d.Component));
+        feng3d.Object3D = Object3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D视图
+         * @author feng 2016-05-01
+         */
+        var View3D = (function () {
+            /**
+             * 构建3D视图
+             * @param canvas    画布
+             * @param scene     3D场景
+             * @param camera    摄像机
+             */
+            function View3D(canvas, scene, camera) {
+                if (scene === void 0) { scene = null; }
+                if (camera === void 0) { camera = null; }
+                feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
+                this.gl = canvas.getContext("experimental-webgl");
+                this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
+                this.scene = scene || new feng3d.Scene3D();
+                this._camera = camera || new feng3d.Camera3D();
+                this.renderer = new feng3d.Renderer(this.gl, this.scene, this._camera);
+                setInterval(this.drawScene.bind(this), 15);
+            }
+            Object.defineProperty(View3D.prototype, "scene", {
+                /** 3d场景 */
+                get: function () {
+                    return this._scene;
+                },
+                set: function (value) {
+                    this._scene = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            View3D.prototype.drawScene = function () {
+                this.renderer.render();
+            };
+            return View3D;
+        }());
+        feng3d.View3D = View3D;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
+         * 3D对象组件
+         * @author feng 2016-09-02
+         */
+        var Object3DComponent = (function (_super) {
+            __extends(Object3DComponent, _super);
+            /**
+             * 构建3D对象组件
+             */
+            function Object3DComponent() {
+                _super.call(this);
+            }
+            Object.defineProperty(Object3DComponent.prototype, "object3D", {
+                /**
+                 * 所属对象
+                 */
+                get: function () { return this._parentComponent; },
+                enumerable: true,
+                configurable: true
+            });
+            return Object3DComponent;
+        }(feng3d.Component));
+        feng3d.Object3DComponent = Object3DComponent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3129,15 +3366,16 @@ var me;
                     this.transform3DDirty = false;
                     this._transform3D.rawData.set(value.rawData);
                     var vecs = this._transform3D.decompose();
-                    this.x = vecs[0].x;
-                    this.y = vecs[0].y;
-                    this.z = vecs[0].z;
-                    this.rx = vecs[1].x * feng3d.MathConsts.RADIANS_TO_DEGREES;
-                    this.ry = vecs[1].y * feng3d.MathConsts.RADIANS_TO_DEGREES;
-                    this.rz = vecs[1].z * feng3d.MathConsts.RADIANS_TO_DEGREES;
-                    this.sx = vecs[2].x;
-                    this.sy = vecs[2].y;
-                    this.sz = vecs[2].z;
+                    this._x = vecs[0].x;
+                    this._y = vecs[0].y;
+                    this._z = vecs[0].z;
+                    this._rx = vecs[1].x * feng3d.MathConsts.RADIANS_TO_DEGREES;
+                    this._ry = vecs[1].y * feng3d.MathConsts.RADIANS_TO_DEGREES;
+                    this._rz = vecs[1].z * feng3d.MathConsts.RADIANS_TO_DEGREES;
+                    this._sx = vecs[2].x;
+                    this._sy = vecs[2].y;
+                    this._sz = vecs[2].z;
+                    this.invalidateTransform3D();
                 },
                 enumerable: true,
                 configurable: true
@@ -3158,149 +3396,50 @@ var me;
              */
             Space3D.prototype.invalidateTransform3D = function () {
                 this.transform3DDirty = true;
+                this.notifyTransformChanged();
+            };
+            /**
+             * 发出状态改变消息
+             */
+            Space3D.prototype.notifyTransformChanged = function () {
+                var transformChanged = new Space3DEvent(Space3DEvent.TRANSFORM_CHANGED, this);
+                this.object3D && this.object3D.dispatchEvent(transformChanged);
             };
             return Space3D;
-        }(feng3d.Component));
+        }(feng3d.Object3DComponent));
         feng3d.Space3D = Space3D;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
         /**
-         * 3D对象
-         * @author feng 2016-04-26
+         * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
+         * @author feng 2014-3-31
          */
-        var Object3D = (function (_super) {
-            __extends(Object3D, _super);
-            /**
-             * 构建3D对象
-             */
-            function Object3D(name, conponents) {
-                var _this = this;
-                if (conponents === void 0) { conponents = null; }
-                _super.call(this);
-                this.name = name || feng3d.getClassName(this);
-                conponents && conponents.forEach(function (element) {
-                    _this.addComponent(element);
-                });
-                this.getOrCreateComponentByClass(feng3d.Space3D);
-                this.getOrCreateComponentByClass(feng3d.Material);
+        var Space3DEvent = (function (_super) {
+            __extends(Space3DEvent, _super);
+            function Space3DEvent() {
+                _super.apply(this, arguments);
             }
-            Object.defineProperty(Object3D.prototype, "space3D", {
-                /**
-                 * 3D空间
-                 */
-                get: function () {
-                    return this.getComponentByClass(feng3d.Space3D);
-                },
-                enumerable: true,
-                configurable: true
-            });
             /**
-             * 创建
+             * 平移
              */
-            Object3D.createPrimitive = function (type) {
-                var object3D = new Object3D();
-                switch (type) {
-                    case feng3d.PrimitiveType.Plane:
-                        object3D.addComponent(feng3d.primitives.createPlane());
-                        break;
-                    case feng3d.PrimitiveType.Cube:
-                        object3D.addComponent(feng3d.primitives.createCube());
-                        break;
-                    case feng3d.PrimitiveType.Sphere:
-                        object3D.addComponent(feng3d.primitives.createSphere());
-                        break;
-                    case feng3d.PrimitiveType.Capsule:
-                        object3D.addComponent(feng3d.primitives.createCapsule());
-                        break;
-                    case feng3d.PrimitiveType.Cylinder:
-                        object3D.addComponent(feng3d.primitives.createCylinder());
-                        break;
-                    default:
-                        throw "\u65E0\u6CD5\u521B\u5EFA3D\u57FA\u5143\u5BF9\u8C61 " + type;
-                }
-                return object3D;
-            };
-            return Object3D;
-        }(feng3d.Component));
-        feng3d.Object3D = Object3D;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 3D视图
-         * @author feng 2016-05-01
-         */
-        var View3D = (function () {
+            Space3DEvent.POSITION_CHANGED = "positionChanged";
             /**
-             * 构建3D视图
-             * @param canvas    画布
-             * @param scene     3D场景
-             * @param camera    摄像机
+             * 旋转
              */
-            function View3D(canvas, scene, camera) {
-                if (scene === void 0) { scene = null; }
-                if (camera === void 0) { camera = null; }
-                feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
-                this.gl = canvas.getContext("experimental-webgl");
-                this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
-                this.scene = scene || new feng3d.Scene3D();
-                this._camera = camera || new feng3d.Camera3D();
-                this.renderer = new feng3d.Renderer(this.gl, this.scene, this._camera);
-                setInterval(this.drawScene.bind(this), 15);
-            }
-            Object.defineProperty(View3D.prototype, "scene", {
-                /** 3d场景 */
-                get: function () {
-                    return this._scene;
-                },
-                set: function (value) {
-                    this._scene = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            View3D.prototype.drawScene = function () {
-                this.renderer.render();
-            };
-            return View3D;
-        }());
-        feng3d.View3D = View3D;
-    })(feng3d = me.feng3d || (me.feng3d = {}));
-})(me || (me = {}));
-var me;
-(function (me) {
-    var feng3d;
-    (function (feng3d) {
-        /**
-         * 3D对象组件
-         * @author feng 2016-09-02
-         */
-        var Object3DComponent = (function (_super) {
-            __extends(Object3DComponent, _super);
+            Space3DEvent.ROTATION_CHANGED = "rotationChanged";
             /**
-             * 构建3D对象组件
+             * 缩放
              */
-            function Object3DComponent() {
-                _super.call(this);
-            }
-            Object.defineProperty(Object3DComponent.prototype, "object3D", {
-                /**
-                 * 所属对象
-                 */
-                get: function () { return this._parentComponent; },
-                enumerable: true,
-                configurable: true
-            });
-            return Object3DComponent;
-        }(feng3d.Component));
-        feng3d.Object3DComponent = Object3DComponent;
+            Space3DEvent.SCALE_CHANGED = "scaleChanged";
+            /**
+             * 变换
+             */
+            Space3DEvent.TRANSFORM_CHANGED = "transformChanged";
+            /**
+             * 变换已更新
+             */
+            Space3DEvent.TRANSFORM_UPDATED = "transformUpdated";
+            return Space3DEvent;
+        }(feng3d.Event));
+        feng3d.Space3DEvent = Space3DEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3318,45 +3457,28 @@ var me;
              */
             function Container3D() {
                 _super.call(this);
-                //------------------------------------------
-                //@private
-                //------------------------------------------
+                /******************************************************************************************************************************
+                 * @private
+                 ******************************************************************************************************************************/
                 /**
                  * 父对象
                  */
-                this.parent = null;
+                this._parent = null;
                 /**
                  * 子对象列表
                  */
                 this.children = [];
             }
-            /**
-             * 获取父对象
-             * @param object3D  显示对象
-             * @return          父对象
-             */
-            Container3D.getParent = function (object3D) {
-                var container3D = this.getContainer3D(object3D);
-                return container3D.parent;
-            };
-            /**
-             * 获取容器
-             */
-            Container3D.getContainer3D = function (object3D) {
-                return object3D.getOrCreateComponentByClass(Container3D);
-            };
-            /**
-             * 移除对象
-             * @param   object3D    显示对象
-             */
-            Container3D.removeChild = function (object3D) {
-                var parent = Container3D.getParent(object3D);
-                if (parent == null) {
-                    return;
-                }
-                var parentContainer3D = this.getContainer3D(parent);
-                parentContainer3D.removeChild(object3D);
-            };
+            Object.defineProperty(Container3D.prototype, "parent", {
+                /**
+                 * 父对象
+                 */
+                get: function () {
+                    return this._parent;
+                },
+                enumerable: true,
+                configurable: true
+            });
             /**
              * 添加子对象
              * @param child		子对象
@@ -3378,7 +3500,7 @@ var me;
             /**
              * 移除子对象
              * @param   child   子对象
-             *
+             * @return			被移除子对象索引
              */
             Container3D.prototype.removeChild = function (child) {
                 var childIndex = this.children.indexOf(child);
@@ -3414,9 +3536,19 @@ var me;
             Container3D.prototype.getChildAt = function (index) {
                 return this.children[index];
             };
-            //------------------------------------------
-            //@private
-            //------------------------------------------
+            Object.defineProperty(Container3D.prototype, "numChildren", {
+                /**
+                 * 获取子对象数量
+                 */
+                get: function () {
+                    return this.children.length;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /******************************************************************************************************************************
+             * @protected
+             ******************************************************************************************************************************/
             /**
              * 处理被添加组件事件
              */
@@ -3437,7 +3569,7 @@ var me;
              */
             Container3D.prototype.onAddedContainer3D = function (event) {
                 if (event.data.child == this.object3D) {
-                    this.parent = event.data.parent;
+                    this._parent = event.data.parent;
                 }
             };
             /**
@@ -3445,7 +3577,7 @@ var me;
              */
             Container3D.prototype.onRemovedContainer3D = function (event) {
                 if (event.data.child == this.object3D) {
-                    this.parent = null;
+                    this._parent = null;
                 }
             };
             return Container3D;
@@ -3520,7 +3652,35 @@ var me;
             //@protected
             //------------------------------------------
             SceneSpace3D.prototype.onBeAddedComponent = function (event) {
-                this.object3D;
+                this.object3D.addEventListener(feng3d.Space3DEvent.TRANSFORM_CHANGED, this.onTransformChanged, this);
+            };
+            /**
+             * 使变换矩阵失效，场景变换矩阵也将失效
+             */
+            SceneSpace3D.prototype.onTransformChanged = function (event) {
+                this.notifySceneTransformChange();
+            };
+            /**
+             * 通知场景变换改变
+             */
+            SceneSpace3D.prototype.notifySceneTransformChange = function () {
+                if (this.sceneSpace3DDirty)
+                    return;
+                var sceneTransformChanged = new SceneSpace3DEvent(SceneSpace3DEvent.SCENETRANSFORM_CHANGED, this);
+                this.object3D && this.object3D.dispatchEvent(sceneTransformChanged);
+                if (this.object3D && this.object3D) {
+                    for (var i = 0; i < this.object3D.numChildren; i++) {
+                        var element = this.object3D.getChildAt(i);
+                        element.notifySceneTransformChange();
+                    }
+                }
+                this.invalidateSceneTransform();
+            };
+            /**
+             * 场景变化失效
+             */
+            SceneSpace3D.prototype.invalidateSceneTransform = function () {
+                this.sceneSpace3DDirty = true;
             };
             /**
              * 更新场景空间
@@ -3528,9 +3688,9 @@ var me;
             SceneSpace3D.prototype.updateSceneSpace3D = function () {
                 this.sceneSpace3DDirty = false;
                 var transform3D = this.object3D.space3D.transform3D.clone();
-                var parent = feng3d.Container3D.getParent(this.object3D);
+                var parent = this.object3D.parent;
                 if (parent != null) {
-                    var parentSceneTransform3D = parent.getComponentByClass(SceneSpace3D).sceneTransform3D;
+                    var parentSceneTransform3D = parent.sceneTransform3D;
                     transform3D.append(parentSceneTransform3D);
                 }
                 this.sceneSpace3D.transform3D = transform3D;
@@ -3538,6 +3698,22 @@ var me;
             return SceneSpace3D;
         }(feng3d.Object3DComponent));
         feng3d.SceneSpace3D = SceneSpace3D;
+        /**
+         * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
+         * @author feng 2014-3-31
+         */
+        var SceneSpace3DEvent = (function (_super) {
+            __extends(SceneSpace3DEvent, _super);
+            function SceneSpace3DEvent() {
+                _super.apply(this, arguments);
+            }
+            /**
+             * 场景变换矩阵发生变化
+             */
+            SceneSpace3DEvent.SCENETRANSFORM_CHANGED = "scenetransformChanged";
+            return SceneSpace3DEvent;
+        }(feng3d.Event));
+        feng3d.SceneSpace3DEvent = SceneSpace3DEvent;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
 var me;
@@ -3662,22 +3838,33 @@ var me;
              * 构造3D场景
              */
             function Scene3D() {
-                _super.call(this, null, null);
+                _super.call(this, "root");
+                this._renderables = [];
+                this.addEventListener(feng3d.Container3DEvent.ADDED, this.onAdded, this);
+                this.addEventListener(feng3d.Container3DEvent.REMOVED, this.onRemoved, this);
             }
-            Object.defineProperty(Scene3D.prototype, "name", {
-                /**
-                 * 场景名称默认为root
-                 */
-                get: function () {
-                    return "root";
-                },
-                set: function (value) {
-                },
-                enumerable: true,
-                configurable: true
-            });
+            /**
+             * 处理添加对象事件
+             */
+            Scene3D.prototype.onAdded = function (event) {
+                this._renderables.push(event.data.child);
+            };
+            /**
+             * 处理添加对象事件
+             */
+            Scene3D.prototype.onRemoved = function (event) {
+                var removedChild = event.data.child;
+                var index = this._renderables.indexOf(removedChild);
+                this._renderables.splice(index, 1);
+            };
+            /**
+            * 获取可渲染对象列表
+            */
+            Scene3D.prototype.getRenderables = function () {
+                return this._renderables;
+            };
             return Scene3D;
-        }(feng3d.Scene3DNode));
+        }(feng3d.Object3D));
         feng3d.Scene3D = Scene3D;
     })(feng3d = me.feng3d || (me.feng3d = {}));
 })(me || (me = {}));
