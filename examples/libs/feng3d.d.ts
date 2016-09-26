@@ -1144,12 +1144,7 @@ declare module me.feng3d {
         /**
          * 映射常量4*4矩阵
          */
-        mapUniform(name: string, data: Matrix3D | {
-            x: number;
-            y: number;
-            z: number;
-            w: number;
-        }): void;
+        mapUniform(name: string, data: Matrix3D | Vec4): void;
         /**
          * 处理获取索引缓冲事件
          */
@@ -1340,12 +1335,20 @@ declare module me.feng3d {
         /**
          * 数据
          */
-        data: Matrix3D | {
-            x: number;
-            y: number;
-            z: number;
-            w: number;
-        };
+        data: Matrix3D | Vec4;
+    }
+    interface Mat4 {
+        transpose: boolean;
+        value: Float32Array;
+    }
+    /**
+     *
+     */
+    interface Vec4 {
+        x: number;
+        y: number;
+        z: number;
+        w: number;
     }
 }
 declare module me.feng3d {
