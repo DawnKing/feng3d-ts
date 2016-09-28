@@ -89,13 +89,13 @@ module me.feng3d {
          * 空间变换矩阵
          */
         get transform3D(): Matrix3D {
-            if (this.transform3DDirty)
+            if (this._transform3DDirty)
                 this.updateTransform3D();
             return this._transform3D;
         }
 
         set transform3D(value: Matrix3D) {
-            this.transform3DDirty = false;
+            this._transform3DDirty = false;
             this._transform3D.rawData.set(value.rawData);
             var vecs = this._transform3D.decompose();
             this.x = vecs[0].x;
@@ -118,14 +118,24 @@ module me.feng3d {
                 new Vector3D(this.rx * MathConsts.DEGREES_TO_RADIANS, this.ry * MathConsts.DEGREES_TO_RADIANS, this.rz * MathConsts.DEGREES_TO_RADIANS),//
                 new Vector3D(this.sx, this.sy, this.sz),//
             ]);
-            this.transform3DDirty = false;
+            this._transform3DDirty = false;
         }
 
         /**
          * 使变换矩阵无效
          */
         protected invalidateTransform3D() {
-            this.transform3DDirty = true;
+            this._transform3DDirty = true;
+            this._inverseTransformDirty = true;
+        }
+
+        public get inverseTransform(): Matrix3D {
+            if (this._inverseTransformDirty) {
+                this._inverseTransform.copyFrom(this.transform3D);
+                this._inverseTransform.invert();
+                this._inverseTransformDirty = false;
+            }
+            return this._inverseTransform;
         }
 
         //private
@@ -140,6 +150,8 @@ module me.feng3d {
         private _sz = 1;
 
         private _transform3D = new Matrix3D();
-        private transform3DDirty: boolean;
+        private _transform3DDirty: boolean;
+        private _inverseTransform = new Matrix3D();
+        private _inverseTransformDirty: boolean;
     }
 }

@@ -4,6 +4,7 @@ module me.feng3d {
      * @author feng 2016-04-26
      */
     export class Object3D extends Component {
+        public _controller:ControllerBase;
 
         /**
          * 3D空间
@@ -25,6 +26,10 @@ module me.feng3d {
             });
             this.getOrCreateComponentByClass(Space3D);
             this.getOrCreateComponentByClass(Material);
+        }
+
+        public lookAt(target: Vector3D, upAxis:Vector3D = null) {
+            
         }
 
         /**
