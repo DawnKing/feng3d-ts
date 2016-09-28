@@ -2209,6 +2209,29 @@ var me;
     var feng3d;
     (function (feng3d) {
         /**
+         * 渲染模式
+         * @author feng 2016-09-28
+         */
+        (function (RenderMode) {
+            /**
+             * 点渲染
+             */
+            RenderMode[RenderMode["POINTS"] = WebGLRenderingContext.POINTS] = "POINTS";
+            RenderMode[RenderMode["LINE_LOOP"] = WebGLRenderingContext.LINE_LOOP] = "LINE_LOOP";
+            RenderMode[RenderMode["LINE_STRIP"] = WebGLRenderingContext.LINE_STRIP] = "LINE_STRIP";
+            RenderMode[RenderMode["LINES"] = WebGLRenderingContext.LINES] = "LINES";
+            RenderMode[RenderMode["TRIANGLES"] = WebGLRenderingContext.TRIANGLES] = "TRIANGLES";
+            RenderMode[RenderMode["TRIANGLE_STRIP"] = WebGLRenderingContext.TRIANGLE_STRIP] = "TRIANGLE_STRIP";
+            RenderMode[RenderMode["TRIANGLE_FAN"] = WebGLRenderingContext.TRIANGLE_FAN] = "TRIANGLE_FAN";
+        })(feng3d.RenderMode || (feng3d.RenderMode = {}));
+        var RenderMode = feng3d.RenderMode;
+    })(feng3d = me.feng3d || (me.feng3d = {}));
+})(me || (me = {}));
+var me;
+(function (me) {
+    var feng3d;
+    (function (feng3d) {
+        /**
          * 渲染数据拥有者
          * @author feng 2016-6-7
          */
@@ -2481,10 +2504,10 @@ var me;
                 var count = indexBuffer.indices.length;
                 this.context3D.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, buffer);
                 // this.context3D.drawElements(WebGLRenderingContext.POINTS, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
-                this.context3D.drawElements(WebGLRenderingContext.LINE_LOOP, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
+                // this.context3D.drawElements(WebGLRenderingContext.LINE_LOOP, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
                 // this.context3D.drawElements(WebGLRenderingContext.LINE_STRIP, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
                 // this.context3D.drawElements(WebGLRenderingContext.LINES, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
-                // this.context3D.drawElements(WebGLRenderingContext.TRIANGLES, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
+                this.context3D.drawElements(feng3d.RenderMode.TRIANGLES, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
                 // this.context3D.drawElements(WebGLRenderingContext.TRIANGLE_STRIP, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
                 // this.context3D.drawElements(WebGLRenderingContext.TRIANGLE_FAN, count, WebGLRenderingContext.UNSIGNED_SHORT, 0);
             };

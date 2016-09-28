@@ -1115,6 +1115,24 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 渲染模式
+     * @author feng 2016-09-28
+     */
+    enum RenderMode {
+        /**
+         * 点渲染
+         */
+        POINTS,
+        LINE_LOOP,
+        LINE_STRIP,
+        LINES,
+        TRIANGLES,
+        TRIANGLE_STRIP,
+        TRIANGLE_FAN,
+    }
+}
+declare module me.feng3d {
+    /**
      * 渲染数据拥有者
      * @author feng 2016-6-7
      */
@@ -2418,6 +2436,7 @@ declare module me.feng3d {
         vertexShaderStr: string;
         fragmentShaderStr: string;
         pass: MaterialPass;
+        renderMode: RenderMode;
         /**
          * 构建材质
          */
