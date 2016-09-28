@@ -1,6 +1,6 @@
-declare module me.feng3d {
+declare module feng3d {
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 事件
      * @author feng 2014-5-7
@@ -50,7 +50,7 @@ declare module me.feng3d {
         currentTarget: IEventDispatcher;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * IEventDispatcher 接口定义用于添加或删除事件侦听器的方法，检查是否已注册特定类型的事件侦听器，并调度事件。
      * @author feng 2016-3-22
@@ -90,7 +90,7 @@ declare module me.feng3d {
         hasEventListener(type: string): boolean;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 为了实现非flash原生显示列表的冒泡事件，自定义事件适配器
      * @author feng 2016-3-22
@@ -157,7 +157,7 @@ declare module me.feng3d {
         protected getBubbleTargets(event: Event): IEventDispatcher[];
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 组件事件
      * @author feng 2015-12-2
@@ -179,7 +179,7 @@ declare module me.feng3d {
         target: IComponent;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 组件接口
      * @author feng 2016-4-24
@@ -293,7 +293,7 @@ declare module me.feng3d {
         dispatchChildrenEvent(event: Event, depth: number): void;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 组件容器（集合）
      * @author feng 2015-5-6
@@ -443,7 +443,7 @@ declare module me.feng3d {
         private _onRemovedComponent(event);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 断言
      * @b			判定为真的表达式
@@ -452,14 +452,14 @@ declare module me.feng3d {
      */
     function assert(b: boolean, msg?: string): void;
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 获取对象的类名
      * @author feng 2016-4-24
      */
     function getClassName(value: any): string;
 }
-declare module me.feng3d {
+declare module feng3d {
     class StringUtils {
         /**
          * 获取字符串
@@ -471,7 +471,7 @@ declare module me.feng3d {
         static getString(obj: any, showLen?: number, fill?: string, tail?: boolean): string;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 构建Map类代替Dictionary
      */
@@ -506,7 +506,7 @@ declare module me.feng3d {
         private _getKV(k);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 获取对象UID
      * @author feng 2016-05-08
@@ -515,7 +515,7 @@ declare module me.feng3d {
         __uid__?: string;
     }): any;
 }
-declare module me.feng3d {
+declare module feng3d {
     class Version {
         /**
          * 获取对象版本
@@ -547,19 +547,56 @@ declare module me.feng3d {
      */
     var version: Version;
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 判断a对象是否为b类型
      */
     function is(a: any, b: Function): boolean;
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 如果a为b类型则返回，否则返回null
      */
     function as(a: any, b: Function): any;
 }
-declare module me.feng3d {
+declare module feng3d {
+    /**
+     * 颜色
+     * @author feng 2016-09-24
+     */
+    class Color {
+        /**
+         * 红色，0-1
+         */
+        r: number;
+        /**
+         * 绿色，0-1
+         */
+        g: number;
+        /**
+         * 蓝色，0-1
+         */
+        b: number;
+        /**
+         * 透明度，0-1
+         */
+        a: number;
+        private _color;
+        /**
+         * 构建颜色
+         */
+        constructor(color?: number);
+        /**
+         * 颜色值，32位整数值
+         */
+        color: number;
+        x: number;
+        y: number;
+        z: number;
+        w: number;
+    }
+}
+declare module feng3d {
     /**
      * 数学常量类
      */
@@ -574,7 +611,7 @@ declare module me.feng3d {
         static DEGREES_TO_RADIANS: number;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 矩形
      * @author feng 2016-04-27
@@ -604,7 +641,7 @@ declare module me.feng3d {
         contains(x: number, y: number): boolean;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * Vector3D 类使用笛卡尔坐标 x、y 和 z 表示三维空间中的点或位置
      * @author feng 2016-3-21
@@ -720,7 +757,7 @@ declare module me.feng3d {
         toString(): string;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * Matrix3D 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
      * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）。
@@ -945,7 +982,7 @@ declare module me.feng3d {
         toString(): string;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3d面
      */
@@ -1031,7 +1068,7 @@ declare module me.feng3d {
          * <p>把顶点分为后面、前面、相交三类</p>
          * @param p			顶点
          * @return			顶点类型 PlaneClassification.BACK,PlaneClassification.FRONT,PlaneClassification.INTERSECT
-         * @see				me.feng3d.core.math.PlaneClassification
+         * @see				feng3d.core.math.PlaneClassification
          */
         classifyPoint(p: Vector3D, epsilon?: number): number;
         /**
@@ -1040,7 +1077,7 @@ declare module me.feng3d {
         toString(): string;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 点与面的相对位置
      * @author feng
@@ -1076,7 +1113,25 @@ declare module me.feng3d {
         static INTERSECT: number;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
+    /**
+     * 渲染模式
+     * @author feng 2016-09-28
+     */
+    enum RenderMode {
+        /**
+         * 点渲染
+         */
+        POINTS,
+        LINE_LOOP,
+        LINE_STRIP,
+        LINES,
+        TRIANGLES,
+        TRIANGLE_STRIP,
+        TRIANGLE_FAN,
+    }
+}
+declare module feng3d {
     /**
      * 渲染数据拥有者
      * @author feng 2016-6-7
@@ -1105,9 +1160,9 @@ declare module me.feng3d {
          */
         mapProgram(vertexCode: string, fragmentCode: string): void;
         /**
-         * 映射常量4*4矩阵
+         * 映射常量
          */
-        mapUniformMatrix4fv(name: string, data: Matrix3D): void;
+        mapUniform(name: string, data: Matrix3D | Vec4): void;
         /**
          * 处理获取索引缓冲事件
          */
@@ -1126,7 +1181,7 @@ declare module me.feng3d {
         private onGetProgramBuffer(event);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D对象渲染数据
      * @author feng 2016-06-20
@@ -1156,7 +1211,7 @@ declare module me.feng3d {
         uniforms: {
             [name: string]: {
                 type: string;
-                buffer?: UniformMatrix4fvRenderData;
+                buffer?: UniformRenderData;
             };
         };
         /**
@@ -1195,7 +1250,7 @@ declare module me.feng3d {
         private prepareUniforms();
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 渲染缓冲
      * @author feng 2016-06-20
@@ -1232,12 +1287,11 @@ declare module me.feng3d {
          */
         private activeUniforms();
         /**
-         * 绘制
          */
         private draw();
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 渲染程序数据
      * @author feng 2016-05-09
@@ -1251,6 +1305,14 @@ declare module me.feng3d {
          * 片段渲染程序代码
          */
         fragmentCode: string;
+        /**
+        * 获取程序常量列表
+        */
+        getUniforms(): {
+            [name: string]: {
+                type: string;
+            };
+        };
     }
     /**
      * 索引渲染数据
@@ -1270,26 +1332,39 @@ declare module me.feng3d {
          * 属性名称
          */
         name: string;
-        /** 属性数据 */
+        /**
+         * 属性数据
+         */
         data: Float32Array;
-        /** 属性数据长度 */
+        /**
+         * 属性数据长度
+         */
         size: number;
     }
     /**
-     * 常量4*4矩阵渲染数据
+     * 常量渲染数据
      */
-    class UniformMatrix4fvRenderData {
+    class UniformRenderData {
         /**
          * 常量名称
          */
         name: string;
         /**
-         * 矩阵数据
+         * 数据
          */
-        matrix: Matrix3D;
+        data: Matrix3D | Vec4;
+    }
+    /**
+     * 渲染常量向量类型
+     */
+    interface Vec4 {
+        x: number;
+        y: number;
+        z: number;
+        w: number;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 渲染代码工具
      * @author feng 2016-06-22
@@ -1322,7 +1397,7 @@ declare module me.feng3d {
         };
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 对象池
      * @author feng 2016-04-26
@@ -1373,7 +1448,7 @@ declare module me.feng3d {
      */
     var context3DPool: RenderBufferPool;
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * Context3D缓冲事件
      * @author feng 2016-05-26
@@ -1438,10 +1513,10 @@ declare module me.feng3d {
         /**
          * 常量缓存
          */
-        buffer: UniformMatrix4fvRenderData;
+        buffer: UniformRenderData;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 渲染数据编号
      * @author feng 2016-06-20
@@ -1459,9 +1534,10 @@ declare module me.feng3d {
          * 投影矩阵
          */
         static uPMatrix: string;
+        static diffuseInput_fc_vector: string;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 渲染器
      * @author feng 2016-05-01
@@ -1492,12 +1568,145 @@ declare module me.feng3d {
         private drawObject3D(object3D);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
+    /**
+     * 3D对象
+     * @author feng 2016-04-26
+     */
+    class Object3D extends Component {
+        /**
+         * 3D空间
+         */
+        space3D: Space3D;
+        /**
+         * 容器
+         */
+        private container3D;
+        /**
+         * 场景空间
+         */
+        private sceneSpace3D;
+        /**
+         * 构建3D对象
+         */
+        constructor(name?: string, conponents?: Component[]);
+        /********************
+         *
+         * Container3D 组件中方法
+         *
+         *******************/
+        /**
+         * 父对象
+         */
+        parent: Object3D;
+        /**
+         * 添加子对象
+         * @param child		子对象
+         * @return			新增的子对象
+         */
+        addChild(child: Object3D): void;
+        /**
+         * 添加子对象到指定位置
+         * @param   child   子对象
+         * @param   index   添加到的位置
+         */
+        addChildAt(child: Object3D, index: number): void;
+        /**
+         * 移除子对象
+         * @param   child   子对象
+         * @return			被移除子对象索引
+         */
+        removeChild(child: Object3D): number;
+        /**
+         * 获取子对象索引
+         * @param   child   子对象
+         * @return  子对象位置
+         */
+        getChildIndex(child: Object3D): number;
+        /**
+         * 移出指定索引的子对象
+         * @param childIndex	子对象索引
+         * @return				被移除对象
+         */
+        removeChildAt(childIndex: number): Object3D;
+        /**
+         * 获取子对象
+         * @param index         子对象索引
+         * @return              指定索引的子对象
+         */
+        getChildAt(index: number): Object3D;
+        /**
+         * 获取子对象数量
+         */
+        numChildren: number;
+        /*********************
+         *
+         *********************/
+        /**
+         * 场景空间变换矩阵
+         */
+        sceneTransform3D: Matrix3D;
+        /**
+         * 通知场景变换改变
+         */
+        notifySceneTransformChange(): void;
+        /*********************
+         *
+         *********************/
+        /**
+         * 创建
+         */
+        static createPrimitive(type: PrimitiveType): Object3D;
+    }
+}
+declare module feng3d {
+    /**
+     * 3D视图
+     * @author feng 2016-05-01
+     */
+    class View3D {
+        private gl;
+        private _camera;
+        private _scene;
+        private renderer;
+        /**
+         * 构建3D视图
+         * @param canvas    画布
+         * @param scene     3D场景
+         * @param camera    摄像机
+         */
+        constructor(canvas: any, scene?: Scene3D, camera?: Camera3D);
+        /** 3d场景 */
+        scene: Scene3D;
+        private drawScene();
+    }
+}
+declare module feng3d {
+    /**
+     * 3D对象组件
+     * @author feng 2016-09-02
+     */
+    class Object3DComponent extends Component {
+        /**
+         * 父组件
+         */
+        protected _parentComponent: Object3D;
+        /**
+         * 所属对象
+         */
+        object3D: Object3D;
+        /**
+         * 构建3D对象组件
+         */
+        constructor();
+    }
+}
+declare module feng3d {
     /**
      * 3D空间
      * @author feng 2016-04-26
      */
-    class Space3D extends Component {
+    class Space3D extends Object3DComponent {
         /**
          * 构建3D空间
          * @param x X坐标
@@ -1559,6 +1768,10 @@ declare module me.feng3d {
          * 使变换矩阵无效
          */
         protected invalidateTransform3D(): void;
+        /**
+         * 发出状态改变消息
+         */
+        private notifyTransformChanged();
         private _x;
         private _y;
         private _z;
@@ -1571,90 +1784,47 @@ declare module me.feng3d {
         private _transform3D;
         private transform3DDirty;
     }
-}
-declare module me.feng3d {
     /**
-     * 3D对象
-     * @author feng 2016-04-26
+     * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
+     * @author feng 2014-3-31
      */
-    class Object3D extends Component {
+    class Space3DEvent extends Event {
         /**
-         * 3D空间
+         * 平移
          */
-        space3D: Space3D;
+        static POSITION_CHANGED: string;
         /**
-         * 构建3D对象
+         * 旋转
          */
-        constructor(name?: string, conponents?: Component[]);
+        static ROTATION_CHANGED: string;
         /**
-         * 创建
+         * 缩放
          */
-        static createPrimitive(type: PrimitiveType): Object3D;
+        static SCALE_CHANGED: string;
+        /**
+         * 变换
+         */
+        static TRANSFORM_CHANGED: string;
+        /**
+         * 变换已更新
+         */
+        static TRANSFORM_UPDATED: string;
+        /**
+         * 发出事件的3D元素
+         */
+        data: Space3D;
     }
 }
-declare module me.feng3d {
-    /**
-     * 3D视图
-     * @author feng 2016-05-01
-     */
-    class View3D {
-        private gl;
-        private _camera;
-        private _scene;
-        private renderer;
-        /**
-         * 构建3D视图
-         * @param canvas    画布
-         * @param scene     3D场景
-         * @param camera    摄像机
-         */
-        constructor(canvas: any, scene?: Scene3D, camera?: Camera3D);
-        /** 3d场景 */
-        scene: Scene3D;
-        private drawScene();
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3D对象组件
-     * @author feng 2016-09-02
-     */
-    class Object3DComponent extends Component {
-        /**
-         * 父组件
-         */
-        protected _parentComponent: Object3D;
-        /**
-         * 所属对象
-         */
-        object3D: Object3D;
-        /**
-         * 构建3D对象组件
-         */
-        constructor();
-    }
-}
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D容器组件
      * @author feng 2016-04-26
      */
     class Container3D extends Object3DComponent {
         /**
-         * 获取父对象
-         * @param object3D  显示对象
-         * @return          父对象
+         * 父对象
          */
-        static getParent(object3D: Object3D): Object3D;
-        /**
-         * 获取容器
-         */
-        static getContainer3D(object3D: Object3D): Container3D;
-        /**
-         * 移除对象
-         * @param   object3D    显示对象
-         */
-        static removeChild(object3D: Object3D): void;
+        parent: Object3D;
         /**
          * 构建3D容器组件
          */
@@ -1674,7 +1844,7 @@ declare module me.feng3d {
         /**
          * 移除子对象
          * @param   child   子对象
-         *
+         * @return			被移除子对象索引
          */
         removeChild(child: Object3D): number;
         /**
@@ -1696,6 +1866,13 @@ declare module me.feng3d {
          */
         getChildAt(index: number): Object3D;
         /**
+         * 获取子对象数量
+         */
+        numChildren: number;
+        /******************************************************************************************************************************
+         * @protected
+         ******************************************************************************************************************************/
+        /**
          * 处理被添加组件事件
          */
         protected onBeAddedComponent(event: ComponentEvent): void;
@@ -1703,10 +1880,13 @@ declare module me.feng3d {
          * 处理被移除组件事件
          */
         protected onBeRemovedComponent(event: ComponentEvent): void;
+        /******************************************************************************************************************************
+         * @private
+         ******************************************************************************************************************************/
         /**
          * 父对象
          */
-        private parent;
+        private _parent;
         /**
          * 子对象列表
          */
@@ -1721,7 +1901,7 @@ declare module me.feng3d {
         private onRemovedContainer3D(event);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D容器事件
      */
@@ -1736,9 +1916,16 @@ declare module me.feng3d {
          * data={parent: Object3D, child: Object3D}
          */
         static REMOVED: string;
+        /**
+         * 事件数据
+         */
+        data: {
+            parent: Object3D;
+            child: Object3D;
+        };
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D对象场景空间
      * @author feng 2016-09-02
@@ -1754,6 +1941,18 @@ declare module me.feng3d {
         sceneTransform3D: Matrix3D;
         protected onBeAddedComponent(event: ComponentEvent): void;
         /**
+         * 使变换矩阵失效，场景变换矩阵也将失效
+         */
+        protected onTransformChanged(event: Space3DEvent): void;
+        /**
+         * 通知场景变换改变
+         */
+        notifySceneTransformChange(): void;
+        /**
+         * 场景变化失效
+         */
+        protected invalidateSceneTransform(): void;
+        /**
          * 相对场景空间
          */
         private sceneSpace3D;
@@ -1766,8 +1965,22 @@ declare module me.feng3d {
          */
         private updateSceneSpace3D();
     }
+    /**
+     * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
+     * @author feng 2014-3-31
+     */
+    class SceneSpace3DEvent extends Event {
+        /**
+         * 场景变换矩阵发生变化
+         */
+        static SCENETRANSFORM_CHANGED: string;
+        /**
+         * 发出事件的3D元素
+         */
+        data: SceneSpace3D;
+    }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D场景节点
      */
@@ -1817,23 +2030,32 @@ declare module me.feng3d {
         getRenderables(renderables?: Object3D[]): Object3D[];
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D场景
      * @author feng 2016-05-01
      */
-    class Scene3D extends Scene3DNode {
+    class Scene3D extends Object3D {
+        private _renderables;
         /**
          * 构造3D场景
          */
         constructor();
         /**
-         * 场景名称默认为root
+         * 处理添加对象事件
          */
-        name: string;
+        private onAdded(event);
+        /**
+         * 处理添加对象事件
+         */
+        private onRemoved(event);
+        /**
+        * 获取可渲染对象列表
+        */
+        getRenderables(): Object3D[];
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D场景事件
      * author feng 2016-05-01
@@ -1860,7 +2082,7 @@ declare module me.feng3d {
         constructor(type: string, data?: Scene3DNode, bubbles?: boolean);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * opengl顶点属性名称
      */
@@ -1883,7 +2105,7 @@ declare module me.feng3d {
         static uv: string;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 几何体
      * @author feng 2016-04-28
@@ -1931,7 +2153,7 @@ declare module me.feng3d {
         vaIdList: string[];
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 几何体事件
      * @author feng 2015-12-8
@@ -1959,7 +2181,7 @@ declare module me.feng3d {
         constructor(type: string, data?: any, bubbles?: boolean);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 镜头事件
      * @author feng 2014-10-14
@@ -1979,7 +2201,7 @@ declare module me.feng3d {
         constructor(type: string, lens?: LensBase, bubbles?: boolean);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 坐标系统类型
      * @author feng 2014-10-14
@@ -1995,7 +2217,7 @@ declare module me.feng3d {
         static RIGHT_HANDED: number;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 摄像机镜头
      * @author feng 2014-10-14
@@ -2060,7 +2282,7 @@ declare module me.feng3d {
         protected abstract updateMatrix(): any;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 透视摄像机镜头
      * @author feng 2014-10-14
@@ -2097,7 +2319,7 @@ declare module me.feng3d {
         protected updateMatrix(): void;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 摄像机
      * @author feng 2016-08-16
@@ -2121,7 +2343,7 @@ declare module me.feng3d {
         private onLensMatrixChanged(event);
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 3D基元类型
      * @author feng 2016-05-01
@@ -2149,7 +2371,7 @@ declare module me.feng3d {
         Cylinder = 4,
     }
 }
-declare module me.feng3d.primitives {
+declare module feng3d.primitives {
     /**
      * 创建平面几何体
      * @param width 宽度
@@ -2161,7 +2383,7 @@ declare module me.feng3d.primitives {
      */
     function createPlane(width?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
-declare module me.feng3d.primitives {
+declare module feng3d.primitives {
     /**
      * 创建立方几何体
      * @param   width           宽度
@@ -2175,7 +2397,7 @@ declare module me.feng3d.primitives {
      */
     function createCube(width?: number, height?: number, depth?: number, segmentsW?: number, segmentsH?: number, segmentsD?: number, tile6?: boolean, elements?: string[]): Geometry;
 }
-declare module me.feng3d.primitives {
+declare module feng3d.primitives {
     /**
      * 创建球形几何体
      * @param radius 球体半径
@@ -2186,7 +2408,7 @@ declare module me.feng3d.primitives {
      */
     function createSphere(radius?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
-declare module me.feng3d.primitives {
+declare module feng3d.primitives {
     /**
      * 创建胶囊几何体
      * @param radius 胶囊体半径
@@ -2198,13 +2420,13 @@ declare module me.feng3d.primitives {
      */
     function createCapsule(radius?: number, height?: number, segmentsW?: number, segmentsH?: number, yUp?: boolean, elements?: string[]): Geometry;
 }
-declare module me.feng3d.primitives {
+declare module feng3d.primitives {
     /**
      * 创建圆柱体
      */
     function createCylinder(topRadius?: number, bottomRadius?: number, height?: number, segmentsW?: number, segmentsH?: number, topClosed?: boolean, bottomClosed?: boolean, surfaceClosed?: boolean, yUp?: boolean, elements?: string[]): Geometry;
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 材质
      * @author feng 2016-05-02
@@ -2214,34 +2436,40 @@ declare module me.feng3d {
         fragmentShaderStr: string;
         pass: MaterialPass;
         /**
+         * 渲染模式
+         */
+        renderMode: RenderMode;
+        /**
          * 构建材质
          */
         constructor();
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 颜色材质
      * @author feng 2016-05-02
      */
     class ColorMaterial extends Material {
+        vertexShaderStr: string;
+        fragmentShaderStr: string;
         /**
          * 颜色
          */
-        color: number;
-        /**
-         * 透明度
-         */
-        alpha: number;
+        private _color;
         /**
          * 构建颜色材质
          * @param color 颜色
          * @param alpha 透明的
          */
-        constructor(color?: number, alpha?: number);
+        constructor(color?: Color);
+        /**
+         * 颜色
+         */
+        color: Color;
     }
 }
-declare module me.feng3d {
+declare module feng3d {
     /**
      * 材质通道
      */

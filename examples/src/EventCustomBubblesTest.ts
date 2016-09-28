@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
 
     export class EventCustomBubblesTest extends EventDispatcher {
 
@@ -49,4 +49,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.EventCustomBubblesTest();
+new feng3d.EventCustomBubblesTest();

@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
 
     //
     // 事件冒泡测试(使用接口)
@@ -98,4 +98,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.EventBubblesTest2();
+new feng3d.EventBubblesTest2();

@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
     export class EventPriortyTest {
         dispatcher: EventDispatcher;
         constructor() {
@@ -37,4 +37,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.EventPriortyTest();
+new feng3d.EventPriortyTest();

@@ -1,20 +1,9 @@
-// {
-//     "compilerOptions": {
-//         "target": "es5",
-//         "noImplicitAny": false,
-//         "module": "amd",
-//         "removeComments": false,
-//         "outDir": "bin",
-//         "sourceMap": true
-//     }
-// }
 {
     "compilerOptions": {
+        "module": "commonjs",
         "target": "es5",
         "noImplicitAny": false,
         "sourceMap": true,
-        "declaration": false,
-        "removeComments": false,
         "outDir": "js"
     }
 }
