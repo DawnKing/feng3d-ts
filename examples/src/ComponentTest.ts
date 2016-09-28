@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
     /**
      * 组件测试
      * @author  feng 2016-04-26
@@ -196,4 +196,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.ComponentTest();
+new feng3d.ComponentTest();

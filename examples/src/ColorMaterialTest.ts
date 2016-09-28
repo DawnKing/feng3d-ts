@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
     export class ColorMaterialTest {
         view3D: View3D;
         constructor() {
@@ -30,4 +30,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.ColorMaterialTest();
+new feng3d.ColorMaterialTest();

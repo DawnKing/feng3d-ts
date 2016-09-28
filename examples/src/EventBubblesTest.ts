@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
     //
     // 事件冒泡测试
     // @author warden_feng 2014-11-26
@@ -96,4 +96,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.EventBubblesTest();
+new feng3d.EventBubblesTest();
