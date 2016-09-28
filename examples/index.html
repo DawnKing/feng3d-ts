@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<html>
 
 <head>
     <meta charset='utf-8' />
@@ -9,14 +9,18 @@
     <meta name='x5-fullscreen' content='true' />
     <meta name='360-fullscreen' content='true' />
     <meta http-equiv='expires' content='0' />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
+    <!-- libraries -->
+    <script src="monaco-editor/min/vs/loader.js"></script>
+    <script src="libs/feng3d.js"></script>
+    <!-- demos -->
+    <script src="app.js"></script>
 </head>
 
 <body style="background-color: #a18c34;" onload="init()">
-    <!-- libraries -->
-    <script src="libs/feng3d.js"></script>
-    <!-- demos -->
     <script id="jsCtrl"></script>
     <div style="position: absolute; left: 150px; top: 0px; z-index: 999999">
         <span style="color:#ff0000">左右箭头键切换</span>
@@ -33,58 +37,19 @@
             <option>ComponentTest</option>
         </select>
     </div>
+    <div id="container" style="
+    position: absolute;
+    width:400px;
+    height:480px;
+    top:40px;
+    "></div>
     <canvas id="glcanvas" width="640" height="480" style="
     position: absolute;
-    left: 150px;
+    left: 420px;
     top: 40px;
 ">
         Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
-    <script>
-    var jsCtrl, select, type;
-    function init()
-    {
-    jsCtrl = document.getElementById("jsCtrl");
-    select = document.getElementById("select");
-    type = GetQueryString("type");
-    type = type || "WebglDemo";
-    select.value = type;
-    jsCtrl.src = "js/" + type + ".js";
-    document.onkeyup = function(e)
-    {
-    var keycode = e.which;
-    if (keycode == 37)
-    {
-    if (select.selectedIndex > 0)
-    select.selectedIndex--;
-    else
-    select.selectedIndex = select.options.length - 1;
-    }
-    else if (keycode == 39)
-    {
-    if (select.selectedIndex < select.options.length - 1)
-    select.selectedIndex++;
-    else
-    select.selectedIndex = 0;
-    }
-    selectChanged();
-    }
-    }
-    function selectChanged()
-    {
-    if (type != select.value)
-    {
-    window.location.href = window.location.pathname + "?type=" + select.value;
-    }
-    }
-    function GetQueryString(name)
-    {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
-    }
-    </script>
 </body>
 
 </html>
