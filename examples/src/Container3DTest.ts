@@ -1,5 +1,10 @@
 module me.feng3d {
-    export class ColorMaterialTest {
+
+    /**
+     * 测试3D容器
+     */
+    export class Container3DTest {
+
         view3D: View3D;
         constructor() {
 
@@ -14,10 +19,18 @@ module me.feng3d {
             var colorMaterial = new ColorMaterial();
             var cube = new Object3D("cube", [
                 primitives.createCube(),
-                new Space3D(0, 0, 300),
+                new Space3D(0, 0, 500),
                 colorMaterial,
             ]);
             this.view3D.scene.addChild(cube);
+
+            var cylinderColorMaterial = new ColorMaterial();
+            var cylinder = new Object3D("cylinder", [
+                primitives.createCylinder(),
+                new Space3D(200, 0, 0, 0, 0, 0),
+                cylinderColorMaterial,
+            ]);
+            cube.addChild(cylinder);
 
             //变化旋转与颜色
             setInterval(function () {
@@ -29,5 +42,4 @@ module me.feng3d {
         }
     }
 }
-
-new me.feng3d.ColorMaterialTest();
+new me.feng3d.Container3DTest();

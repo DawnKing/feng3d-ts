@@ -1142,14 +1142,9 @@ declare module me.feng3d {
          */
         mapProgram(vertexCode: string, fragmentCode: string): void;
         /**
-         * 映射常量4*4矩阵
+         * 映射常量
          */
-        mapUniform(name: string, data: Matrix3D | {
-            x: number;
-            y: number;
-            z: number;
-            w: number;
-        }): void;
+        mapUniform(name: string, data: Matrix3D | Vec4): void;
         /**
          * 处理获取索引缓冲事件
          */
@@ -1340,12 +1335,16 @@ declare module me.feng3d {
         /**
          * 数据
          */
-        data: Matrix3D | {
-            x: number;
-            y: number;
-            z: number;
-            w: number;
-        };
+        data: Matrix3D | Vec4;
+    }
+    /**
+     * 渲染常量向量类型
+     */
+    interface Vec4 {
+        x: number;
+        y: number;
+        z: number;
+        w: number;
     }
 }
 declare module me.feng3d {
@@ -1554,10 +1553,143 @@ declare module me.feng3d {
 }
 declare module me.feng3d {
     /**
+     * 3D对象
+     * @author feng 2016-04-26
+     */
+    class Object3D extends Component {
+        /**
+         * 3D空间
+         */
+        space3D: Space3D;
+        /**
+         * 容器
+         */
+        private container3D;
+        /**
+         * 场景空间
+         */
+        private sceneSpace3D;
+        /**
+         * 构建3D对象
+         */
+        constructor(name?: string, conponents?: Component[]);
+        /********************
+         *
+         * Container3D 组件中方法
+         *
+         *******************/
+        /**
+         * 父对象
+         */
+        parent: Object3D;
+        /**
+         * 添加子对象
+         * @param child		子对象
+         * @return			新增的子对象
+         */
+        addChild(child: Object3D): void;
+        /**
+         * 添加子对象到指定位置
+         * @param   child   子对象
+         * @param   index   添加到的位置
+         */
+        addChildAt(child: Object3D, index: number): void;
+        /**
+         * 移除子对象
+         * @param   child   子对象
+         * @return			被移除子对象索引
+         */
+        removeChild(child: Object3D): number;
+        /**
+         * 获取子对象索引
+         * @param   child   子对象
+         * @return  子对象位置
+         */
+        getChildIndex(child: Object3D): number;
+        /**
+         * 移出指定索引的子对象
+         * @param childIndex	子对象索引
+         * @return				被移除对象
+         */
+        removeChildAt(childIndex: number): Object3D;
+        /**
+         * 获取子对象
+         * @param index         子对象索引
+         * @return              指定索引的子对象
+         */
+        getChildAt(index: number): Object3D;
+        /**
+         * 获取子对象数量
+         */
+        numChildren: number;
+        /*********************
+         *
+         *********************/
+        /**
+         * 场景空间变换矩阵
+         */
+        sceneTransform3D: Matrix3D;
+        /**
+         * 通知场景变换改变
+         */
+        notifySceneTransformChange(): void;
+        /*********************
+         *
+         *********************/
+        /**
+         * 创建
+         */
+        static createPrimitive(type: PrimitiveType): Object3D;
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D视图
+     * @author feng 2016-05-01
+     */
+    class View3D {
+        private gl;
+        private _camera;
+        private _scene;
+        private renderer;
+        /**
+         * 构建3D视图
+         * @param canvas    画布
+         * @param scene     3D场景
+         * @param camera    摄像机
+         */
+        constructor(canvas: any, scene?: Scene3D, camera?: Camera3D);
+        /** 3d场景 */
+        scene: Scene3D;
+        private drawScene();
+    }
+}
+declare module me.feng3d {
+    /**
+     * 3D对象组件
+     * @author feng 2016-09-02
+     */
+    class Object3DComponent extends Component {
+        /**
+         * 父组件
+         */
+        protected _parentComponent: Object3D;
+        /**
+         * 所属对象
+         */
+        object3D: Object3D;
+        /**
+         * 构建3D对象组件
+         */
+        constructor();
+    }
+}
+declare module me.feng3d {
+    /**
      * 3D空间
      * @author feng 2016-04-26
      */
-    class Space3D extends Component {
+    class Space3D extends Object3DComponent {
         /**
          * 构建3D空间
          * @param x X坐标
@@ -1619,6 +1751,10 @@ declare module me.feng3d {
          * 使变换矩阵无效
          */
         protected invalidateTransform3D(): void;
+        /**
+         * 发出状态改变消息
+         */
+        private notifyTransformChanged();
         private _x;
         private _y;
         private _z;
@@ -1631,67 +1767,35 @@ declare module me.feng3d {
         private _transform3D;
         private transform3DDirty;
     }
-}
-declare module me.feng3d {
     /**
-     * 3D对象
-     * @author feng 2016-04-26
+     * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
+     * @author feng 2014-3-31
      */
-    class Object3D extends Component {
+    class Space3DEvent extends Event {
         /**
-         * 3D空间
+         * 平移
          */
-        space3D: Space3D;
+        static POSITION_CHANGED: string;
         /**
-         * 构建3D对象
+         * 旋转
          */
-        constructor(name?: string, conponents?: Component[]);
+        static ROTATION_CHANGED: string;
         /**
-         * 创建
+         * 缩放
          */
-        static createPrimitive(type: PrimitiveType): Object3D;
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3D视图
-     * @author feng 2016-05-01
-     */
-    class View3D {
-        private gl;
-        private _camera;
-        private _scene;
-        private renderer;
+        static SCALE_CHANGED: string;
         /**
-         * 构建3D视图
-         * @param canvas    画布
-         * @param scene     3D场景
-         * @param camera    摄像机
+         * 变换
          */
-        constructor(canvas: any, scene?: Scene3D, camera?: Camera3D);
-        /** 3d场景 */
-        scene: Scene3D;
-        private drawScene();
-    }
-}
-declare module me.feng3d {
-    /**
-     * 3D对象组件
-     * @author feng 2016-09-02
-     */
-    class Object3DComponent extends Component {
+        static TRANSFORM_CHANGED: string;
         /**
-         * 父组件
+         * 变换已更新
          */
-        protected _parentComponent: Object3D;
+        static TRANSFORM_UPDATED: string;
         /**
-         * 所属对象
+         * 发出事件的3D元素
          */
-        object3D: Object3D;
-        /**
-         * 构建3D对象组件
-         */
-        constructor();
+        data: Space3D;
     }
 }
 declare module me.feng3d {
@@ -1701,20 +1805,9 @@ declare module me.feng3d {
      */
     class Container3D extends Object3DComponent {
         /**
-         * 获取父对象
-         * @param object3D  显示对象
-         * @return          父对象
+         * 父对象
          */
-        static getParent(object3D: Object3D): Object3D;
-        /**
-         * 获取容器
-         */
-        static getContainer3D(object3D: Object3D): Container3D;
-        /**
-         * 移除对象
-         * @param   object3D    显示对象
-         */
-        static removeChild(object3D: Object3D): void;
+        parent: Object3D;
         /**
          * 构建3D容器组件
          */
@@ -1734,7 +1827,7 @@ declare module me.feng3d {
         /**
          * 移除子对象
          * @param   child   子对象
-         *
+         * @return			被移除子对象索引
          */
         removeChild(child: Object3D): number;
         /**
@@ -1756,6 +1849,13 @@ declare module me.feng3d {
          */
         getChildAt(index: number): Object3D;
         /**
+         * 获取子对象数量
+         */
+        numChildren: number;
+        /******************************************************************************************************************************
+         * @protected
+         ******************************************************************************************************************************/
+        /**
          * 处理被添加组件事件
          */
         protected onBeAddedComponent(event: ComponentEvent): void;
@@ -1763,10 +1863,13 @@ declare module me.feng3d {
          * 处理被移除组件事件
          */
         protected onBeRemovedComponent(event: ComponentEvent): void;
+        /******************************************************************************************************************************
+         * @private
+         ******************************************************************************************************************************/
         /**
          * 父对象
          */
-        private parent;
+        private _parent;
         /**
          * 子对象列表
          */
@@ -1796,6 +1899,13 @@ declare module me.feng3d {
          * data={parent: Object3D, child: Object3D}
          */
         static REMOVED: string;
+        /**
+         * 事件数据
+         */
+        data: {
+            parent: Object3D;
+            child: Object3D;
+        };
     }
 }
 declare module me.feng3d {
@@ -1814,6 +1924,18 @@ declare module me.feng3d {
         sceneTransform3D: Matrix3D;
         protected onBeAddedComponent(event: ComponentEvent): void;
         /**
+         * 使变换矩阵失效，场景变换矩阵也将失效
+         */
+        protected onTransformChanged(event: Space3DEvent): void;
+        /**
+         * 通知场景变换改变
+         */
+        notifySceneTransformChange(): void;
+        /**
+         * 场景变化失效
+         */
+        protected invalidateSceneTransform(): void;
+        /**
          * 相对场景空间
          */
         private sceneSpace3D;
@@ -1825,6 +1947,20 @@ declare module me.feng3d {
          * 更新场景空间
          */
         private updateSceneSpace3D();
+    }
+    /**
+     * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
+     * @author feng 2014-3-31
+     */
+    class SceneSpace3DEvent extends Event {
+        /**
+         * 场景变换矩阵发生变化
+         */
+        static SCENETRANSFORM_CHANGED: string;
+        /**
+         * 发出事件的3D元素
+         */
+        data: SceneSpace3D;
     }
 }
 declare module me.feng3d {
@@ -1882,15 +2018,24 @@ declare module me.feng3d {
      * 3D场景
      * @author feng 2016-05-01
      */
-    class Scene3D extends Scene3DNode {
+    class Scene3D extends Object3D {
+        private _renderables;
         /**
          * 构造3D场景
          */
         constructor();
         /**
-         * 场景名称默认为root
+         * 处理添加对象事件
          */
-        name: string;
+        private onAdded(event);
+        /**
+         * 处理添加对象事件
+         */
+        private onRemoved(event);
+        /**
+        * 获取可渲染对象列表
+        */
+        getRenderables(): Object3D[];
     }
 }
 declare module me.feng3d {
