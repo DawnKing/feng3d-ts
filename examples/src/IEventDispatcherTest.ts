@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
 
     //
     // 测试事件调度器接口
@@ -53,4 +53,4 @@ module me.feng3d {
     }
 }
 
-new me.feng3d.IEventDispatcherTest();
+new feng3d.IEventDispatcherTest();

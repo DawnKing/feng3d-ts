@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
 
     export class WebglDemo {
 
@@ -48,4 +48,4 @@ module me.feng3d {
 
 }
 
-new me.feng3d.WebglDemo();
+new feng3d.WebglDemo();
