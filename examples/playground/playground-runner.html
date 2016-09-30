@@ -31,14 +31,14 @@
 		};
 
 		window.load = function (js, html, css) {
+			if (html) {
+				document.body.innerHTML += html;
+			}
 			if (css) {
 				var style = document.createElement("style");
 				style.type = "text/css";
 				style.innerHTML = css;
 				document.body.appendChild(style);
-			}
-			if (html) {
-				document.body.innerHTML += html;
 			}
 			if (js) {
 				try {
@@ -49,11 +49,22 @@
 					document.body.insertBefore(pre, document.body.firstChild);
 				}
 			}
+			var canvas = document.getElementById("glcanvas");
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
 		};
 
 		if (receivedCall) {
 			window.load(receivedCall.js, receivedCall.html, receivedCall.css);
 		}
+
+		// Resize
+        window.addEventListener("resize", function () {
+
+            var canvas = document.getElementById("glcanvas");
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+        });
 	</script>
 </head>
 
