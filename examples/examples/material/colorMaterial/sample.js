@@ -1,0 +1,21 @@
+/// <reference path="../../../libs/feng3d.d.ts" /> //该行用于在vscode中代码提示用，在浏览器中无视
+
+var canvas = document.getElementById("glcanvas");
+var view3D = new feng3d.View3D(canvas);
+
+//初始化颜色材质
+var colorMaterial = new feng3d.ColorMaterial();
+var cube = new feng3d.Object3D("cube", [
+    feng3d.primitives.createCube(),
+    new feng3d.Space3D(0, 0, 300),
+    colorMaterial,
+]);
+this.view3D.scene.addChild(cube);
+
+//变化旋转与颜色
+setInterval(function () {
+    cube.space3D.ry += 1;
+}, 15);
+setInterval(function () {
+    colorMaterial.color.color = Math.random() * (1 << 32 - 1);
+}, 1000);

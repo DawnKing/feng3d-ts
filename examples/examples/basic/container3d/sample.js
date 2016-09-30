@@ -1,4 +1,6 @@
-var canvas = document.getElementById("renderCanvas");
+/// <reference path="../../../libs/feng3d.d.ts" /> //该行用于在vscode中代码提示用，在浏览器中无视
+
+var canvas = document.getElementById("glcanvas");
 var view3D = new feng3d.View3D(canvas);
 //初始化颜色材质
 var colorMaterial = new feng3d.ColorMaterial();
