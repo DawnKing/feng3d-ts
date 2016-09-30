@@ -1,5 +1,3 @@
-/// <reference path="../../../../lib/feng3d.d.ts" />
-
 var canvas = document.getElementById("renderCanvas");
 var view3D = new feng3d.View3D(canvas);
 //初始化颜色材质
