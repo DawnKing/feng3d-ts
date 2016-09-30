@@ -2909,7 +2909,6 @@ var feng3d;
             //模型矩阵
             var mvMatrix = object3D.sceneTransform3D;
             context3DBuffer.mapUniform(feng3d.RenderDataID.uMVMatrix, mvMatrix);
-            console.log(mvMatrix.rawData);
             //场景投影矩阵
             context3DBuffer.mapUniform(feng3d.RenderDataID.uPMatrix, this.camera.viewProjection);
             //绘制对象

@@ -1,90 +1,56 @@
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset='utf-8' />
-    <title>wwww.feng3d.com</title>
-    <meta name='apple-mobile-web-app-capable' content='yes' />
-    <meta name='full-screen' content='true' />
-    <meta name='screen-orientation' content='portrait' />
-    <meta name='x5-fullscreen' content='true' />
-    <meta name='360-fullscreen' content='true' />
-    <meta http-equiv='expires' content='0' />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<title>feng3d Editor Playground</title>
+
+	<link href="./playground/libs/bootstrap-cosmo.css" rel="stylesheet">
+	<link href="./playground/libs/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="./all.css" rel="stylesheet" type="text/css">
+
+	<link rel="stylesheet" href="./playground/spinner.css" />
+	<link rel="stylesheet" href="./playground/playground.css" />
 </head>
 
-<body style="background-color: #a18c34;" onload="init()">
-    <!-- libraries -->
-    <script src="libs/feng3d.js"></script>
-    <!-- demos -->
-    <script id="jsCtrl"></script>
-    <div style="position: absolute; left: 150px; top: 0px; z-index: 999999">
-        <span style="color:#ff0000">左右箭头键切换</span>
-        <select id="select" onChange="selectChanged()">
-            <option>WebglDemo</option>
-            <option>ColorMaterialTest</option>
-            <option>Container3DTest</option>
-            <option>EventBubblesTest</option>
-            <option>EventBubblesTest2</option>
-            <option>EventCustomBubblesTest</option>
-            <option>EventDispatcherTest</option>
-            <option>EventPriortyTest</option>
-            <option>IEventDispatcherTest</option>
-            <option>ComponentTest</option>
-        </select>
-    </div>
-    <canvas id="glcanvas" width="640" height="480" style="
-    position: absolute;
-    left: 150px;
-    top: 40px;
-">
-        Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
-    </canvas>
-    <script>
-    var jsCtrl, select, type;
-    function init()
-    {
-    jsCtrl = document.getElementById("jsCtrl");
-    select = document.getElementById("select");
-    type = GetQueryString("type");
-    type = type || "WebglDemo";
-    select.value = type;
-    jsCtrl.src = "js/" + type + ".js";
-    document.onkeyup = function(e)
-    {
-    var keycode = e.which;
-    if (keycode == 37)
-    {
-    if (select.selectedIndex > 0)
-    select.selectedIndex--;
-    else
-    select.selectedIndex = select.options.length - 1;
-    }
-    else if (keycode == 39)
-    {
-    if (select.selectedIndex < select.options.length - 1)
-    select.selectedIndex++;
-    else
-    select.selectedIndex = 0;
-    }
-    selectChanged();
-    }
-    }
-    function selectChanged()
-    {
-    if (type != select.value)
-    {
-    window.location.href = window.location.pathname + "?type=" + select.value;
-    }
-    }
-    function GetQueryString(name)
-    {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
-    }
-    </script>
+<body>
+	<div id="loading">
+		<div class="spinner">
+			<div class="rect1"></div>
+			<div class="rect2"></div>
+			<div class="rect3"></div>
+			<div class="rect4"></div>
+			<div class="rect5"></div>
+		</div>
+	</div>
+
+	<section id="playground">
+	</section>
+
+	<footer class="container">
+		<hr>
+		<p class="text-center">
+			<small>&copy; 2016 feng3d</small>
+		</p>
+	</footer>
+
+	<script src="./playground/libs/jquery-1.9.1.min.js" type="text/javascript"></script>
+	<script src="./playground/libs/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="http://images.feng3d.me/monaco-editor/dev/vs/loader.js"></script>
+	<script type="text/javascript">
+		require.config({
+			paths: {
+				vs: "http://images.feng3d.me/monaco-editor/dev/vs"
+			}
+		});
+	</script>
+	<script type="text/javascript" src="./examples/all.js"></script>
+	<script type="text/javascript" src="./playground/playground.js"></script>
 </body>
 
 </html>
