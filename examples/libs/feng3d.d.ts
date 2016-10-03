@@ -1562,80 +1562,9 @@ declare module me.feng3d {
          */
         space3D: Space3D;
         /**
-         * 容器
-         */
-        private container3D;
-        /**
-         * 场景空间
-         */
-        private sceneSpace3D;
-        /**
          * 构建3D对象
          */
         constructor(name?: string, conponents?: Component[]);
-        /********************
-         *
-         * Container3D 组件中方法
-         *
-         *******************/
-        /**
-         * 父对象
-         */
-        parent: Object3D;
-        /**
-         * 添加子对象
-         * @param child		子对象
-         * @return			新增的子对象
-         */
-        addChild(child: Object3D): void;
-        /**
-         * 添加子对象到指定位置
-         * @param   child   子对象
-         * @param   index   添加到的位置
-         */
-        addChildAt(child: Object3D, index: number): void;
-        /**
-         * 移除子对象
-         * @param   child   子对象
-         * @return			被移除子对象索引
-         */
-        removeChild(child: Object3D): number;
-        /**
-         * 获取子对象索引
-         * @param   child   子对象
-         * @return  子对象位置
-         */
-        getChildIndex(child: Object3D): number;
-        /**
-         * 移出指定索引的子对象
-         * @param childIndex	子对象索引
-         * @return				被移除对象
-         */
-        removeChildAt(childIndex: number): Object3D;
-        /**
-         * 获取子对象
-         * @param index         子对象索引
-         * @return              指定索引的子对象
-         */
-        getChildAt(index: number): Object3D;
-        /**
-         * 获取子对象数量
-         */
-        numChildren: number;
-        /*********************
-         *
-         *********************/
-        /**
-         * 场景空间变换矩阵
-         */
-        sceneTransform3D: Matrix3D;
-        /**
-         * 通知场景变换改变
-         */
-        notifySceneTransformChange(): void;
-        /*********************
-         *
-         *********************/
         /**
          * 创建
          */
@@ -1751,10 +1680,12 @@ declare module me.feng3d {
          * 使变换矩阵无效
          */
         protected invalidateTransform3D(): void;
+        inverseTransform: Matrix3D;
         /**
          * 发出状态改变消息
          */
         private notifyTransformChanged();
+        lookAt(target: Vector3D, upAxis?: Vector3D): void;
         private _x;
         private _y;
         private _z;
@@ -1765,7 +1696,9 @@ declare module me.feng3d {
         private _sy;
         private _sz;
         private _transform3D;
-        private transform3DDirty;
+        private _transform3DDirty;
+        private _inverseTransform;
+        private _inverseTransformDirty;
     }
     /**
      * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
@@ -2453,5 +2386,33 @@ declare module me.feng3d {
      * 材质通道
      */
     class MaterialPass {
+    }
+}
+declare module me.feng3d {
+    class ControllerBase {
+        protected _targetObject: Object3D;
+        /**
+         * 控制器基类，用于动态调整3D对象的属性
+         */
+        constructor(targetObject: Object3D);
+        /**
+         * 手动应用更新到目标3D对象
+         */
+        update(interpolate?: boolean): void;
+        targetObject: Object3D;
+    }
+}
+declare module me.feng3d {
+    class LookAtController extends ControllerBase {
+        protected _lookAtPosition: Vector3D;
+        protected _lookAtObject: Object3D;
+        protected _origin: Vector3D;
+        protected _upAxis: Vector3D;
+        private _pos;
+        constructor(targetObject: Object3D, lookAtObject: Object3D);
+        upAxis: Vector3D;
+        lookAtPosition: Vector3D;
+        lookAtObject: Object3D;
+        update(interpolate?: boolean): void;
     }
 }

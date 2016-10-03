@@ -144,9 +144,66 @@ module me.feng3d {
 		 * 发出状态改变消息
 		 */
         private notifyTransformChanged() {
-
             var transformChanged = new Space3DEvent(Space3DEvent.TRANSFORM_CHANGED, this);
             this.object3D && this.object3D.dispatchEvent(transformChanged);
+        }
+
+        public lookAt(target: Vector3D, upAxis: Vector3D = null): void {
+            var xAxis: Vector3D = new Vector3D();
+            var yAxis: Vector3D = new Vector3D();
+            var zAxis: Vector3D = new Vector3D();
+
+            upAxis = upAxis || Vector3D.Y_AXIS;
+
+            if (this._transform3DDirty)
+                this.updateTransform3D();
+
+            zAxis.x = target.x - this._x;
+            zAxis.y = target.y - this._y;
+            zAxis.z = target.z - this._z;
+            zAxis.normalize();
+
+            xAxis.x = upAxis.y*zAxis.z - upAxis.z*zAxis.y;
+			xAxis.y = upAxis.z*zAxis.x - upAxis.x*zAxis.z;
+			xAxis.z = upAxis.x*zAxis.y - upAxis.y*zAxis.x;
+			xAxis.normalize();
+
+            if (xAxis.length < .05) {
+				xAxis.x = upAxis.y;
+				xAxis.y = upAxis.x;
+				xAxis.z = 0;
+				xAxis.normalize();
+			}
+
+            yAxis.x = zAxis.y*xAxis.z - zAxis.z*xAxis.y;
+			yAxis.y = zAxis.z*xAxis.x - zAxis.x*xAxis.z;
+			yAxis.z = zAxis.x*xAxis.y - zAxis.y*xAxis.x;
+
+            this._transform3D.rawData[0] = this._sx*xAxis.x;
+			this._transform3D.rawData[1] = this._sx*xAxis.y;
+			this._transform3D.rawData[2] = this._sx*xAxis.z;
+			this._transform3D.rawData[3] = 0;
+			
+			this._transform3D.rawData[4] = this.sy*yAxis.x;
+			this._transform3D.rawData[5] = this.sy*yAxis.y;
+			this._transform3D.rawData[6] = this.sy*yAxis.z;
+			this._transform3D.rawData[7] = 0;
+			
+			this._transform3D.rawData[8] = this.sz*zAxis.x;
+			this._transform3D.rawData[9] = this.sz*zAxis.y;
+			this._transform3D.rawData[10] = this.sz*zAxis.z;
+			this._transform3D.rawData[11] = 0;
+			
+			this._transform3D.rawData[12] = this._x;
+			this._transform3D.rawData[13] = this._y;
+			this._transform3D.rawData[14] = this._z;
+			this._transform3D.rawData[15] = 1;
+
+	        if (zAxis.z < 0) {
+				this.ry = (180 - this.ry);
+				this.rx -= 180;
+				this.rz -= 180;
+			}
         }
 
         //private

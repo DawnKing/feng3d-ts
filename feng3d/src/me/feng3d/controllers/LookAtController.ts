@@ -21,7 +21,6 @@ module me.feng3d {
 
         public set upAxis(upAxis: Vector3D) {
             this._upAxis = upAxis;
-            this.notifyUpdate();
         }
 
         public get lookAtPosition(): Vector3D {
@@ -29,13 +28,7 @@ module me.feng3d {
         }
 
         public set lookAtPosition(val:Vector3D) {
-            if (this._lookAtObject) {
-                // todo event
-                this._lookAtObject = null;
-            }
-
             this._lookAtPosition = val;
-            this.notifyUpdate();
         }
 
         public get lookAtObject(): Object3D {
@@ -43,28 +36,22 @@ module me.feng3d {
         }
 
         public set lookAtObject(value: Object3D) {
-            if (this._lookAtPosition)
-                this._lookAtPosition = null;
-            
             if (this._lookAtObject == value)
                 return;
 
-            // todo event
             this._lookAtObject = value;    
-            // todo event
-            
-            this.notifyUpdate();
         }
 
         public update(interpolate: boolean = true): void {
             if (this._targetObject) {
                 if (this._lookAtPosition) {
-                    this._targetObject.lookAt(this.lookAtPosition, this._upAxis);
-                } else if (this._lookAtObject) {
+                    this._targetObject.space3D.lookAt(this.lookAtPosition, this._upAxis);
+                } 
+                else if (this._lookAtObject) {
                     this._pos.x = this._lookAtObject.space3D.x;
                     this._pos.y = this._lookAtObject.space3D.y;
                     this._pos.z = this._lookAtObject.space3D.z;
-                    this._targetObject.lookAt(this._pos, this._upAxis);
+                    this._targetObject.space3D.lookAt(this._pos, this._upAxis);
                 }
             }
         }
