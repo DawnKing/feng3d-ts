@@ -2939,7 +2939,6 @@ var feng3d;
             conponents && conponents.forEach(function (element) {
                 _this.addComponent(element);
             });
-            this.getOrCreateComponentByClass(feng3d.Space3D);
             this.getOrCreateComponentByClass(feng3d.Material);
         }
         Object.defineProperty(Object3D.prototype, "space3D", {
@@ -2947,11 +2946,107 @@ var feng3d;
              * 3D空间
              */
             get: function () {
-                return this.getComponentByClass(feng3d.Space3D);
+                return this.getOrCreateComponentByClass(feng3d.Space3D);
             },
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Object3D.prototype, "container3D", {
+            /**
+             * 容器
+             */
+            get: function () {
+                return this.getOrCreateComponentByClass(feng3d.Container3D);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "sceneSpace3D", {
+            /**
+             * 场景空间
+             */
+            get: function () {
+                return this.getOrCreateComponentByClass(feng3d.SceneSpace3D);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Object3D.prototype, "parent", {
+            /********************
+             *
+             * Container3D 组件中方法
+             *
+             *******************/
+            /**
+             * 父对象
+             */
+            get: function () { return this.container3D.parent; },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 添加子对象
+         * @param child		子对象
+         * @return			新增的子对象
+         */
+        Object3D.prototype.addChild = function (child) { this.container3D.addChild(child); };
+        /**
+         * 添加子对象到指定位置
+         * @param   child   子对象
+         * @param   index   添加到的位置
+         */
+        Object3D.prototype.addChildAt = function (child, index) { this.container3D.addChildAt(child, index); };
+        /**
+         * 移除子对象
+         * @param   child   子对象
+         * @return			被移除子对象索引
+         */
+        Object3D.prototype.removeChild = function (child) { return this.container3D.removeChild(child); };
+        /**
+         * 获取子对象索引
+         * @param   child   子对象
+         * @return  子对象位置
+         */
+        Object3D.prototype.getChildIndex = function (child) { return this.container3D.getChildIndex(child); };
+        /**
+         * 移出指定索引的子对象
+         * @param childIndex	子对象索引
+         * @return				被移除对象
+         */
+        Object3D.prototype.removeChildAt = function (childIndex) { return this.container3D.removeChildAt(childIndex); };
+        /**
+         * 获取子对象
+         * @param index         子对象索引
+         * @return              指定索引的子对象
+         */
+        Object3D.prototype.getChildAt = function (index) { return this.container3D.getChildAt(index); };
+        Object.defineProperty(Object3D.prototype, "numChildren", {
+            /**
+             * 获取子对象数量
+             */
+            get: function () { return this.container3D.numChildren; },
+            enumerable: true,
+            configurable: true
+        });
+        ;
+        Object.defineProperty(Object3D.prototype, "sceneTransform3D", {
+            /*********************
+             *
+             *********************/
+            /**
+             * 场景空间变换矩阵
+             */
+            get: function () { return this.sceneSpace3D.sceneTransform3D; },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 通知场景变换改变
+         */
+        Object3D.prototype.notifySceneTransformChange = function () { this.sceneSpace3D.notifySceneTransformChange(); };
+        /*********************
+         *
+         *********************/
         /**
          * 创建
          */

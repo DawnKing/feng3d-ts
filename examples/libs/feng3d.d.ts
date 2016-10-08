@@ -1579,9 +1579,80 @@ declare module feng3d {
          */
         space3D: Space3D;
         /**
+         * 容器
+         */
+        private container3D;
+        /**
+         * 场景空间
+         */
+        private sceneSpace3D;
+        /**
          * 构建3D对象
          */
         constructor(name?: string, conponents?: Component[]);
+        /********************
+         *
+         * Container3D 组件中方法
+         *
+         *******************/
+        /**
+         * 父对象
+         */
+        parent: Object3D;
+        /**
+         * 添加子对象
+         * @param child		子对象
+         * @return			新增的子对象
+         */
+        addChild(child: Object3D): void;
+        /**
+         * 添加子对象到指定位置
+         * @param   child   子对象
+         * @param   index   添加到的位置
+         */
+        addChildAt(child: Object3D, index: number): void;
+        /**
+         * 移除子对象
+         * @param   child   子对象
+         * @return			被移除子对象索引
+         */
+        removeChild(child: Object3D): number;
+        /**
+         * 获取子对象索引
+         * @param   child   子对象
+         * @return  子对象位置
+         */
+        getChildIndex(child: Object3D): number;
+        /**
+         * 移出指定索引的子对象
+         * @param childIndex	子对象索引
+         * @return				被移除对象
+         */
+        removeChildAt(childIndex: number): Object3D;
+        /**
+         * 获取子对象
+         * @param index         子对象索引
+         * @return              指定索引的子对象
+         */
+        getChildAt(index: number): Object3D;
+        /**
+         * 获取子对象数量
+         */
+        numChildren: number;
+        /*********************
+         *
+         *********************/
+        /**
+         * 场景空间变换矩阵
+         */
+        sceneTransform3D: Matrix3D;
+        /**
+         * 通知场景变换改变
+         */
+        notifySceneTransformChange(): void;
+        /*********************
+         *
+         *********************/
         /**
          * 创建
          */
