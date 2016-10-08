@@ -1,4 +1,4 @@
-module me.feng3d {
+module feng3d {
 
     /**
      * 测试3D容器
@@ -42,4 +42,4 @@ module me.feng3d {
         }
     }
 }
-new me.feng3d.Container3DTest();
+new feng3d.Container3DTest();
