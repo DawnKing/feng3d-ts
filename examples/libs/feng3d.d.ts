@@ -1669,6 +1669,15 @@ declare module feng3d {
         private _camera;
         private _scene;
         private renderer;
+        private canvas;
+        /**
+         * 绘制宽度
+         */
+        private renderWidth;
+        /**
+         * 绘制高度
+         */
+        private renderHeight;
         /**
          * 构建3D视图
          * @param canvas    画布
@@ -1679,6 +1688,7 @@ declare module feng3d {
         /** 3d场景 */
         scene: Scene3D;
         private drawScene();
+        private resize();
     }
 }
 declare module feng3d {
