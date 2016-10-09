@@ -3115,6 +3115,13 @@ var feng3d;
         View3D.prototype.drawScene = function () {
             this.renderer.render();
         };
+        Object.defineProperty(View3D.prototype, "camera", {
+            get: function () {
+                return this._camera;
+            },
+            enumerable: true,
+            configurable: true
+        });
         return View3D;
     }());
     feng3d.View3D = View3D;
@@ -3386,6 +3393,7 @@ var feng3d;
             this._transform3D.rawData[13] = this._y;
             this._transform3D.rawData[14] = this._z;
             this._transform3D.rawData[15] = 1;
+            this.transform3D = this._transform3D;
             if (zAxis.z < 0) {
                 this.ry = (180 - this.ry);
                 this.rx -= 180;
@@ -4348,6 +4356,7 @@ var feng3d;
             this._viewProjectionDirty = true;
             this._lens = lens || new feng3d.PerspectiveLens();
             this._lens.addEventListener(feng3d.LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged, this);
+            this.addEventListener(feng3d.Space3DEvent.TRANSFORM_CHANGED, this.onSpaceTransformChanged, this);
         }
         Object.defineProperty(Camera3D.prototype, "viewProjection", {
             /**
@@ -4374,6 +4383,9 @@ var feng3d;
         Camera3D.prototype.onLensMatrixChanged = function (event) {
             this._viewProjectionDirty = true;
             this.dispatchEvent(event);
+        };
+        Camera3D.prototype.onSpaceTransformChanged = function (event) {
+            this._viewProjectionDirty = true;
         };
         return Camera3D;
     }(feng3d.Object3D));
@@ -5839,6 +5851,7 @@ var feng3d;
         __extends(LookAtController, _super);
         function LookAtController(targetObject, lookAtObject) {
             if (targetObject === void 0) { targetObject = null; }
+            if (lookAtObject === void 0) { lookAtObject = null; }
             _super.call(this, targetObject);
             this._origin = new feng3d.Vector3D(0.0, 0.0, 0.0);
             this._upAxis = feng3d.Vector3D.Y_AXIS;

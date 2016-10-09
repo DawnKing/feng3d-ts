@@ -1679,6 +1679,7 @@ declare module feng3d {
         /** 3d场景 */
         scene: Scene3D;
         private drawScene();
+        camera: Camera3D;
     }
 }
 declare module feng3d {
@@ -2345,6 +2346,7 @@ declare module feng3d {
          * 处理镜头变化事件
          */
         private onLensMatrixChanged(event);
+        private onSpaceTransformChanged(event);
     }
 }
 declare module feng3d {
@@ -2501,7 +2503,7 @@ declare module feng3d {
         protected _origin: Vector3D;
         protected _upAxis: Vector3D;
         private _pos;
-        constructor(targetObject: Object3D, lookAtObject: Object3D);
+        constructor(targetObject?: Object3D, lookAtObject?: Object3D);
         upAxis: Vector3D;
         lookAtPosition: Vector3D;
         lookAtObject: Object3D;

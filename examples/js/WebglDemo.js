@@ -3,7 +3,13 @@ var feng3d;
     var WebglDemo = (function () {
         function WebglDemo() {
             this.init();
+            this.controller = new feng3d.LookAtController(this.view3D.camera);
+            setInterval(this.process.bind(this), 15);
         }
+        WebglDemo.prototype.process = function () {
+            this.controller.lookAtPosition = new feng3d.Vector3D();
+            this.controller.update();
+        };
         WebglDemo.prototype.init = function () {
             var canvas = document.getElementById("glcanvas");
             this.view3D = new feng3d.View3D(canvas);

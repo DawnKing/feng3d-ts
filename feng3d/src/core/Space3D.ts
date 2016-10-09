@@ -184,20 +184,22 @@ module feng3d {
 			this._transform3D.rawData[2] = this._sx*xAxis.z;
 			this._transform3D.rawData[3] = 0;
 			
-			this._transform3D.rawData[4] = this.sy*yAxis.x;
-			this._transform3D.rawData[5] = this.sy*yAxis.y;
-			this._transform3D.rawData[6] = this.sy*yAxis.z;
+			this._transform3D.rawData[4] = this._sy*yAxis.x;
+			this._transform3D.rawData[5] = this._sy*yAxis.y;
+			this._transform3D.rawData[6] = this._sy*yAxis.z;
 			this._transform3D.rawData[7] = 0;
 			
-			this._transform3D.rawData[8] = this.sz*zAxis.x;
-			this._transform3D.rawData[9] = this.sz*zAxis.y;
-			this._transform3D.rawData[10] = this.sz*zAxis.z;
+			this._transform3D.rawData[8] = this._sz*zAxis.x;
+			this._transform3D.rawData[9] = this._sz*zAxis.y;
+			this._transform3D.rawData[10] = this._sz*zAxis.z;
 			this._transform3D.rawData[11] = 0;
 			
 			this._transform3D.rawData[12] = this._x;
 			this._transform3D.rawData[13] = this._y;
 			this._transform3D.rawData[14] = this._z;
 			this._transform3D.rawData[15] = 1;
+
+            this.transform3D = this._transform3D;
 
 	        if (zAxis.z < 0) {
 				this.ry = (180 - this.ry);

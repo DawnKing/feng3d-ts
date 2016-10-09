@@ -6,7 +6,7 @@ module feng3d {
         protected _upAxis: Vector3D = Vector3D.Y_AXIS;
         private _pos: Vector3D = new Vector3D();
 
-        constructor(targetObject: Object3D = null, lookAtObject: Object3D) {
+        constructor(targetObject: Object3D = null, lookAtObject: Object3D = null) {
             super(targetObject);
 
             if (lookAtObject)

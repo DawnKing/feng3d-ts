@@ -46,5 +46,9 @@ module feng3d {
 
             this.renderer.render();
         }
+
+        public get camera(): Camera3D {
+            return this._camera;
+        }
     }
 }

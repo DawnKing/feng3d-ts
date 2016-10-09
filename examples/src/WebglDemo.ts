@@ -3,9 +3,19 @@ module feng3d {
     export class WebglDemo {
 
         view3D: View3D;
+        controller: LookAtController;
+
         constructor() {
 
             this.init();
+
+            this.controller = new LookAtController(this.view3D.camera);
+            setInterval(this.process.bind(this), 15);
+        }
+
+        process() {
+            this.controller.lookAtPosition = new Vector3D();
+            this.controller.update();
         }
 
         init() {
