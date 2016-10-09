@@ -3120,15 +3120,6 @@ var feng3d;
             this.resize();
             this.renderer.render();
         };
-<<<<<<< HEAD
-        Object.defineProperty(View3D.prototype, "camera", {
-            get: function () {
-                return this._camera;
-            },
-            enumerable: true,
-            configurable: true
-        });
-=======
         View3D.prototype.resize = function () {
             if (this.renderWidth != this.canvas.width || this.renderHeight != this.canvas.height) {
                 this.renderWidth = this.canvas.width;
@@ -3136,7 +3127,13 @@ var feng3d;
                 this.gl.viewport(0, 0, this.renderWidth, this.renderHeight);
             }
         };
->>>>>>> 9ffc0c34e32b259abff1bc062527d286c19270f8
+        Object.defineProperty(View3D.prototype, "camera", {
+            get: function () {
+                return this._camera;
+            },
+            enumerable: true,
+            configurable: true
+        });
         return View3D;
     }());
     feng3d.View3D = View3D;
@@ -3396,13 +3393,13 @@ var feng3d;
             this._transform3D.rawData[1] = this._sx * xAxis.y;
             this._transform3D.rawData[2] = this._sx * xAxis.z;
             this._transform3D.rawData[3] = 0;
-            this._transform3D.rawData[4] = this.sy * yAxis.x;
-            this._transform3D.rawData[5] = this.sy * yAxis.y;
-            this._transform3D.rawData[6] = this.sy * yAxis.z;
+            this._transform3D.rawData[4] = this._sy * yAxis.x;
+            this._transform3D.rawData[5] = this._sy * yAxis.y;
+            this._transform3D.rawData[6] = this._sy * yAxis.z;
             this._transform3D.rawData[7] = 0;
-            this._transform3D.rawData[8] = this.sz * zAxis.x;
-            this._transform3D.rawData[9] = this.sz * zAxis.y;
-            this._transform3D.rawData[10] = this.sz * zAxis.z;
+            this._transform3D.rawData[8] = this._sz * zAxis.x;
+            this._transform3D.rawData[9] = this._sz * zAxis.y;
+            this._transform3D.rawData[10] = this._sz * zAxis.z;
             this._transform3D.rawData[11] = 0;
             this._transform3D.rawData[12] = this._x;
             this._transform3D.rawData[13] = this._y;
@@ -4372,6 +4369,7 @@ var feng3d;
             this._lens = lens || new feng3d.PerspectiveLens();
             this._lens.addEventListener(feng3d.LensEvent.MATRIX_CHANGED, this.onLensMatrixChanged, this);
             this.addEventListener(feng3d.Space3DEvent.TRANSFORM_CHANGED, this.onSpaceTransformChanged, this);
+            this.space3D.z = -1000;
         }
         Object.defineProperty(Camera3D.prototype, "viewProjection", {
             /**

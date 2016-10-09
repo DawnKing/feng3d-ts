@@ -4,10 +4,10 @@ var feng3d;
         function WebglDemo() {
             this.init();
             this.controller = new feng3d.LookAtController(this.view3D.camera);
-            setInterval(this.process.bind(this), 15);
+            setInterval(this.process.bind(this), 500);
         }
         WebglDemo.prototype.process = function () {
-            this.controller.lookAtPosition = new feng3d.Vector3D();
+            this.controller.lookAtPosition = new feng3d.Vector3D(Math.random() * 10, 0, 0);
             this.controller.update();
         };
         WebglDemo.prototype.init = function () {

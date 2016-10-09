@@ -10,11 +10,11 @@ module feng3d {
             this.init();
 
             this.controller = new LookAtController(this.view3D.camera);
-            setInterval(this.process.bind(this), 15);
+            setInterval(this.process.bind(this), 500);
         }
 
         process() {
-            this.controller.lookAtPosition = new Vector3D();
+            this.controller.lookAtPosition = new Vector3D(Math.random() * 10, 0, 0);
             this.controller.update();
         }
 
