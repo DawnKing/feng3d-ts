@@ -3094,8 +3094,12 @@ var feng3d;
             if (scene === void 0) { scene = null; }
             if (camera === void 0) { camera = null; }
             feng3d.assert(canvas instanceof HTMLCanvasElement, "canvas\u53C2\u6570\u5FC5\u987B\u4E3A HTMLCanvasElement \u7C7B\u578B\uFF01");
-            this.gl = canvas.getContext("experimental-webgl");
+            this.canvas = canvas;
+            this.renderWidth = this.canvas.width;
+            this.renderHeight = this.canvas.height;
+            this.gl = this.canvas.getContext("experimental-webgl");
             this.gl || alert("Unable to initialize WebGL. Your browser may not support it.");
+            this.gl.viewport(0, 0, this.renderWidth, this.renderHeight);
             this.scene = scene || new feng3d.Scene3D();
             this._camera = camera || new feng3d.Camera3D();
             this.renderer = new feng3d.Renderer(this.gl, this.scene, this._camera);
@@ -3113,8 +3117,10 @@ var feng3d;
             configurable: true
         });
         View3D.prototype.drawScene = function () {
+            this.resize();
             this.renderer.render();
         };
+<<<<<<< HEAD
         Object.defineProperty(View3D.prototype, "camera", {
             get: function () {
                 return this._camera;
@@ -3122,6 +3128,15 @@ var feng3d;
             enumerable: true,
             configurable: true
         });
+=======
+        View3D.prototype.resize = function () {
+            if (this.renderWidth != this.canvas.width || this.renderHeight != this.canvas.height) {
+                this.renderWidth = this.canvas.width;
+                this.renderHeight = this.canvas.height;
+                this.gl.viewport(0, 0, this.renderWidth, this.renderHeight);
+            }
+        };
+>>>>>>> 9ffc0c34e32b259abff1bc062527d286c19270f8
         return View3D;
     }());
     feng3d.View3D = View3D;
