@@ -35,11 +35,11 @@ declare module feng3d {
         /**
          * 表示事件是否为冒泡事件。如果事件可以冒泡，则此值为 true；否则为 false。
          */
-        readonly bubbles: boolean;
+        bubbles: boolean;
         /**
          * 事件的类型。类型区分大小写。
          */
-        readonly type: string;
+        type: string;
         /**
          * 事件目标。
          */
@@ -47,7 +47,7 @@ declare module feng3d {
         /**
          * 当前正在使用某个事件侦听器处理 Event 对象的对象。
          */
-        readonly currentTarget: IEventDispatcher;
+        currentTarget: IEventDispatcher;
     }
 }
 declare module feng3d {
@@ -318,11 +318,11 @@ declare module feng3d {
         /**
          * 父组件
          */
-        readonly parentComponent: IComponent;
+        parentComponent: IComponent;
         /**
          * 子组件个数
          */
-        readonly numComponents: number;
+        numComponents: number;
         /**
          * 添加组件
          * @param component 被添加组件
@@ -590,10 +590,10 @@ declare module feng3d {
          * 颜色值，32位整数值
          */
         color: number;
-        readonly x: number;
-        readonly y: number;
-        readonly z: number;
-        readonly w: number;
+        x: number;
+        y: number;
+        z: number;
+        w: number;
     }
 }
 declare module feng3d {
@@ -678,11 +678,11 @@ declare module feng3d {
         /**
         * 当前 Vector3D 对象的长度（大小），即从原点 (0,0,0) 到该对象的 x、y 和 z 坐标的距离。w 属性将被忽略。单位矢量具有的长度或大小为一。
         */
-        readonly length: number;
+        length: number;
         /**
         * 当前 Vector3D 对象长度的平方，它是使用 x、y 和 z 属性计算出来的。w 属性将被忽略。尽可能使用 lengthSquared() 方法，而不要使用 Vector3D.length() 方法的 Math.sqrt() 方法调用，后者速度较慢。
         */
-        readonly lengthSquared: number;
+        lengthSquared: number;
         /**
          * 创建 Vector3D 对象的实例。如果未指定构造函数的参数，则将使用元素 (0,0,0,0) 创建 Vector3D 对象。
          * @param x 第一个元素，例如 x 坐标。
@@ -789,19 +789,19 @@ declare module feng3d {
         /**
          * 一个用于确定矩阵是否可逆的数字。
          */
-        readonly determinant: number;
+        determinant: number;
         /**
          * 前方（+Z轴方向）
          */
-        readonly forward: Vector3D;
+        forward: Vector3D;
         /**
          * 上方（+y轴方向）
          */
-        readonly up: Vector3D;
+        up: Vector3D;
         /**
          * 右方（+x轴方向）
          */
-        readonly right: Vector3D;
+        right: Vector3D;
         /**
          * 创建 Matrix3D 对象。
          * @param   datas    一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一列。
@@ -1577,15 +1577,15 @@ declare module feng3d {
         /**
          * 3D空间
          */
-        readonly space3D: Space3D;
+        space3D: Space3D;
         /**
          * 容器
          */
-        private readonly container3D;
+        private container3D;
         /**
          * 场景空间
          */
-        private readonly sceneSpace3D;
+        private sceneSpace3D;
         /**
          * 构建3D对象
          */
@@ -1598,7 +1598,7 @@ declare module feng3d {
         /**
          * 父对象
          */
-        readonly parent: Object3D;
+        parent: Object3D;
         /**
          * 添加子对象
          * @param child		子对象
@@ -1638,14 +1638,14 @@ declare module feng3d {
         /**
          * 获取子对象数量
          */
-        readonly numChildren: number;
+        numChildren: number;
         /*********************
          *
          *********************/
         /**
          * 场景空间变换矩阵
          */
-        readonly sceneTransform3D: Matrix3D;
+        sceneTransform3D: Matrix3D;
         /**
          * 通知场景变换改变
          */
@@ -1689,6 +1689,7 @@ declare module feng3d {
         scene: Scene3D;
         private drawScene();
         private resize();
+        camera: Camera3D;
     }
 }
 declare module feng3d {
@@ -1704,7 +1705,7 @@ declare module feng3d {
         /**
          * 所属对象
          */
-        readonly object3D: Object3D;
+        object3D: Object3D;
         /**
          * 构建3D对象组件
          */
@@ -1778,10 +1779,12 @@ declare module feng3d {
          * 使变换矩阵无效
          */
         protected invalidateTransform3D(): void;
+        inverseTransform: Matrix3D;
         /**
          * 发出状态改变消息
          */
         private notifyTransformChanged();
+        lookAt(target: Vector3D, upAxis?: Vector3D): void;
         private _x;
         private _y;
         private _z;
@@ -1792,7 +1795,9 @@ declare module feng3d {
         private _sy;
         private _sz;
         private _transform3D;
-        private transform3DDirty;
+        private _transform3DDirty;
+        private _inverseTransform;
+        private _inverseTransformDirty;
     }
     /**
      * 3D对象事件(3D状态发生改变、位置、旋转、缩放)
@@ -1834,7 +1839,7 @@ declare module feng3d {
         /**
          * 父对象
          */
-        readonly parent: Object3D;
+        parent: Object3D;
         /**
          * 构建3D容器组件
          */
@@ -1878,7 +1883,7 @@ declare module feng3d {
         /**
          * 获取子对象数量
          */
-        readonly numChildren: number;
+        numChildren: number;
         /******************************************************************************************************************************
          * @protected
          ******************************************************************************************************************************/
@@ -1948,7 +1953,7 @@ declare module feng3d {
         /**
          * 场景空间变换矩阵
          */
-        readonly sceneTransform3D: Matrix3D;
+        sceneTransform3D: Matrix3D;
         protected onBeAddedComponent(event: ComponentEvent): void;
         /**
          * 使变换矩阵失效，场景变换矩阵也将失效
@@ -2033,7 +2038,7 @@ declare module feng3d {
         /**
          * 是否可渲染
          */
-        readonly renderable: boolean;
+        renderable: boolean;
         /**
          * 获取可渲染对象列表
          */
@@ -2160,7 +2165,7 @@ declare module feng3d {
         /**
          * 顶点属性编号列表
          */
-        readonly vaIdList: string[];
+        vaIdList: string[];
     }
 }
 declare module feng3d {
@@ -2272,7 +2277,7 @@ declare module feng3d {
         /**
          * 投影逆矩阵
          */
-        readonly unprojectionMatrix: Matrix3D;
+        unprojectionMatrix: Matrix3D;
         /**
          * 屏幕坐标投影到摄像机空间坐标
          * @param nX 屏幕坐标X -1（左） -> 1（右）
@@ -2346,11 +2351,12 @@ declare module feng3d {
         /**
          * 场景投影矩阵，世界空间转投影空间
          */
-        readonly viewProjection: Matrix3D;
+        viewProjection: Matrix3D;
         /**
          * 处理镜头变化事件
          */
         private onLensMatrixChanged(event);
+        private onSpaceTransformChanged(event);
     }
 }
 declare module feng3d {
@@ -2484,5 +2490,33 @@ declare module feng3d {
      * 材质通道
      */
     class MaterialPass {
+    }
+}
+declare module feng3d {
+    class ControllerBase {
+        protected _targetObject: Object3D;
+        /**
+         * 控制器基类，用于动态调整3D对象的属性
+         */
+        constructor(targetObject: Object3D);
+        /**
+         * 手动应用更新到目标3D对象
+         */
+        update(interpolate?: boolean): void;
+        targetObject: Object3D;
+    }
+}
+declare module feng3d {
+    class LookAtController extends ControllerBase {
+        protected _lookAtPosition: Vector3D;
+        protected _lookAtObject: Object3D;
+        protected _origin: Vector3D;
+        protected _upAxis: Vector3D;
+        private _pos;
+        constructor(targetObject?: Object3D, lookAtObject?: Object3D);
+        upAxis: Vector3D;
+        lookAtPosition: Vector3D;
+        lookAtObject: Object3D;
+        update(interpolate?: boolean): void;
     }
 }
