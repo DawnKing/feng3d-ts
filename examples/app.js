@@ -24,8 +24,6 @@ function init() {
         }
         selectChanged();
     }
-
-    initEditor();
 }
 function selectChanged() {
     if (type != select.value) {
@@ -37,19 +35,4 @@ function GetQueryString(name) {
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]);
     return null;
-}
-
-function initEditor() {
-    require.config({ paths: { 'vs': 'monaco-editor/min/vs' } });
-    require(['vs/editor/editor.main'], function () {
-        editor = monaco.editor.create(document.getElementById('container'), {
-            value: [
-                'function x() {',
-                '\tconsole.log("Hello world!");',
-                '}'
-            ].join('\n'),
-            language: 'javascript'
-        });
-        editor1 = editor;
-    });
 }
